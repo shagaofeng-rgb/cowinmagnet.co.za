@@ -1,0 +1,20 @@
+﻿[
+    {
+        "slug":  "permanent-magnetic-equipment",
+        "name":  "Permanent Magnetic Equipment",
+        "image":  "/assets/images/product-permanent-overband-magnet.png",
+        "description":  "Suspended permanent magnets and overband separators for conveyor tramp iron removal and crusher protection."
+    },
+    {
+        "slug":  "electromagnetic-equipment",
+        "name":  "Electromagnetic Equipment",
+        "image":  "/assets/images/product-electromagnetic-separator.png",
+        "description":  "Suspended electromagnetic separators for adjustable magnetic force and demanding mining conveyor applications."
+    },
+    {
+        "slug":  "magnetic-rollers-bars-components",
+        "name":  "Magnetic Rollers, Bars and Components",
+        "image":  "/assets/images/application-recycling-separation.png",
+        "description":  "Magnetic pulleys, drums, bars, grids, drawers, plates, grates and custom components."
+    }
+]

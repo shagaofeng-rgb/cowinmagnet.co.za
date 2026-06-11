@@ -1,0 +1,10 @@
+.deploy-tools/
+.vercel/
+.git/
+.env
+.env.local
+.env.*.local
+server-*.log
+*.tmp
+Thumbs.db
+node_modules/

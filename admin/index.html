@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Cowinmagnet Local CMS</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin-shell">
+  <aside class="sidebar">
+    <a class="brand" href="/admin/"><span class="brand-mark">CY</span><span><strong>网站数据后台</strong></span></a>
+    <nav aria-label="Admin modules">
+      <button data-view="dashboard" class="active">数据总览</button>
+      <button data-view="traffic">流量分析</button>
+      <button data-view="seo">SEO 数据</button>
+      <button data-view="products">产品管理</button>
+      <button data-view="news">新闻管理</button>
+      <button data-view="links">内外链审计</button>
+      <button data-view="visitors">访客记录</button>
+      <button data-view="pages">页面表现</button>
+      <button data-view="paths">访问路径</button>
+      <button data-view="settings">系统设置</button>
+    </nav>
+    <div class="sidebar-foot">
+      <strong>半小时自动同步 26 PV / 0 询盘</strong>
+      <span>最近同步：本地时间</span>
+      <span>当前账号</span>
+      <b>davidsha@cowinmagnet.com</b>
+      <button class="button primary" data-logout>退出登录</button>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow" data-section-kicker>数据总览</p>
+        <h1 data-page-title>网站数据总览</h1>
+        <p class="hero-copy" data-page-copy>非洲站本地预览数据后台，统计访问、页面、来源、产品、询盘与 SEO 维护状态。</p>
+      </div>
+      <div class="top-actions">
+        <a class="button secondary" href="/en-za/" target="_blank" rel="noreferrer">打开前台</a>
+        <button class="button primary" data-regenerate>刷新当前范围</button>
+      </div>
+    </header>
+    <section class="sync-strip"><span>● 30 分钟自动同步已配置</span><span data-sync-state>前端刷新：本地；Cron 最近执行：本地；状态：success</span></section>
+    <section data-status class="status" hidden></section>
+    <section data-panel="dashboard" class="panel-view"></section>
+    <section data-panel="traffic" class="panel-view" hidden></section>
+    <section data-panel="products" class="panel-view" hidden></section>
+    <section data-panel="news" class="panel-view" hidden></section>
+    <section data-panel="links" class="panel-view" hidden></section>
+    <section data-panel="visitors" class="panel-view" hidden></section>
+    <section data-panel="pages" class="panel-view" hidden></section>
+    <section data-panel="paths" class="panel-view" hidden></section>
+    <section data-panel="seo" class="panel-view" hidden></section>
+    <section data-panel="settings" class="panel-view" hidden></section>
+  </main>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

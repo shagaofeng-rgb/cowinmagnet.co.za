@@ -1,0 +1,52 @@
+﻿[
+    {
+        "slug":  "tramp-iron-removal",
+        "name":  "Tramp Iron Removal",
+        "description":  "Remove ferrous tramp metal before it reaches crushers, screens or process equipment."
+    },
+    {
+        "slug":  "crusher-protection",
+        "name":  "Crusher Protection",
+        "description":  "Reduce the risk of crusher damage from bolts, tools, teeth and other ferrous objects."
+    },
+    {
+        "slug":  "conveyor-belt-protection",
+        "name":  "Conveyor Belt Protection",
+        "description":  "Protect conveyor systems and transfer points with correctly positioned magnetic equipment."
+    },
+    {
+        "slug":  "ferrous-metal-recovery",
+        "name":  "Ferrous Metal Recovery",
+        "description":  "Recover ferrous material from recycling, processing and bulk handling streams."
+    },
+    {
+        "slug":  "self-cleaning-magnetic-separation",
+        "name":  "Self-Cleaning Magnetic Separation",
+        "description":  "Use automatic discharge where manual cleaning is impractical or unsafe."
+    },
+    {
+        "slug":  "heavy-duty-mining-applications",
+        "name":  "Heavy-Duty Mining Applications",
+        "description":  "Select equipment for continuous operation, heavy loads and large lump sizes."
+    },
+    {
+        "slug":  "high-temperature-applications",
+        "name":  "High-Temperature Applications",
+        "description":  "Confirm magnet configuration for elevated ambient or material temperatures."
+    },
+    {
+        "slug":  "outdoor-dusty-environments",
+        "name":  "Outdoor and Dusty Environments",
+        "description":  "Review dust, weather exposure and maintenance access before configuration."
+    },
+    {
+        "slug":  "coastal-corrosive-environments",
+        "name":  "Coastal and Corrosive Environments",
+        "description":  "Consider humidity, corrosion resistance and outdoor electrical protection."
+    },
+    {
+        "slug":  "remote-mining-sites",
+        "name":  "Remote Mining Sites",
+        "description":  "Plan durable equipment, spare parts and logistics for limited maintenance access."
+    }
+]

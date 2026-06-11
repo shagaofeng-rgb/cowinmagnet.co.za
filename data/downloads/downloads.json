@@ -1,0 +1,32 @@
+﻿[
+    {
+        "name":  "Product Catalogue",
+        "type":  "Catalogue",
+        "status":  "Pending production PDF. Configure final file path before launch."
+    },
+    {
+        "name":  "Technical Data Sheets",
+        "type":  "Datasheet",
+        "status":  "Pending product-specific PDFs."
+    },
+    {
+        "name":  "Installation Drawings",
+        "type":  "Drawing",
+        "status":  "Available after product selection and layout confirmation."
+    },
+    {
+        "name":  "Selection Questionnaire",
+        "type":  "Form",
+        "status":  "Use the Request a Quote form until PDF is attached."
+    },
+    {
+        "name":  "Maintenance Manuals",
+        "type":  "Manual",
+        "status":  "Pending verified product documents."
+    },
+    {
+        "name":  "Spare Parts Lists",
+        "type":  "Parts",
+        "status":  "Prepared after confirmed product model."
+    }
+]

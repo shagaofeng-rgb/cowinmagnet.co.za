@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#eef4ea"/>
+  <rect x="70" y="70" width="1060" height="490" rx="8" fill="#ffffff" stroke="#d8dfd6"/>
+  <circle cx="155" cy="160" r="42" fill="#0d6b4c"/>
+  <text x="155" y="177" text-anchor="middle" font-family="Arial" font-size="44" font-weight="700" fill="#fff">C</text>
+  <text x="220" y="155" font-family="Arial" font-size="52" font-weight="700" fill="#17211c">Cowinmagnet</text>
+  <text x="220" y="205" font-family="Arial" font-size="28" fill="#5c6a63">Southern Africa</text>
+  <text x="95" y="340" font-family="Arial" font-size="54" font-weight="700" fill="#17211c">Magnetic Separation Equipment</text>
+  <text x="95" y="405" font-family="Arial" font-size="32" fill="#0d6b4c">for South Africa and Southern African Mining Industries</text>
+  <text x="95" y="492" font-family="Arial" font-size="24" fill="#5c6a63">Mining · Quarrying · Recycling · Cement · Bulk Material Handling</text>
+</svg>

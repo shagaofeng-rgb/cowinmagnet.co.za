@@ -1,0 +1,82 @@
+﻿[
+    {
+        "id":  "e4d1EWDxxQX1Hg",
+        "user":  "admin",
+        "action":  "Login",
+        "object":  "Session",
+        "objectId":  "local",
+        "summary":  "Admin signed in to local preview CMS",
+        "time":  "2026-06-09T11:52:12.4061122Z",
+        "ip":  "local-preview"
+    },
+    {
+        "id":  "7upoQK7GUiFOBw",
+        "user":  "admin",
+        "action":  "Login",
+        "object":  "Session",
+        "objectId":  "local",
+        "summary":  "Admin signed in to local preview CMS",
+        "time":  "2026-06-09T11:56:55.5963598Z",
+        "ip":  "local-preview"
+    },
+    {
+        "id":  "KeVLxEZWEXvtQg",
+        "user":  "admin",
+        "action":  "Login",
+        "object":  "Session",
+        "objectId":  "local",
+        "summary":  "Admin signed in to local preview CMS",
+        "time":  "2026-06-09T12:25:31.3928404Z",
+        "ip":  "local-preview"
+    },
+    {
+        "id":  "5t21PbIszUbNuQ",
+        "user":  "public-form",
+        "action":  "Enquiry Created",
+        "object":  "Enquiry",
+        "objectId":  "ENQ-20260609202531-rQD-Cw",
+        "summary":  "New website inquiry saved from http://localhost:8099/en-za/request-a-quote/",
+        "time":  "2026-06-09T12:25:31.5988058Z",
+        "ip":  "local-preview"
+    },
+    {
+        "id":  "p7KIahcpGu0LJg",
+        "user":  "admin",
+        "action":  "Login",
+        "object":  "Session",
+        "objectId":  "local",
+        "summary":  "Admin signed in to local preview CMS",
+        "time":  "2026-06-09T12:25:45.2996638Z",
+        "ip":  "local-preview"
+    },
+    {
+        "id":  "9dTsCNmjZ0_tzA",
+        "user":  "admin",
+        "action":  "Product Updated",
+        "object":  "Product",
+        "objectId":  "belt-high-gradient-magnetic-separator",
+        "summary":  "Product content edited in local CMS",
+        "time":  "2026-06-09T12:25:45.7673183Z",
+        "ip":  "local-preview"
+    },
+    {
+        "id":  "uNXOU3dmUEGafQ",
+        "user":  "admin",
+        "action":  "Login",
+        "object":  "Session",
+        "objectId":  "local",
+        "summary":  "Admin signed in to local preview CMS",
+        "time":  "2026-06-09T12:28:34.7829729Z",
+        "ip":  "local-preview"
+    },
+    {
+        "id":  "Z70yJt0xojpewQ",
+        "user":  "admin",
+        "action":  "Login",
+        "object":  "Session",
+        "objectId":  "local",
+        "summary":  "Admin signed in to local preview CMS",
+        "time":  "2026-06-11T01:37:42.1901581Z",
+        "ip":  "local-preview"
+    }
+]

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mining conveyor and magnetic separation background</title>
+  <desc id="desc">A stylized mining conveyor scene for Cowinmagnet Southern Africa local prototype.</desc>
+  <rect width="1600" height="900" fill="#dfeef2"/>
+  <path d="M0 610 260 420l180 80 250-220 210 180 190-110 230 180 280-150v520H0Z" fill="#cad7ca"/>
+  <path d="M0 700h1600v200H0Z" fill="#34463b"/>
+  <path d="M120 625h1000l250 105H260Z" fill="#18231d"/>
+  <path d="M180 655h920l190 78H312Z" fill="#5b665f"/>
+  <g fill="#0d6b4c">
+    <rect x="1030" y="390" width="180" height="78" rx="10"/>
+    <rect x="1090" y="458" width="54" height="132"/>
+    <rect x="1010" y="588" width="240" height="34" rx="8"/>
+  </g>
+  <g fill="#c9972a">
+    <circle cx="330" cy="735" r="42"/>
+    <circle cx="610" cy="735" r="42"/>
+    <circle cx="890" cy="735" r="42"/>
+    <circle cx="1170" cy="735" r="42"/>
+  </g>
+  <g fill="#a84f2f" opacity=".9">
+    <path d="M1240 315h120l-18 90h-84Z"/>
+    <rect x="1278" y="210" width="44" height="110"/>
+  </g>
+  <g fill="none" stroke="#074731" stroke-width="12" stroke-linecap="round">
+    <path d="M1118 390c20-68 78-112 154-118"/>
+    <path d="M1118 390c-24-62-80-97-165-104"/>
+  </g>
+</svg>

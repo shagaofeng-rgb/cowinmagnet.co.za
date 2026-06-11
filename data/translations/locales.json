@@ -1,0 +1,11 @@
+﻿{
+    "fallback":  "English fallback content is shown until verified translations are completed.",
+    "supportedLocales":  [
+                             "en-za",
+                             "af-za",
+                             "zu-za",
+                             "xh-za",
+                             "st-za",
+                             "tn-za"
+                         ]
+}

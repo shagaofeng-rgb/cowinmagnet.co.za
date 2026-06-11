@@ -1,0 +1,62 @@
+﻿[
+    {
+        "slug":  "south-africa",
+        "name":  "South Africa",
+        "focus":  "Coal, chrome, manganese, iron ore, gold, quarrying, recycling and cement."
+    },
+    {
+        "slug":  "botswana",
+        "name":  "Botswana",
+        "focus":  "Mining, coal, aggregates and material handling."
+    },
+    {
+        "slug":  "namibia",
+        "name":  "Namibia",
+        "focus":  "Mining, quarrying, port logistics and bulk material handling."
+    },
+    {
+        "slug":  "zimbabwe",
+        "name":  "Zimbabwe",
+        "focus":  "Gold mining, lithium mining, chrome, coal and quarrying."
+    },
+    {
+        "slug":  "zambia",
+        "name":  "Zambia",
+        "focus":  "Copper mining, mineral processing, cement and quarrying."
+    },
+    {
+        "slug":  "mozambique",
+        "name":  "Mozambique",
+        "focus":  "Coal, ports, heavy mineral sands, cement and bulk handling."
+    },
+    {
+        "slug":  "angola",
+        "name":  "Angola",
+        "focus":  "Mining, quarrying, cement and industrial material handling."
+    },
+    {
+        "slug":  "ghana",
+        "name":  "Ghana",
+        "focus":  "Gold mining, quarrying, recycling and port handling."
+    },
+    {
+        "slug":  "nigeria",
+        "name":  "Nigeria",
+        "focus":  "Cement, quarrying, recycling, ports and industrial material handling."
+    },
+    {
+        "slug":  "kenya",
+        "name":  "Kenya",
+        "focus":  "Cement, quarrying, recycling, food processing and bulk handling."
+    },
+    {
+        "slug":  "tanzania",
+        "name":  "Tanzania",
+        "focus":  "Gold mining, quarrying, cement and port logistics."
+    },
+    {
+        "slug":  "drc",
+        "name":  "Democratic Republic of the Congo",
+        "focus":  "Copper, cobalt, mineral processing and remote mining sites."
+    }
+]

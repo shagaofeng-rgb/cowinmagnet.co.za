@@ -1,0 +1,32 @@
+﻿{
+    "updatedAt":  "2026-06-09T11:32:18.9740581Z",
+    "whatsapp":  "+86 156 6513 5205",
+    "supportedLanguages":  [
+                               "en-za",
+                               "af-za",
+                               "zu-za",
+                               "xh-za",
+                               "st-za",
+                               "tn-za"
+                           ],
+    "companyName":  "Quzhou Qiying Import \u0026 Export Co., Ltd.",
+    "brandName":  "Cowinmagnet",
+    "globalWebsite":  "https://www.cowinmagnet.com",
+    "africaWebsite":  "http://localhost:8092/en-za/",
+    "defaultLanguage":  "en-za",
+    "marketCoverage":  [
+                           "South Africa",
+                           "Botswana",
+                           "Namibia",
+                           "Zimbabwe",
+                           "Zambia",
+                           "Mozambique",
+                           "Angola",
+                           "Ghana",
+                           "Nigeria",
+                           "Kenya",
+                           "Tanzania",
+                           "Democratic Republic of the Congo"
+                       ],
+    "email":  "davidsha@cowinmagnet.com"
+}
