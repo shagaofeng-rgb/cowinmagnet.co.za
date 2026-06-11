@@ -16,6 +16,23 @@ $categories = @(
   [pscustomobject]@{ slug="electromagnetic-equipment"; name="Electromagnetic Equipment"; image="/assets/images/product-electromagnetic-separator.png"; description="Suspended electromagnetic separators for adjustable magnetic force and demanding mining conveyor applications." },
   [pscustomobject]@{ slug="magnetic-rollers-bars-components"; name="Magnetic Rollers, Bars and Components"; image="/assets/images/application-recycling-separation.png"; description="Magnetic pulleys, drums, bars, grids, drawers, plates, grates and custom components." }
 )
+$categoryFile = Join-Path $root "data\categories\categories.json"
+if (Test-Path -LiteralPath $categoryFile) {
+  $loadedCategories = @(Get-Content -LiteralPath $categoryFile -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ })
+  if ($loadedCategories.Count) {
+    $categories = $loadedCategories | ForEach-Object {
+      [pscustomobject]@{
+        slug = if($_.slug){$_.slug}else{Slug $_.name}
+        name = $_.name
+        image = if($_.image){$_.image}else{"/assets/images/hero-mining-conveyor-magnet.png"}
+        description = if($_.description){$_.description}else{"$($_.name) from the Cowinmagnet main website product catalogue."}
+        sourceUrl = $_.sourceUrl
+        sourceSite = $_.sourceSite
+        importedAt = $_.importedAt
+      }
+    }
+  }
+}
 
 $products = @(
   "permanent-magnetic-equipment|Suspended Permanent Magnetic Separator|manual|cross-belt|Mining,Coal Handling,Quarry and Aggregates",
@@ -55,16 +72,14 @@ $products = @(
 $editableProductFile = Join-Path $root "data\products\products.json"
 $syncedProductFile = Join-Path $root "data\source-sync\main-site-products.json"
 if (Test-Path -LiteralPath $editableProductFile) {
-  $syncedProducts = Get-Content -LiteralPath $editableProductFile -Raw -Encoding UTF8 | ConvertFrom-Json
+  $syncedProducts = @(Get-Content -LiteralPath $editableProductFile -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ })
   $products = $syncedProducts | ForEach-Object {
     $categorySlug = if ($_.categorySlug) { $_.categorySlug } else { Slug $_.category }
     if ($categorySlug -eq "magnetic-rollers-bars-and-components") { $categorySlug = "magnetic-rollers-bars-components" }
-    if ($categorySlug -notin @("permanent-magnetic-equipment","electromagnetic-equipment","magnetic-rollers-bars-components")) {
-      $categorySlug = "permanent-magnetic-equipment"
-    }
+    $categoryName = if ($_.category) { $_.category } else { (Get-Culture).TextInfo.ToTitleCase($categorySlug.Replace('-',' ')) }
     [pscustomobject]@{
       categorySlug = $categorySlug
-      category = $_.category
+      category = $categoryName
       slug = $_.slug
       name = $_.name
       cleaning = if($_.cleaning){$_.cleaning}elseif($_.specifications.discharge -match "self"){"self-cleaning"}elseif($_.specifications.discharge -match "automatic"){"automatic"}else{"manual"}
@@ -86,16 +101,14 @@ if (Test-Path -LiteralPath $editableProductFile) {
     }
   }
 } elseif (Test-Path -LiteralPath $syncedProductFile) {
-  $syncedProducts = Get-Content -LiteralPath $syncedProductFile -Raw -Encoding UTF8 | ConvertFrom-Json
+  $syncedProducts = @(Get-Content -LiteralPath $syncedProductFile -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ })
   $products = $syncedProducts | ForEach-Object {
     $categorySlug = if ($_.categorySlug) { $_.categorySlug } else { Slug $_.category }
     if ($categorySlug -eq "magnetic-rollers-bars-and-components") { $categorySlug = "magnetic-rollers-bars-components" }
-    if ($categorySlug -notin @("permanent-magnetic-equipment","electromagnetic-equipment","magnetic-rollers-bars-components")) {
-      $categorySlug = "permanent-magnetic-equipment"
-    }
+    $categoryName = if ($_.category) { $_.category } else { (Get-Culture).TextInfo.ToTitleCase($categorySlug.Replace('-',' ')) }
     [pscustomobject]@{
       categorySlug = $categorySlug
-      category = $_.category
+      category = $categoryName
       slug = $_.slug
       name = $_.name
       cleaning = if($_.specifications.discharge -match "self"){"self-cleaning"}elseif($_.specifications.discharge -match "automatic"){"automatic"}else{"manual"}
@@ -315,9 +328,9 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
     <section id="mega-products" class="mega-panel" hidden>
       <div class="mega-grid">
         <div class="mega-feature"><img src="/assets/images/product-permanent-overband-magnet.png" alt="Overband magnetic separator"><h3>Product selection support</h3><p>Compare permanent, electromagnetic and component options for African conveyor applications.</p><a class="button primary" href="$base/products/">View Products</a></div>
-        <nav class="mega-col"><h3>Permanent Magnetic Equipment</h3><a href="$base/products/permanent-magnetic-equipment/suspended-permanent-magnetic-separator/">Suspended Permanent Magnetic Separator</a><a href="$base/products/permanent-magnetic-equipment/permanent-overband-magnetic-separator/">Permanent Overband Magnetic Separator</a><a href="$base/products/permanent-magnetic-equipment/belt-high-gradient-magnetic-separator/">Belt High Gradient Magnetic Separator</a><a href="$base/products/permanent-magnetic-equipment/">All Permanent Equipment</a></nav>
-        <nav class="mega-col"><h3>Electromagnetic Equipment</h3><a href="$base/products/electromagnetic-equipment/suspended-electromagnetic-conveyor-belt-separator/">Suspended Electromagnetic Conveyor Belt Separator</a><a href="$base/products/electromagnetic-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/">RCDA Air-Cooled Electromagnetic Iron Remover</a><a href="$base/products/electromagnetic-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/">RCDE Oil-Cooled Electromagnetic Iron Remover</a><a href="$base/products/electromagnetic-equipment/">All Electromagnetic Equipment</a></nav>
-        <nav class="mega-col"><h3>Magnetic Components</h3><a href="$base/products/magnetic-rollers-bars-components/magnetic-head-pulley/">Magnetic Head Pulley</a><a href="$base/products/magnetic-rollers-bars-components/drum-magnet/">Drum Magnet</a><a href="$base/products/magnetic-rollers-bars-components/permanent-filter-bar-magnetic-neodymium-rod/">Permanent Filter Bar Magnetic Neodymium Rod</a><a href="$base/products/magnetic-rollers-bars-components/magnetic-grid/">Magnetic Grid</a></nav>
+        <nav class="mega-col"><h3>Iron Removers</h3><a href="$base/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/">RCYD Permanent Self-Dumping Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/">RCDD Electromagnetic Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/suspended-permanent-magnetic-separator/">Suspended Permanent Magnetic Separator</a><a href="$base/products/suspended-and-self-unloading-iron-removers/">All Iron Removers</a></nav>
+        <nav class="mega-col"><h3>Separation and Sorting</h3><a href="$base/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/">Belt High Gradient Magnetic Separator</a><a href="$base/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/">Eccentric Eddy Current Separator</a><a href="$base/products/metal-detection-and-recycling-sorting/gls-type-integral-channel-metal-separator/">GLS Channel Metal Separator</a><a href="$base/products/magnetic-separation-equipment/">All Separation Equipment</a></nav>
+        <nav class="mega-col"><h3>Components and Industry</h3><a href="$base/products/magnetic-components-and-filters/magnetic-head-pulley/">Magnetic Head Pulley</a><a href="$base/products/magnetic-components-and-filters/drum-magnet/">Drum Magnet</a><a href="$base/products/magnetic-components-and-filters/magnetic-grid/">Magnetic Grid</a><a href="$base/products/industry-application-equipment/">Industry Application Equipment</a></nav>
       </div>
     </section>
     <section id="mega-industries" class="mega-panel" hidden>
@@ -329,7 +342,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
       </div>
     </section>
     <section id="mobile-panel" class="mobile-panel" data-mobile-panel hidden>
-      <div class="mobile-group"><button type="button" data-mobile-group aria-expanded="false" aria-controls="mobile-products">Products</button><div id="mobile-products" class="mobile-links" hidden><a href="$base/products/">All Products</a><a href="$base/products/permanent-magnetic-equipment/">Permanent Equipment</a><a href="$base/products/electromagnetic-equipment/">Electromagnetic Equipment</a><a href="$base/products/magnetic-rollers-bars-components/">Components</a></div></div>
+      <div class="mobile-group"><button type="button" data-mobile-group aria-expanded="false" aria-controls="mobile-products">Products</button><div id="mobile-products" class="mobile-links" hidden><a href="$base/products/">All Products</a><a href="$base/products/suspended-and-self-unloading-iron-removers/">Iron Removers</a><a href="$base/products/magnetic-separation-equipment/">Magnetic Separation</a><a href="$base/products/metal-detection-and-recycling-sorting/">Metal Detection and Sorting</a><a href="$base/products/magnetic-components-and-filters/">Components and Filters</a><a href="$base/products/industry-application-equipment/">Industry Equipment</a></div></div>
       <div class="mobile-group"><button type="button" data-mobile-group aria-expanded="false" aria-controls="mobile-markets">African Markets</button><div id="mobile-markets" class="mobile-links" hidden><a href="$base/markets/south-africa/">South Africa</a><a href="$base/markets/botswana/">Botswana</a><a href="$base/markets/zambia/">Zambia</a><a href="$base/markets/ghana/">Ghana</a><a href="$base/markets/nigeria/">Nigeria</a></div></div>
       <div class="mobile-links"><a href="$base/industries/">Industries</a><a href="$base/solutions/">Solutions</a><a href="$base/news/">News</a><a href="$base/technical-support/">Support</a><a href="$base/about/">Company</a><a href="$base/contact/">Contact</a><a href="https://wa.me/8615665135205?text=Hello%2C%20I%20am%20interested%20in%20magnetic%20separation%20equipment.">WhatsApp</a><a class="quote-link" href="$base/request-a-quote/">Request a Quote</a></div>
     </section>
@@ -536,13 +549,13 @@ $dataRoot = Join-Path $root "data"
 foreach($folder in @("products","categories","industries","solutions","markets","articles","downloads","translations")) {
   New-Item -ItemType Directory -Force -Path (Join-Path $dataRoot $folder) | Out-Null
 }
-$products | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "products\products.json") -Encoding UTF8
-$categories | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "categories\categories.json") -Encoding UTF8
-$industries | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "industries\industries.json") -Encoding UTF8
-$solutions | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "solutions\solutions.json") -Encoding UTF8
-$markets | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "markets\markets.json") -Encoding UTF8
-$articles | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "articles\articles.json") -Encoding UTF8
-$downloads | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "downloads\downloads.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($products) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "products\products.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($categories) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "categories\categories.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($industries) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "industries\industries.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($solutions) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "solutions\solutions.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($markets) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "markets\markets.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($articles) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "articles\articles.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($downloads) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "downloads\downloads.json") -Encoding UTF8
 @{
   supportedLocales=@("en-za","af-za","zu-za","xh-za","st-za","tn-za");
   fallback="English fallback content is shown until verified translations are completed.";
@@ -555,7 +568,7 @@ $searchIndex += $solutions | ForEach-Object { [pscustomobject]@{title=$_.name; t
 $searchIndex += $markets | ForEach-Object { [pscustomobject]@{title=$_.name; type="Market"; url="/en-za/markets/$($_.slug)/"; summary=$_.focus} }
 $searchIndex += $articles | ForEach-Object { [pscustomobject]@{title=$_.title; type="News"; url="/en-za/news/$($_.slug)/"; summary=$_.summary} }
 $searchIndex += $downloads | ForEach-Object { [pscustomobject]@{title=$_.name; type="Download"; url="/en-za/downloads/"; summary=$_.status} }
-$searchIndex | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $dataRoot "search-index.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($searchIndex) -Depth 5 | Set-Content -LiteralPath (Join-Path $dataRoot "search-index.json") -Encoding UTF8
 
 # Sitemaps and robots
 $allPages = Get-ChildItem -Path (Join-Path $root "en-za") -Recurse -Filter index.html | ForEach-Object {

@@ -1,20 +1,47 @@
 ﻿[
     {
-        "slug":  "permanent-magnetic-equipment",
-        "name":  "Permanent Magnetic Equipment",
-        "image":  "/assets/images/product-permanent-overband-magnet.png",
-        "description":  "Suspended permanent magnets and overband separators for conveyor tramp iron removal and crusher protection."
+        "slug":  "suspended-and-self-unloading-iron-removers",
+        "name":  "Suspended \u0026 Self-Unloading Iron Removers",
+        "image":  "https://cowinmagnet.com/assets/products/rcyd-type-permanent-magnet-self-dumping-iron-remover/rcyd-type-permanent-magnet-self-dumping-iron-remover-01.jpg",
+        "description":  "Suspended permanent, electromagnetic and self-unloading iron removers for conveyor tramp iron control.",
+        "sourceUrl":  "https://cowinmagnet.com/en/products#category-suspended-and-self-unloading-iron-removers",
+        "sourceSite":  "cowinmagnet.com",
+        "importedAt":  "2026-06-11T04:38:06Z"
     },
     {
-        "slug":  "electromagnetic-equipment",
-        "name":  "Electromagnetic Equipment",
-        "image":  "/assets/images/product-electromagnetic-separator.png",
-        "description":  "Suspended electromagnetic separators for adjustable magnetic force and demanding mining conveyor applications."
+        "slug":  "magnetic-separation-equipment",
+        "name":  "Magnetic Separation Equipment",
+        "image":  "https://cowinmagnet.com/assets/products/belt-high-gradient-magnetic-separator/belt-high-gradient-magnetic-separator-01.jpg",
+        "description":  "Magnetic separation equipment for mineral processing, wet/dry separation and bulk material applications.",
+        "sourceUrl":  "https://cowinmagnet.com/en/products#category-magnetic-separation-equipment",
+        "sourceSite":  "cowinmagnet.com",
+        "importedAt":  "2026-06-11T04:38:06Z"
     },
     {
-        "slug":  "magnetic-rollers-bars-components",
-        "name":  "Magnetic Rollers, Bars and Components",
-        "image":  "/assets/images/application-recycling-separation.png",
-        "description":  "Magnetic pulleys, drums, bars, grids, drawers, plates, grates and custom components."
+        "slug":  "metal-detection-and-recycling-sorting",
+        "name":  "Metal Detection \u0026 Recycling Sorting",
+        "image":  "https://cowinmagnet.com/assets/products/dls-type-window-metal-detector/dls-type-window-metal-detector-01.jpg",
+        "description":  "Metal detection, eddy current and recycling sorting equipment for ferrous and non-ferrous recovery.",
+        "sourceUrl":  "https://cowinmagnet.com/en/products#category-metal-detection-and-recycling-sorting",
+        "sourceSite":  "cowinmagnet.com",
+        "importedAt":  "2026-06-11T04:38:06Z"
+    },
+    {
+        "slug":  "magnetic-components-and-filters",
+        "name":  "Magnetic Components \u0026 Filters",
+        "image":  "https://cowinmagnet.com/assets/products/cbs-drawer-type-magnetic-filter/cbs-drawer-type-magnetic-filter-01.jpg",
+        "description":  "Magnetic components, filters, bars, grids, drums, pulleys and traps for material stream cleanup.",
+        "sourceUrl":  "https://cowinmagnet.com/en/products#category-magnetic-components-and-filters",
+        "sourceSite":  "cowinmagnet.com",
+        "importedAt":  "2026-06-11T04:38:06Z"
+    },
+    {
+        "slug":  "industry-application-equipment",
+        "name":  "Industry Application Equipment",
+        "image":  "https://cowinmagnet.com/assets/products/high-frequency-screen/high-frequency-screen-01.jpg",
+        "description":  "Industry application equipment including control boxes, lifting magnets and specialized magnetic systems.",
+        "sourceUrl":  "https://cowinmagnet.com/en/products#category-industry-application-equipment",
+        "sourceSite":  "cowinmagnet.com",
+        "importedAt":  "2026-06-11T04:38:06Z"
     }
 ]

@@ -5,7 +5,9 @@ $sourceBase = "https://cowinmagnet.com"
 $productsUrl = "$sourceBase/en/products"
 $outDir = Join-Path $root "data\source-sync"
 $imageDir = Join-Path $root "assets\images\source-products"
-New-Item -ItemType Directory -Force -Path $outDir, $imageDir | Out-Null
+$categoryDir = Join-Path $root "data\categories"
+New-Item -ItemType Directory -Force -Path $outDir, $imageDir, $categoryDir | Out-Null
+Get-ChildItem -LiteralPath $imageDir -File -ErrorAction SilentlyContinue | Remove-Item -Force
 
 function Slug($text) {
   return ($text.ToLowerInvariant() -replace '[^a-z0-9]+','-' -replace '(^-|-$)','')
@@ -33,6 +35,48 @@ function AbsoluteUrl($path) {
 
 Write-Host "Fetching $productsUrl"
 $listingHtml = (Invoke-WebRequest -UseBasicParsing $productsUrl).Content
+
+$categoryDescriptions = @{
+  "suspended-and-self-unloading-iron-removers" = "Suspended permanent, electromagnetic and self-unloading iron removers for conveyor tramp iron control."
+  "magnetic-separation-equipment" = "Magnetic separation equipment for mineral processing, wet/dry separation and bulk material applications."
+  "metal-detection-and-recycling-sorting" = "Metal detection, eddy current and recycling sorting equipment for ferrous and non-ferrous recovery."
+  "magnetic-components-and-filters" = "Magnetic components, filters, bars, grids, drums, pulleys and traps for material stream cleanup."
+  "industry-application-equipment" = "Industry application equipment including control boxes, lifting magnets and specialized magnetic systems."
+}
+
+$productCategoryByPath = @{}
+$categories = @()
+$categoryBlocks = [regex]::Matches($listingHtml, '<div class="product-category-block" id="category-([^"]+)">([\s\S]*?)(?=<div class="product-category-block" id="category-|</section>)')
+foreach ($block in $categoryBlocks) {
+  $categorySlug = $block.Groups[1].Value
+  $blockHtml = $block.Groups[2].Value
+  $categoryName = [regex]::Match($blockHtml, '<h2>(.*?)</h2>').Groups[1].Value
+  $categoryName = HtmlDecode (CleanText $categoryName)
+  if ([string]::IsNullOrWhiteSpace($categoryName)) {
+    $categoryName = (Get-Culture).TextInfo.ToTitleCase($categorySlug.Replace('-', ' '))
+  }
+  $categoryImage = "/assets/images/hero-mining-conveyor-magnet.png"
+  $firstImage = [regex]::Match($blockHtml, 'url=([^"&]+?\.(?:webp|jpg|jpeg|png))')
+  if ($firstImage.Success) {
+    $categoryImage = AbsoluteUrl ([uri]::UnescapeDataString($firstImage.Groups[1].Value))
+  }
+  $categories += [pscustomobject]@{
+    slug = $categorySlug
+    name = $categoryName
+    image = $categoryImage
+    description = if($categoryDescriptions.ContainsKey($categorySlug)){$categoryDescriptions[$categorySlug]}else{"$categoryName from the Cowinmagnet main website product catalogue."}
+    sourceUrl = "$productsUrl#category-$categorySlug"
+    sourceSite = "cowinmagnet.com"
+    importedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+  }
+  [regex]::Matches($blockHtml, 'href="(/en/products/[^"#?]+)"') | ForEach-Object {
+    $productPathInBlock = $_.Groups[1].Value.TrimEnd('/')
+    if ($productPathInBlock -ne "/en/products" -and $productPathInBlock -notmatch '/category/') {
+      $productCategoryByPath[$productPathInBlock] = [pscustomobject]@{ slug=$categorySlug; name=$categoryName }
+    }
+  }
+}
+
 $productPaths = [regex]::Matches($listingHtml, 'href="(/en/products/[^"#?]+)"') |
   ForEach-Object { $_.Groups[1].Value.TrimEnd('/') } |
   Where-Object { $_ -ne "/en/products" -and $_ -notmatch '/category/' } |
@@ -40,6 +84,9 @@ $productPaths = [regex]::Matches($listingHtml, 'href="(/en/products/[^"#?]+)"') 
 
 if (-not $productPaths.Count) {
   throw "No product links found at $productsUrl"
+}
+if (-not $categories.Count) {
+  throw "No product categories found at $productsUrl"
 }
 
 $records = @()
@@ -83,14 +130,12 @@ foreach ($path in $productPaths) {
     }
   }
 
-  $category = "Magnetic Separation Equipment"
-  if ($slug -match 'electro|electromagnetic') { $category = "Electromagnetic Equipment" }
-  elseif ($slug -match 'pulley|roller|drum|bar|grid|drawer|plate|grate|component') { $category = "Magnetic Rollers, Bars and Components" }
-  elseif ($slug -match 'permanent|suspended|overband|magnet') { $category = "Permanent Magnetic Equipment" }
-
-  $categorySlug = Slug $category
-  if ($categorySlug -eq "magnetic-rollers-bars-and-components") { $categorySlug = "magnetic-rollers-bars-components" }
-  if ($categorySlug -eq "magnetic-separation-equipment") { $categorySlug = "permanent-magnetic-equipment" }
+  $categoryInfo = $productCategoryByPath[$path]
+  if (-not $categoryInfo) {
+    $categoryInfo = [pscustomobject]@{ slug="magnetic-separation-equipment"; name="Magnetic Separation Equipment" }
+  }
+  $category = $categoryInfo.name
+  $categorySlug = $categoryInfo.slug
 
   $features = @()
   foreach ($pattern in @('High magnetic field strength','Self-cleaning','Manual cleaning','Heavy-duty','Easy installation','Continuous operation','Outdoor')) {
@@ -139,7 +184,8 @@ foreach ($path in $productPaths) {
   }
 }
 
-$records | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $outDir "main-site-products.json") -Encoding UTF8
-$records | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath (Join-Path $root "data\products\products.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($records) -Depth 10 | Set-Content -LiteralPath (Join-Path $outDir "main-site-products.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($records) -Depth 10 | Set-Content -LiteralPath (Join-Path $root "data\products\products.json") -Encoding UTF8
+ConvertTo-Json -InputObject @($categories) -Depth 10 | Set-Content -LiteralPath (Join-Path $categoryDir "categories.json") -Encoding UTF8
 
-Write-Host "Synced $($records.Count) products from $productsUrl"
+Write-Host "Synced $($records.Count) products and $($categories.Count) categories from $productsUrl"
