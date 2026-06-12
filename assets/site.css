@@ -36,6 +36,7 @@ button, input, select, textarea { font: inherit; }
 .site-header.menu-open .nav-backdrop, .site-header.mega-open .nav-backdrop { display: block; }
 .mega-panel { position: fixed; left: 50%; top: 92px; z-index: 55; width: min(1120px, calc(100vw - 40px)); transform: translateX(-50%); border: 1px solid rgba(255,255,255,.52); border-radius: 14px; background: linear-gradient(145deg, rgba(255,255,255,.88), rgba(239,247,242,.78)); box-shadow: var(--shadow); backdrop-filter: blur(24px) saturate(1.15); padding: 18px; }
 .mega-grid { display: grid; grid-template-columns: 1.1fr repeat(3, .8fr); gap: 14px; }
+.mega-grid.compact { grid-template-columns: .95fr repeat(3, .82fr); }
 .mega-feature, .mega-col { border: 1px solid rgba(13,107,76,.12); border-radius: 10px; background: rgba(255,255,255,.58); padding: 16px; }
 .mega-feature img { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; border-radius: 8px; margin-bottom: 12px; }
 .mega-col { display: grid; align-content: start; gap: 7px; }
