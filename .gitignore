@@ -7,5 +7,7 @@ server-*.log
 *.tmp
 Thumbs.db
 node_modules/
+.next/
+out/
 
 .vercel

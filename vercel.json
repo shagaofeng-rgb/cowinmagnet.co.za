@@ -1,6 +1,8 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": true,
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
   "headers": [
     {
       "source": "/admin/(.*)",
@@ -28,12 +30,6 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/((?!.*\\..*).*)",
-      "destination": "/$1/index.html"
     }
   ]
 }
