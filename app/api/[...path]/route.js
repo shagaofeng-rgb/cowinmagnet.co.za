@@ -51,7 +51,7 @@ function hash(text) {
 async function readJson(relativePath) {
   const filePath = join(root, relativePath);
   try {
-    const raw = await readFile(filePath, "utf8");
+    const raw = (await readFile(filePath, "utf8")).replace(/^\uFEFF/, "");
     if (!raw.trim()) return jsonFiles.get(relativePath) ?? null;
     return JSON.parse(raw);
   } catch {
@@ -135,6 +135,7 @@ async function audit(user, action, object, objectId, summary) {
 
 async function analyticsSummary() {
   const events = await readJson("data/cms/analytics-events.json");
+  const enquiries = await readJson("data/cms/enquiries.json");
   const pageviews = events.filter((event) => event.eventType === "pageview");
   const visitors = new Set(pageviews.map((event) => event.clientId));
 
@@ -147,15 +148,109 @@ async function analyticsSummary() {
       .map(([name, count]) => ({ [label]: name, [valueLabel]: count }));
   }
 
+  const deviceBrowserCounts = new Map();
+  for (const item of pageviews) {
+    const key = `${item.device || "Desktop"}|||${item.browser || "Browser"}`;
+    deviceBrowserCounts.set(key, (deviceBrowserCounts.get(key) || 0) + 1);
+  }
+
   return {
     pv: pageviews.length,
     uv: visitors.size,
     events: events.length,
+    enquiries: enquiries.length,
     countries: topBy("country", "name", "count"),
     pages: topBy("page", "page", "views", 20),
     sources: topBy("source", "source", "views"),
+    deviceBrowsers: [...deviceBrowserCounts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 20)
+      .map(([key, views]) => {
+        const [device, browser] = key.split("|||");
+        return { device, browser, views };
+      }),
     visitors: pageviews.sort((a, b) => String(b.time).localeCompare(String(a.time))).slice(0, 200),
     lastSync: new Date().toISOString().replace("T", " ").slice(0, 19)
+  };
+}
+
+function productUrl(product) {
+  return `/en-za/products/${product.categorySlug || "products"}/${product.slug || ""}/`;
+}
+
+async function seoSummary() {
+  const [products, articles, categories, industries, solutions, markets] = await Promise.all([
+    readJson("data/products/products.json"),
+    readJson("data/articles/articles.json"),
+    readJson("data/categories/categories.json"),
+    readJson("data/industries/industries.json"),
+    readJson("data/solutions/solutions.json"),
+    readJson("data/markets/markets.json")
+  ]);
+
+  const rows = [
+    ...products.map((item) => ({
+      page: productUrl(item),
+      title: item.seoTitle ? "OK" : "Missing",
+      description: item.seoDescription ? "OK" : "Missing",
+      image: item.image || item.mainImage ? "OK" : "Missing",
+      canonical: item.canonicalUrl || productUrl(item),
+      status: item.productStatus || "published"
+    })),
+    ...articles.map((item) => ({
+      page: `/en-za/news/${item.slug}/`,
+      title: item.seoTitle || item.title ? "OK" : "Missing",
+      description: item.seoDescription || item.summary ? "OK" : "Missing",
+      image: item.image || item.openGraphImage ? "OK" : "Pending",
+      canonical: item.canonicalUrl || `/en-za/news/${item.slug}/`,
+      status: item.status || "published"
+    })),
+    ...[...categories, ...industries, ...solutions, ...markets].map((item) => ({
+      page: item.slug ? `/${item.slug}/` : "",
+      title: item.name || item.title ? "OK" : "Missing",
+      description: item.description || item.summary ? "OK" : "Missing",
+      image: item.image ? "OK" : "Pending",
+      canonical: item.canonicalUrl || "",
+      status: item.status || "published"
+    }))
+  ];
+
+  return {
+    total: rows.length,
+    missingTitle: rows.filter((row) => row.title !== "OK").length,
+    missingDescription: rows.filter((row) => row.description !== "OK").length,
+    missingImage: rows.filter((row) => row.image === "Missing").length,
+    rows
+  };
+}
+
+async function linksSummary() {
+  const [products, categories, industries, solutions, markets, articles, downloads] = await Promise.all([
+    readJson("data/products/products.json"),
+    readJson("data/categories/categories.json"),
+    readJson("data/industries/industries.json"),
+    readJson("data/solutions/solutions.json"),
+    readJson("data/markets/markets.json"),
+    readJson("data/articles/articles.json"),
+    readJson("data/downloads/downloads.json")
+  ]);
+
+  const rows = [
+    { module: "Products", count: products.length, status: products.length ? "OK" : "Empty", note: "Product detail routes and category routes" },
+    { module: "Categories", count: categories.length, status: categories.length ? "OK" : "Empty", note: "Product mega menu and category pages" },
+    { module: "Industries", count: industries.length, status: industries.length ? "OK" : "Empty", note: "Industry hub and internal links" },
+    { module: "Solutions", count: solutions.length, status: solutions.length ? "OK" : "Empty", note: "Solution pages and resource menu" },
+    { module: "Markets", count: markets.length, status: markets.length ? "OK" : "Empty", note: "African market pages" },
+    { module: "News", count: articles.length, status: articles.length ? "OK" : "Empty", note: "News list and detail pages" },
+    { module: "Downloads", count: downloads.length, status: downloads.length ? "Review" : "Empty", note: "PDF paths should be verified before publication" }
+  ];
+
+  return {
+    internal: products.length + categories.length + industries.length + solutions.length + markets.length + articles.length,
+    external: markets.length + downloads.length,
+    empty: rows.filter((row) => row.status === "Empty").length,
+    warnings: rows.filter((row) => row.status !== "OK").length,
+    rows
   };
 }
 
@@ -304,6 +399,8 @@ async function handleAdmin(request, path) {
   }
 
   if (path === "admin/analytics" && request.method === "GET") return response({ success: true, data: await analyticsSummary(), requestId: token(8) });
+  if (path === "admin/seo" && request.method === "GET") return response({ success: true, data: await seoSummary(), requestId: token(8) });
+  if (path === "admin/links" && request.method === "GET") return response({ success: true, data: await linksSummary(), requestId: token(8) });
   if (path === "admin/products" && request.method === "GET") return response({ success: true, data: await readJson("data/products/products.json"), requestId: token(8) });
 
   const productMatch = path.match(/^admin\/products\/([^/]+)$/);
@@ -325,6 +422,31 @@ async function handleAdmin(request, path) {
   }
 
   if (path === "admin/enquiries" && request.method === "GET") return response({ success: true, data: await readJson("data/cms/enquiries.json"), requestId: token(8) });
+
+  if (path === "admin/news" && request.method === "GET") return response({ success: true, data: await readJson("data/articles/articles.json"), requestId: token(8) });
+  if (path === "admin/news" && request.method === "PUT") {
+    const body = await bodyJson(request);
+    const slug = String(body.slug || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    if (!slug || !body.title) return response({ success: false, error: "Slug and title are required", requestId: token(8) }, 400);
+    const articles = await readJson("data/articles/articles.json");
+    const article = articles.find((item) => item.slug === slug);
+    const payload = {
+      slug,
+      title: String(body.title || ""),
+      summary: String(body.summary || ""),
+      date: String(body.date || new Date().toISOString().slice(0, 10)),
+      status: String(body.status || "published"),
+      sourceUrl: String(body.sourceUrl || ""),
+      seoTitle: String(body.seoTitle || body.title || ""),
+      seoDescription: String(body.seoDescription || body.summary || ""),
+      updatedAt: new Date().toISOString()
+    };
+    if (article) Object.assign(article, payload);
+    else articles.unshift({ ...payload, createdAt: new Date().toISOString() });
+    await writeJson("data/articles/articles.json", articles);
+    await audit(session.user, article ? "News Updated" : "News Created", "News", slug, `News article ${article ? "updated" : "created"} in Next.js CMS`);
+    return response({ success: true, data: { slug }, requestId: token(8) });
+  }
 
   const enquiryMatch = path.match(/^admin\/enquiries\/([^/]+)$/);
   if (enquiryMatch && request.method === "PUT") {
