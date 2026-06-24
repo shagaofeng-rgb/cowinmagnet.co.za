@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $sourceBase = "https://cowinmagnet.com"
@@ -55,7 +55,7 @@ foreach ($block in $categoryBlocks) {
   if ([string]::IsNullOrWhiteSpace($categoryName)) {
     $categoryName = (Get-Culture).TextInfo.ToTitleCase($categorySlug.Replace('-', ' '))
   }
-  $categoryImage = "/assets/images/hero-mining-conveyor-magnet.png"
+  $categoryImage = "/assets/images/hero-mining-conveyor-magnet.webp"
   $firstImage = [regex]::Match($blockHtml, 'url=([^"&]+?\.(?:webp|jpg|jpeg|png))')
   if ($firstImage.Success) {
     $categoryImage = AbsoluteUrl ([uri]::UnescapeDataString($firstImage.Groups[1].Value))
@@ -115,7 +115,7 @@ foreach ($path in $productPaths) {
     Select-Object -Unique
 
   $imageSource = $imageCandidates | Select-Object -First 1
-  $localImage = "/assets/images/hero-mining-conveyor-magnet.png"
+  $localImage = "/assets/images/hero-mining-conveyor-magnet.webp"
   if ($imageSource) {
     $imageUrl = AbsoluteUrl $imageSource
     $ext = [System.IO.Path]::GetExtension(($imageSource -replace '\?.*$',''))
@@ -189,3 +189,4 @@ ConvertTo-Json -InputObject @($records) -Depth 10 | Set-Content -LiteralPath (Jo
 ConvertTo-Json -InputObject @($categories) -Depth 10 | Set-Content -LiteralPath (Join-Path $categoryDir "categories.json") -Encoding UTF8
 
 Write-Host "Synced $($records.Count) products and $($categories.Count) categories from $productsUrl"
+

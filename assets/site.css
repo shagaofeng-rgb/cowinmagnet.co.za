@@ -48,8 +48,11 @@ button, input, select, textarea { font: inherit; }
 .mobile-links { display: grid; gap: 4px; padding: 8px 0 12px; }
 .mobile-links a { padding: 9px 10px; border-radius: 7px; text-decoration: none; }
 .mobile-links a:hover, .mobile-links a.active { background: var(--soft); color: var(--green-dark); }
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px,.75fr); gap: clamp(24px,5vw,56px); align-items: center; padding: clamp(44px,7vw,92px) clamp(16px,5vw,72px); background: #15241c; color: var(--white); }
-.hero.image { background: linear-gradient(90deg, rgba(7,18,13,.86), rgba(15,36,26,.68)), url("images/hero-mining-conveyor-magnet.png") center/cover no-repeat; }
+.hero { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px,.75fr); gap: clamp(24px,5vw,56px); align-items: center; padding: clamp(44px,7vw,92px) clamp(16px,5vw,72px); background: #15241c; color: var(--white); }
+.hero.image { background: #15241c; }
+.hero.image::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(7,18,13,.9), rgba(15,36,26,.68)); }
+.hero-media { position: absolute; inset: 0; z-index: -2; display: block; margin: 0; }
+.hero-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hero h1, .page-hero h1 { margin: 0; font-size: clamp(36px,5.6vw,72px); line-height: 1.04; letter-spacing: 0; }
 .hero p, .page-hero p { color: #d9e5dd; max-width: 820px; }
 .eyebrow { margin: 0 0 10px; color: var(--green-dark); text-transform: uppercase; font-size: 12px; font-weight: 800; letter-spacing: 0; }

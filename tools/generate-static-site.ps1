@@ -6,15 +6,17 @@ $base = "/$locale"
 $siteUrl = if ($env:SITE_URL) { $env:SITE_URL.TrimEnd("/") } else { "http://localhost:8090" }
 $isProduction = $siteUrl -match "^https://cowinmagnet\.co\.za$"
 $robotsMeta = if ($isProduction) { "index,follow" } else { "noindex,nofollow" }
+$heroImage = "/assets/images/hero-mining-conveyor-magnet.webp"
+$heroLcpImage = "/assets/images/hero-mining-conveyor-magnet-lcp.webp"
 
 function Slug($text) {
   return ($text.ToLowerInvariant() -replace '[^a-z0-9]+','-' -replace '(^-|-$)','')
 }
 
 $categories = @(
-  [pscustomobject]@{ slug="permanent-magnetic-equipment"; name="Permanent Magnetic Equipment"; image="/assets/images/product-permanent-overband-magnet.png"; description="Suspended permanent magnets and overband separators for conveyor tramp iron removal and crusher protection." },
-  [pscustomobject]@{ slug="electromagnetic-equipment"; name="Electromagnetic Equipment"; image="/assets/images/product-electromagnetic-separator.png"; description="Suspended electromagnetic separators for adjustable magnetic force and demanding mining conveyor applications." },
-  [pscustomobject]@{ slug="magnetic-rollers-bars-components"; name="Magnetic Rollers, Bars and Components"; image="/assets/images/application-recycling-separation.png"; description="Magnetic pulleys, drums, bars, grids, drawers, plates, grates and custom components." }
+  [pscustomobject]@{ slug="permanent-magnetic-equipment"; name="Permanent Magnetic Equipment"; image="/assets/images/product-permanent-overband-magnet.webp"; description="Suspended permanent magnets and overband separators for conveyor tramp iron removal and crusher protection." },
+  [pscustomobject]@{ slug="electromagnetic-equipment"; name="Electromagnetic Equipment"; image="/assets/images/product-electromagnetic-separator.webp"; description="Suspended electromagnetic separators for adjustable magnetic force and demanding mining conveyor applications." },
+  [pscustomobject]@{ slug="magnetic-rollers-bars-components"; name="Magnetic Rollers, Bars and Components"; image="/assets/images/application-recycling-separation.webp"; description="Magnetic pulleys, drums, bars, grids, drawers, plates, grates and custom components." }
 )
 $categoryFile = Join-Path $root "data\categories\categories.json"
 if (Test-Path -LiteralPath $categoryFile) {
@@ -24,7 +26,7 @@ if (Test-Path -LiteralPath $categoryFile) {
       [pscustomobject]@{
         slug = if($_.slug){$_.slug}else{Slug $_.name}
         name = $_.name
-        image = if($_.image){$_.image}else{"/assets/images/hero-mining-conveyor-magnet.png"}
+        image = if($_.image){$_.image}else{"/assets/images/hero-mining-conveyor-magnet.webp"}
         description = if($_.description){$_.description}else{"$($_.name) from the Cowinmagnet main website product catalogue."}
         sourceUrl = $_.sourceUrl
         sourceSite = $_.sourceSite
@@ -65,7 +67,7 @@ $products = @(
   [pscustomobject]@{
     categorySlug=$p[0]; category=$cat.name; slug=Slug $p[1]; name=$p[1]; cleaning=$p[2]; layout=$p[3]; applications=$p[4].Split(",");
     type=($(if($p[0] -eq "electromagnetic-equipment"){"electromagnetic"}elseif($p[0] -eq "permanent-magnetic-equipment"){"permanent"}else{"component"}));
-    image=($(if($p[0] -eq "electromagnetic-equipment"){"/assets/images/product-electromagnetic-separator.png"}elseif($p[0] -eq "magnetic-rollers-bars-components"){"/assets/images/application-recycling-separation.png"}else{"/assets/images/product-permanent-overband-magnet.png"}))
+    image=($(if($p[0] -eq "electromagnetic-equipment"){"/assets/images/product-electromagnetic-separator.webp"}elseif($p[0] -eq "magnetic-rollers-bars-components"){"/assets/images/application-recycling-separation.webp"}else{"/assets/images/product-permanent-overband-magnet.webp"}))
   }
 }
 
@@ -86,7 +88,7 @@ if (Test-Path -LiteralPath $editableProductFile) {
       layout = if($_.layout){$_.layout}elseif($_.specifications.installationDirection -match "inline"){"inline"}else{"cross-belt"}
       applications = @($_.applications)
       type = if($_.type){$_.type}else{$_.specifications.magneticSystemType}
-      image = if($_.image){$_.image}elseif($_.images -and $_.images.Count){$_.images[0]}else{"/assets/images/hero-mining-conveyor-magnet.png"}
+      image = if($_.image){$_.image}elseif($_.images -and $_.images.Count){$_.images[0]}else{"/assets/images/hero-mining-conveyor-magnet.webp"}
       sourceUrl = $_.sourceUrl
       sourceProductId = $_.sourceProductId
       shortDescription = $_.shortDescription
@@ -115,7 +117,7 @@ if (Test-Path -LiteralPath $editableProductFile) {
       layout = if($_.specifications.installationDirection -match "inline"){"inline"}else{"cross-belt"}
       applications = @($_.applications)
       type = $_.specifications.magneticSystemType
-      image = if($_.images -and $_.images.Count){$_.images[0]}else{"/assets/images/hero-mining-conveyor-magnet.png"}
+      image = if($_.images -and $_.images.Count){$_.images[0]}else{"/assets/images/hero-mining-conveyor-magnet.webp"}
       sourceUrl = $_.sourceUrl
       sourceProductId = $_.sourceProductId
       shortDescription = $_.shortDescription
@@ -139,7 +141,7 @@ $products = @($products | ForEach-Object {
   $gallery = @()
   if ($p.gallery) { $gallery += @($p.gallery) }
   if ($p.image) { $gallery += $p.image }
-  $gallery += "/assets/images/hero-mining-conveyor-magnet.png"
+  $gallery += "/assets/images/hero-mining-conveyor-magnet.webp"
   $gallery = @($gallery | Where-Object { $_ } | Select-Object -Unique)
   $technicalSpecifications = @(
     [pscustomobject]@{ group="Magnetic System"; parameter="Magnetic Type"; value=$p.type; unit=""; sortOrder=10; language="en-za"; visible=$true },
@@ -187,20 +189,20 @@ $products = @($products | ForEach-Object {
 })
 
 $industries = @(
-  "mining|Mining|Mining operations require tramp iron removal to reduce crusher and conveyor damage risk.|/assets/images/hero-mining-conveyor-magnet.png",
-  "mineral-processing|Mineral Processing|Mineral processing conveyors need reliable magnetic separation and plant protection.|/assets/images/product-electromagnetic-separator.png",
-  "coal-handling|Coal Handling|Coal conveyors, transfer points and port handling lines often require suspended magnets.|/assets/images/hero-mining-conveyor-magnet.png",
-  "iron-ore|Iron Ore|Iron ore applications require careful confirmation of the separation objective and material behaviour.|/assets/images/product-electromagnetic-separator.png",
-  "manganese-ore|Manganese Ore|Manganese ore handling can involve heavy loads, abrasive material and crusher protection needs.|/assets/images/product-electromagnetic-separator.png",
-  "chrome-ore|Chrome Ore|Chrome ore conveyors need robust magnetic equipment selected for actual burden depth and layout.|/assets/images/product-electromagnetic-separator.png",
-  "gold-mining|Gold Mining|Gold mining conveyors may require tramp iron control before crushing and processing equipment.|/assets/images/hero-mining-conveyor-magnet.png",
-  "quarry-aggregates|Quarry and Aggregates|Quarry and aggregate lines focus on crusher protection and metal contamination control.|/assets/images/application-quarry-aggregate.png",
-  "recycling|Recycling|Recycling lines use magnetic equipment for ferrous recovery and material stream cleanup.|/assets/images/application-recycling-separation.png",
-  "cement|Cement|Cement plants may require magnetic protection for raw material handling and conveyors.|/assets/images/application-quarry-aggregate.png",
-  "power-plants|Power Plants|Power plant fuel handling conveyors require reliable equipment protection and maintenance planning.|/assets/images/hero-mining-conveyor-magnet.png",
-  "conveyor-systems|Conveyor Systems|Conveyor systems are the core installation scenario for suspended magnetic separators.|/assets/images/product-permanent-overband-magnet.png",
-  "ports-bulk-terminals|Ports and Bulk Terminals|Port conveyors and terminals need corrosion-aware and continuous-duty equipment review.|/assets/images/application-port-bulk-handling.png",
-  "food-processing|Food Processing|Food and dry material streams may use bars, grids, plates and grates for ferrous control.|/assets/images/application-recycling-separation.png"
+  "mining|Mining|Mining operations require tramp iron removal to reduce crusher and conveyor damage risk.|/assets/images/hero-mining-conveyor-magnet.webp",
+  "mineral-processing|Mineral Processing|Mineral processing conveyors need reliable magnetic separation and plant protection.|/assets/images/product-electromagnetic-separator.webp",
+  "coal-handling|Coal Handling|Coal conveyors, transfer points and port handling lines often require suspended magnets.|/assets/images/hero-mining-conveyor-magnet.webp",
+  "iron-ore|Iron Ore|Iron ore applications require careful confirmation of the separation objective and material behaviour.|/assets/images/product-electromagnetic-separator.webp",
+  "manganese-ore|Manganese Ore|Manganese ore handling can involve heavy loads, abrasive material and crusher protection needs.|/assets/images/product-electromagnetic-separator.webp",
+  "chrome-ore|Chrome Ore|Chrome ore conveyors need robust magnetic equipment selected for actual burden depth and layout.|/assets/images/product-electromagnetic-separator.webp",
+  "gold-mining|Gold Mining|Gold mining conveyors may require tramp iron control before crushing and processing equipment.|/assets/images/hero-mining-conveyor-magnet.webp",
+  "quarry-aggregates|Quarry and Aggregates|Quarry and aggregate lines focus on crusher protection and metal contamination control.|/assets/images/application-quarry-aggregate.webp",
+  "recycling|Recycling|Recycling lines use magnetic equipment for ferrous recovery and material stream cleanup.|/assets/images/application-recycling-separation.webp",
+  "cement|Cement|Cement plants may require magnetic protection for raw material handling and conveyors.|/assets/images/application-quarry-aggregate.webp",
+  "power-plants|Power Plants|Power plant fuel handling conveyors require reliable equipment protection and maintenance planning.|/assets/images/hero-mining-conveyor-magnet.webp",
+  "conveyor-systems|Conveyor Systems|Conveyor systems are the core installation scenario for suspended magnetic separators.|/assets/images/product-permanent-overband-magnet.webp",
+  "ports-bulk-terminals|Ports and Bulk Terminals|Port conveyors and terminals need corrosion-aware and continuous-duty equipment review.|/assets/images/application-port-bulk-handling.webp",
+  "food-processing|Food Processing|Food and dry material streams may use bars, grids, plates and grates for ferrous control.|/assets/images/application-recycling-separation.webp"
 ) | ForEach-Object { $p=$_.Split("|"); [pscustomobject]@{slug=$p[0]; name=$p[1]; description=$p[2]; image=$p[3]} }
 
 $solutions = @(
@@ -309,6 +311,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
   $resourcesButtonClass = if($active -eq "Resources"){" class='active'"}else{""}
   $companyButtonClass = if($active -eq "Company"){" class='active'"}else{""}
   $langs = @("en-za","af-za","zu-za","xh-za","st-za","tn-za") | ForEach-Object { $selected = if($_ -eq $locale){" selected"}else{""}; "<option value='$_'$selected>$($_.ToUpperInvariant())</option>" }
+  $homePreload = if($path -eq "$base/"){"  <link rel=`"preload`" as=`"image`" href=`"$heroLcpImage`" type=`"image/webp`" fetchpriority=`"high`">"}else{""}
 @"
 <!doctype html>
 <html lang="en-ZA" data-locale="en-za">
@@ -328,7 +331,8 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
   <meta property="og:description" content="$description">
   <meta property="og:type" content="website">
   <meta property="og:url" content="$canonical">
-  <meta property="og:image" content="$siteUrl/assets/images/hero-mining-conveyor-magnet.png">
+  <meta property="og:image" content="$siteUrl/assets/images/hero-mining-conveyor-magnet.webp">
+  $homePreload
   <link rel="stylesheet" href="$rel/assets/site.css">
   <script type="application/ld+json">$defaultSchema</script>
   $schema
@@ -351,7 +355,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
     <div class="nav-backdrop" data-nav-backdrop></div>
     <section id="mega-products" class="mega-panel" data-mega-panel hidden>
       <div class="mega-grid">
-        <div class="mega-feature"><img src="/assets/images/product-permanent-overband-magnet.png" alt="Overband magnetic separator"><h3>Product selection support</h3><p>Compare permanent, electromagnetic and component options for African conveyor applications.</p><a class="button primary" href="$base/products/">View Products</a></div>
+        <div class="mega-feature"><img src="/assets/images/product-permanent-overband-magnet.webp" alt="Overband magnetic separator"><h3>Product selection support</h3><p>Compare permanent, electromagnetic and component options for African conveyor applications.</p><a class="button primary" href="$base/products/">View Products</a></div>
         <nav class="mega-col"><h3>Iron Removers</h3><a href="$base/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/">RCYD Permanent Self-Dumping Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/">RCDD Electromagnetic Iron Remover</a><a href="$base/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/">Suspended Permanent Magnetic Separator</a><a href="$base/products/suspended-and-self-unloading-iron-removers/">All Iron Removers</a></nav>
         <nav class="mega-col"><h3>Separation and Sorting</h3><a href="$base/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/">Belt High Gradient Magnetic Separator</a><a href="$base/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/">Eccentric Eddy Current Separator</a><a href="$base/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/">GLS Channel Metal Separator</a><a href="$base/products/magnetic-separation-equipment/">All Separation Equipment</a></nav>
         <nav class="mega-col"><h3>Components and Industry</h3><a href="$base/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/">Magnetic Head Pulley</a><a href="$base/products/metal-detection-and-recycling-sorting/drum-magnet/">Drum Magnet</a><a href="$base/products/magnetic-components-and-filters/magnetic-grid/">Magnetic Grid</a><a href="$base/products/industry-application-equipment/">Industry Application Equipment</a></nav>
@@ -359,7 +363,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
     </section>
     <section id="mega-industries" class="mega-panel" data-mega-panel hidden>
       <div class="mega-grid">
-        <div class="mega-feature"><img src="/assets/images/application-quarry-aggregate.png" alt="African mining and quarry applications"><h3>African operating conditions</h3><p>Review dust, heat, coastal humidity, remote sites, voltage and maintenance access before configuration.</p><a class="button primary" href="$base/industries/">View Industries</a></div>
+        <div class="mega-feature"><img src="/assets/images/application-quarry-aggregate.webp" alt="African mining and quarry applications"><h3>African operating conditions</h3><p>Review dust, heat, coastal humidity, remote sites, voltage and maintenance access before configuration.</p><a class="button primary" href="$base/industries/">View Industries</a></div>
         <nav class="mega-col"><h3>Mining</h3><a href="$base/industries/mining/">Mining</a><a href="$base/industries/coal-handling/">Coal Handling</a><a href="$base/industries/iron-ore/">Iron Ore</a><a href="$base/industries/gold-mining/">Gold Mining</a></nav>
         <nav class="mega-col"><h3>Ore and Quarry</h3><a href="$base/industries/manganese-ore/">Manganese</a><a href="$base/industries/chrome-ore/">Chrome Ore</a><a href="$base/industries/quarry-aggregates/">Quarry and Aggregates</a><a href="$base/industries/cement/">Cement</a></nav>
         <nav class="mega-col"><h3>Markets</h3><a href="$base/markets/south-africa/">South Africa</a><a href="$base/markets/botswana/">Botswana</a><a href="$base/markets/ghana/">Ghana</a><a href="$base/markets/nigeria/">Nigeria</a></nav>
@@ -367,7 +371,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
     </section>
     <section id="mega-resources" class="mega-panel" data-mega-panel hidden>
       <div class="mega-grid compact">
-        <div class="mega-feature"><img src="/assets/images/application-port-bulk-handling.png" alt="African bulk material handling"><h3>Resources for project review</h3><p>Find solutions, market pages, support guides and downloads before requesting selection support.</p><a class="button primary" href="$base/solutions/">View Solutions</a></div>
+        <div class="mega-feature"><img src="/assets/images/application-port-bulk-handling.webp" alt="African bulk material handling"><h3>Resources for project review</h3><p>Find solutions, market pages, support guides and downloads before requesting selection support.</p><a class="button primary" href="$base/solutions/">View Solutions</a></div>
         <nav class="mega-col"><h3>Solutions</h3><a href="$base/solutions/tramp-iron-removal/">Tramp Iron Removal</a><a href="$base/solutions/crusher-protection/">Crusher Protection</a><a href="$base/solutions/conveyor-belt-protection/">Conveyor Belt Protection</a><a href="$base/solutions/">All Solutions</a></nav>
         <nav class="mega-col"><h3>African Markets</h3><a href="$base/markets/south-africa/">South Africa</a><a href="$base/markets/botswana/">Botswana</a><a href="$base/markets/zambia/">Zambia</a><a href="$base/markets/">All Markets</a></nav>
         <nav class="mega-col"><h3>Support</h3><a href="$base/technical-support/product-selection-guide/">Product Selection Guide</a><a href="$base/technical-support/installation-guide/">Installation Guide</a><a href="$base/downloads/">Downloads</a><a href="$base/search/">Search</a></nav>
@@ -375,7 +379,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
     </section>
     <section id="mega-company" class="mega-panel" data-mega-panel hidden>
       <div class="mega-grid compact">
-        <div class="mega-feature"><img src="/assets/images/hero-mining-conveyor-magnet.png" alt="Cowinmagnet project support"><h3>Cowinmagnet South Africa</h3><p>Regional product selection and export communication support for African mining and industrial projects.</p><a class="button primary" href="$base/request-a-quote/">Request a Quote</a></div>
+        <div class="mega-feature"><img src="/assets/images/hero-mining-conveyor-magnet.webp" alt="Cowinmagnet project support"><h3>Cowinmagnet South Africa</h3><p>Regional product selection and export communication support for African mining and industrial projects.</p><a class="button primary" href="$base/request-a-quote/">Request a Quote</a></div>
         <nav class="mega-col"><h3>Company</h3><a href="$base/about/">About Cowinmagnet</a><a href="$base/about/company-profile/">Company Profile</a><a href="$base/about/export-service/">Export Service</a><a href="$base/about/quality-control/">Quality Control</a></nav>
         <nav class="mega-col"><h3>Contact</h3><a href="$base/contact/">Contact Us</a><a href="$base/request-a-quote/">Request a Quote</a><a href="mailto:davidsha@cowinmagnet.com">Email</a><a href="https://wa.me/8615665135205">WhatsApp</a></nav>
         <nav class="mega-col"><h3>Global</h3><a href="https://www.cowinmagnet.com">Global Website</a><a href="$base/privacy-policy/">Privacy Policy</a><a href="$base/terms-and-conditions/">Terms</a><a href="$base/cookie-policy/">Cookie Policy</a></nav>
@@ -424,7 +428,7 @@ function WritePage($path, $title, $description, $h1, $body, $schema = "") {
 
 function CardGrid($items, $hrefPrefix, $kind) {
   '<div class="grid">' + (($items | ForEach-Object {
-    $img = if($_.image){$_.image}else{"/assets/images/hero-mining-conveyor-magnet.png"}
+    $img = if($_.image){$_.image}else{"/assets/images/hero-mining-conveyor-magnet.webp"}
     $desc = if($_.description){$_.description}elseif($_.focus){$_.focus}else{"Explore $($_.name) for African magnetic separation applications."}
     "<a class='card' href='$hrefPrefix/$($_.slug)/'><img src='$img' alt='$($_.name) illustration' loading='lazy'><p class='eyebrow'>$kind</p><h3>$($_.name)</h3><p>$desc</p></a>"
   }) -join "") + '</div>'
@@ -432,7 +436,7 @@ function CardGrid($items, $hrefPrefix, $kind) {
 
 function ProductCards($items) {
   '<div class="grid">' + (($items | ForEach-Object {
-    "<a class='card' data-product-card data-type='$($_.type)' data-cleaning='$($_.cleaning)' href='$base/products/$($_.categorySlug)/$($_.slug)/'><img src='$($_.image)' alt='$($_.name) image'><p class='eyebrow'>$($_.category)</p><h3>$($_.name)</h3><p>Configured for $($_.applications -join ', ') applications after confirmation of conveyor and material data.</p><div class='tag-row'><span class='tag'>$($_.type)</span><span class='tag'>$($_.cleaning)</span><span class='tag'>$($_.layout)</span></div></a>"
+    "<a class='card' data-product-card data-type='$($_.type)' data-cleaning='$($_.cleaning)' href='$base/products/$($_.categorySlug)/$($_.slug)/'><img src='$($_.image)' alt='$($_.name) image' loading='lazy'><p class='eyebrow'>$($_.category)</p><h3>$($_.name)</h3><p>Configured for $($_.applications -join ', ') applications after confirmation of conveyor and material data.</p><div class='tag-row'><span class='tag'>$($_.type)</span><span class='tag'>$($_.cleaning)</span><span class='tag'>$($_.layout)</span></div></a>"
   }) -join "") + '</div><div class="panel" data-product-empty hidden><strong>No matching products.</strong><p>Adjust the filters or contact Cowinmagnet for selection support.</p></div>'
 }
 
@@ -452,10 +456,10 @@ foreach($generatedLocale in @("en-za","af-za","zu-za","xh-za","st-za","tn-za","e
 
 # Root redirect page
 $rootSchema = @{ "@context"="https://schema.org"; "@type"="WebSite"; name="Cowinmagnet South Africa"; url="$siteUrl/en-za/"; potentialAction=@{ "@type"="SearchAction"; target="$siteUrl/en-za/search/?q={search_term_string}"; "query-input"="required name=search_term_string" } } | ConvertTo-Json -Depth 6 -Compress
-Set-Content -LiteralPath (Join-Path $root "index.html") -Encoding UTF8 -Value "<!doctype html><html lang='en-ZA'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta name='robots' content='$robotsMeta'><meta http-equiv='refresh' content='0; url=/en-za/'><title>Cowinmagnet South Africa | Magnetic Separator Equipment</title><meta name='description' content='Cowinmagnet South Africa and Africa regional site for magnetic separator products, mining applications, support resources and quote requests.'><link rel='canonical' href='$siteUrl/en-za/'><link rel='icon' href='/favicon.ico' sizes='any'><link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png'><link rel='apple-touch-icon' href='/apple-touch-icon.png'><meta property='og:image' content='$siteUrl/assets/images/hero-mining-conveyor-magnet.png'><script type='application/ld+json'>$rootSchema</script></head><body><main><h1>Cowinmagnet South Africa</h1><p><a href='/en-za/'>Open Cowinmagnet South Africa & Africa</a></p></main></body></html>"
+Set-Content -LiteralPath (Join-Path $root "index.html") -Encoding UTF8 -Value "<!doctype html><html lang='en-ZA'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta name='robots' content='$robotsMeta'><meta http-equiv='refresh' content='0; url=/en-za/'><title>Cowinmagnet South Africa | Magnetic Separator Equipment</title><meta name='description' content='Cowinmagnet South Africa and Africa regional site for magnetic separator products, mining applications, support resources and quote requests.'><link rel='canonical' href='$siteUrl/en-za/'><link rel='icon' href='/favicon.ico' sizes='any'><link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png'><link rel='apple-touch-icon' href='/apple-touch-icon.png'><meta property='og:image' content='$siteUrl/assets/images/hero-mining-conveyor-magnet.webp'><script type='application/ld+json'>$rootSchema</script></head><body><main><h1>Cowinmagnet South Africa</h1><p><a href='/en-za/'>Open Cowinmagnet South Africa & Africa</a></p></main></body></html>"
 
 $homeBody = @"
-<section class="hero image"><div><p class="eyebrow">South Africa & Africa</p><h1>Magnetic Separation Equipment for South Africa and Africa</h1><p>Cowinmagnet supports mining, coal, quarrying, recycling, cement and conveyor systems with product selection, export coordination and magnetic separation project support.</p><div class="actions"><a class="button primary" href="$base/products/">View All Products</a><a class="button secondary" href="$base/markets/">Explore African Markets</a></div></div><div class="panel"><h2>African operating conditions</h2><ul class="check-list"><li>High dust levels and outdoor installation</li><li>Heavy material loads and large lump sizes</li><li>Remote mining sites and long-distance logistics</li><li>Coastal humidity, corrosion and voltage confirmation</li></ul></div></section>
+<section class="hero image"><picture class="hero-media" aria-hidden="true"><source type="image/webp" srcset="$heroLcpImage"><img src="$heroImage" alt="" width="1120" height="630" fetchpriority="high" decoding="async"></picture><div><p class="eyebrow">South Africa & Africa</p><h1>Magnetic Separation Equipment for South Africa and Africa</h1><p>Cowinmagnet supports mining, coal, quarrying, recycling, cement and conveyor systems with product selection, export coordination and magnetic separation project support.</p><div class="actions"><a class="button primary" href="$base/products/">View All Products</a><a class="button secondary" href="$base/markets/">Explore African Markets</a></div></div><div class="panel"><h2>African operating conditions</h2><ul class="check-list"><li>High dust levels and outdoor installation</li><li>Heavy material loads and large lump sizes</li><li>Remote mining sites and long-distance logistics</li><li>Coastal humidity, corrosion and voltage confirmation</li></ul></div></section>
 <section class="section"><div class="section-heading"><p class="eyebrow">Product categories</p><h2>Start with the right magnetic equipment family</h2></div>$(CardGrid $categories "$base/products" "Category")</section>
 <section class="section band"><div class="section-heading"><p class="eyebrow">Industries</p><h2>South African and African application summaries</h2></div>$(CardGrid ($industries | Select-Object -First 6) "$base/industries" "Industry")<div class="actions"><a class="button primary" href="$base/industries/">View All Industries</a></div></section>
 <section class="section"><div class="section-heading"><p class="eyebrow">Solutions</p><h2>Problem-led magnetic separation support</h2></div>$(CardGrid ($solutions | Select-Object -First 6) "$base/solutions" "Solution")<div class="actions"><a class="button primary" href="$base/solutions/">View Mining Solutions</a></div></section>
@@ -474,7 +478,7 @@ foreach($cat in $categories) {
   foreach($product in $items) {
     $specRows = @("Magnetic system type|$($product.type)","Magnetic field strength|Project-specific confirmation required","Suspension height|Confirm from belt surface and material layer depth","Belt width|Confirm actual conveyor width","Belt speed|Confirm actual operating speed","Material layer thickness|Confirm burden depth","Material particle size|Confirm maximum lump size","Installation direction|$($product.layout)","Manual or automatic discharge|$($product.cleaning)","Drive motor power|Configured by model","Magnet power|Configured by model","Cooling method|Permanent, air, oil or self-cooled depending on product","Voltage|Confirm site voltage","Frequency|Confirm site frequency","Number of phases|Confirm site supply","Protection rating|Outdoor configuration available after confirmation","Ambient temperature|Confirm maximum site temperature","Altitude|Confirm site altitude","Equipment dimensions|Configured by selected model","Equipment weight|Configured by selected model","Control cabinet|Optional for electromagnetic models","Outdoor configuration|Available after environmental review","Corrosion-resistant options|Available for coastal or corrosive sites")
     $rows = ($specRows | ForEach-Object { $r=$_.Split("|"); "<tr><th>$($r[0])</th><td>$($r[1])</td></tr>" }) -join ""
-    $gallery = "<div data-gallery><img class='gallery-main' data-gallery-main src='$($product.image)' alt='$($product.name) main image'><div class='gallery-thumbs'><button type='button' data-gallery-thumb data-src='$($product.image)' aria-current='true'><img src='$($product.image)' alt='Thumbnail'></button><button type='button' data-gallery-thumb data-src='/assets/images/hero-mining-conveyor-magnet.png'><img src='/assets/images/hero-mining-conveyor-magnet.png' alt='Mining thumbnail'></button><button type='button' data-gallery-thumb data-src='/assets/images/application-quarry-aggregate.png'><img src='/assets/images/application-quarry-aggregate.png' alt='Quarry thumbnail'></button></div></div>"
+    $gallery = "<div data-gallery><img class='gallery-main' data-gallery-main src='$($product.image)' alt='$($product.name) main image'><div class='gallery-thumbs'><button type='button' data-gallery-thumb data-src='$($product.image)' aria-current='true'><img src='$($product.image)' alt='Thumbnail'></button><button type='button' data-gallery-thumb data-src='/assets/images/hero-mining-conveyor-magnet.webp'><img src='/assets/images/hero-mining-conveyor-magnet.webp' alt='Mining thumbnail'></button><button type='button' data-gallery-thumb data-src='/assets/images/application-quarry-aggregate.webp'><img src='/assets/images/application-quarry-aggregate.webp' alt='Quarry thumbnail'></button></div></div>"
     $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/products/'>Products</a> / <a href='$base/products/$($cat.slug)/'>$($cat.name)</a> / $($product.name)" "Product" $product.name "Selection support for $($product.name) in South Africa and African mining and industrial markets.") +
     "<section class='section layout'><article class='panel'><h2>Product Overview</h2><p>$($product.name) is reviewed for conveyor tramp iron removal, crusher protection and material separation projects. Final configuration must be confirmed according to actual conveyor and site conditions.</p><h2>Key Features</h2><ul class='check-list'><li>Application-led product selection</li><li>$($product.layout) installation review</li><li>$($product.cleaning) discharge option</li><li>Support for export documentation and logistics coordination</li></ul></article><aside><h2>Product Images</h2>$gallery</aside></section>" +
     "<section class='section band'><div class='section-heading'><h2>Technical Specifications</h2><p>Values are not invented. Confirm project data before quotation.</p></div><div class='table-wrap'><table><tbody>$rows</tbody></table></div></section>" +
@@ -524,7 +528,7 @@ foreach($r in $regions) {
   WritePage "$base/markets/south-africa/$($r.slug)/" "Magnetic Separator Support for $($r.name) | Cowinmagnet South Africa" "Regional magnetic separation equipment support for $($r.name), South Africa." "Magnetic Separator Support for $($r.name)" $body
 }
 
-$supportCards = @("Product Selection Guide","Installation Guide","Maintenance Guide","Electrical Specification Guide","High-Temperature Configuration","Outdoor Installation","Dust Protection","Coastal Corrosion Protection","Spare Parts Support","After-Sales Process") | ForEach-Object { [pscustomobject]@{slug=Slug $_; name=$_; description="Guidance topic for magnetic separator project review."; image="/assets/images/product-permanent-overband-magnet.png"} }
+$supportCards = @("Product Selection Guide","Installation Guide","Maintenance Guide","Electrical Specification Guide","High-Temperature Configuration","Outdoor Installation","Dust Protection","Coastal Corrosion Protection","Spare Parts Support","After-Sales Process") | ForEach-Object { [pscustomobject]@{slug=Slug $_; name=$_; description="Guidance topic for magnetic separator project review."; image="/assets/images/product-permanent-overband-magnet.webp"} }
 WritePage "$base/technical-support/" "Technical Support | Cowinmagnet South Africa" "Selection, installation, maintenance, electrical and environmental guidance for magnetic separation equipment." "Technical Support" ((PageHero "<a href='$base/'>Home</a> / Technical Support" "Support" "Technical Support and Selection Guidance" "Use these resources to prepare accurate product selection data.") + "<section class='section'>$(CardGrid $supportCards "$base/technical-support" "Guide")</section>")
 foreach($guide in $supportCards) {
   $guideBody = (PageHero "<a href='$base/'>Home</a> / <a href='$base/technical-support/'>Technical Support</a> / $($guide.name)" "Guide" $guide.name $guide.description) + "<section class='section layout'><article class='panel'><h2>Engineering review scope</h2><p>This guide helps prepare product selection information for African mining, conveyor and industrial sites. It does not replace project-specific confirmation.</p><h2>Data to confirm</h2><ul class='check-list'><li>Material type and maximum lump size</li><li>Conveyor belt width, speed and burden depth</li><li>Suspension height and installation position</li><li>Dust, humidity, temperature, altitude and corrosion conditions</li><li>Voltage, frequency and number of phases</li></ul><h2>Next step</h2><p>Send the confirmed data through the request form so the equipment family and configuration can be reviewed.</p></article><aside class='panel'><h3>Related action</h3><a class='button primary' href='$base/request-a-quote/'>Request a Quote</a><a class='button secondary' href='$base/products/'>View Products</a></aside></section>"
@@ -587,7 +591,7 @@ foreach($lang in @("en-africa","fr-africa","pt-africa","sw-africa","ar-africa"))
   New-Item -ItemType Directory -Force -Path $dir | Out-Null
   $futureDescription = "Cowinmagnet $lang future language route for magnetic separator products, African market pages and verified regional content coverage."
   $futureSchema = @{ "@context"="https://schema.org"; "@type"="WebPage"; name="Cowinmagnet $lang"; url="$siteUrl/$lang/"; description=$futureDescription; inLanguage=$lang } | ConvertTo-Json -Depth 5 -Compress
-  $html = "<!doctype html><html lang='$lang' data-locale='$lang'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta name='robots' content='$robotsMeta'><title>Cowinmagnet $lang | Magnetic Separator Africa</title><meta name='description' content='$futureDescription'><link rel='canonical' href='$siteUrl/$lang/'><link rel='icon' href='/favicon.ico' sizes='any'><link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png'><link rel='apple-touch-icon' href='/apple-touch-icon.png'><meta property='og:title' content='Cowinmagnet $lang'><meta property='og:description' content='$futureDescription'><meta property='og:image' content='$siteUrl/assets/images/hero-mining-conveyor-magnet.png'><link rel='stylesheet' href='../assets/site.css'><script type='application/ld+json'>$futureSchema</script></head><body><main class='page-hero'><p class='eyebrow'>Language route</p><h1>Cowinmagnet $lang</h1><p>This future language route is prepared. Verified translation and content coverage are pending.</p><div class='actions'><a class='button primary' href='/en-za/products/'>View English Products</a><a class='button secondary' href='/en-za/'>English Home</a></div></main></body></html>"
+  $html = "<!doctype html><html lang='$lang' data-locale='$lang'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta name='robots' content='$robotsMeta'><title>Cowinmagnet $lang | Magnetic Separator Africa</title><meta name='description' content='$futureDescription'><link rel='canonical' href='$siteUrl/$lang/'><link rel='icon' href='/favicon.ico' sizes='any'><link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png'><link rel='apple-touch-icon' href='/apple-touch-icon.png'><meta property='og:title' content='Cowinmagnet $lang'><meta property='og:description' content='$futureDescription'><meta property='og:image' content='$siteUrl/assets/images/hero-mining-conveyor-magnet.webp'><link rel='stylesheet' href='../assets/site.css'><script type='application/ld+json'>$futureSchema</script></head><body><main class='page-hero'><p class='eyebrow'>Language route</p><h1>Cowinmagnet $lang</h1><p>This future language route is prepared. Verified translation and content coverage are pending.</p><div class='actions'><a class='button primary' href='/en-za/products/'>View English Products</a><a class='button secondary' href='/en-za/'>English Home</a></div></main></body></html>"
   Set-Content -LiteralPath (Join-Path $dir "index.html") -Encoding UTF8 -Value $html
 }
 
@@ -630,5 +634,6 @@ if ($isProduction) {
 }
 
 Write-Host "Generated static multipage site under $root"
+
 
 
