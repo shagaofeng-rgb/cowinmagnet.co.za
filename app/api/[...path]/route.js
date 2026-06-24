@@ -21,12 +21,25 @@ const { Pool } = pg;
 let pool;
 let schemaReady;
 
+function databaseConnectionString() {
+  if (!process.env.DATABASE_URL) return "";
+  try {
+    const url = new URL(process.env.DATABASE_URL);
+    url.searchParams.delete("ssl");
+    url.searchParams.delete("sslmode");
+    return url.toString();
+  } catch {
+    return process.env.DATABASE_URL;
+  }
+}
+
 function getPool() {
   if (!process.env.DATABASE_URL) return null;
   if (!pool) {
+    const connectionString = databaseConnectionString();
     pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false }
+      connectionString,
+      ssl: connectionString.includes("localhost") ? false : { rejectUnauthorized: false }
     });
   }
   return pool;
