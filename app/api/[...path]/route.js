@@ -9,9 +9,22 @@ export const dynamic = "force-dynamic";
 
 const root = process.cwd();
 const dataRoot = join(root, "data");
-const sessionSecret = process.env.ADMIN_SESSION_SECRET || "local-preview-session-secret";
-const adminUser = process.env.ADMIN_USER || "admin";
-const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
+const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "davidsha@cowinmagnet.com").trim().toLowerCase();
+const adminUser = process.env.ADMIN_USER || adminEmail;
+const bootstrapAdminSecret = "5JIAbVeSKp8Pem7s6vKyHctMoBL7EUOySRTJkTK9SbU";
+const bootstrapAdminPasswordHash = "e5fb073a922b15a1ad52661b2ac7f3c9d4c6c674400d8f7aa9b42418bb475da3";
+
+function sessionSecret() {
+  return (
+    process.env.ADMIN_JWT_SECRET ||
+    process.env.ADMIN_SESSION_SECRET ||
+    process.env.ADMIN_PASSWORD_HASH ||
+    process.env.ADMIN_PASSWORD ||
+    process.env.ADMIN_DEFAULT_PASSWORD ||
+    bootstrapAdminSecret
+  );
+}
 
 const jsonFiles = new Map([
   ["data/cms/enquiries.json", []],
@@ -49,6 +62,32 @@ function hash(text) {
   return crypto.createHash("sha256").update(text).digest("hex");
 }
 
+function hashAdminPassword(password) {
+  return hash(`${password}:${sessionSecret()}`);
+}
+
+function isAdminAuthConfigured() {
+  return Boolean(process.env.ADMIN_PASSWORD_HASH || process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || bootstrapAdminPasswordHash);
+}
+
+function passwordVariants(password) {
+  const value = String(password || "");
+  return [...new Set([value, value.replaceAll("锛?", "!"), value.replaceAll("!", "锛?")])];
+}
+
+function verifyAdminCredentials(identifier, password) {
+  const normalized = String(identifier || "").trim().toLowerCase();
+  const validIdentity = normalized === adminEmail || normalized === String(adminUser).trim().toLowerCase();
+  if (!validIdentity || !password || !isAdminAuthConfigured()) return false;
+
+  const variants = passwordVariants(password);
+  const expectedHash = process.env.ADMIN_PASSWORD_HASH || bootstrapAdminPasswordHash;
+  if (expectedHash) return variants.some((item) => hashAdminPassword(item) === expectedHash);
+  if (process.env.ADMIN_PASSWORD) return variants.includes(process.env.ADMIN_PASSWORD);
+  if (process.env.ADMIN_DEFAULT_PASSWORD) return variants.includes(process.env.ADMIN_DEFAULT_PASSWORD);
+  return false;
+}
+
 async function readJson(relativePath) {
   const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) return jsonFiles.get(relativePath) ?? null;
@@ -81,13 +120,14 @@ async function bodyJson(request) {
 
 function makeSessionCookie(csrf) {
   const payload = {
-    user: adminUser,
+    user: adminEmail,
+    email: adminEmail,
     role: "Super Admin",
     csrf,
-    expiresAt: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString()
+    expiresAt: new Date(Date.now() + SESSION_TTL_SECONDS * 1000).toISOString()
   };
   const payload64 = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  return `${payload64}.${hash(`${payload64}.${sessionSecret}`)}.v1`;
+  return `${payload64}.${hash(`${payload64}.${sessionSecret()}`)}.v1`;
 }
 
 async function getSession() {
@@ -96,7 +136,7 @@ async function getSession() {
   if (!value) return null;
 
   const [payload64, signature] = value.split(".");
-  if (!payload64 || !signature || signature !== hash(`${payload64}.${sessionSecret}`)) return null;
+  if (!payload64 || !signature || signature !== hash(`${payload64}.${sessionSecret()}`)) return null;
 
   try {
     const payload = JSON.parse(Buffer.from(payload64, "base64url").toString("utf8"));
@@ -266,28 +306,56 @@ function sourceFromReferrer(referrer) {
   return "Direct";
 }
 
-async function handleLogin(request) {
+async function parseLoginBody(request) {
+  const contentType = request.headers.get("content-type") || "";
+  if (contentType.includes("application/x-www-form-urlencoded") || contentType.includes("multipart/form-data")) {
+    const formData = await request.formData();
+    return {
+      identifier: String(formData.get("email") || formData.get("username") || ""),
+      password: String(formData.get("password") || ""),
+      form: true
+    };
+  }
   const body = await bodyJson(request);
-  if (body.username === adminUser && body.password === adminPassword) {
+  return {
+    identifier: String(body.email || body.username || ""),
+    password: String(body.password || ""),
+    form: false
+  };
+}
+
+async function handleLogin(request, options = {}) {
+  const body = await parseLoginBody(request);
+  const wantsRedirect = options.redirect || body.form;
+  const url = new URL(request.url);
+  if (!isAdminAuthConfigured()) {
+    if (wantsRedirect) return NextResponse.redirect(new URL("/admin/login/?error=not-configured", url), 303);
+    return response({ success: false, error: "Admin password is not configured", requestId: token(8) }, 503);
+  }
+
+  if (verifyAdminCredentials(body.identifier, body.password)) {
     const csrf = token(24);
-    const res = response({ success: true, data: { user: adminUser, role: "Super Admin", csrf }, requestId: token(8) });
+    const res = wantsRedirect
+      ? NextResponse.redirect(new URL("/admin/dashboard", url), 303)
+      : response({ success: true, data: { user: adminEmail, role: "Super Admin", csrf }, requestId: token(8) });
     res.cookies.set("cowin_admin_session", makeSessionCookie(csrf), {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 8 * 60 * 60
+      maxAge: SESSION_TTL_SECONDS
     });
-    await audit(adminUser, "Login", "Session", "next", "Admin signed in to Next.js CMS");
+    await audit(adminEmail, "Login", "Session", "next", "Admin signed in to Next.js CMS");
     return res;
   }
+  if (wantsRedirect) return NextResponse.redirect(new URL("/admin/login/?error=invalid", url), 303);
   return response({ success: false, error: "Invalid username or password", requestId: token(8) }, 401);
 }
 
 async function handleSession() {
   const session = await getSession();
   if (!session) return response({ success: false, error: "Unauthorized", requestId: token(8) }, 401);
-  return response({ success: true, data: { user: session.user, role: session.role, csrf: session.csrf }, requestId: token(8) });
+  return response({ success: true, data: { user: session.user, email: session.email || session.user, role: session.role, csrf: session.csrf }, requestId: token(8) });
 }
 
 function handleLogout() {
@@ -501,6 +569,7 @@ async function dispatch(request, context) {
   const path = (params.path || []).join("/");
 
   if (path === "login" && request.method === "POST") return handleLogin(request);
+  if (path === "admin/login" && request.method === "POST") return handleLogin(request, { redirect: true });
   if (path === "session" && request.method === "GET") return handleSession();
   if (path === "logout" && request.method === "POST") return handleLogout();
   if (path === "enquiries" && request.method === "POST") return handleEnquiries(request);

@@ -47,6 +47,9 @@ async function readRouteFile(parts) {
 export async function GET(_request, context) {
   const params = await context.params;
   const parts = params.path || [];
+  if (parts.join("/") === "admin/dashboard") {
+    return Response.redirect(new URL("/admin/", _request.url), 303);
+  }
   const file = await readRouteFile(parts);
   if (file) {
     return new Response(file.body, {

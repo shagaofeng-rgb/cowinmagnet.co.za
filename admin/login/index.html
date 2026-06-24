@@ -10,11 +10,11 @@
 <body class="login-screen">
   <main class="login-card">
     <span class="brand-mark">C</span>
-    <p class="eyebrow">Local CMS</p>
-    <h1>Cowinmagnet Admin</h1>
-    <p>Manage the South Africa and Africa local preview content.</p>
-    <form data-login-form>
-      <label>Username<input name="username" autocomplete="username" required value="admin"></label>
+    <p class="eyebrow">Website Data Backend</p>
+    <h1>Cowinmagnet Africa Admin</h1>
+    <p>Use the same login flow as the main Cowinmagnet backend.</p>
+    <form data-login-form action="/api/admin/login" method="post">
+      <label>Email<input name="email" type="email" autocomplete="username" required value="davidsha@cowinmagnet.com"></label>
       <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
       <button class="button primary" type="submit">Sign In</button>
       <output data-status></output>
