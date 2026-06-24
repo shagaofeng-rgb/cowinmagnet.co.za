@@ -4,7 +4,7 @@ import { join, normalize, sep } from "node:path";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const root = process.cwd();
+const root = /*turbopackIgnore: true*/ process.cwd();
 
 function safePath(parts) {
   const relative = normalize(join(...parts.filter(Boolean)));

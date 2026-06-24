@@ -258,9 +258,26 @@ function RelAssets($path) {
   return (($null = 1)..$depth | ForEach-Object { ".." }) -join "/"
 }
 
+function OptimizeTitle($title) {
+  $value = [string]$title
+  if ($value.Length -gt 72) { return ($value.Substring(0, 69).TrimEnd() + "...") }
+  return $value
+}
+
+function OptimizeDescription($description) {
+  $value = [string]$description
+  if ($value.Length -lt 60) {
+    $value = "$value Learn about magnetic separator selection for South Africa and African markets."
+  }
+  if ($value.Length -gt 178) { return ($value.Substring(0, 175).TrimEnd() + "...") }
+  return $value
+}
+
 function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
   $rel = RelAssets $path
   $canonical = "$siteUrl$path"
+  $title = OptimizeTitle $title
+  $description = OptimizeDescription $description
   $defaultSchema = @{
     "@context"="https://schema.org";
     "@graph"=@(
@@ -431,7 +448,8 @@ foreach($generatedLocale in @("en-za","af-za","zu-za","xh-za","st-za","tn-za","e
 }
 
 # Root redirect page
-Set-Content -LiteralPath (Join-Path $root "index.html") -Encoding UTF8 -Value "<!doctype html><html><head><meta charset='utf-8'><meta http-equiv='refresh' content='0; url=/en-za/'><title>Cowinmagnet South Africa</title><link rel='canonical' href='$siteUrl/en-za/'></head><body><p><a href='/en-za/'>Open Cowinmagnet South Africa & Africa</a></p></body></html>"
+$rootSchema = @{ "@context"="https://schema.org"; "@type"="WebSite"; name="Cowinmagnet South Africa"; url="$siteUrl/en-za/"; potentialAction=@{ "@type"="SearchAction"; target="$siteUrl/en-za/search/?q={search_term_string}"; "query-input"="required name=search_term_string" } } | ConvertTo-Json -Depth 6 -Compress
+Set-Content -LiteralPath (Join-Path $root "index.html") -Encoding UTF8 -Value "<!doctype html><html lang='en-ZA'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta name='robots' content='$robotsMeta'><meta http-equiv='refresh' content='0; url=/en-za/'><title>Cowinmagnet South Africa | Magnetic Separator Equipment</title><meta name='description' content='Cowinmagnet South Africa and Africa regional site for magnetic separator products, mining applications, support resources and quote requests.'><link rel='canonical' href='$siteUrl/en-za/'><meta property='og:image' content='$siteUrl/assets/images/hero-mining-conveyor-magnet.png'><script type='application/ld+json'>$rootSchema</script></head><body><main><h1>Cowinmagnet South Africa</h1><p><a href='/en-za/'>Open Cowinmagnet South Africa & Africa</a></p></main></body></html>"
 
 $homeBody = @"
 <section class="hero image"><div><p class="eyebrow">South Africa & Africa</p><h1>Magnetic Separation Equipment for South Africa and Africa</h1><p>Cowinmagnet supports mining, coal, quarrying, recycling, cement and conveyor systems with product selection, export coordination and magnetic separation project support.</p><div class="actions"><a class="button primary" href="$base/products/">View All Products</a><a class="button secondary" href="$base/markets/">Explore African Markets</a></div></div><div class="panel"><h2>African operating conditions</h2><ul class="check-list"><li>High dust levels and outdoor installation</li><li>Heavy material loads and large lump sizes</li><li>Remote mining sites and long-distance logistics</li><li>Coastal humidity, corrosion and voltage confirmation</li></ul></div></section>
@@ -551,7 +569,9 @@ foreach($lang in @("af-za","zu-za","xh-za","st-za","tn-za")) {
     $content = Get-Content -LiteralPath $_.FullName -Raw -Encoding UTF8
     $content = $content.Replace('/en-za/', "/$lang/")
     $content = $content.Replace("$siteUrl/en-za/", "$siteUrl/$lang/")
-    $content = $content.Replace('lang="en-ZA" data-locale="en-za"', "lang='$lang' data-locale='$lang'")
+    $content = $content.Replace('lang="en-ZA" data-locale="en-za"', "lang=""$lang"" data-locale=""$lang""")
+    $content = $content.Replace("<option value='en-za' selected>", "<option value='en-za'>")
+    $content = $content.Replace("<option value='$lang'>", "<option value='$lang' selected>")
     $notice = "<section class='section band'><div class='panel'><strong>Translation notice</strong><p>This $lang route is prepared. Verified translation is pending, so English fallback content is shown on the corresponding page.</p></div></section>"
     $content = $content.Replace('</main>', "$notice`n  </main>")
     Set-Content -LiteralPath $target -Encoding UTF8 -Value $content
@@ -562,7 +582,9 @@ foreach($lang in @("af-za","zu-za","xh-za","st-za","tn-za")) {
 foreach($lang in @("en-africa","fr-africa","pt-africa","sw-africa","ar-africa")) {
   $dir = Join-Path $root "$lang"
   New-Item -ItemType Directory -Force -Path $dir | Out-Null
-  $html = "<!doctype html><html lang='$lang'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta name='robots' content='$robotsMeta'><title>Cowinmagnet $lang</title><link rel='canonical' href='$siteUrl/$lang/'><link rel='stylesheet' href='../assets/site.css'></head><body><main class='page-hero'><p class='eyebrow'>Language route</p><h1>Cowinmagnet $lang</h1><p>This future language route is prepared. Verified translation and content coverage are pending.</p><div class='actions'><a class='button primary' href='/en-za/products/'>View English Products</a><a class='button secondary' href='/en-za/'>English Home</a></div></main></body></html>"
+  $futureDescription = "Cowinmagnet $lang future language route for magnetic separator products, African market pages and verified regional content coverage."
+  $futureSchema = @{ "@context"="https://schema.org"; "@type"="WebPage"; name="Cowinmagnet $lang"; url="$siteUrl/$lang/"; description=$futureDescription; inLanguage=$lang } | ConvertTo-Json -Depth 5 -Compress
+  $html = "<!doctype html><html lang='$lang' data-locale='$lang'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><meta name='robots' content='$robotsMeta'><title>Cowinmagnet $lang | Magnetic Separator Africa</title><meta name='description' content='$futureDescription'><link rel='canonical' href='$siteUrl/$lang/'><meta property='og:title' content='Cowinmagnet $lang'><meta property='og:description' content='$futureDescription'><meta property='og:image' content='$siteUrl/assets/images/hero-mining-conveyor-magnet.png'><link rel='stylesheet' href='../assets/site.css'><script type='application/ld+json'>$futureSchema</script></head><body><main class='page-hero'><p class='eyebrow'>Language route</p><h1>Cowinmagnet $lang</h1><p>This future language route is prepared. Verified translation and content coverage are pending.</p><div class='actions'><a class='button primary' href='/en-za/products/'>View English Products</a><a class='button secondary' href='/en-za/'>English Home</a></div></main></body></html>"
   Set-Content -LiteralPath (Join-Path $dir "index.html") -Encoding UTF8 -Value $html
 }
 

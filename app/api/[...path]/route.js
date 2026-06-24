@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, normalize, sep } from "node:path";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -8,6 +8,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const root = process.cwd();
+const dataRoot = join(root, "data");
 const sessionSecret = process.env.ADMIN_SESSION_SECRET || "local-preview-session-secret";
 const adminUser = process.env.ADMIN_USER || "admin";
 const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
@@ -49,7 +50,9 @@ function hash(text) {
 }
 
 async function readJson(relativePath) {
-  const filePath = join(root, relativePath);
+  const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
+  if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) return jsonFiles.get(relativePath) ?? null;
+  const filePath = join(dataRoot, cleanPath);
   try {
     const raw = (await readFile(filePath, "utf8")).replace(/^\uFEFF/, "");
     if (!raw.trim()) return jsonFiles.get(relativePath) ?? null;
@@ -61,7 +64,9 @@ async function readJson(relativePath) {
 }
 
 async function writeJson(relativePath, value) {
-  const filePath = join(root, relativePath);
+  const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
+  if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) throw new Error("Invalid data path");
+  const filePath = join(dataRoot, cleanPath);
   await mkdir(dirname(filePath), { recursive: true });
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
