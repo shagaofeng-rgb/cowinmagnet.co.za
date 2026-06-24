@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join, normalize, sep } from "node:path";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -9,6 +10,7 @@ export const dynamic = "force-dynamic";
 
 const root = process.cwd();
 const dataRoot = join(root, "data");
+const writableDataRoot = join(tmpdir(), "cowinmagnet-africa-data");
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "davidsha@cowinmagnet.com").trim().toLowerCase();
 const adminUser = process.env.ADMIN_USER || adminEmail;
@@ -91,7 +93,12 @@ function verifyAdminCredentials(identifier, password) {
 async function readJson(relativePath) {
   const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) return jsonFiles.get(relativePath) ?? null;
+  const writablePath = join(writableDataRoot, cleanPath);
   const filePath = join(dataRoot, cleanPath);
+  try {
+    const raw = (await readFile(writablePath, "utf8")).replace(/^\uFEFF/, "");
+    if (raw.trim()) return JSON.parse(raw);
+  } catch {}
   try {
     const raw = (await readFile(filePath, "utf8")).replace(/^\uFEFF/, "");
     if (!raw.trim()) return jsonFiles.get(relativePath) ?? null;
@@ -106,8 +113,17 @@ async function writeJson(relativePath, value) {
   const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) throw new Error("Invalid data path");
   const filePath = join(dataRoot, cleanPath);
-  await mkdir(dirname(filePath), { recursive: true });
-  await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  const payload = `${JSON.stringify(value, null, 2)}\n`;
+  try {
+    await mkdir(dirname(filePath), { recursive: true });
+    await writeFile(filePath, payload, "utf8");
+    return;
+  } catch (error) {
+    if (!["EROFS", "EACCES", "EPERM"].includes(error?.code)) throw error;
+  }
+  const writablePath = join(writableDataRoot, cleanPath);
+  await mkdir(dirname(writablePath), { recursive: true });
+  await writeFile(writablePath, payload, "utf8");
 }
 
 async function bodyJson(request) {
