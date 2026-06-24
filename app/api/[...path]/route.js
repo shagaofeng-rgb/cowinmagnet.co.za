@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, normalize, sep } from "node:path";
+import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -16,6 +17,60 @@ const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "davids
 const adminUser = process.env.ADMIN_USER || adminEmail;
 const bootstrapAdminSecret = "5JIAbVeSKp8Pem7s6vKyHctMoBL7EUOySRTJkTK9SbU";
 const bootstrapAdminPasswordHash = "e5fb073a922b15a1ad52661b2ac7f3c9d4c6c674400d8f7aa9b42418bb475da3";
+const { Pool } = pg;
+let pool;
+let schemaReady;
+
+function getPool() {
+  if (!process.env.DATABASE_URL) return null;
+  if (!pool) {
+    pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false }
+    });
+  }
+  return pool;
+}
+
+async function ensureDatabaseSchema() {
+  const db = getPool();
+  if (!db) return false;
+  if (!schemaReady) {
+    schemaReady = db.query(`
+      CREATE TABLE IF NOT EXISTS africa_json_documents (
+        path TEXT PRIMARY KEY,
+        payload JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `).then(() => true);
+  }
+  return schemaReady;
+}
+
+async function readDatabaseJson(relativePath) {
+  const db = getPool();
+  if (!db) return null;
+  await ensureDatabaseSchema();
+  const result = await db.query("SELECT payload FROM africa_json_documents WHERE path = $1", [relativePath]);
+  return result.rows[0]?.payload ?? null;
+}
+
+async function writeDatabaseJson(relativePath, value) {
+  const db = getPool();
+  if (!db) return false;
+  await ensureDatabaseSchema();
+  await db.query(
+    `INSERT INTO africa_json_documents (path, payload, updated_at)
+     VALUES ($1, $2::jsonb, NOW())
+     ON CONFLICT (path) DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()`,
+    [relativePath, JSON.stringify(value)]
+  );
+  return true;
+}
+
+function storageMode() {
+  return getPool() ? "database" : (process.env.VERCEL ? "vercel-tmp" : "local-file");
+}
 
 function sessionSecret() {
   return (
@@ -93,6 +148,12 @@ function verifyAdminCredentials(identifier, password) {
 async function readJson(relativePath) {
   const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) return jsonFiles.get(relativePath) ?? null;
+  try {
+    const databaseValue = await readDatabaseJson(relativePath);
+    if (databaseValue !== null) return databaseValue;
+  } catch (error) {
+    console.warn(`[africa-json-store] Database read failed for ${relativePath}: ${error?.message || error}`);
+  }
   const writablePath = join(writableDataRoot, cleanPath);
   const filePath = join(dataRoot, cleanPath);
   try {
@@ -112,6 +173,11 @@ async function readJson(relativePath) {
 async function writeJson(relativePath, value) {
   const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) throw new Error("Invalid data path");
+  try {
+    if (await writeDatabaseJson(relativePath, value)) return;
+  } catch (error) {
+    console.warn(`[africa-json-store] Database write failed for ${relativePath}: ${error?.message || error}`);
+  }
   const filePath = join(dataRoot, cleanPath);
   const payload = `${JSON.stringify(value, null, 2)}\n`;
   try {
@@ -146,9 +212,28 @@ function makeSessionCookie(csrf) {
   return `${payload64}.${hash(`${payload64}.${sessionSecret()}`)}.v1`;
 }
 
+function isSecureRequest(request) {
+  const forwardedProto = request.headers.get("x-forwarded-proto");
+  if (forwardedProto) return forwardedProto.split(",")[0].trim() === "https";
+  try {
+    return new URL(request.url).protocol === "https:";
+  } catch {
+    return process.env.NODE_ENV === "production" && !request.url.includes("localhost");
+  }
+}
+
 async function getSession() {
   const cookieStore = await cookies();
-  const value = cookieStore.get("cowin_admin_session")?.value;
+  let value = cookieStore.get("cowin_admin_session")?.value;
+  if (!value) {
+    const headerStore = await headers();
+    const rawCookie = headerStore.get("cookie") || "";
+    value = rawCookie
+      .split(";")
+      .map((item) => item.trim())
+      .find((item) => item.startsWith("cowin_admin_session="))
+      ?.slice("cowin_admin_session=".length);
+  }
   if (!value) return null;
 
   const [payload64, signature] = value.split(".");
@@ -357,7 +442,7 @@ async function handleLogin(request, options = {}) {
     res.cookies.set("cowin_admin_session", makeSessionCookie(csrf), {
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: isSecureRequest(request),
       path: "/",
       maxAge: SESSION_TTL_SECONDS
     });
@@ -481,7 +566,8 @@ async function handleAdmin(request, path) {
         recentVisitors: analytics.visitors.slice(0, 8),
         recentEnquiries: enquiries.slice(-5),
         recentLogs: logs.slice(-8),
-        lastSync: analytics.lastSync
+        lastSync: analytics.lastSync,
+        storageMode: storageMode()
       },
       requestId: token(8)
     });
@@ -556,6 +642,17 @@ async function handleAdmin(request, path) {
   }
 
   if (path === "admin/settings" && request.method === "GET") return response({ success: true, data: await readJson("data/cms/settings.json"), requestId: token(8) });
+  if (path === "admin/storage-status" && request.method === "GET") {
+    return response({
+      success: true,
+      data: {
+        mode: storageMode(),
+        databaseConfigured: Boolean(process.env.DATABASE_URL),
+        writableFallback: process.env.VERCEL ? "tmp" : "project-file"
+      },
+      requestId: token(8)
+    });
+  }
   if (path === "admin/settings" && request.method === "PUT") {
     const body = await bodyJson(request);
     body.updatedAt = new Date().toISOString();

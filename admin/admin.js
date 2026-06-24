@@ -114,6 +114,7 @@
         ${metric("缺少图片", dashboard.missingImages)}
         ${metric("市场页", dashboard.markets)}
         ${metric("语言", dashboard.languages.length)}
+        ${metric("存储模式", dashboard.storageMode || "local-file")}
       </div>
       <div class="mini-grid">
         <div class="section-card"><h2>Top 页面</h2>${rankList(analytics.pages, "page", "views")}</div>
