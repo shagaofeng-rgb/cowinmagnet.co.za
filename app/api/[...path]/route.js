@@ -5,6 +5,7 @@ import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, isExternalNewsImage } from "../../lib/news-system.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,6 +18,14 @@ const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "davids
 const adminUser = process.env.ADMIN_USER || adminEmail;
 const bootstrapAdminSecret = "5JIAbVeSKp8Pem7s6vKyHctMoBL7EUOySRTJkTK9SbU";
 const bootstrapAdminPasswordHash = "e5fb073a922b15a1ad52661b2ac7f3c9d4c6c674400d8f7aa9b42418bb475da3";
+
+function isPublishedSourceNews(item) {
+  return (
+    (item.status || "published") === "published" &&
+    (item.article_type === "news" || item.source_url || item.canonical_source_url) &&
+    isExternalNewsImage(item.cover_image_url)
+  );
+}
 const { Pool } = pg;
 let pool;
 let schemaReady;
@@ -413,6 +422,65 @@ async function linksSummary() {
   };
 }
 
+async function publicNewsList(request) {
+  const url = new URL(request.url);
+  const page = Math.max(1, Number(url.searchParams.get("page") || 1));
+  const limit = Math.min(50, Math.max(1, Number(url.searchParams.get("limit") || 12)));
+  const category = String(url.searchParams.get("category") || "").toLowerCase();
+  const tag = String(url.searchParams.get("tag") || "").toLowerCase();
+  const articles = (await readJson("data/articles/articles.json"))
+    .filter(isPublishedSourceNews)
+    .filter((item) => !category || String(item.category || "").toLowerCase() === category)
+    .filter((item) => !tag || (item.tags || []).some((value) => String(value).toLowerCase() === tag));
+  const offset = (page - 1) * limit;
+  return response({
+    success: true,
+    data: {
+      items: articles.slice(offset, offset + limit),
+      page,
+      limit,
+      total: articles.length
+    },
+    requestId: token(8)
+  });
+}
+
+async function publicNewsDetail(slug) {
+  const articles = await readJson("data/articles/articles.json");
+  const article = articles.find((item) => item.slug === slug && isPublishedSourceNews(item));
+  if (!article) return response({ success: false, error: "News article not found", requestId: token(8) }, 404);
+  return response({ success: true, data: article, requestId: token(8) });
+}
+
+async function publicNewsCategories() {
+  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedSourceNews);
+  const categories = [...new Set(articles.map((item) => item.category || "Industry News"))].sort();
+  const tags = [...new Set(articles.flatMap((item) => item.tags || []))].sort();
+  return response({ success: true, data: { categories, tags }, requestId: token(8) });
+}
+
+async function publicProductNews(productId) {
+  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedSourceNews);
+  const rows = articles.filter((item) => {
+    const products = item.related_products || [];
+    return products.some((product) => product.product_id === productId || product.slug === productId);
+  });
+  return response({ success: true, data: rows, requestId: token(8) });
+}
+
+function validCronRequest(request) {
+  const secret = process.env.CRON_SECRET || process.env.NEWS_CRON_SECRET || "";
+  if (!secret) return true;
+  const header = request.headers.get("authorization") || request.headers.get("x-cron-secret") || "";
+  return header === secret || header === `Bearer ${secret}`;
+}
+
+async function handleCronNews(request) {
+  if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
+  const result = await runNewsAutomation();
+  return response({ success: true, data: result, requestId: token(8) });
+}
+
 function sourceFromReferrer(referrer) {
   if (/google|bing|yahoo|duckduckgo/i.test(referrer)) return "Search";
   if (/linkedin|facebook|tiktok|twitter|x\.com/i.test(referrer)) return "Social";
@@ -612,6 +680,27 @@ async function handleAdmin(request, path) {
   if (path === "admin/enquiries" && request.method === "GET") return response({ success: true, data: await readJson("data/cms/enquiries.json"), requestId: token(8) });
 
   if (path === "admin/news" && request.method === "GET") return response({ success: true, data: await readJson("data/articles/articles.json"), requestId: token(8) });
+  if (path === "admin/news/state" && request.method === "GET") return response({ success: true, data: await getNewsState(), requestId: token(8) });
+  if (path === "admin/news/jobs" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-jobs.json", []), requestId: token(8) });
+  if (path === "admin/news/audits" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-publication-audits.json", []), requestId: token(8) });
+  if (path === "admin/news/sources" && request.method === "GET") return response({ success: true, data: (await getNewsState()).sources, requestId: token(8) });
+  if (path === "admin/news/sources" && request.method === "PUT") {
+    const body = await bodyJson(request);
+    const sources = Array.isArray(body.sources) ? body.sources : [];
+    await writeDataJson("data/news/news-sources.json", sources);
+    await audit(session.user, "News Sources Updated", "NewsSource", "sources", "News source whitelist/blacklist settings updated");
+    return response({ success: true, data: sources, requestId: token(8) });
+  }
+  if (path === "admin/news/collect" && request.method === "POST") {
+    const result = await collectNewsCandidates();
+    await audit(session.user, "News Collect", "NewsJob", "collect", `Collected ${result.candidates.length} recent candidates`);
+    return response({ success: true, data: result, requestId: token(8) });
+  }
+  if ((path === "admin/news/publish" || path === "admin/news/retry" || path === "admin/news/generate") && request.method === "POST") {
+    const result = await runNewsAutomation();
+    await audit(session.user, "News Automation Run", "NewsJob", result.job.id, `Published ${result.published.length} news articles`);
+    return response({ success: true, data: result, requestId: token(8) });
+  }
   if (path === "admin/news" && request.method === "PUT") {
     const body = await bodyJson(request);
     const slug = String(body.slug || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -700,6 +789,13 @@ async function dispatch(request, context) {
   if (path === "logout" && request.method === "POST") return handleLogout();
   if (path === "enquiries" && request.method === "POST") return handleEnquiries(request);
   if (path === "track" && request.method === "POST") return handleTrack(request);
+  if (path === "cron/news" && request.method === "POST") return handleCronNews(request);
+  if (path === "news" && request.method === "GET") return publicNewsList(request);
+  if (path === "news/categories" && request.method === "GET") return publicNewsCategories();
+  const publicNewsMatch = path.match(/^news\/([^/]+)$/);
+  if (publicNewsMatch && request.method === "GET") return publicNewsDetail(decodeURIComponent(publicNewsMatch[1]));
+  const productNewsMatch = path.match(/^products\/([^/]+)\/news$/);
+  if (productNewsMatch && request.method === "GET") return publicProductNews(decodeURIComponent(productNewsMatch[1]));
   if (path.startsWith("admin/")) return handleAdmin(request, path);
 
   return response({ success: false, error: "API route not found", requestId: token(8) }, 404);

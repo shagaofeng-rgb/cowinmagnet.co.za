@@ -1,0 +1,56 @@
+[
+  {
+    "id": "JOB-1783264127980-9d1576",
+    "job_type": "daily-news-publish",
+    "status": "completed",
+    "scheduled_at": "2026-07-05T15:08:47.965Z",
+    "started_at": "2026-07-05T15:08:47.965Z",
+    "retry_count": 0,
+    "metadata": {
+      "target": 4,
+      "publishedToday": 3,
+      "need": 1,
+      "collected": 17,
+      "published": 1,
+      "sourceErrors": [
+        {
+          "source": "recycling-today",
+          "error": "HTTP 403"
+        },
+        {
+          "source": "cement-products",
+          "error": "HTTP 404"
+        }
+      ]
+    },
+    "completed_at": "2026-07-05T15:08:52.318Z",
+    "error_message": ""
+  },
+  {
+    "id": "JOB-1783264083540-50d093",
+    "job_type": "daily-news-publish",
+    "status": "failed",
+    "scheduled_at": "2026-07-05T15:08:03.342Z",
+    "started_at": "2026-07-05T15:08:03.342Z",
+    "retry_count": 0,
+    "metadata": {
+      "target": 4,
+      "publishedToday": 0,
+      "need": 4,
+      "collected": 7,
+      "published": 3,
+      "sourceErrors": [
+        {
+          "source": "recycling-today",
+          "error": "HTTP 403"
+        },
+        {
+          "source": "cement-products",
+          "error": "HTTP 404"
+        }
+      ]
+    },
+    "completed_at": "2026-07-05T15:08:05.273Z",
+    "error_message": "Published 3 of 4 required articles"
+  }
+]

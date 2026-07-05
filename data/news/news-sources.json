@@ -1,0 +1,58 @@
+[
+  {
+    "id": "mining-com",
+    "domain": "mining.com",
+    "publisher_name": "MINING.com",
+    "source_type": "rss",
+    "rss_url": "https://www.mining.com/feed/",
+    "language": "en",
+    "country": "Global",
+    "credibility_score": 0.84,
+    "enabled": true,
+    "allowed_for_auto_publish": true,
+    "last_fetched_at": "",
+    "failure_count": 0
+  },
+  {
+    "id": "recycling-today",
+    "domain": "recyclingtoday.com",
+    "publisher_name": "Recycling Today",
+    "source_type": "rss",
+    "rss_url": "https://www.recyclingtoday.com/rss/",
+    "language": "en",
+    "country": "Global",
+    "credibility_score": 0.78,
+    "enabled": false,
+    "allowed_for_auto_publish": false,
+    "last_fetched_at": "",
+    "failure_count": 1
+  },
+  {
+    "id": "cement-products",
+    "domain": "cementproducts.com",
+    "publisher_name": "Cement Products",
+    "source_type": "rss",
+    "rss_url": "https://cementproducts.com/feed/",
+    "language": "en",
+    "country": "Global",
+    "credibility_score": 0.72,
+    "enabled": false,
+    "allowed_for_auto_publish": false,
+    "last_fetched_at": "",
+    "failure_count": 1
+  },
+  {
+    "id": "international-mining",
+    "domain": "im-mining.com",
+    "publisher_name": "International Mining",
+    "source_type": "rss",
+    "rss_url": "https://im-mining.com/feed/",
+    "language": "en",
+    "country": "Global",
+    "credibility_score": 0.8,
+    "enabled": true,
+    "allowed_for_auto_publish": true,
+    "last_fetched_at": "",
+    "failure_count": 0
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "AUDIT-2026-07-05",
+    "date": "2026-07-05",
+    "timezone": "Africa/Johannesburg",
+    "target_count": 4,
+    "published_count": 4,
+    "missing_count": 0,
+    "status": "complete",
+    "checked_at": "2026-07-05T15:08:52.319Z"
+  }
+]

@@ -309,9 +309,30 @@
 
   async function loadNews() {
     const panel = document.querySelector("[data-panel='news']");
-    const articles = await api("/api/admin/news");
+    const [articles, newsState] = await Promise.all([api("/api/admin/news"), api("/api/admin/news/state")]);
     state.articles = articles;
     panel.innerHTML = `
+      <div class="cards">
+        ${metric("Daily Target", newsState.settings.dailyTarget)}
+        ${metric("Published News", articles.filter((item) => (item.status || "published") === "published").length)}
+        ${metric("Sources", newsState.sources.length)}
+        ${metric("Latest Audit", newsState.audits[0]?.status || "pending")}
+      </div>
+      <div class="section-card">
+        <h2>News Automation</h2>
+        <p>Runs every 3 hours on Vercel cron. Manual controls trigger source collection or publish-until-target execution.</p>
+        <div class="toolbar">
+          <button class="button secondary" data-collect-news type="button">Collect Candidates</button>
+          <button class="button primary" data-publish-news type="button">Run Publish Task</button>
+          <a class="button secondary" href="/en-za/news/" target="_blank" rel="noreferrer">Open News</a>
+          <a class="button secondary" href="/en-za/news/feed.xml" target="_blank" rel="noreferrer">Open RSS</a>
+        </div>
+        <div class="mini-grid">
+          <div><h3>Daily Audits</h3>${table((newsState.audits || []).slice(0, 8), ["date", "timezone", "target_count", "published_count", "missing_count", "status", "checked_at"])}</div>
+          <div><h3>Recent Jobs</h3>${table((newsState.jobs || []).slice(0, 8), ["job_type", "status", "started_at", "completed_at", "retry_count", "error_message"])}</div>
+        </div>
+        <h3>Sources</h3>${table((newsState.sources || []).map((item) => ({ id: item.id, publisher: item.publisher_name, type: item.source_type, enabled: item.enabled, autoPublish: item.allowed_for_auto_publish, score: item.credibility_score })), ["id", "publisher", "type", "enabled", "autoPublish", "score"])}
+      </div>
       <div class="split">
         <div class="section-card">
           <h2>新闻 / 博客</h2>
@@ -354,6 +375,16 @@
     panel.querySelector("[data-news-search]").addEventListener("input", render);
     panel.querySelector("[data-news-status]").addEventListener("input", render);
     panel.querySelector("[data-export-news]").addEventListener("click", () => exportCsv("news.csv", articles));
+    panel.querySelector("[data-collect-news]").addEventListener("click", async () => {
+      const result = await api("/api/admin/news/collect", { method: "POST", body: JSON.stringify({}) });
+      showStatus(`Collected ${result.candidates.length} candidates. Source errors: ${result.errors.length}`);
+      await loadNews();
+    });
+    panel.querySelector("[data-publish-news]").addEventListener("click", async () => {
+      const result = await api("/api/admin/news/publish", { method: "POST", body: JSON.stringify({}) });
+      showStatus(`Published ${result.published.length} articles. Job status: ${result.job.status}`);
+      await loadNews();
+    });
     panel.querySelector("[data-new-article]").addEventListener("click", () => {
       state.selectedArticle = null;
       panel.querySelector("[data-news-editor]").reset();

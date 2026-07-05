@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join, normalize, sep } from "node:path";
+import { renderNewsArticle, renderNewsFeed, renderNewsList } from "../lib/news-renderer.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,6 +50,33 @@ export async function GET(_request, context) {
   const parts = params.path || [];
   if (parts.join("/") === "admin/dashboard") {
     return Response.redirect(new URL("/admin/", _request.url), 303);
+  }
+  if (parts.join("/") === "en-za/news") {
+    return new Response(await renderNewsList(), {
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=0, s-maxage=300"
+      }
+    });
+  }
+  if (parts.join("/") === "en-za/news/feed.xml") {
+    return new Response(await renderNewsFeed(), {
+      headers: {
+        "content-type": "application/rss+xml; charset=utf-8",
+        "cache-control": "public, max-age=300"
+      }
+    });
+  }
+  if (parts.length === 3 && parts[0] === "en-za" && parts[1] === "news") {
+    const html = await renderNewsArticle(parts[2]);
+    if (html) {
+      return new Response(html, {
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "public, max-age=0, s-maxage=300"
+        }
+      });
+    }
   }
   const file = await readRouteFile(parts);
   if (file) {
