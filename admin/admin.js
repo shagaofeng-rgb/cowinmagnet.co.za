@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   const state = {
     csrf: "",
     view: "dashboard",
@@ -12,7 +12,7 @@
   const titles = {
     dashboard: ["数据总览", "网站数据总览", "PV、UV、产品、询盘、SEO 与页面表现的集中看板。"],
     traffic: ["流量分析", "流量分析", "按来源、页面、国家和访问设备查看非洲站访问质量。"],
-    seo: ["SEO 数据", "SEO 数据", "检查页面标题、描述、图片、canonical、hreflang 和索引风险。"],
+    seo: ["SEO 数据", "SEO 数据", "检查页面标题、描述、图片、canonical、hreflang、索引风险和 Google Search Console 数据。"],
     products: ["产品管理", "产品管理", "维护主站同步过来的产品内容、SEO、图片路径和发布状态。"],
     news: ["新闻管理", "新闻管理", "管理本地新闻、行业文章、发布状态和 SEO 信息。"],
     links: ["内外链审计", "内外链审计", "检查内链覆盖、外链、空链接、锚文本和重要页面入口。"],
@@ -21,7 +21,6 @@
     paths: ["访问路径", "访问路径", "查看客户进入、浏览和离开的路径，辅助判断询盘转化路线。"],
     settings: ["系统设置", "系统设置", "维护站点信息、账号、同步、语言和市场覆盖设置。"],
   };
-
   async function api(path, options = {}) {
     const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
     if (state.csrf) headers["X-CSRF-Token"] = state.csrf;
@@ -87,9 +86,9 @@
 
   async function getAnalytics(force = false) {
     if (!state.analytics || force) state.analytics = await api("/api/admin/analytics");
-    document.querySelector("[data-sync-state]").textContent = `前端刷新：${new Date().toLocaleTimeString()}；最近成功：${state.analytics.lastSync}；状态：success；处理量：${state.analytics.events}`;
-    document.querySelector("[data-side-summary]").textContent = `半小时自动同步 ${state.analytics.pv} PV / ${state.analytics.enquiries || 0} 询盘`;
-    document.querySelector("[data-side-sync]").textContent = `最近同步：${new Date().toLocaleTimeString()} 北京时间`;
+    document.querySelector("[data-sync-state]").textContent = `Frontend refresh: ${new Date().toLocaleTimeString()}; latest success: ${state.analytics.lastSync}; status: success; processed: ${state.analytics.events}`;
+    document.querySelector("[data-side-summary]").textContent = `30-min auto sync ${state.analytics.pv} PV / ${state.analytics.enquiries || 0} enquiries`;
+    document.querySelector("[data-side-sync]").textContent = `Latest sync: ${new Date().toLocaleTimeString()} Beijing time`;
     return state.analytics;
   }
 
@@ -108,30 +107,30 @@
       <div class="cards">
         ${metric("PV", dashboard.pv)}
         ${metric("UV", dashboard.uv)}
-        ${metric("产品数", dashboard.products)}
-        ${metric("未读询盘", dashboard.unreadEnquiries)}
-        ${metric("缺少 SEO", dashboard.missingSeo)}
-        ${metric("缺少图片", dashboard.missingImages)}
-        ${metric("市场页", dashboard.markets)}
-        ${metric("语言", dashboard.languages.length)}
-        ${metric("存储模式", dashboard.storageMode || "local-file")}
+        ${metric("Products", dashboard.products)}
+        ${metric("Unread Enquiries", dashboard.unreadEnquiries)}
+        ${metric("Missing SEO", dashboard.missingSeo)}
+        ${metric("Missing Images", dashboard.missingImages)}
+        ${metric("Market Pages", dashboard.markets)}
+        ${metric("Languages", dashboard.languages.length)}
+        ${metric("瀛樺偍妯″紡", dashboard.storageMode || "local-file")}
       </div>
       <div class="mini-grid">
-        <div class="section-card"><h2>Top 页面</h2>${rankList(analytics.pages, "page", "views")}</div>
-        <div class="section-card"><h2>来源渠道</h2>${rankList(analytics.sources, "source", "views")}</div>
+        <div class="section-card"><h2>Top Pages</h2>${rankList(analytics.pages, "page", "views")}</div>
+        <div class="section-card"><h2>鏉ユ簮娓犻亾</h2>${rankList(analytics.sources, "source", "views")}</div>
       </div>
-      <div class="section-card"><h2>最近访客</h2>${visitorTable(analytics.visitors.slice(0, 8))}</div>
-      <div class="section-card"><h2>最近询盘</h2>${table(dashboard.recentEnquiries || [], ["id", "name", "country", "email", "product", "status", "submissionTime"])}</div>`;
+      <div class="section-card"><h2>Recent Visitors</h2>${visitorTable(analytics.visitors.slice(0, 8))}</div>
+      <div class="section-card"><h2>Recent Enquiries</h2>${table(dashboard.recentEnquiries || [], ["id", "name", "country", "email", "product", "status", "submissionTime"])}</div>`;
   }
 
   function renderTraffic(data) {
     document.querySelector("[data-panel='traffic']").innerHTML = `
-      <div class="cards">${metric("PV", data.pv)}${metric("UV", data.uv)}${metric("事件数", data.events)}${metric("来源数", data.sources.length)}</div>
+      <div class="cards">${metric("PV", data.pv)}${metric("UV", data.uv)}${metric("Events", data.events)}${metric("Sources", data.sources.length)}</div>
       <div class="mini-grid">
-        <div class="section-card"><h2>来源 / 平台</h2>${rankList(data.sources, "source", "views")}</div>
-        <div class="section-card"><h2>国家 / 地区</h2>${rankList(data.countries, "name", "count")}</div>
+        <div class="section-card"><h2>鏉ユ簮 / 骞冲彴</h2>${rankList(data.sources, "source", "views")}</div>
+        <div class="section-card"><h2>Countries / Regions</h2>${rankList(data.countries, "name", "count")}</div>
       </div>
-      <div class="section-card"><h2>设备与浏览器</h2>${table(data.deviceBrowsers || [], ["device", "browser", "views"])}</div>`;
+      <div class="section-card"><h2>Devices and Browsers</h2>${table(data.deviceBrowsers || [], ["device", "browser", "views"])}</div>`;
   }
 
   function renderVisitors(data) {
@@ -140,14 +139,14 @@
     const sources = unique(data.visitors.map((item) => item.source || "Direct"));
     panel.innerHTML = `
       <div class="section-card">
-        <p class="eyebrow">实时访客</p>
-        <h2>最近访问记录</h2>
-        <button class="button secondary" data-export-visitors>导出 CSV</button>
+        <p class="eyebrow">Realtime visitors</p>
+        <h2>Recent visit records</h2>
+        <button class="button secondary" data-export-visitors>Export CSV</button>
         <div class="toolbar">
-          <input data-visitor-search placeholder="搜索客户编号、页面、IP、来源">
-          <select data-country-filter><option value="">全部国家</option>${countries.map((country) => `<option>${escapeHtml(country)}</option>`).join("")}</select>
-          <select data-source-filter><option value="">来源 / 平台</option>${sources.map((source) => `<option>${escapeHtml(source)}</option>`).join("")}</select>
-          <button class="button primary" data-clear-filters>清空</button>
+          <input data-visitor-search placeholder="Search client ID, page, IP, source">
+          <select data-country-filter><option value="">All countries</option>${countries.map((country) => `<option>${escapeHtml(country)}</option>`).join("")}</select>
+          <select data-source-filter><option value="">鏉ユ簮 / 骞冲彴</option>${sources.map((source) => `<option>${escapeHtml(source)}</option>`).join("")}</select>
+          <button class="button primary" data-clear-filters>娓呯┖</button>
         </div>
         <div data-visitor-table></div>
       </div>`;
@@ -181,7 +180,7 @@
     }));
     document.querySelector("[data-panel='pages']").innerHTML = `
       <div class="section-card">
-        <h2>页面表现</h2>
+        <h2>Page Performance</h2>
         ${table(rows, ["page", "type", "views", "share"])}
       </div>`;
   }
@@ -199,7 +198,7 @@
       exit: grouped[clientId][grouped[clientId].length - 1] || "",
       path: grouped[clientId].slice(-8).join(" -> "),
     }));
-    document.querySelector("[data-panel='paths']").innerHTML = `<div class="section-card"><h2>访问路径</h2>${table(rows, ["clientId", "steps", "entrance", "exit", "path"])}</div>`;
+    document.querySelector("[data-panel='paths']").innerHTML = `<div class="section-card"><h2>Visit Paths</h2>${table(rows, ["clientId", "steps", "entrance", "exit", "path"])}</div>`;
   }
 
   function visitorTable(items) {
@@ -213,7 +212,7 @@
       sourcePlatform: item.sourcePlatform,
       sourceDetail: item.sourceDetail,
       page: item.page,
-      tag: item.tag === "New" ? "新客户" : "老客户",
+      tag: item.tag === "New" ? "New visitor" : "Returning visitor",
       visitDay: item.visitDay,
       ip: item.ip,
     })), ["time", "clientId", "country", "device", "browser", "source", "sourcePlatform", "sourceDetail", "page", "tag", "visitDay", "ip"]);
@@ -221,7 +220,7 @@
 
   async function loadProducts() {
     const panel = document.querySelector("[data-panel='products']");
-    panel.innerHTML = "<div class='section-card'>加载产品中...</div>";
+    panel.innerHTML = "<div class='section-card'>Loading products...</div>";
     state.products = await api("/api/admin/products");
     renderProducts();
   }
@@ -232,17 +231,17 @@
     panel.innerHTML = `
       <div class="split">
         <div class="section-card">
-          <h2>产品列表</h2>
+          <h2>Product List</h2>
           <div class="toolbar">
-            <input data-product-search placeholder="搜索产品、slug、分类">
-            <select data-category-filter><option value="">全部分类</option>${unique(products.map((p) => p.categorySlug)).map((cat) => `<option>${escapeHtml(cat)}</option>`).join("")}</select>
-            <select data-product-status><option value="">全部状态</option><option value="missingSeo">缺 SEO</option><option value="missingImage">缺图片</option></select>
-            <button class="button secondary" data-export-products type="button">导出 CSV</button>
+            <input data-product-search placeholder="Search product, slug, category">
+            <select data-category-filter><option value="">All categories</option>${unique(products.map((p) => p.categorySlug)).map((cat) => `<option>${escapeHtml(cat)}</option>`).join("")}</select>
+            <select data-product-status><option value="">All status</option><option value="missingSeo">Missing SEO</option><option value="missingImage">Missing image</option></select>
+            <button class="button secondary" data-export-products type="button">Export CSV</button>
           </div>
-          <div class="table-wrap"><table><thead><tr><th>产品</th><th>分类</th><th>SEO</th><th>图片</th><th>操作</th></tr></thead><tbody data-product-rows></tbody></table></div>
+          <div class="table-wrap"><table><thead><tr><th>Product</th><th>Category</th><th>SEO</th><th>Image</th><th>Action</th></tr></thead><tbody data-product-rows></tbody></table></div>
         </div>
         <form class="editor" data-product-editor>
-          <h2>产品编辑</h2>
+          <h2>Product Editor</h2>
           <label>Name<input name="name" required></label>
           <label>Category Slug<input name="categorySlug" required></label>
           <label>Short Description<textarea name="shortDescription"></textarea></label>
@@ -251,7 +250,7 @@
           <label>SEO Title<input name="seoTitle"></label>
           <label>SEO Description<textarea name="seoDescription"></textarea></label>
           <label>Main Image<input name="image"></label>
-          <button class="button primary" type="submit">保存产品</button>
+          <button class="button primary" type="submit">Save Product</button>
         </form>
       </div>`;
     const search = panel.querySelector("[data-product-search]");
@@ -268,7 +267,7 @@
         return matched && categoryMatched && statusMatched;
       });
       panel.querySelector("[data-product-rows]").innerHTML = rows.map((p) => `
-        <tr><td><strong>${escapeHtml(p.name)}</strong><br><span class="muted">${escapeHtml(p.slug)}</span></td><td>${escapeHtml(p.categorySlug)}</td><td>${p.seoTitle && p.seoDescription ? "<span class='badge'>OK</span>" : "<span class='danger'>Missing</span>"}</td><td>${p.image ? "<span class='badge'>OK</span>" : "<span class='danger'>Missing</span>"}</td><td><button class="button secondary" data-edit-product="${escapeHtml(p.slug)}">编辑</button></td></tr>`).join("");
+        <tr><td><strong>${escapeHtml(p.name)}</strong><br><span class="muted">${escapeHtml(p.slug)}</span></td><td>${escapeHtml(p.categorySlug)}</td><td>${p.seoTitle && p.seoDescription ? "<span class='badge'>OK</span>" : "<span class='danger'>Missing</span>"}</td><td>${p.image ? "<span class='badge'>OK</span>" : "<span class='danger'>Missing</span>"}</td><td><button class="button secondary" data-edit-product="${escapeHtml(p.slug)}">Edit</button></td></tr>`).join("");
     };
     [search, category, status].forEach((el) => el.addEventListener("input", update));
     panel.querySelector("[data-export-products]").addEventListener("click", () => exportCsv("products.csv", products));
@@ -284,29 +283,81 @@
     });
     panel.querySelector("[data-product-editor]").addEventListener("submit", async (event) => {
       event.preventDefault();
-      if (!state.selectedProduct) return showStatus("请先选择一个产品。", true);
+      if (!state.selectedProduct) return showStatus("Please select a product first.", true);
       const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
       payload.applications = payload.applications.split(",").map((item) => item.trim()).filter(Boolean);
       payload.features = payload.features.split(",").map((item) => item.trim()).filter(Boolean);
       await api(`/api/admin/products/${encodeURIComponent(state.selectedProduct.slug)}`, { method: "PUT", body: JSON.stringify(payload) });
-      showStatus("产品已保存。重新生成静态页面后，前台页面会更新。");
+      showStatus("Product saved. Regenerate static pages before publishing static output.");
       await loadProducts();
     });
     update();
   }
 
   async function loadSeo() {
-    const data = await api("/api/admin/seo");
+    const [data, googleSeo] = await Promise.all([
+      api("/api/admin/seo"),
+      api("/api/admin/google-seo").catch((error) => ({ configured: false, error: error.message, latest: null, jobs: [] }))
+    ]);
+    const latest = googleSeo.latest || {};
+    const summary = latest.summary || {};
+    const deltas = latest.deltas || {};
     document.querySelector("[data-panel='seo']").innerHTML = `
       <div class="cards">
-        ${metric("页面总数", data.total)}
-        ${metric("缺标题", data.missingTitle)}
-        ${metric("缺描述", data.missingDescription)}
-        ${metric("缺图片", data.missingImage)}
+        ${metric("Pages", data.total)}
+        ${metric("Missing Title", data.missingTitle)}
+        ${metric("Missing Description", data.missingDescription)}
+        ${metric("Missing Image", data.missingImage)}
+        ${metric("GSC Clicks", summary.clicks ?? "Not synced")}
+        ${metric("GSC Impressions", summary.impressions ?? "Not synced")}
       </div>
-      <div class="section-card"><h2>SEO 检查</h2>${table(data.rows, ["page", "title", "description", "image", "canonical", "status"])}</div>`;
+      <div class="section-card">
+        <h2>Google SEO Data Sync</h2>
+        <p class="muted">Property: ${escapeHtml(googleSeo.propertyUrl || "Not configured")} | Service Account: ${escapeHtml(googleSeo.serviceAccountEmail || "Not configured")} | Last sync: ${escapeHtml(latest.syncedAt || "Never")}</p>
+        <div class="toolbar">
+          <button class="button primary" data-sync-google-seo type="button">${googleSeo.configured ? "Sync Google SEO Now" : "Google Not Configured"}</button>
+          <a class="button secondary" href="https://search.google.com/search-console" target="_blank" rel="noreferrer">Open Search Console</a>
+        </div>
+        <div class="cards">
+          ${metric("Clicks Delta", deltas.clicks ?? 0)}
+          ${metric("Impressions Delta", deltas.impressions ?? 0)}
+          ${metric("CTR", summary.ctr ? `${(summary.ctr * 100).toFixed(2)}%` : 0)}
+          ${metric("Avg Position", summary.position ? summary.position.toFixed(1) : 0)}
+        </div>
+        <div class="mini-grid">
+          <div><h3>Top Pages</h3>${table((latest.topPages || []).slice(0, 10).map(gscRow), ["name", "clicks", "impressions", "ctr", "position"])}</div>
+          <div><h3>Top Queries</h3>${table((latest.topQueries || []).slice(0, 10).map(gscRow), ["name", "clicks", "impressions", "ctr", "position"])}</div>
+          <div><h3>Countries</h3>${table((latest.countries || []).slice(0, 10).map(gscRow), ["name", "clicks", "impressions", "ctr", "position"])}</div>
+          <div><h3>Devices</h3>${table((latest.devices || []).slice(0, 10).map(gscRow), ["name", "clicks", "impressions", "ctr", "position"])}</div>
+        </div>
+        <h3>Sync Jobs</h3>${table((googleSeo.jobs || []).slice(0, 8), ["id", "status", "started_at", "completed_at", "clicks", "impressions", "error_message"])}
+      </div>
+      <div class="section-card"><h2>SEO Check</h2>${table(data.rows, ["page", "title", "description", "image", "canonical", "status"])}</div>`;
+    document.querySelector("[data-sync-google-seo]")?.addEventListener("click", async (event) => {
+      if (!googleSeo.configured) return showStatus("Google Search Console service account is not configured.", true);
+      event.currentTarget.disabled = true;
+      event.currentTarget.textContent = "Syncing...";
+      try {
+        const result = await api("/api/admin/google-seo/sync", { method: "POST", body: "{}" });
+        showStatus(`Google SEO synced: ${result.data.summary.clicks} clicks / ${result.data.summary.impressions} impressions`);
+        await loadSeo();
+      } catch (error) {
+        showStatus(error.message, true);
+        event.currentTarget.disabled = false;
+        event.currentTarget.textContent = "Sync Google SEO Now";
+      }
+    });
   }
 
+  function gscRow(row) {
+    return {
+      name: (row.keys || [])[0] || "",
+      clicks: row.clicks || 0,
+      impressions: row.impressions || 0,
+      ctr: row.ctr ? `${(row.ctr * 100).toFixed(2)}%` : "0%",
+      position: row.position ? row.position.toFixed(1) : "0"
+    };
+  }
   async function loadNews() {
     const panel = document.querySelector("[data-panel='news']");
     const [articles, newsState] = await Promise.all([api("/api/admin/news"), api("/api/admin/news/state")]);
@@ -335,17 +386,17 @@
       </div>
       <div class="split">
         <div class="section-card">
-          <h2>新闻 / 博客</h2>
+          <h2>News / Blog</h2>
           <div class="toolbar">
-            <input data-news-search placeholder="搜索新闻标题、slug、摘要">
-            <select data-news-status><option value="">全部状态</option><option value="published">Published</option><option value="draft">Draft</option></select>
-            <button class="button secondary" data-new-article type="button">新增新闻</button>
-            <button class="button secondary" data-export-news type="button">导出 CSV</button>
+            <input data-news-search placeholder="Search news title, slug, summary">
+            <select data-news-status><option value="">All status</option><option value="published">Published</option><option value="draft">Draft</option></select>
+            <button class="button secondary" data-new-article type="button">New Article</button>
+            <button class="button secondary" data-export-news type="button">Export CSV</button>
           </div>
           <div data-news-table></div>
         </div>
         <form class="editor" data-news-editor>
-          <h2>新闻编辑</h2>
+          <h2>News Editor</h2>
           <label>Slug<input name="slug" required></label>
           <label>Title<input name="title" required></label>
           <label>Summary<textarea name="summary"></textarea></label>
@@ -354,7 +405,7 @@
           <label>Source URL<input name="sourceUrl"></label>
           <label>SEO Title<input name="seoTitle"></label>
           <label>SEO Description<textarea name="seoDescription"></textarea></label>
-          <button class="button primary" type="submit">保存新闻</button>
+          <button class="button primary" type="submit">Save News</button>
         </form>
       </div>`;
     const render = () => {
@@ -369,7 +420,7 @@
         title: item.title,
         date: item.date,
         status: item.status || "published",
-        action: `<button class="button secondary" data-edit-news="${escapeHtml(item.slug)}">编辑</button>`,
+        action: `<button class="button secondary" data-edit-news="${escapeHtml(item.slug)}">Edit</button>`,
       })), ["slug", "title", "date", "status", "action"], true);
     };
     panel.querySelector("[data-news-search]").addEventListener("input", render);
@@ -402,7 +453,7 @@
       event.preventDefault();
       const payload = Object.fromEntries(new FormData(event.currentTarget).entries());
       await api("/api/admin/news", { method: "PUT", body: JSON.stringify(payload) });
-      showStatus("新闻已保存。");
+      showStatus("News saved.");
       await loadNews();
     });
     render();
@@ -412,12 +463,12 @@
     const data = await api("/api/admin/links");
     document.querySelector("[data-panel='links']").innerHTML = `
       <div class="cards">
-        ${metric("内链", data.internal)}
-        ${metric("外链", data.external)}
-        ${metric("空链接", data.empty)}
-        ${metric("待检查", data.warnings)}
+        ${metric("鍐呴摼", data.internal)}
+        ${metric("External Links", data.external)}
+        ${metric("Empty Links", data.empty)}
+        ${metric("Warnings", data.warnings)}
       </div>
-      <div class="section-card"><h2>链接审计</h2>${table(data.rows, ["module", "count", "status", "note"])}</div>`;
+      <div class="section-card"><h2>Link Audit</h2>${table(data.rows, ["module", "count", "status", "note"])}</div>`;
   }
 
   async function loadSettings() {
@@ -425,7 +476,7 @@
     const data = await api("/api/admin/settings");
     panel.innerHTML = `
       <form class="editor form-grid" data-settings-form>
-        <h2>系统设置</h2>
+        <h2>System Settings</h2>
         <label>Company Name<input name="companyName"></label>
         <label>Brand Name<input name="brandName"></label>
         <label>Global Website<input name="globalWebsite"></label>
@@ -435,7 +486,7 @@
         <label>Default Language<input name="defaultLanguage"></label>
         <label>Supported Languages<textarea name="supportedLanguages"></textarea></label>
         <label>Market Coverage<textarea name="marketCoverage"></textarea></label>
-        <button class="button primary">保存设置</button>
+        <button class="button primary">Save Settings</button>
       </form>`;
     const form = panel.querySelector("[data-settings-form]");
     Object.keys(data || {}).forEach((key) => {
@@ -447,7 +498,7 @@
       payload.marketCoverage = splitList(payload.marketCoverage);
       payload.supportedLanguages = splitList(payload.supportedLanguages);
       await api("/api/admin/settings", { method: "PUT", body: JSON.stringify(payload) });
-      showStatus("系统设置已保存。");
+      showStatus("System settings saved.");
     });
   }
 
@@ -458,16 +509,16 @@
   function rankList(items, labelKey, valueKey) {
     const max = Math.max(1, ...(items || []).map((item) => Number(item[valueKey] || 0)));
     const html = (items || []).map((item) => `<p><strong>${escapeHtml(item[labelKey] || "Unknown")}</strong><span class="muted"> ${item[valueKey] || 0}</span></p><div class="bar"><span style="width:${Math.max(6, (Number(item[valueKey] || 0) / max) * 100)}%"></span></div>`).join("");
-    return `<div>${html || "<p class='muted'>暂无数据，打开前台页面后会自动记录。</p>"}</div>`;
+    return `<div>${html || "<p class='muted'>No data yet. Open frontend pages to record visits.</p>"}</div>`;
   }
 
   function table(items, keys, allowHtml = false) {
     const rows = (items || []).map((item) => `<tr>${keys.map((key) => `<td>${allowHtml && key === "action" ? item[key] : key === "tag" ? tagBadge(item[key]) : escapeHtml(formatValue(item?.[key]))}</td>`).join("")}</tr>`).join("");
-    return `<div class="table-wrap"><table><thead><tr>${keys.map((key) => `<th>${escapeHtml(key)}</th>`).join("")}</tr></thead><tbody>${rows || `<tr><td colspan="${keys.length}">暂无数据</td></tr>`}</tbody></table></div>`;
+    return `<div class="table-wrap"><table><thead><tr>${keys.map((key) => `<th>${escapeHtml(key)}</th>`).join("")}</tr></thead><tbody>${rows || `<tr><td colspan="${keys.length}">鏆傛棤鏁版嵁</td></tr>`}</tbody></table></div>`;
   }
 
   function tagBadge(value) {
-    const old = String(value).includes("老");
+    const old = String(value).includes("Returning");
     return `<span class="badge ${old ? "old" : "new"}">${escapeHtml(value)}</span>`;
   }
 

@@ -6,6 +6,7 @@ import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, isExternalNewsImage } from "../../lib/news-system.js";
+import { googleSeoConfig, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -109,6 +110,8 @@ const jsonFiles = new Map([
   ["data/cms/enquiries.json", []],
   ["data/cms/audit-logs.json", []],
   ["data/cms/analytics-events.json", []],
+  ["data/seo/google-search-console.json", null],
+  ["data/seo/google-seo-jobs.json", []],
   ["data/cms/settings.json", {
     companyName: "Quzhou Qiying Import & Export Co., Ltd.",
     brandName: "Cowinmagnet",
@@ -392,6 +395,55 @@ async function seoSummary() {
   };
 }
 
+async function googleSeoState() {
+  const [latest, jobs] = await Promise.all([
+    readJson("data/seo/google-search-console.json"),
+    readJson("data/seo/google-seo-jobs.json")
+  ]);
+  const config = googleSeoConfig();
+  return {
+    configured: config.configured,
+    propertyUrl: config.propertyUrl,
+    serviceAccountEmail: config.clientEmail,
+    latest,
+    jobs: (jobs || []).slice(0, 20)
+  };
+}
+
+async function syncGoogleSeo(user = "cron") {
+  const jobs = await readJson("data/seo/google-seo-jobs.json");
+  const job = {
+    id: `GSC-${Date.now()}-${token(5)}`,
+    status: "running",
+    started_at: new Date().toISOString(),
+    requested_by: user
+  };
+  jobs.unshift(job);
+  await writeJson("data/seo/google-seo-jobs.json", jobs.slice(0, 200));
+  try {
+    const data = await runGoogleSeoSync();
+    await writeJson("data/seo/google-search-console.json", data);
+    job.status = "completed";
+    job.completed_at = new Date().toISOString();
+    job.propertyUrl = data.propertyUrl;
+    job.clicks = data.summary.clicks;
+    job.impressions = data.summary.impressions;
+    job.rows = {
+      topPages: data.topPages.length,
+      topQueries: data.topQueries.length,
+      pageQueries: data.pageQueries.length
+    };
+    await writeJson("data/seo/google-seo-jobs.json", jobs.slice(0, 200));
+    return { job, data };
+  } catch (error) {
+    job.status = "failed";
+    job.completed_at = new Date().toISOString();
+    job.error_message = error?.message || String(error);
+    await writeJson("data/seo/google-seo-jobs.json", jobs.slice(0, 200));
+    throw error;
+  }
+}
+
 async function linksSummary() {
   const [products, categories, industries, solutions, markets, articles, downloads] = await Promise.all([
     readJson("data/products/products.json"),
@@ -479,6 +531,16 @@ async function handleCronNews(request) {
   if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
   const result = await runNewsAutomation();
   return response({ success: true, data: result, requestId: token(8) });
+}
+
+async function handleCronGoogleSeo(request) {
+  if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
+  try {
+    const result = await syncGoogleSeo("cron");
+    return response({ success: true, data: result, requestId: token(8) });
+  } catch (error) {
+    return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
+  }
 }
 
 function sourceFromReferrer(referrer) {
@@ -656,6 +718,17 @@ async function handleAdmin(request, path) {
 
   if (path === "admin/analytics" && request.method === "GET") return response({ success: true, data: await analyticsSummary(), requestId: token(8) });
   if (path === "admin/seo" && request.method === "GET") return response({ success: true, data: await seoSummary(), requestId: token(8) });
+  if (path === "admin/google-seo" && request.method === "GET") return response({ success: true, data: await googleSeoState(), requestId: token(8) });
+  if (path === "admin/google-seo/sync" && request.method === "POST") {
+    try {
+      const result = await syncGoogleSeo(session.user);
+      await audit(session.user, "Google SEO Sync", "GoogleSearchConsole", result.data.propertyUrl, `Synced ${result.data.summary.clicks} clicks and ${result.data.summary.impressions} impressions`);
+      return response({ success: true, data: result, requestId: token(8) });
+    } catch (error) {
+      await audit(session.user, "Google SEO Sync Failed", "GoogleSearchConsole", "sync", error?.message || String(error));
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
+    }
+  }
   if (path === "admin/links" && request.method === "GET") return response({ success: true, data: await linksSummary(), requestId: token(8) });
   if (path === "admin/products" && request.method === "GET") return response({ success: true, data: await readJson("data/products/products.json"), requestId: token(8) });
 
@@ -789,7 +862,8 @@ async function dispatch(request, context) {
   if (path === "logout" && request.method === "POST") return handleLogout();
   if (path === "enquiries" && request.method === "POST") return handleEnquiries(request);
   if (path === "track" && request.method === "POST") return handleTrack(request);
-  if (path === "cron/news" && request.method === "POST") return handleCronNews(request);
+  if (path === "cron/news" && ["GET", "POST"].includes(request.method)) return handleCronNews(request);
+  if (path === "cron/google-seo" && ["GET", "POST"].includes(request.method)) return handleCronGoogleSeo(request);
   if (path === "news" && request.method === "GET") return publicNewsList(request);
   if (path === "news/categories" && request.method === "GET") return publicNewsCategories();
   const publicNewsMatch = path.match(/^news\/([^/]+)$/);
