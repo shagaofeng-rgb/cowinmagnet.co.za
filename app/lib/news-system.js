@@ -1,9 +1,15 @@
 import crypto from "node:crypto";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join, normalize, sep } from "node:path";
+import pg from "pg";
 
 const root = process.cwd();
 const dataRoot = join(root, "data");
+const writableDataRoot = join(tmpdir(), "cowinmagnet-africa-data");
+const { Pool } = pg;
+let pool;
+let schemaReady;
 
 const DEFAULT_SOURCES = [
   {
@@ -80,13 +86,90 @@ const PRODUCT_KEYWORDS = [
   "processing"
 ];
 
-function safeDataPath(relativePath) {
+function cleanDataPath(relativePath) {
   const clean = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (clean.startsWith("..") || clean.includes(`..${sep}`)) throw new Error("Invalid data path");
-  return join(dataRoot, clean);
+  return clean;
+}
+
+function safeDataPath(relativePath) {
+  return join(dataRoot, cleanDataPath(relativePath));
+}
+
+function safeWritableDataPath(relativePath) {
+  return join(writableDataRoot, cleanDataPath(relativePath));
+}
+
+function databaseConnectionString() {
+  if (!process.env.DATABASE_URL) return "";
+  try {
+    const url = new URL(process.env.DATABASE_URL);
+    url.searchParams.delete("ssl");
+    url.searchParams.delete("sslmode");
+    return url.toString();
+  } catch {
+    return process.env.DATABASE_URL;
+  }
+}
+
+function getPool() {
+  if (!process.env.DATABASE_URL) return null;
+  if (!pool) {
+    const connectionString = databaseConnectionString();
+    pool = new Pool({
+      connectionString,
+      ssl: connectionString.includes("localhost") ? false : { rejectUnauthorized: false }
+    });
+  }
+  return pool;
+}
+
+async function ensureDatabaseSchema() {
+  const db = getPool();
+  if (!db) return false;
+  if (!schemaReady) {
+    schemaReady = db.query(`
+      CREATE TABLE IF NOT EXISTS africa_json_documents (
+        path TEXT PRIMARY KEY,
+        payload JSONB NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `).then(() => true);
+  }
+  return schemaReady;
+}
+
+async function readDatabaseJson(relativePath) {
+  const db = getPool();
+  if (!db) return null;
+  await ensureDatabaseSchema();
+  const result = await db.query("SELECT payload FROM africa_json_documents WHERE path = $1", [relativePath]);
+  return result.rows[0]?.payload ?? null;
+}
+
+async function writeDatabaseJson(relativePath, value) {
+  const db = getPool();
+  if (!db) return false;
+  await ensureDatabaseSchema();
+  await db.query(
+    `INSERT INTO africa_json_documents (path, payload, updated_at)
+     VALUES ($1, $2::jsonb, NOW())
+     ON CONFLICT (path) DO UPDATE SET payload = EXCLUDED.payload, updated_at = NOW()`,
+    [relativePath, JSON.stringify(value)]
+  );
+  return true;
 }
 
 export async function readDataJson(relativePath, fallback) {
+  const databaseValue = await readDatabaseJson(relativePath);
+  if (databaseValue !== null) return databaseValue;
+  if (process.env.VERCEL) {
+    try {
+      const raw = await readFile(safeWritableDataPath(relativePath), "utf8");
+      if (!raw.trim()) return fallback;
+      return JSON.parse(raw.replace(/^\uFEFF/, ""));
+    } catch {}
+  }
   try {
     const raw = await readFile(safeDataPath(relativePath), "utf8");
     if (!raw.trim()) return fallback;
@@ -97,7 +180,8 @@ export async function readDataJson(relativePath, fallback) {
 }
 
 export async function writeDataJson(relativePath, value) {
-  const filePath = safeDataPath(relativePath);
+  if (await writeDatabaseJson(relativePath, value)) return;
+  const filePath = process.env.VERCEL ? safeWritableDataPath(relativePath) : safeDataPath(relativePath);
   await mkdir(dirname(filePath), { recursive: true });
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
