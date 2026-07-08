@@ -1,0 +1,11 @@
+[
+  {
+    "id": "admin",
+    "name": "Administrator",
+    "email": "davidsha@cowinmagnet.com",
+    "role": "Super Admin",
+    "status": "active",
+    "createdAt": "2026-07-08T00:00:00.000Z",
+    "updatedAt": "2026-07-08T00:00:00.000Z"
+  }
+]

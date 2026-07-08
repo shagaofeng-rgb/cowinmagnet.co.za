@@ -33,6 +33,9 @@ label { display: grid; gap: 7px; font-weight: 800; color: #dcecff; }
 input, textarea, select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: #0a1324; color: var(--text); }
 textarea { min-height: 118px; resize: vertical; }
 output, .status { color: var(--green); font-weight: 800; }
+.password-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: end; }
+.inline-check { display: flex; align-items: center; gap: 8px; font-weight: 800; }
+.inline-check input { width: auto; min-height: 0; }
 .admin-shell { display: grid; grid-template-columns: 248px minmax(0,1fr); min-height: 100vh; background: radial-gradient(circle at 20% 12%, rgba(255,213,29,.13), transparent 20%), linear-gradient(120deg, #07111d, #08283b 48%, #06111c); }
 .sidebar { position: sticky; top: 0; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; gap: 22px; padding: 18px 14px; border-right: 1px solid #14263c; background: #050c14; }
 .sidebar nav { display: grid; align-content: start; gap: 8px; }
@@ -54,6 +57,13 @@ output, .status { color: var(--green); font-weight: 800; }
 .section-card h2 { margin: 0 0 14px; }
 .muted { color: var(--muted); }
 .toolbar { display: grid; grid-template-columns: minmax(240px,1fr) minmax(180px,.35fr) minmax(180px,.35fr) auto; gap: 10px; margin: 16px 0; }
+.toolbar.compact { grid-template-columns: minmax(240px,1fr) repeat(4, minmax(120px,.22fr)) auto; }
+.pager { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 14px; color: var(--muted); }
+.pager button { min-height: 34px; padding: 6px 10px; }
+.form-row { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; background: #10233b; color: #d8efff; font-size: 12px; font-weight: 900; }
+.soft { opacity: .72; }
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 980px; }
 th, td { padding: 14px 12px; border-bottom: 1px solid #1a2a43; text-align: left; vertical-align: top; }

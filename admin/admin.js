@@ -43,6 +43,12 @@
   async function initLogin() {
     const form = document.querySelector("[data-login-form]");
     if (!form) return;
+    document.querySelector("[data-toggle-password]")?.addEventListener("click", (event) => {
+      const input = form.querySelector("input[name='password']");
+      const visible = input.type === "text";
+      input.type = visible ? "password" : "text";
+      event.currentTarget.textContent = visible ? "显示" : "隐藏";
+    });
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const status = form.querySelector("[data-status]");

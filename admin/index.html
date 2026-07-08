@@ -4,57 +4,61 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Cowinmagnet Africa Admin</title>
+  <title>Cowinmagnet Africa CMS</title>
   <link rel="stylesheet" href="/admin/admin.css">
 </head>
 <body class="admin-shell">
   <aside class="sidebar">
-    <a class="brand" href="/admin/"><span class="brand-mark">CY</span><span><strong>网站数据后台</strong><small>Cowinmagnet Africa</small></span></a>
+    <a class="brand" href="/admin/">
+      <span class="brand-mark">CY</span>
+      <span><strong data-i18n="adminTitle">CMS</strong><small>Cowinmagnet Africa</small></span>
+    </a>
     <nav aria-label="Admin modules">
-      <button data-view="dashboard" class="active">数据总览</button>
-      <button data-view="traffic">流量分析</button>
-      <button data-view="seo">SEO 数据</button>
-      <button data-view="products">产品管理</button>
-      <button data-view="news">新闻管理</button>
-      <button data-view="links">内外链审计</button>
-      <button data-view="visitors">访客记录</button>
-      <button data-view="pages">页面表现</button>
-      <button data-view="paths">访问路径</button>
-      <button data-view="settings">系统设置</button>
+      <button data-view="dashboard" class="active"></button>
+      <button data-view="categories"></button>
+      <button data-view="products"></button>
+      <button data-view="news"></button>
+      <button data-view="forms"></button>
+      <button data-view="analytics"></button>
+      <button data-view="seo"></button>
+      <button data-view="media"></button>
+      <button data-view="users"></button>
+      <button data-view="sync"></button>
+      <button data-view="logs"></button>
+      <button data-view="settings"></button>
     </nav>
-    <div class="sidebar-foot">
-      <strong data-side-summary>同步中...</strong>
-      <span data-side-sync>最近同步：本地</span>
-      <span>当前账号</span>
-      <b>davidsha@cowinmagnet.com</b>
-      <button class="button primary" data-logout>退出登录</button>
+    <div class="sidebar-footer">
+      <small data-i18n="accountLabel">Account</small>
+      <strong data-user-email>...</strong>
+      <button class="button secondary" data-logout></button>
     </div>
   </aside>
   <main class="admin-main">
-    <header class="topbar">
+    <header class="admin-topbar">
       <div>
-        <p class="eyebrow" data-section-kicker>数据总览</p>
-        <h1 data-page-title>网站数据总览</h1>
-        <p class="hero-copy" data-page-copy>非洲站数据后台，统计访问、页面、来源、产品、询盘、SEO 与内容维护状态。</p>
+        <p class="eyebrow" data-section-kicker>Cowinmagnet Africa</p>
+        <h1 data-section-title></h1>
+        <p data-section-desc></p>
       </div>
-      <div class="top-actions">
-        <a class="button secondary" href="/en-za/" target="_blank" rel="noreferrer">打开前台</a>
-        <button class="button primary" data-refresh>刷新当前范围</button>
+      <div class="topbar-actions">
+        <a class="button secondary" href="/en-za/" target="_blank" rel="noopener" data-i18n="viewSite"></a>
+        <button class="button primary" data-refresh></button>
       </div>
     </header>
-    <section class="sync-strip"><span>● 30 分钟自动同步已配置</span><span data-sync-state>前端刷新：等待中；状态：ready</span></section>
-    <section data-status class="status" hidden></section>
-    <section data-panel="dashboard" class="panel-view"></section>
-    <section data-panel="traffic" class="panel-view" hidden></section>
-    <section data-panel="products" class="panel-view" hidden></section>
-    <section data-panel="news" class="panel-view" hidden></section>
-    <section data-panel="links" class="panel-view" hidden></section>
-    <section data-panel="visitors" class="panel-view" hidden></section>
-    <section data-panel="pages" class="panel-view" hidden></section>
-    <section data-panel="paths" class="panel-view" hidden></section>
-    <section data-panel="seo" class="panel-view" hidden></section>
-    <section data-panel="settings" class="panel-view" hidden></section>
+    <div class="notice" data-status></div>
+    <section data-panel="dashboard" class="admin-panel active"></section>
+    <section data-panel="categories" class="admin-panel"></section>
+    <section data-panel="products" class="admin-panel"></section>
+    <section data-panel="news" class="admin-panel"></section>
+    <section data-panel="forms" class="admin-panel"></section>
+    <section data-panel="analytics" class="admin-panel"></section>
+    <section data-panel="seo" class="admin-panel"></section>
+    <section data-panel="media" class="admin-panel"></section>
+    <section data-panel="users" class="admin-panel"></section>
+    <section data-panel="sync" class="admin-panel"></section>
+    <section data-panel="logs" class="admin-panel"></section>
+    <section data-panel="settings" class="admin-panel"></section>
   </main>
-  <script src="/admin/admin.js"></script>
+  <script src="/admin/admin-v2.js"></script>
 </body>
 </html>

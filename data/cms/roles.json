@@ -1,0 +1,32 @@
+[
+  {
+    "id": "super-admin",
+    "name": "Super Admin",
+    "description": "Full access to all website, content, SEO, analytics and system settings.",
+    "permissions": ["*"]
+  },
+  {
+    "id": "admin",
+    "name": "Admin",
+    "description": "Manage products, news, enquiries, media and SEO data.",
+    "permissions": ["dashboard:view", "products:*", "news:*", "enquiries:*", "media:*", "seo:*"]
+  },
+  {
+    "id": "editor",
+    "name": "Editor",
+    "description": "Create and update website content.",
+    "permissions": ["products:view", "news:*", "media:*", "seo:view"]
+  },
+  {
+    "id": "sales",
+    "name": "Sales",
+    "description": "View and follow up customer enquiries.",
+    "permissions": ["dashboard:view", "enquiries:*", "products:view"]
+  },
+  {
+    "id": "viewer",
+    "name": "Viewer",
+    "description": "Read-only backend access.",
+    "permissions": ["dashboard:view", "products:view", "news:view", "analytics:view", "seo:view"]
+  }
+]

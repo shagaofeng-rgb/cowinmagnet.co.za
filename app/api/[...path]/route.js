@@ -110,6 +110,17 @@ const jsonFiles = new Map([
   ["data/cms/enquiries.json", []],
   ["data/cms/audit-logs.json", []],
   ["data/cms/analytics-events.json", []],
+  ["data/cms/users.json", [
+    { id: "USR-admin", email: adminEmail, name: "David Sha", role: "超级管理员", status: "active", lastLoginAt: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+  ]],
+  ["data/cms/roles.json", [
+    { id: "ROLE-super-admin", name: "超级管理员", description: "拥有所有后台模块权限", permissions: ["*"], status: "active" },
+    { id: "ROLE-admin", name: "管理员", description: "管理内容、询盘和数据同步", permissions: ["dashboard:view", "products:*", "categories:*", "news:*", "forms:*", "analytics:view", "seo:*", "media:*", "sync:*", "logs:view", "settings:view"], status: "active" },
+    { id: "ROLE-editor", name: "内容编辑", description: "维护产品、分类、新闻和媒体", permissions: ["products:view", "products:edit", "categories:view", "categories:edit", "news:*", "media:*"], status: "active" },
+    { id: "ROLE-sales", name: "销售人员", description: "查看和跟进客户表单", permissions: ["forms:*", "products:view", "analytics:view"], status: "active" },
+    { id: "ROLE-readonly", name: "只读用户", description: "只读查看后台数据", permissions: ["dashboard:view", "products:view", "categories:view", "news:view", "forms:view", "analytics:view", "seo:view"], status: "active" }
+  ]],
+  ["data/media/assets.json", []],
   ["data/seo/google-search-console.json", null],
   ["data/seo/google-seo-jobs.json", []],
   ["data/cms/settings.json", {
@@ -142,6 +153,65 @@ function token(bytes = 32) {
 
 function hash(text) {
   return crypto.createHash("sha256").update(text).digest("hex");
+}
+
+function slugifyAdmin(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function listParams(request) {
+  const url = new URL(request.url);
+  const page = Math.max(1, Number(url.searchParams.get("page") || 1));
+  const pageSize = Math.min(100, Math.max(10, Number(url.searchParams.get("pageSize") || url.searchParams.get("limit") || 20)));
+  const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
+  const status = String(url.searchParams.get("status") || "").trim().toLowerCase();
+  const sort = String(url.searchParams.get("sort") || "updatedAt");
+  const dir = String(url.searchParams.get("dir") || "desc").toLowerCase() === "asc" ? "asc" : "desc";
+  return { page, pageSize, q, status, sort, dir };
+}
+
+function paginate(items, request, options = {}) {
+  const params = listParams(request);
+  const searchFields = options.searchFields || [];
+  const statusField = options.statusField || "status";
+  let rows = Array.isArray(items) ? [...items] : [];
+  if (!options.includeDeleted) rows = rows.filter((item) => !item.deletedAt);
+  if (params.q) {
+    rows = rows.filter((item) => searchFields.some((field) => String(item?.[field] || "").toLowerCase().includes(params.q)));
+  }
+  if (params.status) {
+    rows = rows.filter((item) => String(item?.[statusField] || "").toLowerCase() === params.status);
+  }
+  rows.sort((a, b) => {
+    const av = String(a?.[params.sort] ?? a?.updatedAt ?? a?.createdAt ?? "");
+    const bv = String(b?.[params.sort] ?? b?.updatedAt ?? b?.createdAt ?? "");
+    return params.dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
+  });
+  const total = rows.length;
+  const start = (params.page - 1) * params.pageSize;
+  return {
+    items: rows.slice(start, start + params.pageSize),
+    page: params.page,
+    pageSize: params.pageSize,
+    total,
+    totalPages: Math.max(1, Math.ceil(total / params.pageSize))
+  };
+}
+
+function csvResponse(filename, rows) {
+  const keys = [...new Set((rows || []).flatMap((row) => Object.keys(row || {}).filter((key) => typeof row[key] !== "object")))];
+  const csv = [keys.join(","), ...(rows || []).map((row) => keys.map((key) => `"${String(row[key] ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
+  return new Response(csv, {
+    headers: {
+      "content-type": "text/csv; charset=utf-8",
+      "content-disposition": `attachment; filename="${filename}"`,
+      "x-robots-tag": "noindex, nofollow"
+    }
+  });
 }
 
 function hashAdminPassword(password) {
@@ -474,6 +544,145 @@ async function linksSummary() {
   };
 }
 
+async function adminCategories(request, session) {
+  const categories = await readJson("data/categories/categories.json");
+  if (request.method === "GET") {
+    return response({ success: true, data: paginate(categories, request, { searchFields: ["name", "title", "slug", "description"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  }
+  const body = await bodyJson(request);
+  const slug = slugifyAdmin(body.slug || body.name || body.title);
+  if (!slug || !(body.name || body.title)) return response({ success: false, error: "分类名称和 Slug 必填", requestId: token(8) }, 400);
+  if (body.parentSlug && body.parentSlug === slug) return response({ success: false, error: "分类不能将自己设置为父级", requestId: token(8) }, 400);
+  const existing = categories.find((item) => item.slug === slug);
+  const now = new Date().toISOString();
+  const payload = {
+    slug,
+    name: String(body.name || body.title || ""),
+    title: String(body.title || body.name || ""),
+    englishName: String(body.englishName || body.name || body.title || ""),
+    parentSlug: String(body.parentSlug || ""),
+    description: String(body.description || ""),
+    image: String(body.image || ""),
+    icon: String(body.icon || ""),
+    sortOrder: Number(body.sortOrder || body.order || 0),
+    status: String(body.status || "active"),
+    navVisible: body.navVisible !== false,
+    seoTitle: String(body.seoTitle || body.name || body.title || ""),
+    seoDescription: String(body.seoDescription || body.description || ""),
+    canonicalUrl: String(body.canonicalUrl || ""),
+    updatedAt: now,
+    updatedBy: session.user
+  };
+  if (existing) Object.assign(existing, payload);
+  else categories.push({ ...payload, createdAt: now, createdBy: session.user });
+  await writeJson("data/categories/categories.json", categories);
+  await audit(session.user, existing ? "Category Updated" : "Category Created", "Category", slug, `Product category ${existing ? "updated" : "created"}`);
+  return response({ success: true, data: { slug }, requestId: token(8) });
+}
+
+async function adminCategoryAction(request, session, slug, action) {
+  const categories = await readJson("data/categories/categories.json");
+  const item = categories.find((entry) => entry.slug === slug);
+  if (!item) return response({ success: false, error: "分类不存在", requestId: token(8) }, 404);
+  if (action === "delete") item.deletedAt = new Date().toISOString();
+  if (action === "restore") delete item.deletedAt;
+  if (action === "disable") item.status = "disabled";
+  if (action === "enable") item.status = "active";
+  item.updatedAt = new Date().toISOString();
+  item.updatedBy = session.user;
+  await writeJson("data/categories/categories.json", categories);
+  await audit(session.user, `Category ${action}`, "Category", slug, `Category ${action}`);
+  return response({ success: true, data: item, requestId: token(8) });
+}
+
+async function adminEnquiriesList(request) {
+  const items = await readJson("data/cms/enquiries.json");
+  const url = new URL(request.url);
+  let rows = items;
+  const country = String(url.searchParams.get("country") || "").toLowerCase();
+  const product = String(url.searchParams.get("product") || "").toLowerCase();
+  if (country) rows = rows.filter((item) => String(item.country || item.region || "").toLowerCase().includes(country));
+  if (product) rows = rows.filter((item) => String(item.product || item.productRequired || "").toLowerCase().includes(product));
+  return response({ success: true, data: paginate(rows, request, { searchFields: ["id", "name", "company", "email", "phone", "whatsapp", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true }), requestId: token(8) });
+}
+
+async function adminUsers(request, session) {
+  const [users, roles] = await Promise.all([readJson("data/cms/users.json"), readJson("data/cms/roles.json")]);
+  if (request.method === "GET") return response({ success: true, data: { users: paginate(users, request, { searchFields: ["email", "name", "role", "status"], includeDeleted: true }), roles }, requestId: token(8) });
+  const body = await bodyJson(request);
+  const email = String(body.email || "").trim().toLowerCase();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return response({ success: false, error: "请输入有效邮箱", requestId: token(8) }, 400);
+  const now = new Date().toISOString();
+  const existing = users.find((item) => item.email === email);
+  const payload = {
+    id: existing?.id || `USR-${token(6)}`,
+    email,
+    name: String(body.name || email),
+    role: String(body.role || "只读用户"),
+    status: String(body.status || "active"),
+    updatedAt: now,
+    updatedBy: session.user
+  };
+  if (existing) Object.assign(existing, payload);
+  else users.push({ ...payload, createdAt: now, createdBy: session.user });
+  await writeJson("data/cms/users.json", users);
+  await audit(session.user, existing ? "User Updated" : "User Created", "User", email, `Admin user ${existing ? "updated" : "created"}`);
+  return response({ success: true, data: payload, requestId: token(8) });
+}
+
+async function adminMedia(request, session) {
+  const assets = await readJson("data/media/assets.json");
+  if (request.method === "GET") return response({ success: true, data: paginate(assets, request, { searchFields: ["id", "filename", "url", "alt", "category", "mimeType"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  const body = await bodyJson(request);
+  const now = new Date().toISOString();
+  const id = String(body.id || `MED-${token(7)}`);
+  const existing = assets.find((item) => item.id === id);
+  const payload = {
+    id,
+    title: String(body.title || body.filename || body.name || ""),
+    filename: String(body.filename || body.title || body.name || ""),
+    url: String(body.url || ""),
+    alt: String(body.alt || ""),
+    caption: String(body.caption || ""),
+    category: String(body.category || "general"),
+    mimeType: String(body.mimeType || ""),
+    size: Number(body.size || 0),
+    usedBy: Array.isArray(body.usedBy) ? body.usedBy : [],
+    updatedAt: now,
+    updatedBy: session.user
+  };
+  if (!payload.url) return response({ success: false, error: "媒体 URL 必填", requestId: token(8) }, 400);
+  if (existing) Object.assign(existing, payload);
+  else assets.unshift({ ...payload, createdAt: now, createdBy: session.user });
+  await writeJson("data/media/assets.json", assets);
+  await audit(session.user, existing ? "Media Updated" : "Media Registered", "Media", id, `Media asset ${existing ? "updated" : "registered"}`);
+  return response({ success: true, data: payload, requestId: token(8) });
+}
+
+async function adminSyncState() {
+  const [newsState, googleSeo, googleJobs, storage] = await Promise.all([
+    getNewsState(),
+    readJson("data/seo/google-search-console.json"),
+    readJson("data/seo/google-seo-jobs.json"),
+    Promise.resolve({ mode: storageMode(), databaseConfigured: Boolean(process.env.DATABASE_URL) })
+  ]);
+  return {
+    sources: [
+      { id: "news", name: "行业新闻自动同步", configured: true, status: newsState.jobs?.[0]?.status || "pending", lastSync: newsState.jobs?.[0]?.completed_at || "", successCount: newsState.jobs?.filter((job) => job.status === "completed").length || 0, failedCount: newsState.jobs?.filter((job) => job.status === "failed").length || 0 },
+      { id: "google-seo", name: "Google SEO 数据", configured: googleSeoConfig().configured, status: googleJobs?.[0]?.status || "pending", lastSync: googleSeo?.syncedAt || "", successCount: googleJobs?.filter((job) => job.status === "completed").length || 0, failedCount: googleJobs?.filter((job) => job.status === "failed").length || 0 },
+      { id: "storage", name: "后台持久化存储", configured: storage.databaseConfigured, status: storage.mode, lastSync: new Date().toISOString(), successCount: 1, failedCount: 0 }
+    ],
+    newsState,
+    googleSeo,
+    googleJobs,
+    jobs: [
+      ...(Array.isArray(newsState.jobs) ? newsState.jobs.map((job) => ({ ...job, type: "news" })) : []),
+      ...(Array.isArray(googleJobs) ? googleJobs.map((job) => ({ ...job, type: "google-seo" })) : [])
+    ].slice(0, 30),
+    storage
+  };
+}
+
 async function publicNewsList(request) {
   const url = new URL(request.url);
   const page = Math.max(1, Number(url.searchParams.get("page") || 1));
@@ -730,7 +939,12 @@ async function handleAdmin(request, path) {
     }
   }
   if (path === "admin/links" && request.method === "GET") return response({ success: true, data: await linksSummary(), requestId: token(8) });
-  if (path === "admin/products" && request.method === "GET") return response({ success: true, data: await readJson("data/products/products.json"), requestId: token(8) });
+  if (path === "admin/products" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/products/products.json"), request, { searchFields: ["name", "slug", "category", "categorySlug", "seoTitle", "shortDescription"], statusField: "productStatus", includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  if (path === "admin/products/export" && request.method === "GET") return csvResponse("products.csv", await readJson("data/products/products.json"));
+  if (path === "admin/categories" && ["GET", "PUT", "POST"].includes(request.method)) return adminCategories(request, session);
+  const categoryAction = path.match(/^admin\/categories\/([^/]+)\/(delete|restore|enable|disable)$/);
+  if (categoryAction && ["POST", "PUT"].includes(request.method)) return adminCategoryAction(request, session, decodeURIComponent(categoryAction[1]), categoryAction[2]);
+  if (path === "admin/categories/export" && request.method === "GET") return csvResponse("categories.csv", await readJson("data/categories/categories.json"));
 
   const productMatch = path.match(/^admin\/products\/([^/]+)$/);
   if (productMatch && request.method === "PUT") {
@@ -750,9 +964,14 @@ async function handleAdmin(request, path) {
     return response({ success: true, data: { slug }, requestId: token(8) });
   }
 
-  if (path === "admin/enquiries" && request.method === "GET") return response({ success: true, data: await readJson("data/cms/enquiries.json"), requestId: token(8) });
+  if (path === "admin/enquiries" && request.method === "GET") return adminEnquiriesList(request);
+  if (path === "admin/enquiries/export" && request.method === "GET") {
+    await audit(session.user, "Enquiries Exported", "Enquiry", "csv", "Admin exported enquiry list");
+    return csvResponse("enquiries.csv", await readJson("data/cms/enquiries.json"));
+  }
 
-  if (path === "admin/news" && request.method === "GET") return response({ success: true, data: await readJson("data/articles/articles.json"), requestId: token(8) });
+  if (path === "admin/news" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/articles/articles.json"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  if (path === "admin/news/export" && request.method === "GET") return csvResponse("news.csv", await readJson("data/articles/articles.json"));
   if (path === "admin/news/state" && request.method === "GET") return response({ success: true, data: await getNewsState(), requestId: token(8) });
   if (path === "admin/news/jobs" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-jobs.json", []), requestId: token(8) });
   if (path === "admin/news/audits" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-publication-audits.json", []), requestId: token(8) });
@@ -836,7 +1055,27 @@ async function handleAdmin(request, path) {
     return response({ success: true, data: body, requestId: token(8) });
   }
 
-  if (path === "admin/audit-logs" && request.method === "GET") return response({ success: true, data: await readJson("data/cms/audit-logs.json"), requestId: token(8) });
+  if (path === "admin/media" && ["GET", "PUT", "POST"].includes(request.method)) return adminMedia(request, session);
+  if (path === "admin/media/export" && request.method === "GET") return csvResponse("media.csv", await readJson("data/media/assets.json"));
+  if (path === "admin/users" && ["GET", "PUT", "POST"].includes(request.method)) return adminUsers(request, session);
+  if (path === "admin/sync" && request.method === "GET") return response({ success: true, data: await adminSyncState(), requestId: token(8) });
+  if (path === "admin/sync/news" && request.method === "POST") {
+    const result = await runNewsAutomation();
+    await audit(session.user, "Manual Sync", "Sync", "news", `Manual news sync published ${result.published.length}`);
+    return response({ success: true, data: result, requestId: token(8) });
+  }
+  if (path === "admin/sync/google-seo" && request.method === "POST") {
+    try {
+      const result = await syncGoogleSeo(session.user);
+      await audit(session.user, "Manual Sync", "Sync", "google-seo", `Manual Google SEO sync completed`);
+      return response({ success: true, data: result, requestId: token(8) });
+    } catch (error) {
+      await audit(session.user, "Manual Sync Failed", "Sync", "google-seo", error?.message || String(error));
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
+    }
+  }
+  if (path === "admin/audit-logs" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/cms/audit-logs.json"), request, { searchFields: ["user", "action", "object", "objectId", "summary"], includeDeleted: true }), requestId: token(8) });
+  if (path === "admin/audit-logs/export" && request.method === "GET") return csvResponse("audit-logs.csv", await readJson("data/cms/audit-logs.json"));
   if (path === "admin/content" && request.method === "GET") {
     const [categories, industries, solutions, markets, articles, downloads] = await Promise.all([
       readJson("data/categories/categories.json"),

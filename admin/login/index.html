@@ -1,24 +1,26 @@
 <!doctype html>
-<html lang="en-ZA">
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Cowinmagnet Admin Login</title>
+  <title>Cowinmagnet CMS Login</title>
   <link rel="stylesheet" href="/admin/admin.css">
 </head>
 <body class="login-screen">
   <main class="login-card">
-    <span class="brand-mark">C</span>
-    <p class="eyebrow">Website Data Backend</p>
-    <h1>Cowinmagnet Africa Admin</h1>
-    <p>Use the same login flow as the main Cowinmagnet backend.</p>
-    <form data-login-form action="/api/admin/login" method="post">
-      <label>Email<input name="email" type="email" autocomplete="username" required value="davidsha@cowinmagnet.com"></label>
-      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-      <button class="button primary" type="submit">Sign In</button>
+    <span class="brand-mark">CY</span>
+    <p class="eyebrow">&#20013;&#25991;&#31649;&#29702;&#21518;&#21488;</p>
+    <h1>Cowinmagnet Africa CMS</h1>
+    <p>&#30331;&#24405;&#21518;&#21487;&#31649;&#29702;&#20135;&#21697;&#12289;&#26032;&#38395;&#12289;&#35810;&#30424;&#12289;SEO &#25968;&#25454;&#21644;&#21516;&#27493;&#20219;&#21153;&#12290;</p>
+    <form data-login-form method="post" action="/api/login" class="login-form">
+      <label>&#37038;&#31665;&#25110;&#29992;&#25143;&#21517;<input name="email" type="text" autocomplete="username" required></label>
+      <label>&#23494;&#30721;<span class="password-row"><input name="password" type="password" autocomplete="current-password" required><button class="button secondary" type="button" data-toggle-password>&#26174;&#31034;</button></span></label>
+      <label class="inline-check"><input type="checkbox" name="remember" value="1"> &#35760;&#20303;&#30331;&#24405;&#29366;&#24577;</label>
+      <button class="button primary" type="submit">&#30331;&#24405;&#21518;&#21488;</button>
       <output data-status></output>
     </form>
+    <p class="form-note"><a href="/en-za/">&#36820;&#22238;&#32593;&#31449;&#39318;&#39029;</a></p>
   </main>
   <script src="/admin/admin.js"></script>
 </body>
