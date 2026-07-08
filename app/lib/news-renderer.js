@@ -1,4 +1,4 @@
-import { escapeHtml, isExternalNewsImage, readDataJson } from "./news-system.js";
+import { escapeHtml, isExternalNewsImage, isPublishedNewsArticle, readDataJson } from "./news-system.js";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.APP_URL || "https://cowinmagnet.co.za").replace(/\/$/, "");
 
@@ -6,14 +6,6 @@ function newsImageUrl(value) {
   if (String(value || "").startsWith("/assets/images/news/")) return `${siteUrl}${value}`;
   if (isExternalNewsImage(value)) return value;
   return `${siteUrl}/assets/images/hero-mining-conveyor-magnet.webp`;
-}
-
-function isPublishedSourceNews(item) {
-  return (
-    (item.status || "published") === "published" &&
-    (item.article_type === "news" || item.source_url || item.canonical_source_url) &&
-    isExternalNewsImage(item.cover_image_url)
-  );
 }
 
 function pageShell({ title, description, canonical, body, schema = [], feed = true, image = "" }) {
@@ -84,7 +76,7 @@ function productCard(item) {
 }
 
 export async function renderNewsList() {
-  const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedSourceNews);
+  const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedNewsArticle);
   const body = `<section class="page-hero">
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / News</nav>
     <p class="eyebrow">News</p>
@@ -122,7 +114,7 @@ export async function renderNewsList() {
 
 export async function renderNewsArticle(slug) {
   const articles = await readDataJson("data/articles/articles.json", []);
-  const item = articles.find((article) => article.slug === slug && isPublishedSourceNews(article));
+  const item = articles.find((article) => article.slug === slug && isPublishedNewsArticle(article));
   if (!item) return null;
   const products = item.related_products || [];
   const canonical = articleUrl(item);
@@ -192,7 +184,7 @@ export async function renderNewsArticle(slug) {
 }
 
 export async function renderNewsFeed() {
-  const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedSourceNews).slice(0, 30);
+  const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedNewsArticle).slice(0, 30);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>

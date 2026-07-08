@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join, normalize, sep } from "node:path";
+import { renderBlogArticle, renderBlogFeed, renderBlogList } from "../lib/blog-renderer.js";
 import { renderNewsArticle, renderNewsFeed, renderNewsList } from "../lib/news-renderer.js";
 
 export const runtime = "nodejs";
@@ -66,6 +67,33 @@ export async function GET(_request, context) {
         "cache-control": "public, max-age=300"
       }
     });
+  }
+  if (parts.join("/") === "en-za/blog") {
+    return new Response(await renderBlogList(), {
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "public, max-age=0, s-maxage=300"
+      }
+    });
+  }
+  if (parts.join("/") === "en-za/blog/feed.xml") {
+    return new Response(await renderBlogFeed(), {
+      headers: {
+        "content-type": "application/rss+xml; charset=utf-8",
+        "cache-control": "public, max-age=300"
+      }
+    });
+  }
+  if (parts.length === 3 && parts[0] === "en-za" && parts[1] === "blog") {
+    const html = await renderBlogArticle(parts[2]);
+    if (html) {
+      return new Response(html, {
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+          "cache-control": "public, max-age=0, s-maxage=300"
+        }
+      });
+    }
   }
   if (parts.length === 3 && parts[0] === "en-za" && parts[1] === "news") {
     const html = await renderNewsArticle(parts[2]);

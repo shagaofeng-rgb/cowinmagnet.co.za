@@ -268,6 +268,48 @@ export function isExternalNewsImage(value) {
   }
 }
 
+export function isExternalEditorialImage(value) {
+  const url = absoluteUrl(value);
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, "");
+    if (host === "cowinmagnet.co.za" || host === "cowinmagnet.com") return false;
+    return /^https?:$/.test(parsed.protocol) && (
+      /\.(avif|webp|png|jpe?g)(?:$|[?#])/i.test(parsed.pathname + parsed.search) ||
+      /(^|\.)images\.(pexels|unsplash)\.com$/i.test(parsed.hostname)
+    );
+  } catch {
+    return false;
+  }
+}
+
+function isSourcedBlogImage(item) {
+  const image = String(item.cover_image_url || "");
+  if (isExternalEditorialImage(image)) return true;
+  return (
+    image.startsWith("/assets/images/blog/") &&
+    isExternalEditorialImage(item.cover_image_source_url || item.cover_image_page_url)
+  );
+}
+
+export function isPublishedNewsArticle(item) {
+  return (
+    (item.status || "published") === "published" &&
+    (item.article_type === "news" || item.source_url || item.canonical_source_url) &&
+    isExternalNewsImage(item.cover_image_url)
+  );
+}
+
+export function isPublishedBlogArticle(item) {
+  return (
+    (item.status || "published") === "published" &&
+    item.article_type === "blog" &&
+    Boolean(item.content) &&
+    isSourcedBlogImage(item)
+  );
+}
+
 function imageFromFeedBlock(block) {
   return (
     attrTag(block, "media:content", "url") ||
@@ -605,7 +647,7 @@ export async function runNewsAutomation(options = {}) {
     readDataJson("data/products/products.json", [])
   ]);
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: settings.timezone, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-  const publishedToday = articles.filter((item) => (item.status || "published") === "published" && String(item.published_at || item.date || "").startsWith(today));
+  const publishedToday = articles.filter((item) => isPublishedNewsArticle(item) && String(item.published_at || item.date || "").startsWith(today));
   const need = Math.max(0, settings.dailyTarget - publishedToday.length);
   const job = {
     id: `JOB-${Date.now()}-${hashText(startedAt).slice(0, 6)}`,
@@ -678,7 +720,7 @@ async function finishJob(job) {
 }
 
 async function auditDay(date, settings, articles) {
-  const published = articles.filter((item) => (item.status || "published") === "published" && String(item.published_at || item.date || "").startsWith(date));
+  const published = articles.filter((item) => isPublishedNewsArticle(item) && String(item.published_at || item.date || "").startsWith(date));
   const audits = await readDataJson("data/news/news-publication-audits.json", []);
   const record = {
     id: `AUDIT-${date}`,

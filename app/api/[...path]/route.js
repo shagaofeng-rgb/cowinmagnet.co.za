@@ -5,7 +5,7 @@ import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, isExternalNewsImage } from "../../lib/news-system.js";
+import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
 import { googleSeoConfig, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 
 export const runtime = "nodejs";
@@ -20,13 +20,6 @@ const adminUser = process.env.ADMIN_USER || adminEmail;
 const bootstrapAdminSecret = "5JIAbVeSKp8Pem7s6vKyHctMoBL7EUOySRTJkTK9SbU";
 const bootstrapAdminPasswordHash = "e5fb073a922b15a1ad52661b2ac7f3c9d4c6c674400d8f7aa9b42418bb475da3";
 
-function isPublishedSourceNews(item) {
-  return (
-    (item.status || "published") === "published" &&
-    (item.article_type === "news" || item.source_url || item.canonical_source_url) &&
-    isExternalNewsImage(item.cover_image_url)
-  );
-}
 const { Pool } = pg;
 let pool;
 let schemaReady;
@@ -435,14 +428,19 @@ async function seoSummary() {
       canonical: item.canonicalUrl || productUrl(item),
       status: item.productStatus || "published"
     })),
-    ...articles.map((item) => ({
-      page: `/en-za/news/${item.slug}/`,
+    ...articles
+      .filter((item) => isPublishedNewsArticle(item) || isPublishedBlogArticle(item))
+      .map((item) => {
+        const section = item.article_type === "blog" ? "blog" : "news";
+        return {
+      page: `/en-za/${section}/${item.slug}/`,
       title: item.seoTitle || item.title ? "OK" : "Missing",
       description: item.seoDescription || item.summary ? "OK" : "Missing",
-      image: item.image || item.openGraphImage ? "OK" : "Pending",
-      canonical: item.canonicalUrl || `/en-za/news/${item.slug}/`,
+      image: item.cover_image_url || item.image || item.openGraphImage ? "OK" : "Pending",
+      canonical: item.canonicalUrl || item.canonical_url || `/en-za/${section}/${item.slug}/`,
       status: item.status || "published"
-    })),
+    };
+      }),
     ...[...categories, ...industries, ...solutions, ...markets].map((item) => ({
       page: item.slug ? `/${item.slug}/` : "",
       title: item.name || item.title ? "OK" : "Missing",
@@ -528,12 +526,13 @@ async function linksSummary() {
     { module: "Industries", count: industries.length, status: industries.length ? "OK" : "Empty", note: "Industry hub and internal links" },
     { module: "Solutions", count: solutions.length, status: solutions.length ? "OK" : "Empty", note: "Solution pages and resource menu" },
     { module: "Markets", count: markets.length, status: markets.length ? "OK" : "Empty", note: "African market pages" },
-    { module: "News", count: articles.length, status: articles.length ? "OK" : "Empty", note: "News list and detail pages" },
+    { module: "News", count: articles.filter(isPublishedNewsArticle).length, status: articles.filter(isPublishedNewsArticle).length ? "OK" : "Empty", note: "News list and detail pages" },
+    { module: "Blog", count: articles.filter(isPublishedBlogArticle).length, status: articles.filter(isPublishedBlogArticle).length ? "OK" : "Empty", note: "Blog list, detail pages and RSS feed" },
     { module: "Downloads", count: downloads.length, status: downloads.length ? "Review" : "Empty", note: "PDF paths should be verified before publication" }
   ];
 
   return {
-    internal: products.length + categories.length + industries.length + solutions.length + markets.length + articles.length,
+    internal: products.length + categories.length + industries.length + solutions.length + markets.length + articles.filter((item) => isPublishedNewsArticle(item) || isPublishedBlogArticle(item)).length,
     external: markets.length + downloads.length,
     empty: rows.filter((row) => row.status === "Empty").length,
     warnings: rows.filter((row) => row.status !== "OK").length,
@@ -687,7 +686,7 @@ async function publicNewsList(request) {
   const category = String(url.searchParams.get("category") || "").toLowerCase();
   const tag = String(url.searchParams.get("tag") || "").toLowerCase();
   const articles = (await readJson("data/articles/articles.json"))
-    .filter(isPublishedSourceNews)
+    .filter(isPublishedNewsArticle)
     .filter((item) => !category || String(item.category || "").toLowerCase() === category)
     .filter((item) => !tag || (item.tags || []).some((value) => String(value).toLowerCase() === tag));
   const offset = (page - 1) * limit;
@@ -705,24 +704,50 @@ async function publicNewsList(request) {
 
 async function publicNewsDetail(slug) {
   const articles = await readJson("data/articles/articles.json");
-  const article = articles.find((item) => item.slug === slug && isPublishedSourceNews(item));
+  const article = articles.find((item) => item.slug === slug && isPublishedNewsArticle(item));
   if (!article) return response({ success: false, error: "News article not found", requestId: token(8) }, 404);
   return response({ success: true, data: article, requestId: token(8) });
 }
 
 async function publicNewsCategories() {
-  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedSourceNews);
+  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedNewsArticle);
   const categories = [...new Set(articles.map((item) => item.category || "Industry News"))].sort();
   const tags = [...new Set(articles.flatMap((item) => item.tags || []))].sort();
   return response({ success: true, data: { categories, tags }, requestId: token(8) });
 }
 
 async function publicProductNews(productId) {
-  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedSourceNews);
+  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedNewsArticle);
   const rows = articles.filter((item) => {
     const products = item.related_products || [];
     return products.some((product) => product.product_id === productId || product.slug === productId);
   });
+  return response({ success: true, data: rows, requestId: token(8) });
+}
+
+async function publicBlogList(request) {
+  const url = new URL(request.url);
+  const page = Math.max(1, Number(url.searchParams.get("page") || 1));
+  const limit = Math.min(50, Math.max(1, Number(url.searchParams.get("limit") || 12)));
+  const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
+  const articles = (await readJson("data/articles/articles.json"))
+    .filter(isPublishedBlogArticle)
+    .filter((item) => !q || `${item.title} ${item.excerpt || ""} ${item.summary || ""}`.toLowerCase().includes(q))
+    .sort((a, b) => String(b.published_at || b.date || "").localeCompare(String(a.published_at || a.date || "")));
+  const offset = (page - 1) * limit;
+  return response({ success: true, data: { items: articles.slice(offset, offset + limit), page, limit, total: articles.length }, requestId: token(8) });
+}
+
+async function publicBlogDetail(slug) {
+  const articles = await readJson("data/articles/articles.json");
+  const article = articles.find((item) => item.slug === slug && isPublishedBlogArticle(item));
+  if (!article) return response({ success: false, error: "Blog article not found", requestId: token(8) }, 404);
+  return response({ success: true, data: article, requestId: token(8) });
+}
+
+async function publicProductBlog(productId) {
+  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedBlogArticle);
+  const rows = articles.filter((item) => (item.related_products || []).some((product) => product.product_id === productId || product.slug === productId));
   return response({ success: true, data: rows, requestId: token(8) });
 }
 
@@ -904,7 +929,9 @@ async function handleAdmin(request, path) {
         industries: industries.length,
         solutions: solutions.length,
         markets: markets.length,
-        articles: articles.length,
+        articles: articles.filter((item) => isPublishedNewsArticle(item) || isPublishedBlogArticle(item)).length,
+        newsArticles: articles.filter(isPublishedNewsArticle).length,
+        blogArticles: articles.filter(isPublishedBlogArticle).length,
         downloads: downloads.length,
         unreadEnquiries: enquiries.filter((item) => item.status === "New").length,
         missingSeo: products.filter((item) => !item.seoTitle || !item.seoDescription).length,
@@ -967,8 +994,10 @@ async function handleAdmin(request, path) {
     return csvResponse("enquiries.csv", await readJson("data/cms/enquiries.json"));
   }
 
-  if (path === "admin/news" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/articles/articles.json"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
-  if (path === "admin/news/export" && request.method === "GET") return csvResponse("news.csv", await readJson("data/articles/articles.json"));
+  if (path === "admin/news" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  if (path === "admin/news/export" && request.method === "GET") return csvResponse("news.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"));
+  if (path === "admin/blog" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  if (path === "admin/blog/export" && request.method === "GET") return csvResponse("blog.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"));
   if (path === "admin/news/state" && request.method === "GET") return response({ success: true, data: await getNewsState(), requestId: token(8) });
   if (path === "admin/news/jobs" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-jobs.json", []), requestId: token(8) });
   if (path === "admin/news/audits" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-publication-audits.json", []), requestId: token(8) });
@@ -997,6 +1026,7 @@ async function handleAdmin(request, path) {
     const articles = await readJson("data/articles/articles.json");
     const article = articles.find((item) => item.slug === slug);
     const payload = {
+      article_type: "news",
       slug,
       title: String(body.title || ""),
       summary: String(body.summary || ""),
@@ -1104,8 +1134,13 @@ async function dispatch(request, context) {
   if (path === "news/categories" && request.method === "GET") return publicNewsCategories();
   const publicNewsMatch = path.match(/^news\/([^/]+)$/);
   if (publicNewsMatch && request.method === "GET") return publicNewsDetail(decodeURIComponent(publicNewsMatch[1]));
+  if (path === "blog" && request.method === "GET") return publicBlogList(request);
+  const publicBlogMatch = path.match(/^blog\/([^/]+)$/);
+  if (publicBlogMatch && request.method === "GET") return publicBlogDetail(decodeURIComponent(publicBlogMatch[1]));
   const productNewsMatch = path.match(/^products\/([^/]+)\/news$/);
   if (productNewsMatch && request.method === "GET") return publicProductNews(decodeURIComponent(productNewsMatch[1]));
+  const productBlogMatch = path.match(/^products\/([^/]+)\/blog$/);
+  if (productBlogMatch && request.method === "GET") return publicProductBlog(decodeURIComponent(productBlogMatch[1]));
   if (path.startsWith("admin/")) return handleAdmin(request, path);
 
   return response({ success: false, error: "API route not found", requestId: token(8) }, 404);
