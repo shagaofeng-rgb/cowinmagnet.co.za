@@ -76,12 +76,18 @@
   }
 
   function activate(view) {
+    if (!titles[view]) view = "dashboard";
     state.view = view;
     const info = titles[view] || titles.dashboard;
     qs("[data-section-kicker]").textContent = "Cowinmagnet Africa";
     qs("[data-section-title]").textContent = info[1];
     qs("[data-section-desc]").textContent = info[2];
-    qsa("[data-view]").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
+    qsa("[data-view]").forEach((button) => {
+      const active = button.dataset.view === view;
+      button.classList.toggle("active", active);
+      if (active) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
+    });
     qsa("[data-panel]").forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === view));
     const loader = loaders[view] || loaders.dashboard;
     loader().catch((error) => setStatus(error.message, "error"));
