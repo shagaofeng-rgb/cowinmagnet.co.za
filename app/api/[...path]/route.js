@@ -111,14 +111,14 @@ const jsonFiles = new Map([
   ["data/cms/audit-logs.json", []],
   ["data/cms/analytics-events.json", []],
   ["data/cms/users.json", [
-    { id: "USR-admin", email: adminEmail, name: "David Sha", role: "超级管理员", status: "active", lastLoginAt: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    { id: "USR-admin", email: adminEmail, name: "David Sha", role: "Super Admin", status: "active", lastLoginAt: "", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
   ]],
   ["data/cms/roles.json", [
-    { id: "ROLE-super-admin", name: "超级管理员", description: "拥有所有后台模块权限", permissions: ["*"], status: "active" },
-    { id: "ROLE-admin", name: "管理员", description: "管理内容、询盘和数据同步", permissions: ["dashboard:view", "products:*", "categories:*", "news:*", "forms:*", "analytics:view", "seo:*", "media:*", "sync:*", "logs:view", "settings:view"], status: "active" },
-    { id: "ROLE-editor", name: "内容编辑", description: "维护产品、分类、新闻和媒体", permissions: ["products:view", "products:edit", "categories:view", "categories:edit", "news:*", "media:*"], status: "active" },
-    { id: "ROLE-sales", name: "销售人员", description: "查看和跟进客户表单", permissions: ["forms:*", "products:view", "analytics:view"], status: "active" },
-    { id: "ROLE-readonly", name: "只读用户", description: "只读查看后台数据", permissions: ["dashboard:view", "products:view", "categories:view", "news:view", "forms:view", "analytics:view", "seo:view"], status: "active" }
+    { id: "ROLE-super-admin", name: "Super Admin", description: "Full access to all admin modules.", permissions: ["*"], status: "active" },
+    { id: "ROLE-admin", name: "Admin", description: "Manage content, enquiries, SEO data and sync tasks.", permissions: ["dashboard:view", "products:*", "categories:*", "news:*", "forms:*", "analytics:view", "seo:*", "media:*", "sync:*", "logs:view", "settings:view"], status: "active" },
+    { id: "ROLE-editor", name: "Editor", description: "Maintain products, categories, news and media assets.", permissions: ["products:view", "products:edit", "categories:view", "categories:edit", "news:*", "media:*"], status: "active" },
+    { id: "ROLE-sales", name: "Sales", description: "View and follow up customer enquiry forms.", permissions: ["forms:*", "products:view", "analytics:view"], status: "active" },
+    { id: "ROLE-readonly", name: "Viewer", description: "Read-only access to admin data.", permissions: ["dashboard:view", "products:view", "categories:view", "news:view", "forms:view", "analytics:view", "seo:view"], status: "active" }
   ]],
   ["data/media/assets.json", []],
   ["data/seo/google-search-console.json", null],
@@ -136,7 +136,6 @@ const jsonFiles = new Map([
     updatedAt: new Date().toISOString()
   }]
 ]);
-
 function response(data, status = 200) {
   return NextResponse.json(data, {
     status,
@@ -223,10 +222,8 @@ function isAdminAuthConfigured() {
 }
 
 function passwordVariants(password) {
-  const value = String(password || "");
-  return [...new Set([value, value.replaceAll("锛?", "!"), value.replaceAll("!", "锛?")])];
+  return [String(password || "")];
 }
-
 function verifyAdminCredentials(identifier, password) {
   const normalized = String(identifier || "").trim().toLowerCase();
   const validIdentity = normalized === adminEmail || normalized === String(adminUser).trim().toLowerCase();
@@ -798,7 +795,7 @@ async function handleLogin(request, options = {}) {
       path: "/",
       maxAge: SESSION_TTL_SECONDS
     });
-    await audit(adminEmail, "Login", "Session", "next", "Admin signed in to Next.js CMS");
+    await audit(adminEmail, "Login", "Session", "next", "Admin signed in to Cowinmagnet Africa admin");
     return res;
   }
   if (wantsRedirect) return NextResponse.redirect(new URL("/admin/login/?error=invalid", url), 303);
@@ -960,7 +957,7 @@ async function handleAdmin(request, path) {
     if (body.features) product.features = body.features;
     product.updatedAt = new Date().toISOString();
     await writeJson("data/products/products.json", products);
-    await audit(session.user, "Product Updated", "Product", slug, "Product content edited in Next.js CMS");
+    await audit(session.user, "Product Updated", "Product", slug, "Product content edited in Cowinmagnet Africa admin");
     return response({ success: true, data: { slug }, requestId: token(8) });
   }
 
@@ -1013,7 +1010,7 @@ async function handleAdmin(request, path) {
     if (article) Object.assign(article, payload);
     else articles.unshift({ ...payload, createdAt: new Date().toISOString() });
     await writeJson("data/articles/articles.json", articles);
-    await audit(session.user, article ? "News Updated" : "News Created", "News", slug, `News article ${article ? "updated" : "created"} in Next.js CMS`);
+    await audit(session.user, article ? "News Updated" : "News Created", "News", slug, `News article ${article ? "updated" : "created"} in Cowinmagnet Africa admin`);
     return response({ success: true, data: { slug }, requestId: token(8) });
   }
 
@@ -1031,7 +1028,7 @@ async function handleAdmin(request, path) {
       }
     }
     await writeJson("data/cms/enquiries.json", items);
-    await audit(session.user, "Enquiry Status Changed", "Enquiry", id, "Enquiry updated in Next.js CMS");
+    await audit(session.user, "Enquiry Status Changed", "Enquiry", id, "Enquiry updated in Cowinmagnet Africa admin");
     return response({ success: true, data: { id }, requestId: token(8) });
   }
 

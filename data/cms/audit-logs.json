@@ -5,7 +5,7 @@
         "action":  "Login",
         "object":  "Session",
         "objectId":  "local",
-        "summary":  "Admin signed in to local preview CMS",
+        "summary":  "Admin signed in to local preview admin",
         "time":  "2026-06-09T11:52:12.4061122Z",
         "ip":  "local-preview"
     },
@@ -15,7 +15,7 @@
         "action":  "Login",
         "object":  "Session",
         "objectId":  "local",
-        "summary":  "Admin signed in to local preview CMS",
+        "summary":  "Admin signed in to local preview admin",
         "time":  "2026-06-09T11:56:55.5963598Z",
         "ip":  "local-preview"
     },
@@ -25,7 +25,7 @@
         "action":  "Login",
         "object":  "Session",
         "objectId":  "local",
-        "summary":  "Admin signed in to local preview CMS",
+        "summary":  "Admin signed in to local preview admin",
         "time":  "2026-06-09T12:25:31.3928404Z",
         "ip":  "local-preview"
     },
@@ -45,7 +45,7 @@
         "action":  "Login",
         "object":  "Session",
         "objectId":  "local",
-        "summary":  "Admin signed in to local preview CMS",
+        "summary":  "Admin signed in to local preview admin",
         "time":  "2026-06-09T12:25:45.2996638Z",
         "ip":  "local-preview"
     },
@@ -55,7 +55,7 @@
         "action":  "Product Updated",
         "object":  "Product",
         "objectId":  "belt-high-gradient-magnetic-separator",
-        "summary":  "Product content edited in local CMS",
+        "summary":  "Product content edited in local preview admin",
         "time":  "2026-06-09T12:25:45.7673183Z",
         "ip":  "local-preview"
     },
@@ -65,7 +65,7 @@
         "action":  "Login",
         "object":  "Session",
         "objectId":  "local",
-        "summary":  "Admin signed in to local preview CMS",
+        "summary":  "Admin signed in to local preview admin",
         "time":  "2026-06-09T12:28:34.7829729Z",
         "ip":  "local-preview"
     },
@@ -75,7 +75,7 @@
         "action":  "Login",
         "object":  "Session",
         "objectId":  "local",
-        "summary":  "Admin signed in to local preview CMS",
+        "summary":  "Admin signed in to local preview admin",
         "time":  "2026-06-11T01:37:42.1901581Z",
         "ip":  "local-preview"
     }

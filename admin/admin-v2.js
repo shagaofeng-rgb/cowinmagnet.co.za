@@ -8,7 +8,7 @@
   };
 
   const label = {
-    adminTitle: "\u7f51\u7ad9\u6570\u636e\u540e\u53f0",
+    adminTitle: "Cowinmagnet Africa",
     accountLabel: "\u5f53\u524d\u8d26\u53f7",
     viewSite: "\u67e5\u770b\u7f51\u7ad9",
     refresh: "\u5237\u65b0",
@@ -327,7 +327,7 @@
       const session = await api("/api/session");
       state.user = session.user;
       state.csrf = session.csrf;
-      qs("[data-user-email]").textContent = session.email || session.user || "-";
+    qs("[data-user-email]").textContent = session.email || session.user || "";
     } catch {
       window.location.href = "/admin/login/";
       return;
