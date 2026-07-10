@@ -5,9 +5,20 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/",
+        has: [{ type: "host", value: "www.cowinmagnet.co.za" }],
+        destination: "https://cowinmagnet.co.za/en-za/",
+        permanent: true
+      },
+      {
         source: "/:path*",
         has: [{ type: "host", value: "www.cowinmagnet.co.za" }],
         destination: "https://cowinmagnet.co.za/:path*/",
+        permanent: true
+      },
+      {
+        source: "/",
+        destination: "/en-za/",
         permanent: true
       }
     ];
