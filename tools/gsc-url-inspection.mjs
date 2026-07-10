@@ -111,6 +111,24 @@ async function concurrentMap(values, concurrency, worker) {
   return output;
 }
 
+async function auditPublicUrl(url) {
+  try {
+    const response = await fetch(url, { redirect: "manual", signal: AbortSignal.timeout(20_000) });
+    const html = await response.text();
+    const canonical = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)/i)?.[1]
+      || html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical/i)?.[1]
+      || "";
+    return {
+      url,
+      status: response.status,
+      location: response.headers.get("location") || "",
+      canonical
+    };
+  } catch (error) {
+    return { url, status: 0, error: error?.message || String(error) };
+  }
+}
+
 function group(results, key) {
   return Object.fromEntries(Object.entries(results.reduce((groups, item) => {
     const value = item[key] || "Unknown";
@@ -124,6 +142,22 @@ const sitemapUrl = option("--sitemap", process.env.GOOGLE_SEARCH_CONSOLE_SITEMAP
 const limit = Math.max(0, Number(option("--limit", "0")) || 0);
 const outputFile = resolve(option("--output", "data/seo/gsc-url-inspection.json"));
 const urls = (await sitemapUrls(sitemapUrl)).slice(0, limit || undefined);
+if (process.argv.includes("--http-audit")) {
+  const results = await concurrentMap(urls, Math.min(12, Math.max(1, Number(option("--concurrency", "8")) || 8)), auditPublicUrl);
+  const report = {
+    auditedAt: new Date().toISOString(),
+    sitemapUrl,
+    total: results.length,
+    status200: results.filter((item) => item.status === 200).length,
+    redirects: results.filter((item) => item.location).length,
+    canonicalMismatch: results.filter((item) => item.canonical && item.canonical !== item.url).length,
+    missingCanonical: results.filter((item) => !item.canonical).length,
+    errors: results.filter((item) => item.status === 0).length,
+    issues: results.filter((item) => item.status !== 200 || item.location || !item.canonical || item.canonical !== item.url)
+  };
+  console.log(JSON.stringify(report, null, 2));
+  process.exit(report.issues.length ? 1 : 0);
+}
 const token = await accessToken(await serviceAccount());
 const results = await concurrentMap(urls, Math.min(5, Math.max(1, Number(option("--concurrency", "3")) || 3)), (url) => inspectUrl(url, siteUrl, token));
 const report = {
