@@ -25,7 +25,7 @@
         referrer: document.referrer,
         device: window.matchMedia("(max-width: 760px)").matches ? "Mobile" : "Desktop",
         browser: detectBrowser(),
-        country: "Local Preview",
+        country: "",
         language: document.documentElement.dataset.locale || "en-za",
       }),
     }).catch(() => {});
@@ -179,12 +179,18 @@
   }
 
   const quoteForm = document.querySelector("[data-quote-form]");
+  const quoteSubmit = quoteForm?.querySelector("button[type='submit'], button:not([type])");
+  const quoteFile = quoteForm?.querySelector("[type='file']");
+  quoteFile?.closest("label")?.setAttribute("hidden", "");
+  if (quoteSubmit && /local|demo/i.test(quoteSubmit.textContent || "")) {
+    quoteSubmit.textContent = window.location.pathname.includes("request-a-quote") ? "Submit Inquiry" : "Send Inquiry";
+  }
   quoteForm?.addEventListener("submit", (event) => {
     event.preventDefault();
     const status = quoteForm.querySelector("[data-form-status]");
     const email = quoteForm.querySelector("[name='email']");
     const phone = quoteForm.querySelector("[name='whatsapp']");
-    const file = quoteForm.querySelector("[type='file']");
+    const file = quoteFile;
     const required = quoteForm.querySelectorAll("[required]");
     let valid = true;
     required.forEach((field) => {
@@ -219,6 +225,12 @@
       return;
     }
     const payload = Object.fromEntries(new FormData(quoteForm).entries());
+    if (file?.files?.length) {
+      payload.fileName = file.files[0].name;
+      payload.fileSize = file.files[0].size;
+      payload.fileType = file.files[0].type;
+    }
+    delete payload.fileUpload;
     payload.sourcePage = window.location.href;
     payload.language = document.documentElement.dataset.locale || "en-za";
     const duplicateKey = `${payload.email}|${payload.company}|${payload.productRequired}`;

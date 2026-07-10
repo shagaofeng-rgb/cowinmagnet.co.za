@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, open, stat, unlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
@@ -10,6 +10,7 @@ const writableDataRoot = join(tmpdir(), "cowinmagnet-africa-data");
 const { Pool } = pg;
 let pool;
 let schemaReady;
+const activeLocks = new Set();
 
 const DEFAULT_SOURCES = [
   {
@@ -184,6 +185,47 @@ export async function writeDataJson(relativePath, value) {
   const filePath = process.env.VERCEL ? safeWritableDataPath(relativePath) : safeDataPath(relativePath);
   await mkdir(dirname(filePath), { recursive: true });
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}
+
+export async function withDataLock(name, callback, options = {}) {
+  const timeoutMs = Number(options.timeoutMs || 15 * 60 * 1000);
+  const db = getPool();
+  if (db) {
+    const client = await db.connect();
+    try {
+      const result = await client.query("SELECT pg_try_advisory_lock(hashtext($1)) AS acquired", [name]);
+      if (!result.rows[0]?.acquired) throw new Error(`${name} is already running`);
+      try {
+        return await callback();
+      } finally {
+        await client.query("SELECT pg_advisory_unlock(hashtext($1))", [name]);
+      }
+    } finally {
+      client.release();
+    }
+  }
+  if (activeLocks.has(name)) throw new Error(`${name} is already running`);
+  activeLocks.add(name);
+  const lockPath = join(writableDataRoot, ".locks", `${hashText(name).slice(0, 24)}.lock`);
+  await mkdir(dirname(lockPath), { recursive: true });
+  let handle;
+  try {
+    try {
+      handle = await open(lockPath, "wx");
+    } catch (error) {
+      if (error?.code !== "EEXIST") throw error;
+      const info = await stat(lockPath).catch(() => null);
+      if (!info || Date.now() - info.mtimeMs <= timeoutMs) throw new Error(`${name} is already running`);
+      await unlink(lockPath).catch(() => {});
+      handle = await open(lockPath, "wx");
+    }
+    await handle.writeFile(JSON.stringify({ name, pid: process.pid, startedAt: new Date().toISOString() }));
+    return await callback();
+  } finally {
+    await handle?.close().catch(() => {});
+    await unlink(lockPath).catch(() => {});
+    activeLocks.delete(name);
+  }
 }
 
 export function hashText(value) {

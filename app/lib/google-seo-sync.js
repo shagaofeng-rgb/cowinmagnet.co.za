@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { readFile } from "node:fs/promises";
 
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
-const SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
+const SCOPE = "https://www.googleapis.com/auth/webmasters";
 
 function base64url(value) {
   return Buffer.from(value).toString("base64url");
@@ -43,14 +43,19 @@ export function googleSeoConfig() {
     "https://cowinmagnet.co.za/"
   ).trim();
   return {
+    enabled: String(process.env.GOOGLE_SEARCH_CONSOLE_ENABLED || "false").toLowerCase() === "true",
     configured: hasJson || hasParts,
     clientEmail: process.env.GOOGLE_CLIENT_EMAIL || (hasJson ? "Configured by service account JSON" : ""),
     propertyUrl: siteUrl.startsWith("sc-domain:") ? siteUrl : siteUrl.replace(/\/?$/, "/"),
-    tokenUri: process.env.GOOGLE_TOKEN_URI || TOKEN_URL
+    tokenUri: process.env.GOOGLE_TOKEN_URI || TOKEN_URL,
+    sitemapUrl: (
+      process.env.GOOGLE_SEARCH_CONSOLE_SITEMAP_URL ||
+      `${(process.env.NEXT_PUBLIC_SITE_URL || "https://cowinmagnet.co.za").replace(/\/$/, "")}/sitemap.xml`
+    ).trim()
   };
 }
 
-async function getAccessToken() {
+async function getAccessToken(fetchImpl = fetch) {
   const serviceAccount = await parseServiceAccount();
   if (!serviceAccount?.client_email || !serviceAccount?.private_key) {
     throw new Error("Google service account is not configured");
@@ -71,7 +76,7 @@ async function getAccessToken() {
     grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
     assertion
   });
-  const response = await fetch(serviceAccount.token_uri || TOKEN_URL, {
+  const response = await fetchImpl(serviceAccount.token_uri || TOKEN_URL, {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
     body,
@@ -83,18 +88,93 @@ async function getAccessToken() {
 }
 
 async function googleRequest(path, accessToken, options = {}) {
-  const response = await fetch(`https://www.googleapis.com/webmasters/v3${path}`, {
-    ...options,
+  const { fetchImpl = fetch, ...requestOptions } = options;
+  const response = await fetchImpl(`https://www.googleapis.com/webmasters/v3${path}`, {
+    ...requestOptions,
     headers: {
       authorization: `Bearer ${accessToken}`,
       "content-type": "application/json",
-      ...(options.headers || {})
+      ...(requestOptions.headers || {})
     },
     signal: AbortSignal.timeout(30000)
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error?.message || data.error || `Google Search Console HTTP ${response.status}`);
   return data;
+}
+
+function classifyGoogleError(status, message) {
+  if (status === 401) return "authentication";
+  if (status === 403) return "permission";
+  if (status === 429) return "quota";
+  if (status >= 500) return "google-service";
+  if (status >= 400) return "invalid-request";
+  return /timeout|network|fetch/i.test(message || "") ? "network" : "unknown";
+}
+
+async function wait(delayMs) {
+  await new Promise((resolve) => setTimeout(resolve, delayMs));
+}
+
+export async function submitSitemapToSearchConsole(options = {}) {
+  const config = googleSeoConfig();
+  const enabled = options.enabled ?? config.enabled;
+  const siteUrl = options.siteUrl || options.propertyUrl || config.propertyUrl;
+  const sitemapUrl = options.sitemapUrl || config.sitemapUrl;
+  if (!enabled) return { attempted: false, submitted: false, reason: "disabled" };
+  if (!config.configured && !options.accessToken) return { attempted: false, submitted: false, reason: "credentials-not-configured" };
+  if (!siteUrl || !sitemapUrl) return { attempted: false, submitted: false, reason: "site-or-sitemap-url-missing" };
+  const fetchImpl = options.fetchImpl || fetch;
+  const sitemapResponse = await fetchImpl(sitemapUrl, {
+    method: "GET",
+    headers: { accept: "application/xml,text/xml;q=0.9,*/*;q=0.1" },
+    signal: AbortSignal.timeout(Number(options.sitemapTimeoutMs || 15_000))
+  });
+  if (!sitemapResponse.ok) {
+    throw new Error(`Sitemap accessibility check failed with HTTP ${sitemapResponse.status}`);
+  }
+  const accessToken = options.accessToken || await getAccessToken(fetchImpl);
+  const endpoint = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/sitemaps/${encodeURIComponent(sitemapUrl)}`;
+  const retries = Math.min(3, Math.max(0, Number(options.retries ?? 2)));
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      const response = await fetchImpl(endpoint, {
+        method: "PUT",
+        headers: { authorization: `Bearer ${accessToken}` },
+        signal: AbortSignal.timeout(Number(options.apiTimeoutMs || 20_000))
+      });
+      if (response.ok) {
+        return {
+          attempted: true,
+          submitted: true,
+          siteUrl,
+          sitemapUrl,
+          status: response.status,
+          submittedAt: new Date().toISOString(),
+          attempts: attempt + 1
+        };
+      }
+      const payload = await response.json().catch(() => ({}));
+      const message = payload?.error?.message || payload?.error || `Google Search Console HTTP ${response.status}`;
+      const error = new Error(message);
+      error.status = response.status;
+      error.category = classifyGoogleError(response.status, message);
+      if (![429, 500, 502, 503, 504].includes(response.status) || attempt === retries) throw error;
+      lastError = error;
+    } catch (error) {
+      lastError = error;
+      const status = Number(error?.status || 0);
+      if ((status && ![429, 500, 502, 503, 504].includes(status)) || attempt === retries) {
+        const wrapped = new Error(error?.message || String(error));
+        wrapped.category = error?.category || classifyGoogleError(status, wrapped.message);
+        wrapped.status = status || undefined;
+        throw wrapped;
+      }
+    }
+    await wait(300 * (2 ** attempt));
+  }
+  throw lastError || new Error("Google Search Console sitemap submission failed");
 }
 
 function normalizeRows(rows = []) {

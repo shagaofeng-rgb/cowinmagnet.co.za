@@ -11,3 +11,7 @@ node_modules/
 out/
 
 .vercel
+.generated-sitemaps/
+data/seo/sitemap-manifest.json
+data/seo/sitemap-runs.json
+data/seo/sitemap-state.json

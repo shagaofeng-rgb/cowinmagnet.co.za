@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "test:news": "node ./tools/news-smoke-test.mjs",
+    "test:sitemap": "node --test ./tools/sitemap-test.mjs",
+    "sitemap:generate": "node ./tools/sitemap-generate.mjs",
     "sync:products": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/sync-main-products.ps1",
     "generate:static": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/generate-static-site.ps1"
   },

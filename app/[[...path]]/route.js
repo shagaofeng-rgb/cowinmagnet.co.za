@@ -108,10 +108,15 @@ export async function GET(_request, context) {
   }
   const file = await readRouteFile(parts);
   if (file) {
+    const locale = String(parts[0] || "").toLowerCase();
+    const isUnverifiedTranslation = ["af-za", "zu-za", "xh-za", "st-za", "tn-za"].includes(locale);
+    const isIncompleteContent = /local prototype|prepared for deployment|pending production|verified translation is pending/i.test(file.body.toString("utf8"));
     return new Response(file.body, {
       headers: {
         "content-type": contentType(file.filePath),
-        "cache-control": "public, max-age=0, s-maxage=300"
+        "cache-control": "public, max-age=0, s-maxage=300",
+        ...(locale ? { "content-language": locale } : {}),
+        ...(isUnverifiedTranslation || isIncompleteContent ? { "x-robots-tag": "noindex, follow" } : {})
       }
     });
   }

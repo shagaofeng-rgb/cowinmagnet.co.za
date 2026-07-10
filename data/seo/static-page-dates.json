@@ -1,0 +1,718 @@
+{
+  "/en-za/": {
+    "lastmod": "2026-07-08T11:46:43.000Z",
+    "hash": "bd5f4cc554d00eb70d47e106daadf48bd16663677eb9671ee9781323f42369f7"
+  },
+  "/en-za/404/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "171ffe520dfeda6fb67d707732fd083c22402805f6bfe15cf49ebf06d193c6df"
+  },
+  "/en-za/about/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "136f19067f04912f48b30f7a79848bff2923ae2d8a93fd8ea844e9e5afc92712"
+  },
+  "/en-za/about/company-profile/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "f6d53a9dd771fb4c37dffe43b52a37bb0c05b1d7d76a5e81d778b3da9f323d64"
+  },
+  "/en-za/about/export-service/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "073196590c6f98e98e37f8791287180450848be8cfdb6b9003423bf545b60511"
+  },
+  "/en-za/about/oem-odm-coordination/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "0276de71a6f4fc37ebada65bd8ecda02648ea9426518f37748fed916934099dc"
+  },
+  "/en-za/about/quality-control/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "9afa9b1b8fc41a27dfd0bf685f78fa2fe82f2eec08b27fad98226d68edf7100c"
+  },
+  "/en-za/about/why-choose-us/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "eaeb42ace88e8418becc60cc4d3fc370ea4409d13fde58f809fbcc08ebbc135c"
+  },
+  "/en-za/blog/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "deb300d6e0314642f19144cfa939b85313385310409e4e87bf51807333db1298"
+  },
+  "/en-za/blog/crusher-protection-in-mining/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e3e15712c186b97a5cddcad39c0748bbb2f60b37f5220d3eed27ecaf49e34daa"
+  },
+  "/en-za/blog/how-to-select-an-overband-magnet/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "06faef41518418b958ef3520b6fb011f0802238b7c097c76c0df4f665b93ccbc"
+  },
+  "/en-za/blog/magnetic-separator-for-coal-handling/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "de2f56d5f89284f3b96371a31ae75d1a2538b025f093fe450ad96f2753274cb5"
+  },
+  "/en-za/blog/magnetic-separator-maintenance/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "bf01707dc69b2eed0b8fab8d3e0e07e0e21d7b6c40632abf11ae367ced9cdd2d"
+  },
+  "/en-za/blog/permanent-vs-electromagnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "7d6707f607d8b51a3f01953fafd9666d783bc16223964ab3451679c09765decb"
+  },
+  "/en-za/contact/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "affff49b29d4c6e783d2abe0180396475d460ad1679bfd8710869cadcd0afdfe"
+  },
+  "/en-za/cookie-policy/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4b65d5172748b5af61ea78fa245fbae98c8b01b6d9557fa6bbc90b4c398e811e"
+  },
+  "/en-za/downloads/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "9f210c39b501db2b474d88f207b3620c55f933975a815a9c9093dda020ad4efc"
+  },
+  "/en-za/industries/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "2ece169a67d04ca70ef46fffc96c6b68a6e4ab7cb12e6f6479894148a6bacda1"
+  },
+  "/en-za/industries/cement/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "c2cc68801fdde85359bd0fd92d08961ce4b568db142c84623fb5317290911b69"
+  },
+  "/en-za/industries/chrome-ore/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ebe49776ebcd0a14793e8a5fb98d7e0c2cfc18d6cda0f2ef1ca027cb16692375"
+  },
+  "/en-za/industries/coal-handling/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "209f24390e9099050dabd2cbcbb9a69667ffe52006b3f38d7cf25a049072bdc0"
+  },
+  "/en-za/industries/conveyor-systems/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "6a68090b01625537a56aa75d7bdd418596b3408b583337a7d4eccc84cb1361a1"
+  },
+  "/en-za/industries/food-processing/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a051a8d17d441a34e376ae7e13ea0682ba3b7a8bda719dd0708f650a778949ed"
+  },
+  "/en-za/industries/gold-mining/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "36d60f0793405da19262443db58899a764d6a73d2c123553c45f88e53fb6312f"
+  },
+  "/en-za/industries/iron-ore/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "8c3ed5945454103af88df7298c2e16a12d7830822b4f8aea7ed5401be2c86a83"
+  },
+  "/en-za/industries/manganese-ore/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "6578082cc228ebeb82bfdf2c37789151f23ec61bee7507a0d0a873f33b89756b"
+  },
+  "/en-za/industries/mineral-processing/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "6e09bf477dddc26934d59a05521dcdc6cdf3f46cb58b4c6fe057979db53fe488"
+  },
+  "/en-za/industries/mining/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "d9a32c44b9b5d36ab75a5821c496a6c465183b138c5ae7d6a9242813724ed785"
+  },
+  "/en-za/industries/ports-bulk-terminals/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "8b389e6f30614423a09d660430d364a2da1b219af19f9132d07da2171819844c"
+  },
+  "/en-za/industries/power-plants/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "9e299deb2f22ba59c17c2c8dfdd0092ed98ccc32262e2c75a16c1c90aef2f94f"
+  },
+  "/en-za/industries/quarry-aggregates/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "1aa04f9e821074e8ae085ffca85753b65fd6cdacfa02c5754c86ad2ef61061e9"
+  },
+  "/en-za/industries/recycling/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e2282e65bc32335b96062be4ca994917dd39be62d3c194308374be05f12cf9f7"
+  },
+  "/en-za/markets/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "c154b9eb63a898433e09476f2d9dcf39fe1bbfa13a1c9de428d3f7d2b9581a54"
+  },
+  "/en-za/markets/angola/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "7498d8079b235727a60e59518d323116ded825fa67f778f09f27a46735c067b9"
+  },
+  "/en-za/markets/botswana/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ba473e12bf8b28a323db66c8257ca68137e3c02de430d700273adeb1ae7f21aa"
+  },
+  "/en-za/markets/drc/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3d08a55337581125da5cbd7878dd9d000d57987b000579d8e7698b5c6f195fca"
+  },
+  "/en-za/markets/ghana/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "18071d081dda70ef1fd9bb5319c78f126628469be6dae94acf5d55d3c5744c3d"
+  },
+  "/en-za/markets/kenya/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "29a4ae018cc52aaef7f37b2f1342eab2146bebf97fcdb637bb45c07fa1ce3e45"
+  },
+  "/en-za/markets/mozambique/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "19f2efa16bf6cc3abc88ebc60201294a5573fa486f99947de0a15053a04864fe"
+  },
+  "/en-za/markets/namibia/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "10f47c504cb60f85e689d1512586e8a9f9aaabcc138b3a953d3efdc3be4b5407"
+  },
+  "/en-za/markets/nigeria/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "f428173871dc74decff6841b85b1d85a570caf65e1d4c08e4bd5ba93487363d0"
+  },
+  "/en-za/markets/south-africa/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3a051209377735eb4cef78fb35911ba5487774981ecd5651d970294ba24e5f00"
+  },
+  "/en-za/markets/south-africa/eastern-cape/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ade38df8fe0b532023be72f3ffae47f026434c7aa36676903850a06aaf3fe236"
+  },
+  "/en-za/markets/south-africa/gauteng/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "556d273c3b0651bb439372edc0ff13964fa8ea12e81ac9d74e809eadf5b80b3c"
+  },
+  "/en-za/markets/south-africa/kwazulu-natal/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "38fa13e4b7b3a8468e4c78d3a226c972461e55f3d3266c8f499689bca3953882"
+  },
+  "/en-za/markets/south-africa/limpopo/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "945859bfdd050981bffc4a71862e70844217f197e9720a0ef5743ba1bc19cfe0"
+  },
+  "/en-za/markets/south-africa/mpumalanga/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "aeb6e9594d27a2af82c66fcc649def92ee32e873950f4f49037a169662c0877c"
+  },
+  "/en-za/markets/south-africa/north-west/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "00ee60c212ad9e8f3d63ed43e8605f28ee56b9dd15dd112feeaa83c3d612f2a7"
+  },
+  "/en-za/markets/south-africa/northern-cape/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "f8cb3ed1859ccac6e07fc64bb514fa6a1844532541951d9c1cb4d1b35d62c8e7"
+  },
+  "/en-za/markets/south-africa/western-cape/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "217c5d6c4b53da1575de0a145424389713471b927f94e24a71ee094d11822884"
+  },
+  "/en-za/markets/tanzania/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "09e56362083628740502fbfe76aee38ba4b66523a9e37416bd603ff76f95cb0d"
+  },
+  "/en-za/markets/zambia/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ed1e1f7cf3ffc2f7ad3ae6519496e68a7625ab56a0d1267688ab9e099f8d9694"
+  },
+  "/en-za/markets/zimbabwe/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "8385a1f05c4d2b2d39207aabb6bdfe1e998f061bb2d9aee6dc10e0157884da1e"
+  },
+  "/en-za/news/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a369094b3969d68095e20782fa7da369e40fafb462149abf582d8d79f3636312"
+  },
+  "/en-za/news/crusher-protection-in-mining/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "1104ed35c4a22ba46e77ebbbf27c832fd27cf62688a3b446f583e62072033724"
+  },
+  "/en-za/news/how-to-select-an-overband-magnet/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "73c1af7d5475f95e5643aaf46acbd79312204f2ec7d50cd990c547ebf6c9bc87"
+  },
+  "/en-za/news/magnetic-separator-for-coal-handling/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a22be6ff35495a3ce44672277ae7cbad065a0ccd98642aa4498056c5c96c1fdd"
+  },
+  "/en-za/news/magnetic-separator-maintenance/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "950c0a6e6bb4bff825d98b4a9e77b75ec25fa25e3c3da98ebe36e6ba2cfbea7e"
+  },
+  "/en-za/news/permanent-vs-electromagnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a1d418f6f67c27094e89be8854b8089c8d3511bdc4f2bf4beeb5576a85a747ac"
+  },
+  "/en-za/privacy-policy/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "529377ec22f9cce84152a93e3f38354ebe21e6925b71a55a4cb112ab71de88de"
+  },
+  "/en-za/products/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "57cb4d6cddb2085b44401eb5d4280dc50c1db5f01ea322a5d61cab77ad26e309"
+  },
+  "/en-za/products/industry-application-equipment/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4113f4709f995c13c153200604fdddae879dd6564b13f000bf04b0eb479268cc"
+  },
+  "/en-za/products/industry-application-equipment/high-frequency-screen/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "8592dbc02f8d51e67ada620ddd0167bfaaded689ad13e13874857e58e309fd15"
+  },
+  "/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "60d581dc6874122b08b1808df049732e7c9e387288bba476467da7c742c91220"
+  },
+  "/en-za/products/industry-application-equipment/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "748b7597d1e20f919889d39b28f793af56edc1e163a3ab188d7cfa47509e4cd3"
+  },
+  "/en-za/products/industry-application-equipment/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "d13d230eb791c60a0ffe54b262ea4e14250c1188cb072a421bfaeee86d649226"
+  },
+  "/en-za/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "423ba1209d047ba8df9533490d64a550fae75012f235005c93367d737678648b"
+  },
+  "/en-za/products/industry-application-equipment/rbcdd-explosion-proof-electromagnetic-self-dumping-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "88bce28d25db2d16c7828688f2dfdf8e49f5fb62ceacc24d4438ee66bc134868"
+  },
+  "/en-za/products/industry-application-equipment/rbcyd-explosion-proof-permanent-magnet-self-dumping-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e77661609057dfa1575081cf330c3882fdb9410220c54e062297fd40c80e72ba"
+  },
+  "/en-za/products/industry-application-equipment/round-electromagnetic-lifting-magnet/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a8acca519549f681d240fc390a2383f0cc000a85210804c8e0356a8081af2f93"
+  },
+  "/en-za/products/magnetic-components-and-filters/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e3ebdd05e4bb93c19fb7d01c146036ed30621c2e0bb1670f7cc599e2061b191b"
+  },
+  "/en-za/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "6a00d7407ac8b84de922da9e3ad5c90b3fdd00ef56b760873fef1e6a15325e5b"
+  },
+  "/en-za/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a93da31d33da330f83c3b2f9887b291d29e4a068b1d16b5ad5db337b7c53c40c"
+  },
+  "/en-za/products/magnetic-components-and-filters/clc-type-wet-slot-magnetic-filter/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "81ba076103b9bf92546bec6a1925bdf6cc31f0d77351ec9ff9c394163b7c6ec1"
+  },
+  "/en-za/products/magnetic-components-and-filters/ctq-type-roller-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "f00f7d6cc66f557477d9de001e62be695079c2ffe6e9e24799ab63907fee2ac2"
+  },
+  "/en-za/products/magnetic-components-and-filters/cyg-wet-pipeline-magnetic-filter/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "dcd303c58d2bf67266ed5bf8efbdf13f6f91eea81ade9ef786c91d6cc7103ede"
+  },
+  "/en-za/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "7ac8610d9040d3189e8a381a76511ffb7a87f4f5821a3929b4e713e6fb25195e"
+  },
+  "/en-za/products/magnetic-components-and-filters/dhj-type-strong-roller-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "560b34b373f428c50e75f5a5410bca102b1b5e82a721e48264603e081024264a"
+  },
+  "/en-za/products/magnetic-components-and-filters/drawer-magnet/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "77bb6fda8fbf11de533e0719b36f6f8ea1b594d49c449e68aa27e0d7baf83720"
+  },
+  "/en-za/products/magnetic-components-and-filters/hump-magnet/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "67c3558870bb05a5e9a5da7292a001f8645249fefb45737adf04c416224c3df4"
+  },
+  "/en-za/products/magnetic-components-and-filters/magnetic-grid/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "d858659760d4687b04e9b7c22646f9c88e49b2275605a103ef017b815f7f500f"
+  },
+  "/en-za/products/magnetic-components-and-filters/magnetic-rod/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "6a590bfee7c8affeae2586b4257ab16edeb6bc8f9c2ed82e0ce0377d446f3c45"
+  },
+  "/en-za/products/magnetic-components-and-filters/magnetic-trap/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "643f44d9c3f3a5f5e6403f9cd367ba9b03fef1cb7b6c70e6456b8f86858be0be"
+  },
+  "/en-za/products/magnetic-components-and-filters/permanent-filter-bar-magnetic-neodymium-rod/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "8d4892fa8449c77d29d87a9f02f9452f240db15d1abfccfb4f39fa0a68d41348"
+  },
+  "/en-za/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "84e6449c5efa09a371128cad4ce178a1c0d70ed04bc94cba620009f53b3eb31a"
+  },
+  "/en-za/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3e3cb54164ae55875e45b67c4222b86f8739f1c3c913274bcc94ec4f4e9285cc"
+  },
+  "/en-za/products/magnetic-components-and-filters/rotary-pipe-magnet/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "fa03a171a56b994d01120ed3ebc0b24874416b43af7e1f2f94de3a204ce49bac"
+  },
+  "/en-za/products/magnetic-separation-equipment/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "aaec21a524f248ed3134eb375da9f79e245bef3cc1b886ca880fb234fd7b9d94"
+  },
+  "/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "c5db69b52947dcbbfb05b360078c0feb0d4a240a3801ff17449a7696313f2078"
+  },
+  "/en-za/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3a63ec4c6b9446fb68d3075c0b6c005831e7920416af81d27553f1912fe7ad08"
+  },
+  "/en-za/products/magnetic-separation-equipment/cgb-type-rotary-semi-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "56d33974dd3aa7e3ffd7c477179d3a1e73384eb45785f09fb1bcdf9a5bc123e1"
+  },
+  "/en-za/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "904d6ce0435510b364198eec127410380f0f28c589dc8658e3501c08e079a101"
+  },
+  "/en-za/products/magnetic-separation-equipment/clt-type-magnetic-desliming-tank/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "75c812f7635a67ca8aa2a4b754c2654d2677c79244f90fb7940f4b1cf23eb5ed"
+  },
+  "/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "0048377fb6566ac02b5b6e2372d5dbb3082c601f4a83772e9dece044771680d2"
+  },
+  "/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e936aa135a5deb61625865e75564b71dbb36482c2071f877cd16b83c81e1ae46"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctb-type-semi-countercurrent-wet-selection-machine/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "62e667b033c20d5ef50f48baa0fbb11a7210f0ce96a9d0ad96a7c0de80f290da"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctb-wet-semi-countercurrent-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "b36c0cbecb7c48c7076d8e13a8c61a0f336b84917ab0745b50c542aaf3bfaf9e"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctdg-type-permanent-magnet-bulk-dry-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "fcb6e6d31e1bfe984885fa1c7544a59f151f0e1e653b54cf41c73f38c549e8b0"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "56083016bf9c06b1104598ebc38205f900515891549171541d2596a57507ce90"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "60a49ae44102da1feafcbb784a437a363eae25d804c771e625869e76fbe8707b"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctn-wet-full-countercurrent-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "efe227917b3351e9f7bb7907bb6fe78c07225888105de141654e90027aa996f8"
+  },
+  "/en-za/products/magnetic-separation-equipment/cts-type-downstream-wet-pre-selection-machine/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "61d240e200cf639bf14488424e3ae1b7d64789295f9600b1ea4d6631fc55a95b"
+  },
+  "/en-za/products/magnetic-separation-equipment/cts-type-wet-co-current-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ffed7fcb062c998c9b72a751db8412b37f3bb37c6e8e100740a990bfa95ad07f"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e3341326b670ecf1cc38058011438e5a9f857aa8bffb0fe6f65d08d9e56ad400"
+  },
+  "/en-za/products/magnetic-separation-equipment/ctzs-type-upward-suction-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "9ebbe3ee8170eb12ee724ab88c90bae53df555682fe450e986dbe85f23ea35ff"
+  },
+  "/en-za/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "2325acf667a309a2c46005fc576bb0b678583687a88c75784cc2b94c4d53fa58"
+  },
+  "/en-za/products/magnetic-separation-equipment/dcx-wet-fully-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "f09fe40d19e999cfa8f98542089c8b6850bf5e83147c593a18722c4214486bab"
+  },
+  "/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separation/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4496247b5dd6e140e999a1e651f8690d598511e61bb278c7fa56b9d72ad91e86"
+  },
+  "/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "0a18f3290af66209eaa60c85ed917791a63c63e17279d2175ffcb6eb9b5d6f6f"
+  },
+  "/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "8ab887e1ff21d76e4c9694e6150a003f28b2e19f51a8ddae804317778795f8d0"
+  },
+  "/en-za/products/magnetic-separation-equipment/dry-drum-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "bc1fddb9386ea747a548c2a9dc3b9b152e79dfcda142c9cee5feb349b784f4df"
+  },
+  "/en-za/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "d7c769118a743849d5f90cfbf5f8695a484dae9fa9aa774d40d7d4473d8781d5"
+  },
+  "/en-za/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "7ae6f592d0e69d98cf30af7b906c4e57f1ee51a7d907dd92f01e560e16dffb42"
+  },
+  "/en-za/products/magnetic-separation-equipment/hcg-type-dry-pre-selection-machine/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "136055fc9947753d3d37437f045e1b2a59d89b3d4af9d1b548caa6cefec8fd41"
+  },
+  "/en-za/products/magnetic-separation-equipment/hjlh-type-vertical-ring-high-gradient-magnetic-separation/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "611d96ae8f4dd11579fd46a94588f9343ae18516aa1fac8401f24d59bc5bdbd5"
+  },
+  "/en-za/products/magnetic-separation-equipment/hjlh-wet-vertical-ring-high-gradient-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "32b911c2c9bcfc1b02d298f19eb5fa9849bfc7fb7014e743a7418288ab5425ce"
+  },
+  "/en-za/products/magnetic-separation-equipment/hjpc-wet-disc-magnetic-separation/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "48fa244ab48f53f9efa498c82fdec6bd7f3a0dff42d5ef6490cc5f2493994878"
+  },
+  "/en-za/products/magnetic-separation-equipment/hmdn-coal-washing-special-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "32c44fb7d0895b56173eeeedeeffebaf95a567ddc5a0c69bfd0ee1d20878b1a6"
+  },
+  "/en-za/products/magnetic-separation-equipment/ljk-type-magnetic-ore-special-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "308240617efbbe1ec28302b7093d4acb69b1989b30f94723cf0f4b5fee320e6f"
+  },
+  "/en-za/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "f10bd9470c2488bf3374893de894c69456d123ddb7c5a2c6ae9b3a47f4aa536e"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ba86313509ae66c6470af5224bd7edebbd1256881ebda02ba4ab5a114ea6ca64"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "0b3d927e75477e2582b38cae4a95ba7c8466c1dbbdc907251f13a5fa1bf7297e"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4a907c09753bb9911ced2a3a5c322187b4e6ea11b6e64d5d2942bdfa4dfb9364"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "93dc86066c26713ebf1bd007a5a7728ba6ec25a19a1518bd4e2b198729b1e695"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "b3566cdd5f075c7bd997440e7b8af43756407eba485b1fc7a679d268f59128dd"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcps-self-dumping-disc-type-permanent-magnet-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4aa4b5ca8dd14d2417b42403ba416bb7cbf6732117958cf789a5183fe342edcd"
+  },
+  "/en-za/products/magnetic-separation-equipment/rct-type-fully-magnetic-drum/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "6a30dbda5575ea92441831bccbfee66f35bda3b7bf65a18c63f98573b37c1c85"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcya-type-inclined-pipeline-permanent-magnet-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3e36b015a84b3a83d9cded9f183069327eaa0be8e0a51ecf19af59c946775b34"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcydii-type-permanent-magnet-self-dumping-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "0fbf7541e4168d58f532ee2e71be499bb73cd03528abdcbb68f949c853b78232"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcye-type-permanent-magnet-self-dumping-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "d65a473a38d8ffe05e686a6b912bf4227e480264c767049b56256dab3823c797"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcyf-type-vertical-pipeline-permanent-magnet-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "0fee59948c8979745c4b186c9aa367b302622b5f06f974a159560e9d39eef57c"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e261aedadaeb3803428acd6bea530ea094aa45493749adbc7e4767e812d4c582"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "db4dd08c483c248d45bb9113378bc6c59f65bc95fb38753f577a754ea37b4ef4"
+  },
+  "/en-za/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3d860a20ea88207430675d8b32d7d72ad8542d5866c479277f384f0946e2b593"
+  },
+  "/en-za/products/magnetic-separation-equipment/suspended-electromagnetic-conveyor-belt-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "bb7daeb17d125b7245ef1ba9a8b180d1c92f4d57c3437cb5e118b85bf02e6c78"
+  },
+  "/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "6498ea86795b50b4c52eb3cb82ecae8e02a001dee70504e119ca09d37ab35d41"
+  },
+  "/en-za/products/magnetic-separation-equipment/wbc-semi-magnetic-tailings-recovery-machine/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "bbac3d2e16ed3214420a2249ba302e15f8614898c1bb9175cbd9b70336859fc4"
+  },
+  "/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "58d542f7def21b34e2a01a9c9b3621cdcc4926b3c1f69fc40f770d074ab9cfb9"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "1561af061a00e35a68d89e7a0b5cc33956f8d68c8e04a2ead6b97f2ed203a074"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/dls-type-window-metal-detector/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "03e00f0dc4bbe6041c532e5146e96b30c7845234c07f746f9f3a1cd7326afded"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "f5f377f902cd81eb557bad422b3250a1295f1bac44ef0760c3220ec2e170c897"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "97d3c841d328ae51ba3ac1cb82eb8d608e4b8eb725f084c5de28c93b966d1a24"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/electromagnet-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "933d30c31a811dd2ee62d3c96cabc8bbe3fb0dedd3047c69a60c5c1ee92ce71f"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/gjt-type-window-metal-detector/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ea82a0824aa76b63590440b12218fa636795155d8dee61b1642663c0620392c4"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/hecp-eddy-current-metal-sorting-machine/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3b914443c6efd922e96cf1434e6e41435d49d68b8c61852d6f379d1ddd6efeb3"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/hecs-type-eddy-current-metal-sorting-machine/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "36e53f6e3173988b48b29beea0c9304cedf64f962ff87331b2412dcc264e3cf4"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "0babcf8310acab48ecdce62f8009f2f138ce6fb53fdc6b94aa37132638f8d552"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e75357ac2982e594123fe3f8b6c82ce528f8b252fadcbfe5548b71f999dbf285"
+  },
+  "/en-za/products/metal-detection-and-recycling-sorting/stainless-steel-separation-conveyor/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "43d354845a00b35d01dde038c47913aee4e6f2651a242693040cf2074f423c98"
+  },
+  "/en-za/products/suspended-and-self-unloading-iron-removers/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "16ddc02b258c77f60dad0ddca6b7bc00d0401efa737cd52b7cb0d934e722d067"
+  },
+  "/en-za/products/suspended-and-self-unloading-iron-removers/rcdb-type-self-cooling-plate-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "93d39c35aa89b8023f251760281cf6ab0a2145827808e86978a9c7e4f0297c00"
+  },
+  "/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "22a0dc963ee8b4836b161681a1fa1c620e495e08047747baabef9ca38276b545"
+  },
+  "/en-za/products/suspended-and-self-unloading-iron-removers/rcyb-type-permanent-magnet-manual-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "9170f93ebe2e824fe38eb7abb4df895f9d48b84c6b482d713e64e8e2f8a21614"
+  },
+  "/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4a10891fa0bbf1c53f7a0b45a089723f57ebd4f3913b28b89849c5e74db5a024"
+  },
+  "/en-za/request-a-quote/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "79ee4531c835cc3321d558bd884f5294e2ca1cde0803234c77c407cdbf861851"
+  },
+  "/en-za/search/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "b418f3f76974bb194e9567af93ef945dfb700db75f42c84d32e5de3eb31818cb"
+  },
+  "/en-za/solutions/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "cfa433f02393c217b63282cb52c73cd3908c0e1ab1816da658104790b2c1a5bb"
+  },
+  "/en-za/solutions/coastal-corrosive-environments/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4dd65cde9023c58f4fdf28eadf7b546864c3dfe2b58cae87f6aef96f9fe40a7a"
+  },
+  "/en-za/solutions/conveyor-belt-protection/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "00f94a93bbde106aee31320c54f7c44fbdb83edbb370a191fbc79f3e0b6bb9af"
+  },
+  "/en-za/solutions/crusher-protection/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "ad0760d3711c9bbb2519597e2e906d35d6da84fc7bb44c2aceaa0d692acd1317"
+  },
+  "/en-za/solutions/ferrous-metal-recovery/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a2c3347218ce3e9edf3bfb524d38aafe6ebacd2ac2bc93cf8faee1e22ff548bc"
+  },
+  "/en-za/solutions/heavy-duty-mining-applications/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "8f0565e7cca26388bfd3278a66ec2181c1a96d9fb9222976ca329a6af1821f5d"
+  },
+  "/en-za/solutions/high-temperature-applications/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "3fb6480a4891eb34645ca8bd0c34f8297dcd2482818cbb87baf43a96bd0bc08d"
+  },
+  "/en-za/solutions/outdoor-dusty-environments/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "14da6f757e54a3871efd9af43de21ee8b13a94ef2e7c862b658aff14f4662714"
+  },
+  "/en-za/solutions/remote-mining-sites/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "a9d88de16f2045607463dd1a5617d1b4be860411bcf3c9d2ad162d4c9d89c4f9"
+  },
+  "/en-za/solutions/self-cleaning-magnetic-separation/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "c4e8ccd469ff00add8d069c7beb14d97ba59e7db94d0179c7f8dc47e36e5b6e0"
+  },
+  "/en-za/solutions/tramp-iron-removal/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "5c660eb8f48a81e736a67592be4fb0fc9127a3acad587ed9a6e57c0619da0eca"
+  },
+  "/en-za/technical-support/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "b1bb53bfad145c0d3cf0da52cc61165d976eeea36d1a3f88489fe06f422b123a"
+  },
+  "/en-za/technical-support/after-sales-process/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "c52d7b10a43181f9da20e91752135615d8dc53a3850bd12fdd087abb65164c22"
+  },
+  "/en-za/technical-support/coastal-corrosion-protection/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "7a3ea9822ad921ad982b51c87662859d68f8c7b5a71e0e6c0380f98e6f7ecfc5"
+  },
+  "/en-za/technical-support/dust-protection/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "1c6aace4a019eaab4e485e289e4086a26b66e3e18f8bd93892c59ebc39ca76a3"
+  },
+  "/en-za/technical-support/electrical-specification-guide/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "e1e50df8f8ef830eeb3ce93a25127799808378d1f7b3e8549bf5df8bd4e6f850"
+  },
+  "/en-za/technical-support/high-temperature-configuration/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "25438c23ad41e67083e96525304a8bcf70ec1825e58a9a9888550aeff8a50aed"
+  },
+  "/en-za/technical-support/installation-guide/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "4ac9c810d9027312e44b6148d4ac613c8d711ba0f20d29a42a8c896a92d1cf3e"
+  },
+  "/en-za/technical-support/maintenance-guide/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "99b007f3b4ba5641e00966bc32a3b20e94029611919482fe57bc0efb859f5d0d"
+  },
+  "/en-za/technical-support/outdoor-installation/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "b09918798a8d2cb3d60cd88c152725e246c30fea7a322f9d995e6a1487e57176"
+  },
+  "/en-za/technical-support/product-selection-guide/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "db4a58106865e332f8c5ca1fa71bfb0c306a36c37ac2d20961aef1a7bc9d03c9"
+  },
+  "/en-za/technical-support/spare-parts-support/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "34166551e86cdcfe0a1e640a4dd63977cda0671a4a9cc124fa7e3e79d4ba29ea"
+  },
+  "/en-za/terms-and-conditions/": {
+    "lastmod": "2026-06-24T13:57:13.000Z",
+    "hash": "325b89b4414df0873583c801121ce661a6062cc5b970669e27c42bce9f981a78"
+  }
+}

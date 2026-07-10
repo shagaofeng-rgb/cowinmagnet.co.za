@@ -4,12 +4,14 @@ import { tmpdir } from "node:os";
 import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
 import { cookies, headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
 import { googleSeoConfig, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
+import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 const root = process.cwd();
 const dataRoot = join(root, "data");
@@ -277,6 +279,17 @@ async function writeJson(relativePath, value) {
   await writeFile(writablePath, payload, "utf8");
 }
 
+function scheduleSitemapAudit(event) {
+  after(async () => {
+    try {
+      await markSitemapDirty(event);
+      await runSitemapAudit({ trigger: "content-change" });
+    } catch (error) {
+      console.error(`[sitemap] content-change audit failed: ${error?.message || error}`);
+    }
+  });
+}
+
 async function bodyJson(request) {
   try {
     return await request.json();
@@ -467,6 +480,7 @@ async function googleSeoState() {
   ]);
   const config = googleSeoConfig();
   return {
+    enabled: config.enabled,
     configured: config.configured,
     propertyUrl: config.propertyUrl,
     serviceAccountEmail: config.clientEmail,
@@ -572,6 +586,7 @@ async function adminCategories(request, session) {
   if (existing) Object.assign(existing, payload);
   else categories.push({ ...payload, createdAt: now, createdBy: session.user });
   await writeJson("data/categories/categories.json", categories);
+  scheduleSitemapAudit({ source: "categories", action: existing ? "updated" : "created", objectId: slug, url: `/en-za/products/${slug}/` });
   await audit(session.user, existing ? "Category Updated" : "Category Created", "Category", slug, `Product category ${existing ? "updated" : "created"}`);
   return response({ success: true, data: { slug }, requestId: token(8) });
 }
@@ -587,6 +602,7 @@ async function adminCategoryAction(request, session, slug, action) {
   item.updatedAt = new Date().toISOString();
   item.updatedBy = session.user;
   await writeJson("data/categories/categories.json", categories);
+  scheduleSitemapAudit({ source: "categories", action, objectId: slug, url: `/en-za/products/${slug}/` });
   await audit(session.user, `Category ${action}`, "Category", slug, `Category ${action}`);
   return response({ success: true, data: item, requestId: token(8) });
 }
@@ -656,10 +672,12 @@ async function adminMedia(request, session) {
 }
 
 async function adminSyncState() {
-  const [newsState, googleSeo, googleJobs, storage] = await Promise.all([
+  const [newsState, googleSeo, googleJobs, sitemapState, sitemapRuns, storage] = await Promise.all([
     getNewsState(),
     readJson("data/seo/google-search-console.json"),
     readJson("data/seo/google-seo-jobs.json"),
+    readDataJson("data/seo/sitemap-state.json", {}),
+    readDataJson("data/seo/sitemap-runs.json", []),
     Promise.resolve({ mode: storageMode(), databaseConfigured: Boolean(process.env.DATABASE_URL) })
   ]);
   return {
@@ -671,6 +689,8 @@ async function adminSyncState() {
     newsState,
     googleSeo,
     googleJobs,
+    sitemapState,
+    sitemapRuns: (sitemapRuns || []).slice(0, 20),
     jobs: [
       ...(Array.isArray(newsState.jobs) ? newsState.jobs.map((job) => ({ ...job, type: "news" })) : []),
       ...(Array.isArray(googleJobs) ? googleJobs.map((job) => ({ ...job, type: "google-seo" })) : [])
@@ -753,7 +773,7 @@ async function publicProductBlog(productId) {
 
 function validCronRequest(request) {
   const secret = process.env.CRON_SECRET || process.env.NEWS_CRON_SECRET || "";
-  if (!secret) return true;
+  if (!secret) return !process.env.VERCEL && process.env.NODE_ENV !== "production";
   const header = request.headers.get("authorization") || request.headers.get("x-cron-secret") || "";
   return header === secret || header === `Bearer ${secret}`;
 }
@@ -761,16 +781,27 @@ function validCronRequest(request) {
 async function handleCronNews(request) {
   if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
   const result = await runNewsAutomation();
-  return response({ success: true, data: result, requestId: token(8) });
+  let sitemap = null;
+  if (result.published?.length) {
+    await markSitemapDirty({ source: "news-automation", action: "published", objectId: result.job?.id || "", url: "/en-za/news/" });
+    sitemap = (await runSitemapAudit({ trigger: "news-cron" })).run;
+  }
+  return response({ success: true, data: { ...result, sitemap }, requestId: token(8) });
 }
 
 async function handleCronGoogleSeo(request) {
   if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
+  const sitemap = await runSitemapAudit({ trigger: "daily-cron", submit: true });
   try {
-    const result = await syncGoogleSeo("cron");
-    return response({ success: true, data: result, requestId: token(8) });
+    const googleSeo = await syncGoogleSeo("cron");
+    return response({ success: true, data: { sitemap: sitemap.run, googleSeo }, requestId: token(8) });
   } catch (error) {
-    return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
+    return response({
+      success: true,
+      data: { sitemap: sitemap.run, googleSeo: null },
+      warning: `Sitemap completed; Google SEO analytics sync failed: ${error?.message || error}`,
+      requestId: token(8)
+    });
   }
 }
 
@@ -779,6 +810,13 @@ function sourceFromReferrer(referrer) {
   if (/linkedin|facebook|tiktok|twitter|x\.com/i.test(referrer)) return "Social";
   if (referrer) return "Referral";
   return "Direct";
+}
+
+function anonymizeIp(value) {
+  const ip = String(value || "").trim();
+  if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(ip)) return ip.replace(/\.\d+$/, ".0");
+  if (ip.includes(":")) return `${ip.split(":").slice(0, 4).join(":")}::`;
+  return "unknown";
 }
 
 async function parseLoginBody(request) {
@@ -841,24 +879,44 @@ function handleLogout() {
 
 async function handleEnquiries(request) {
   const body = await bodyJson(request);
-  if (!body.name || !body.email) return response({ success: false, error: "Name and email are required", requestId: token(8) }, 400);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) return response({ success: false, error: "Valid email is required", requestId: token(8) }, 400);
+  if (JSON.stringify(body).length > 50_000) return response({ success: false, error: "Inquiry payload is too large", requestId: token(8) }, 413);
+  const clean = (value, max = 500) => String(value || "").trim().slice(0, max);
+  const name = clean(body.name, 120);
+  const email = clean(body.email, 254).toLowerCase();
+  if (!name || !email) return response({ success: false, error: "Name and email are required", requestId: token(8) }, 400);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return response({ success: false, error: "Valid email is required", requestId: token(8) }, 400);
+  if (body.website) return response({ success: true, data: { received: true }, requestId: token(8) });
 
   const items = await readJson("data/cms/enquiries.json");
+  const company = clean(body.company, 180);
+  const product = clean(body.productRequired, 500);
+  const duplicateSince = Date.now() - 30 * 60 * 1000;
+  const duplicate = items.find((item) => (
+    String(item.email || "").toLowerCase() === email &&
+    String(item.company || "").toLowerCase() === company.toLowerCase() &&
+    String(item.product || "").toLowerCase() === product.toLowerCase() &&
+    new Date(item.submissionTime || 0).getTime() >= duplicateSince
+  ));
+  if (duplicate) return response({ success: false, error: `A similar inquiry was already received. Reference: ${duplicate.id}`, requestId: token(8) }, 409);
   const id = `ENQ-${new Date().toISOString().replace(/\D/g, "").slice(0, 14)}-${token(4)}`;
+  const payload = {};
+  for (const [key, value] of Object.entries(body)) {
+    if (["duplicateKey", "website", "fileUpload"].includes(key)) continue;
+    payload[key] = typeof value === "string" ? clean(value, key === "projectDescription" ? 5000 : 1000) : value;
+  }
   const record = {
     id,
-    name: String(body.name || ""),
-    company: String(body.company || ""),
-    country: String(body.country || ""),
-    region: String(body.region || ""),
-    email: String(body.email || ""),
-    whatsapp: String(body.whatsapp || ""),
-    preferredLanguage: String(body.preferredLanguage || ""),
-    product: String(body.productRequired || ""),
-    industry: String(body.industry || ""),
-    sourcePage: String(body.sourcePage || ""),
-    payload: body,
+    name,
+    company,
+    country: clean(body.country, 120),
+    region: clean(body.region, 120),
+    email,
+    whatsapp: clean(body.whatsapp, 80),
+    preferredLanguage: clean(body.preferredLanguage || body.language, 30),
+    product,
+    industry: clean(body.industry, 180),
+    sourcePage: clean(body.sourcePage, 500),
+    payload,
     status: "New",
     assignedUser: "",
     internalNotes: [],
@@ -883,14 +941,14 @@ async function handleTrack(request) {
     eventType: body.eventType ? String(body.eventType) : "pageview",
     time: new Date().toISOString(),
     clientId,
-    country: body.country ? String(body.country) : "Unknown",
+    country: headerStore.get("x-vercel-ip-country") || (body.country && body.country !== "Local Preview" ? String(body.country) : "Unknown"),
     device: body.device ? String(body.device) : "Desktop",
     browser: body.browser ? String(body.browser) : "Browser",
     source,
     sourcePlatform: source === "Direct" ? "Direct entry" : "External",
     sourceDetail: referrer || "No referrer or UTM",
     page: body.page ? String(body.page) : "/",
-    ip: headerStore.get("x-forwarded-for")?.split(",")[0] || "unknown",
+    ip: anonymizeIp(headerStore.get("x-forwarded-for")?.split(",")[0]),
     tag: events.some((event) => event.clientId === clientId) ? "Returning" : "New",
     visitDay: new Date().toISOString().slice(0, 10).replaceAll("-", "/"),
     userAgent: headerStore.get("user-agent") || ""
@@ -962,6 +1020,37 @@ async function handleAdmin(request, path) {
       return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
     }
   }
+  if (path === "admin/sitemap" && request.method === "GET") {
+    const [state, runs, manifest] = await Promise.all([
+      readDataJson("data/seo/sitemap-state.json", {}),
+      readDataJson("data/seo/sitemap-runs.json", []),
+      readDataJson("data/seo/sitemap-manifest.json", { entries: [] })
+    ]);
+    return response({
+      success: true,
+      data: {
+        state,
+        latestRuns: runs.slice(0, 20),
+        urlCount: manifest.entries?.length || 0,
+        publicUrls: {
+          index: `${productionSiteUrl()}/sitemap.xml`,
+          robots: `${productionSiteUrl()}/robots.txt`
+        }
+      },
+      requestId: token(8)
+    });
+  }
+  if (path === "admin/sitemap" && request.method === "POST") {
+    const body = await bodyJson(request);
+    const result = await runSitemapAudit({
+      trigger: `admin:${session.user}`,
+      force: Boolean(body.force),
+      dryRun: Boolean(body.dryRun),
+      submit: Boolean(body.submit)
+    });
+    await audit(session.user, "Sitemap Generated", "Sitemap", result.run.id, `Processed ${result.run.totalUrls} URLs`);
+    return response({ success: true, data: result.run, requestId: token(8) });
+  }
   if (path === "admin/links" && request.method === "GET") return response({ success: true, data: await linksSummary(), requestId: token(8) });
   if (path === "admin/products" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/products/products.json"), request, { searchFields: ["name", "slug", "category", "categorySlug", "seoTitle", "shortDescription"], statusField: "productStatus", includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
   if (path === "admin/products/export" && request.method === "GET") return csvResponse("products.csv", await readJson("data/products/products.json"));
@@ -984,6 +1073,7 @@ async function handleAdmin(request, path) {
     if (body.features) product.features = body.features;
     product.updatedAt = new Date().toISOString();
     await writeJson("data/products/products.json", products);
+    scheduleSitemapAudit({ source: "products", action: "updated", objectId: slug, url: product.canonicalUrl || `/en-za/products/${product.categorySlug}/${slug}/` });
     await audit(session.user, "Product Updated", "Product", slug, "Product content edited in Cowinmagnet Africa admin");
     return response({ success: true, data: { slug }, requestId: token(8) });
   }
@@ -1016,6 +1106,7 @@ async function handleAdmin(request, path) {
   }
   if ((path === "admin/news/publish" || path === "admin/news/retry" || path === "admin/news/generate") && request.method === "POST") {
     const result = await runNewsAutomation();
+    if (result.published?.length) scheduleSitemapAudit({ source: "news-automation", action: "published", objectId: result.job?.id || "", url: "/en-za/news/" });
     await audit(session.user, "News Automation Run", "NewsJob", result.job.id, `Published ${result.published.length} news articles`);
     return response({ success: true, data: result, requestId: token(8) });
   }
@@ -1040,6 +1131,7 @@ async function handleAdmin(request, path) {
     if (article) Object.assign(article, payload);
     else articles.unshift({ ...payload, createdAt: new Date().toISOString() });
     await writeJson("data/articles/articles.json", articles);
+    scheduleSitemapAudit({ source: "news", action: article ? "updated" : "created", objectId: slug, url: `/en-za/news/${slug}/` });
     await audit(session.user, article ? "News Updated" : "News Created", "News", slug, `News article ${article ? "updated" : "created"} in Cowinmagnet Africa admin`);
     return response({ success: true, data: { slug }, requestId: token(8) });
   }
@@ -1088,6 +1180,7 @@ async function handleAdmin(request, path) {
   if (path === "admin/sync" && request.method === "GET") return response({ success: true, data: await adminSyncState(), requestId: token(8) });
   if (path === "admin/sync/news" && request.method === "POST") {
     const result = await runNewsAutomation();
+    if (result.published?.length) scheduleSitemapAudit({ source: "news-automation", action: "published", objectId: result.job?.id || "", url: "/en-za/news/" });
     await audit(session.user, "Manual Sync", "Sync", "news", `Manual news sync published ${result.published.length}`);
     return response({ success: true, data: result, requestId: token(8) });
   }
