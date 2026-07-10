@@ -818,6 +818,38 @@ async function handleCronGoogleSeo(request) {
 
 async function handleCronGscInspection(request) {
   if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
+  if (new URL(request.url).searchParams.get("summary") === "1") {
+    const report = await readDataJson("data/seo/gsc-url-inspection.json", {});
+    const samples = Object.fromEntries(Object.keys(report.byCoverageState || {}).map((coverageState) => [
+      coverageState,
+      (report.results || [])
+        .filter((item) => item.coverageState === coverageState)
+        .slice(0, 10)
+        .map((item) => ({
+          url: item.url,
+          verdict: item.verdict,
+          robotsTxtState: item.robotsTxtState,
+          indexingState: item.indexingState,
+          pageFetchState: item.pageFetchState,
+          googleCanonical: item.googleCanonical,
+          userCanonical: item.userCanonical,
+          lastCrawlTime: item.lastCrawlTime,
+          error: item.error
+        }))
+    ]));
+    return response({
+      success: true,
+      data: {
+        inspectedAt: report.inspectedAt,
+        propertyUrl: report.propertyUrl,
+        total: report.total || 0,
+        byVerdict: report.byVerdict || {},
+        byCoverageState: report.byCoverageState || {},
+        samples
+      },
+      requestId: token(8)
+    });
+  }
   const report = await runGoogleUrlInspection();
   return response({ success: true, data: report, requestId: token(8) });
 }
