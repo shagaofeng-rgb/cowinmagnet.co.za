@@ -87,6 +87,75 @@ async function getAccessToken(fetchImpl = fetch) {
   return data.access_token;
 }
 
+const URL_INSPECTION_ENDPOINT = "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect";
+
+function summarizeInspectionResult(url, data) {
+  const index = data.inspectionResult?.indexStatusResult || {};
+  return {
+    url,
+    verdict: index.verdict || "UNKNOWN",
+    coverageState: index.coverageState || "Unknown",
+    robotsTxtState: index.robotsTxtState || "UNKNOWN",
+    indexingState: index.indexingState || "UNKNOWN",
+    pageFetchState: index.pageFetchState || "UNKNOWN",
+    googleCanonical: index.googleCanonical || "",
+    userCanonical: index.userCanonical || "",
+    lastCrawlTime: index.lastCrawlTime || "",
+    referringUrls: index.referringUrls || [],
+    sitemap: index.sitemap || []
+  };
+}
+
+function inspectionGroups(results, key) {
+  return Object.fromEntries(Object.entries(results.reduce((groups, item) => {
+    const value = item[key] || "Unknown";
+    groups[value] = (groups[value] || 0) + 1;
+    return groups;
+  }, {})).sort((left, right) => right[1] - left[1]));
+}
+
+export async function inspectGoogleUrls(urls, options = {}) {
+  const config = googleSeoConfig();
+  if (!config.configured && !options.accessToken) throw new Error("Google service account is not configured");
+  const siteUrl = options.propertyUrl || config.propertyUrl;
+  const fetchImpl = options.fetchImpl || fetch;
+  const accessToken = options.accessToken || await getAccessToken(fetchImpl);
+  const uniqueUrls = [...new Set((urls || []).filter(Boolean))];
+  const concurrency = Math.min(5, Math.max(1, Number(options.concurrency || 3)));
+  const results = new Array(uniqueUrls.length);
+  let cursor = 0;
+
+  async function worker() {
+    while (cursor < uniqueUrls.length) {
+      const index = cursor++;
+      const url = uniqueUrls[index];
+      try {
+        const response = await fetchImpl(URL_INSPECTION_ENDPOINT, {
+          method: "POST",
+          headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+          body: JSON.stringify({ inspectionUrl: url, siteUrl, languageCode: "en-US" }),
+          signal: AbortSignal.timeout(Number(options.timeoutMs || 30_000))
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.error?.message || `URL Inspection HTTP ${response.status}`);
+        results[index] = summarizeInspectionResult(url, data);
+      } catch (error) {
+        results[index] = { url, verdict: "ERROR", coverageState: "Inspection error", error: error?.message || String(error) };
+      }
+    }
+  }
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, uniqueUrls.length) }, worker));
+  return {
+    inspectedAt: new Date().toISOString(),
+    propertyUrl: siteUrl,
+    total: results.length,
+    byVerdict: inspectionGroups(results, "verdict"),
+    byCoverageState: inspectionGroups(results, "coverageState"),
+    results
+  };
+}
+
 async function googleRequest(path, accessToken, options = {}) {
   const { fetchImpl = fetch, ...requestOptions } = options;
   const response = await fetchImpl(`https://www.googleapis.com/webmasters/v3${path}`, {

@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
 import { atomicWriteXml, buildSitemapBundle, escapeXml, normalizeSitemapRecord, validateSitemapXml } from "../app/lib/sitemap-system.js";
-import { submitSitemapToSearchConsole } from "../app/lib/google-seo-sync.js";
+import { inspectGoogleUrls, submitSitemapToSearchConsole } from "../app/lib/google-seo-sync.js";
 import { withDataLock } from "../app/lib/news-system.js";
 
 const siteUrl = "https://cowinmagnet.co.za";
@@ -107,4 +107,31 @@ test("disabled Search Console submission makes no API calls", async () => {
   const result = await submitSitemapToSearchConsole({ enabled: false, fetchImpl: async () => { calls += 1; } });
   assert.equal(result.reason, "disabled");
   assert.equal(calls, 0);
+});
+
+test("groups official URL Inspection API results", async () => {
+  const fetchImpl = async (_url, options = {}) => {
+    const request = JSON.parse(options.body);
+    return Response.json({
+      inspectionResult: {
+        indexStatusResult: {
+          verdict: request.inspectionUrl.endsWith("/a/") ? "PASS" : "NEUTRAL",
+          coverageState: request.inspectionUrl.endsWith("/a/") ? "Submitted and indexed" : "URL is unknown to Google",
+          robotsTxtState: "ALLOWED",
+          indexingState: "INDEXING_ALLOWED",
+          pageFetchState: "SUCCESSFUL",
+          userCanonical: request.inspectionUrl
+        }
+      }
+    });
+  };
+  const report = await inspectGoogleUrls([`${siteUrl}/en-za/a/`, `${siteUrl}/en-za/b/`], {
+    accessToken: "test-token",
+    propertyUrl: "sc-domain:cowinmagnet.co.za",
+    fetchImpl,
+    concurrency: 2
+  });
+  assert.equal(report.total, 2);
+  assert.deepEqual(report.byVerdict, { PASS: 1, NEUTRAL: 1 });
+  assert.equal(report.results[0].robotsTxtState, "ALLOWED");
 });

@@ -6,12 +6,12 @@ import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { after, NextResponse } from "next/server";
 import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
-import { googleSeoConfig, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
+import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 const root = process.cwd();
 const dataRoot = join(root, "data");
@@ -474,9 +474,10 @@ async function seoSummary() {
 }
 
 async function googleSeoState() {
-  const [latest, jobs] = await Promise.all([
+  const [latest, jobs, inspection] = await Promise.all([
     readJson("data/seo/google-search-console.json"),
-    readJson("data/seo/google-seo-jobs.json")
+    readJson("data/seo/google-seo-jobs.json"),
+    readJson("data/seo/gsc-url-inspection.json")
   ]);
   const config = googleSeoConfig();
   return {
@@ -485,8 +486,18 @@ async function googleSeoState() {
     propertyUrl: config.propertyUrl,
     serviceAccountEmail: config.clientEmail,
     latest,
+    inspection,
     jobs: (jobs || []).slice(0, 20)
   };
+}
+
+async function runGoogleUrlInspection() {
+  const manifest = await readDataJson("data/seo/sitemap-manifest.json", { entries: [] });
+  const urls = [...new Set((manifest.entries || []).map((item) => item.url || item.loc).filter(Boolean))];
+  if (!urls.length) throw new Error("Sitemap manifest contains no inspectable URLs");
+  const report = await inspectGoogleUrls(urls, { concurrency: 4 });
+  await writeDataJson("data/seo/gsc-url-inspection.json", report);
+  return report;
 }
 
 async function syncGoogleSeo(user = "cron") {
@@ -805,6 +816,12 @@ async function handleCronGoogleSeo(request) {
   }
 }
 
+async function handleCronGscInspection(request) {
+  if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
+  const report = await runGoogleUrlInspection();
+  return response({ success: true, data: report, requestId: token(8) });
+}
+
 function sourceFromReferrer(referrer) {
   if (/google|bing|yahoo|duckduckgo/i.test(referrer)) return "Search";
   if (/linkedin|facebook|tiktok|twitter|x\.com/i.test(referrer)) return "Social";
@@ -1020,6 +1037,16 @@ async function handleAdmin(request, path) {
       return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
     }
   }
+  if (path === "admin/google-seo/inspection" && request.method === "POST") {
+    try {
+      const report = await runGoogleUrlInspection();
+      await audit(session.user, "Google URL Inspection", "GoogleSearchConsole", report.propertyUrl, `Inspected ${report.total} sitemap URLs`);
+      return response({ success: true, data: report, requestId: token(8) });
+    } catch (error) {
+      await audit(session.user, "Google URL Inspection Failed", "GoogleSearchConsole", "inspection", error?.message || String(error));
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
+    }
+  }
   if (path === "admin/sitemap" && request.method === "GET") {
     const [state, runs, manifest] = await Promise.all([
       readDataJson("data/seo/sitemap-state.json", {}),
@@ -1223,6 +1250,7 @@ async function dispatch(request, context) {
   if (path === "track" && request.method === "POST") return handleTrack(request);
   if (path === "cron/news" && ["GET", "POST"].includes(request.method)) return handleCronNews(request);
   if (path === "cron/google-seo" && ["GET", "POST"].includes(request.method)) return handleCronGoogleSeo(request);
+  if (path === "cron/gsc-inspection" && ["GET", "POST"].includes(request.method)) return handleCronGscInspection(request);
   if (path === "news" && request.method === "GET") return publicNewsList(request);
   if (path === "news/categories" && request.method === "GET") return publicNewsCategories();
   const publicNewsMatch = path.match(/^news\/([^/]+)$/);
