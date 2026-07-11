@@ -9,6 +9,8 @@
     "start": "next start",
     "test:news": "node ./tools/news-smoke-test.mjs",
     "test:sitemap": "node --test ./tools/sitemap-test.mjs",
+    "test:schema": "node ./tools/structured-data-audit.mjs",
+    "fix:schema": "node ./tools/structured-data-audit.mjs --fix",
     "sitemap:generate": "node ./tools/sitemap-generate.mjs",
     "gsc:inspect": "node ./tools/gsc-url-inspection.mjs",
     "sync:products": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/sync-main-products.ps1",

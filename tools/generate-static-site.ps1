@@ -485,23 +485,8 @@ foreach($cat in $categories) {
     "<section class='section layout'><article class='panel'><h2>Working Principle</h2><p>The magnetic field attracts ferrous material from the conveyor stream. Discharge and installation method depend on the selected product family and operating duty.</p><h2>Main Applications</h2><ul class='check-list'>$(($product.applications | ForEach-Object {"<li>$_</li>"}) -join '')</ul><h2>Installation Options</h2><p>Cross-belt and inline layouts must be checked against conveyor structure, belt direction, available suspension height and maintenance access.</p><h2>Product Selection Guide</h2><p>Confirm material type, conveyor width, belt speed, material layer thickness, suspension height, maximum tramp iron size, operating hours, voltage, frequency, dust level, humidity and maintenance access.</p><h2>Optional Configurations</h2><ul class='check-list'><li>Manual or self-cleaning discharge</li><li>Cross-belt or inline arrangement</li><li>Outdoor protection and dust protection</li><li>Corrosion-resistant options for coastal or corrosive environments</li><li>Control cabinet options for electromagnetic models</li></ul><h2>South African Operating Conditions</h2><p>High dust, outdoor exposure, heat, remote sites, coastal humidity and voltage fluctuations require project-specific confirmation.</p><h2>Maintenance</h2><p>Maintenance planning should cover belt inspection, separator clearance, cleaning mechanism checks, electrical inspection and safe access.</p><h2>Spare Parts</h2><p>Spare parts support can be coordinated after the selected product model and project configuration are confirmed.</p><h2>Packaging and Shipping</h2><p>Cowinmagnet can coordinate pre-shipment checks, export documentation, packing communication and logistics support.</p></article><aside class='panel'><h3>Downloads</h3><p>PDF documents are configurable. Verified product documents are available on request after model confirmation.</p><h3>Request a Quote</h3><a class='button primary' href='$base/request-a-quote/'>Request a Quote</a><a class='button secondary' href='https://wa.me/8615665135205?text=Hello%2C%20I%20am%20interested%20in%20this%20magnetic%20separation%20equipment.%0AProduct%3A%20$($product.name)%0ACountry%3A%0ACompany%3A%0AMaterial%3A%0AConveyor%20belt%20width%3A%0ASuspension%20height%3A'>WhatsApp</a></aside></section>" +
     "<section class='section band'><div class='section-heading'><h2>FAQ</h2></div>$(FAQ @(@('Can this product be used outdoors?','Outdoor use depends on dust, rain, humidity, corrosion and electrical protection requirements.'),@('Is this factory direct?','No factory-direct claim is made on this regional site.'),@('What should I send for quotation?','Send material type, conveyor width, belt speed, burden depth, capacity, suspension height and tramp iron size.')))</section>" +
     "<section class='section'><div class='section-heading'><h2>Related Products</h2></div>$(ProductCards ($products | Where-Object slug -ne $product.slug | Select-Object -First 3))</section><section class='section band'><div class='section-heading'><h2>Related Industries</h2></div>$(CardGrid ($industries | Select-Object -First 3) "$base/industries" "Industry")</section><section class='section'><div class='section-heading'><h2>Related Solutions</h2></div>$(CardGrid ($solutions | Select-Object -First 3) "$base/solutions" "Solution")</section>"
-    $productSchemaJson = @{
-      "@context"="https://schema.org";
-      "@type"="Product";
-      name=$product.name;
-      category=$product.category;
-      image="$siteUrl$($product.image)";
-      description="$($product.name) for mining, conveyor and industrial magnetic separation applications in South Africa and Africa. Specifications must be confirmed per project.";
-      brand=@{"@type"="Brand"; name="Cowinmagnet"};
-      manufacturer=@{"@type"="Organization"; name="Quzhou Qiying Import & Export Co., Ltd."};
-      additionalProperty=@(
-        @{"@type"="PropertyValue"; name="Magnetic system type"; value=$product.type},
-        @{"@type"="PropertyValue"; name="Installation direction"; value=$product.layout},
-        @{"@type"="PropertyValue"; name="Discharge method"; value=$product.cleaning}
-      )
-    } | ConvertTo-Json -Depth 8 -Compress
-    $productSchema = "<script type='application/ld+json'>$productSchemaJson</script>"
-    WritePage "$base/products/$($cat.slug)/$($product.slug)/" "$($product.name) | Cowinmagnet South Africa" "$($product.name) for mining, conveyor and industrial magnetic separation applications in South Africa and Africa." $product.name $body $productSchema
+    # Quote-only configured equipment has no public price or verified reviews, so it is not eligible for Product snippets.
+    WritePage "$base/products/$($cat.slug)/$($product.slug)/" "$($product.name) | Cowinmagnet South Africa" "$($product.name) for mining, conveyor and industrial magnetic separation applications in South Africa and Africa." $product.name $body
   }
 }
 
