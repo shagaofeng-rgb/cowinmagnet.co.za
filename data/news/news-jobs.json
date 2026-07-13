@@ -1,5 +1,86 @@
 [
   {
+    "id": "JOB-1783933393499-45ada1",
+    "job_type": "daily-news-publish",
+    "status": "failed",
+    "scheduled_at": "2026-07-13T09:03:13.478Z",
+    "started_at": "2026-07-13T09:03:13.478Z",
+    "retry_count": 0,
+    "metadata": {
+      "target": 4,
+      "publishedToday": 0,
+      "need": 4,
+      "collected": 5,
+      "published": 0,
+      "missingImages": 0,
+      "sourceErrors": [],
+      "sourceHealth": [
+        {
+          "id": "international-mining",
+          "ok": true,
+          "fetched_at": "2026-07-13T09:03:15.469Z",
+          "candidate_count": 12
+        },
+        {
+          "id": "canadian-mining-journal",
+          "ok": true,
+          "fetched_at": "2026-07-13T09:03:16.316Z",
+          "candidate_count": 12
+        }
+      ],
+      "rejected": {
+        "duplicate": 0,
+        "low_relevance": 5,
+        "missing_owned_image": 0
+      }
+    },
+    "completed_at": "2026-07-13T09:03:16.317Z",
+    "error_message": "Published 0 of 4 required articles"
+  },
+  {
+    "id": "JOB-1783933302040-d07cda",
+    "job_type": "daily-news-publish",
+    "status": "failed",
+    "scheduled_at": "2026-07-13T09:01:41.938Z",
+    "started_at": "2026-07-13T09:01:41.938Z",
+    "retry_count": 0,
+    "metadata": {
+      "target": 4,
+      "publishedToday": 0,
+      "need": 4,
+      "collected": 5,
+      "published": 0,
+      "missingImages": 0,
+      "sourceErrors": [],
+      "sourceHealth": [
+        {
+          "id": "international-mining",
+          "ok": true,
+          "fetched_at": "2026-07-13T09:01:45.153Z",
+          "candidate_count": 12
+        },
+        {
+          "id": "canadian-mining-journal",
+          "ok": true,
+          "fetched_at": "2026-07-13T09:01:46.039Z",
+          "candidate_count": 12
+        }
+      ],
+      "rejected": {
+        "duplicate": 0,
+        "low_relevance": 2,
+        "missing_owned_image": 0
+      },
+      "retracted_for_relevance": [
+        "ferreyros-deploys-first-for-peru-underground-auto-cat-lhd-fleet-for-volcan-2026-07-10",
+        "cat-begins-southern-africa-wide-body-truck-journey-with-two-units-deployed-2026-07-10",
+        "bradken-inaugurates-new-foundry-in-chilca-peru-2026-07-10"
+      ]
+    },
+    "completed_at": "2026-07-13T09:01:46.056Z",
+    "error_message": "No collected candidate met the direct product relevance requirement; three provisional records were retracted before release."
+  },
+  {
     "id": "JOB-1783264127980-9d1576",
     "job_type": "daily-news-publish",
     "status": "completed",

@@ -57,6 +57,7 @@ NEWS_ALLOWED_LANGUAGES=en
 NEWS_SOURCE_WHITELIST=
 NEWS_SOURCE_BLACKLIST=
 NEWS_ALERT_EMAIL=
+NEWS_ALERT_WEBHOOK_URL=
 AI_PROVIDER_API_KEY=
 NEWS_API_KEY=
 CRON_SECRET=
@@ -178,7 +179,8 @@ Invoke-WebRequest -Method POST http://localhost:8090/api/cron/news
 
 ## Known Limits
 
-- Current implementation uses project JSON files because production database credentials are not configured.
+- Production writes require a healthy `DATABASE_URL`. If durable storage is unavailable, the system fails closed and reports a blocked job instead of publishing into Vercel's ephemeral filesystem.
+- Public news pages, feed and sitemaps fall back to the deployed JSON snapshot during a transient database outage, so the public site does not return a storage-related 500 error.
 - Source coverage is limited to configured RSS feeds until more whitelisted sources or a licensed news API is added.
 - Without an AI provider key, content generation uses a conservative deterministic template instead of LLM rewriting.
-- External source availability can affect daily completion; failures are recorded in jobs and audits.
+- External source availability can affect daily completion; failures and source health are recorded in jobs and audits. Configure `NEWS_ALERT_WEBHOOK_URL` for delivery outside the admin dashboard.

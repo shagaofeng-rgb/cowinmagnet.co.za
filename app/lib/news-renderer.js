@@ -129,6 +129,7 @@ export async function renderNewsArticle(slug) {
     <article class="panel">
       <p><strong>Published:</strong> ${escapeHtml((articleDate(item) || "").slice(0, 10))} · <strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))} · <strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</p>
       <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
+      ${item.cover_image_caption ? `<p class="image-caption">${escapeHtml(item.cover_image_caption)}</p>` : ""}
       <section class="ai-summary"><h2>Key Takeaways</h2><ul>${(item.key_takeaways || []).map((takeaway) => `<li>${escapeHtml(takeaway)}</li>`).join("")}</ul></section>
       ${item.content || ""}
       <h2>Original Source</h2>

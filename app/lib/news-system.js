@@ -11,6 +11,15 @@ const { Pool } = pg;
 let pool;
 let schemaReady;
 const activeLocks = new Set();
+const databaseFailureMessages = new Map();
+
+export class PersistentStorageError extends Error {
+  constructor(message, cause) {
+    super(message);
+    this.name = "PersistentStorageError";
+    this.cause = cause;
+  }
+}
 
 const DEFAULT_SOURCES = [
   {
@@ -22,8 +31,8 @@ const DEFAULT_SOURCES = [
     language: "en",
     country: "Global",
     credibility_score: 0.84,
-    enabled: true,
-    allowed_for_auto_publish: true
+    enabled: false,
+    allowed_for_auto_publish: false
   },
   {
     id: "recycling-today",
@@ -46,6 +55,30 @@ const DEFAULT_SOURCES = [
     language: "en",
     country: "Global",
     credibility_score: 0.72,
+    enabled: true,
+    allowed_for_auto_publish: true
+  },
+  {
+    id: "international-mining",
+    domain: "im-mining.com",
+    publisher_name: "International Mining",
+    source_type: "rss",
+    rss_url: "https://im-mining.com/feed/",
+    language: "en",
+    country: "Global",
+    credibility_score: 0.8,
+    enabled: true,
+    allowed_for_auto_publish: true
+  },
+  {
+    id: "canadian-mining-journal",
+    domain: "canadianminingjournal.com",
+    publisher_name: "Canadian Mining Journal",
+    source_type: "rss",
+    rss_url: "https://www.canadianminingjournal.com/feed/",
+    language: "en",
+    country: "Canada",
+    credibility_score: 0.77,
     enabled: true,
     allowed_for_auto_publish: true
   }
@@ -86,6 +119,8 @@ const PRODUCT_KEYWORDS = [
   "material handling",
   "processing"
 ];
+
+const DIRECT_PRODUCT_RELATION = /\b(magnet(?:ic)?|separator|separation|conveyor|conveying|belt|crusher|screen(?:ing)?|tramp\s+(?:iron|metal)|ferrous|iron\s+remov(?:al|er)|recycl(?:ing|ed)|scrap|ore\s+sorting|beneficiation|bulk\s+handling)\b/i;
 
 function cleanDataPath(relativePath) {
   const clean = normalize(relativePath.replace(/^data[\\/]/, ""));
@@ -162,17 +197,26 @@ async function writeDatabaseJson(relativePath, value) {
 }
 
 export async function readDataJson(relativePath, fallback) {
-  const databaseValue = await readDatabaseJson(relativePath);
-  if (databaseValue !== null) return databaseValue;
-  if (process.env.VERCEL) {
-    try {
-      const raw = await readFile(safeWritableDataPath(relativePath), "utf8");
-      if (!raw.trim()) return fallback;
-      return JSON.parse(raw.replace(/^\uFEFF/, ""));
-    } catch {}
+  try {
+    const databaseValue = await readDatabaseJson(relativePath);
+    if (databaseValue !== null) return databaseValue;
+  } catch (error) {
+    const message = error?.message || String(error);
+    // A quota or network failure must not turn public news, feeds or sitemaps into 500 pages.
+    if (databaseFailureMessages.get(relativePath) !== message) {
+      databaseFailureMessages.set(relativePath, message);
+      console.warn(`[news-store] Database read failed for ${relativePath}: ${message}`);
+    }
   }
   try {
     const raw = await readFile(safeDataPath(relativePath), "utf8");
+    if (!raw.trim()) return fallback;
+    return JSON.parse(raw.replace(/^\uFEFF/, ""));
+  } catch {
+    if (!process.env.VERCEL) return fallback;
+  }
+  try {
+    const raw = await readFile(safeWritableDataPath(relativePath), "utf8");
     if (!raw.trim()) return fallback;
     return JSON.parse(raw.replace(/^\uFEFF/, ""));
   } catch {
@@ -181,8 +225,19 @@ export async function readDataJson(relativePath, fallback) {
 }
 
 export async function writeDataJson(relativePath, value) {
-  if (await writeDatabaseJson(relativePath, value)) return;
-  const filePath = process.env.VERCEL ? safeWritableDataPath(relativePath) : safeDataPath(relativePath);
+  try {
+    if (await writeDatabaseJson(relativePath, value)) return;
+  } catch (error) {
+    const message = error?.message || String(error);
+    console.warn(`[news-store] Database write failed for ${relativePath}: ${message}`);
+    if (process.env.VERCEL) {
+      throw new PersistentStorageError("Persistent news storage is unavailable. No publication was committed.", error);
+    }
+  }
+  if (process.env.VERCEL) {
+    throw new PersistentStorageError("Persistent news storage is not configured. No publication was committed.");
+  }
+  const filePath = safeDataPath(relativePath);
   await mkdir(dirname(filePath), { recursive: true });
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 }
@@ -253,6 +308,8 @@ export function normalizeTitle(value) {
 export function canonicalizeUrl(value) {
   try {
     const url = new URL(value);
+    if (url.protocol !== "https:" && url.protocol !== "http:") return "";
+    if (isBlockedHostname(url.hostname)) return "";
     url.hash = "";
     for (const key of [...url.searchParams.keys()]) {
       if (/^(utm_|fbclid$|gclid$|mc_|yclid$|igshid$|ref$|ref_src$)/i.test(key)) url.searchParams.delete(key);
@@ -290,13 +347,39 @@ function attrTag(block, tagName, attrName) {
 function absoluteUrl(value, baseUrl) {
   try {
     if (!value) return "";
-    return new URL(value, baseUrl || undefined).toString();
+    const url = new URL(value, baseUrl || undefined);
+    if (url.protocol !== "https:" && url.protocol !== "http:") return "";
+    if (isBlockedHostname(url.hostname)) return "";
+    return url.toString();
   } catch {
     return "";
   }
 }
 
+function isBlockedHostname(value) {
+  const host = String(value || "").toLowerCase().replace(/^\[|\]$/g, "");
+  if (!host || host === "localhost" || host.endsWith(".local") || host.endsWith(".internal")) return true;
+  return /^(?:0|127)(?:\.\d{1,3}){3}$/.test(host) ||
+    /^10(?:\.\d{1,3}){3}$/.test(host) ||
+    /^192\.168(?:\.\d{1,3}){2}$/.test(host) ||
+    /^172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}$/.test(host) ||
+    host === "::1" || host.startsWith("fe80:") || host.startsWith("fc") || host.startsWith("fd");
+}
+
+function sourceUrlAllowed(value, source) {
+  const url = absoluteUrl(value);
+  if (!url || !source?.domain) return false;
+  const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+  const allowed = String(source.domain).toLowerCase().replace(/^www\./, "");
+  return host === allowed || host.endsWith(`.${allowed}`);
+}
+
+export function isOwnedProductImage(value) {
+  return /^\/assets\/images\/(?:source-products|products|generated)\//.test(String(value || ""));
+}
+
 export function isExternalNewsImage(value) {
+  if (isOwnedProductImage(value)) return true;
   if (String(value || "").startsWith("/assets/images/news/")) return true;
   const url = absoluteUrl(value);
   if (!url) return false;
@@ -395,37 +478,18 @@ async function imageResponds(url) {
   }
 }
 
-export async function resolveCandidateImage(candidate) {
-  const feedImage = absoluteUrl(candidate.feed_image_url || candidate.cover_image_url, candidate.canonical_source_url || candidate.source_url);
-  if (feedImage && await imageResponds(feedImage)) {
-    return {
-      url: feedImage,
-      sourceUrl: candidate.canonical_source_url || candidate.source_url,
-      pageUrl: candidate.canonical_source_url || candidate.source_url,
-      alt: `${candidate.source_title} source image`,
-      status: "verified-feed-image"
-    };
+export async function resolveCandidateImage(candidate, relatedProducts = []) {
+  const product = relatedProducts.find((item) => isOwnedProductImage(item.image));
+  if (!product) {
+    return { url: "", sourceUrl: "", pageUrl: candidate.canonical_source_url || candidate.source_url, alt: "", status: "missing-owned-image" };
   }
-  try {
-    const pageUrl = candidate.canonical_source_url || candidate.source_url;
-    const res = await fetch(pageUrl, {
-      headers: { "user-agent": "CowinMagnetNewsBot/1.0 (+https://cowinmagnet.co.za)" },
-      signal: AbortSignal.timeout(12000)
-    });
-    if (!res.ok) throw new Error(`source HTTP ${res.status}`);
-    const html = await res.text();
-    const sourceImage = extractImageFromSourceHtml(html, pageUrl);
-    if (sourceImage && await imageResponds(sourceImage)) {
-      return {
-        url: sourceImage,
-        sourceUrl: sourceImage,
-        pageUrl,
-        alt: `${candidate.source_title} source image`,
-        status: "verified-source-page-image"
-      };
-    }
-  } catch {}
-  return { url: "", sourceUrl: "", pageUrl: candidate.canonical_source_url || candidate.source_url, alt: "", status: "missing" };
+  return {
+    url: product.image,
+    sourceUrl: product.url,
+    pageUrl: product.url,
+    alt: `Related Cowin Magnet product image: ${product.name}. This is not an image of the reported event.`,
+    status: "owned-product-image"
+  };
 }
 
 function parseFeed(xml, source) {
@@ -476,7 +540,7 @@ function normalizeCandidate(item, source) {
     source_timezone: "source-provided",
     feed_image_url: absoluteUrl(item.feed_image_url, canonical),
     normalized_title: normalizedTitle,
-    summary: item.summary || "",
+    summary: sourceFactSummary(item.summary),
     credibility_score: Number(source.credibility_score || 0.5),
     source_id: source.id,
     source_domain: source.domain,
@@ -489,6 +553,15 @@ function normalizeCandidate(item, source) {
 function isRecentEnough(candidate, now, lookbackHours) {
   const published = new Date(candidate.source_published_at).getTime();
   return Number.isFinite(published) && now - published <= lookbackHours * 60 * 60 * 1000 && published <= now + 15 * 60 * 1000;
+}
+
+function sourceFactSummary(value) {
+  const summary = xmlDecode(value)
+    .replace(/^the post\s+.+?\s+appeared first on\s+.+?\.?$/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!summary || /[\uFFFD]/.test(summary)) return "";
+  return summary.slice(0, 420);
 }
 
 function tokenSet(value) {
@@ -511,6 +584,7 @@ function overlapScore(a, b) {
 
 export function scoreProducts(candidate, products) {
   const text = `${candidate.source_title} ${candidate.summary}`.toLowerCase();
+  if (!DIRECT_PRODUCT_RELATION.test(text)) return [];
   const keywordHits = PRODUCT_KEYWORDS.filter((word) => text.includes(word)).length;
   return products
     .map((product) => {
@@ -522,7 +596,8 @@ export function scoreProducts(candidate, products) {
         ...(product.applications || []),
         ...(product.features || [])
       ].join(" ");
-      const score = Math.min(1, overlapScore(text, productText) + keywordHits * 0.035);
+      const directHits = (productText.toLowerCase().match(DIRECT_PRODUCT_RELATION) || []).length;
+      const score = Math.min(1, overlapScore(text, productText) + keywordHits * 0.02 + directHits * 0.02);
       return {
         product_id: product.productId || product.sourceProductId || product.slug,
         slug: product.slug,
@@ -563,18 +638,18 @@ function pickCategory(candidate) {
 
 export function createArticle(candidate, relatedProducts, settings = DEFAULT_SETTINGS) {
   const product = relatedProducts[0];
-  const imageUrl = isExternalNewsImage(candidate.cover_image_url) ? candidate.cover_image_url : "";
+  const imageUrl = isOwnedProductImage(candidate.cover_image_url) ? candidate.cover_image_url : "";
   const titleBase = candidate.source_title.replace(/\s+/g, " ").trim();
   const title = `${titleBase}: Magnetic Separation View`;
   const slugBase = slugify(`${titleBase} ${new Date(candidate.source_published_at).toISOString().slice(0, 10)}`);
   const date = new Date().toISOString().slice(0, 10);
   const sourceDate = new Date(candidate.source_published_at).toISOString();
   const productLinks = relatedProducts.map((item) => `<a href="${item.url}">${escapeHtml(item.name)}</a>`).join(", ");
-  const sourceSummary = candidate.summary || `The source reports: ${candidate.source_title}.`;
+  const sourceSummary = candidate.summary || `The source headline is: ${candidate.source_title}. Please refer to the original publisher for reporting details.`;
   const content = [
     `<p><strong>Direct answer:</strong> This news is relevant to African buyers because it may influence mining, quarrying, cement, recycling or bulk material handling decisions where tramp metal control, crusher protection and magnetic separation equipment are part of plant reliability planning.</p>`,
     `<h2>Key Takeaways</h2><ul><li>The original source was published within the configured ${settings.lookbackHours}-hour news window.</li><li>The story is connected to Cowin Magnet products through material handling, separation, mining, cement, quarry or recycling context.</li><li>This article summarizes the public source and adds Cowin Magnet's equipment-selection perspective.</li><li>Buyers should verify site operating data before selecting magnetic separation equipment.</li></ul>`,
-    `<h2>Original News Facts</h2><p>${escapeHtml(sourceSummary)}</p><p>The source publisher is ${escapeHtml(candidate.source_publisher)}. The original publication time recorded by this system is ${sourceDate}.</p>`,
+    `<h2>Original News Facts</h2><p>${escapeHtml(sourceSummary)}</p><p>The source publisher is ${escapeHtml(candidate.source_publisher)}. The original publication time recorded by this system is ${sourceDate}. This page does not reproduce the source article in full.</p>`,
     `<h2>Why This Matters for African Industrial Buyers</h2><p>Many African mining, quarry, cement and recycling sites operate with long conveyor lines, abrasive material, variable moisture and limited maintenance windows. A market or project development in these sectors can affect how buyers plan crusher protection, ferrous contamination control, plant uptime and equipment maintenance.</p>`,
     `<h2>Cowin Magnet View</h2><p>Our view is that news in mineral processing, bulk handling, cement production and recycling should be translated into practical operating questions: what material is being conveyed, where tramp metal can enter the line, how deep the burden is, and whether manual or self-cleaning separation is suitable. Those questions matter more than generic equipment labels.</p>`,
     `<h2>How We Can Help</h2><p>Cowin Magnet can support equipment selection for related applications using real operating data. Relevant products may include ${productLinks || "overband magnetic separators, suspended magnets, wet drum magnetic separators and metal detection equipment"} depending on the material stream and installation point.</p>`,
@@ -591,15 +666,16 @@ export function createArticle(candidate, relatedProducts, settings = DEFAULT_SET
     summary: excerpt,
     content,
     article_type: "news",
-    status: settings.autoPublish && imageUrl ? "published" : "draft",
+    status: settings.autoPublish && imageUrl && relatedProducts.length ? "published" : "draft",
     language: "en-ZA",
     category: pickCategory(candidate),
     tags: keywords,
     cover_image_url: imageUrl,
-    cover_image_source_url: candidate.cover_image_source_url || imageUrl,
-    cover_image_page_url: candidate.cover_image_page_url || candidate.canonical_source_url || candidate.source_url,
-    cover_image_alt: candidate.cover_image_alt || `${candidate.source_title} source image`,
-    cover_image_status: candidate.cover_image_status || "verified-source-page-image",
+    cover_image_source_url: candidate.cover_image_source_url || product?.url || "",
+    cover_image_page_url: candidate.cover_image_page_url || product?.url || "",
+    cover_image_alt: candidate.cover_image_alt || `Related Cowin Magnet product image: ${product?.name || "magnetic separation equipment"}. This is not an image of the reported event.`,
+    cover_image_caption: `Related Cowin Magnet product image: ${product?.name || "magnetic separation equipment"}. It is shown for application context and does not depict the reported event.`,
+    cover_image_status: candidate.cover_image_status || "owned-product-image",
     cover_image_fetched_at: candidate.cover_image_fetched_at || new Date().toISOString(),
     cover_image_hash: candidate.cover_image_hash || hashText(imageUrl).slice(0, 32),
     author_name: "Cowin Magnet South Africa",
@@ -637,8 +713,8 @@ export function createArticle(candidate, relatedProducts, settings = DEFAULT_SET
     first_used_at: new Date().toISOString(),
     relevance_score: relatedProducts[0]?.relevance_score || 0,
     credibility_score: candidate.credibility_score,
-    generation_model: process.env.AI_PROVIDER_API_KEY ? "external-ai-configured" : "deterministic-template",
-    generation_prompt_version: "news-v1",
+    generation_model: "deterministic-fact-summary-v2",
+    generation_prompt_version: "news-v2",
     related_products: relatedProducts,
     product_ids: relatedProducts.map((item) => item.product_id),
     created_at: new Date().toISOString()
@@ -658,27 +734,85 @@ export async function collectNewsCandidates(settings = DEFAULT_SETTINGS) {
   const enabledSources = sources.filter((source) => source.enabled && source.allowed_for_auto_publish && source.rss_url);
   const candidates = [];
   const errors = [];
+  const sourceHealth = [];
   for (const source of enabledSources) {
     try {
+      if (!sourceUrlAllowed(source.rss_url, source)) throw new Error("Source URL is outside its configured domain allowlist");
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 12000);
       const res = await fetch(source.rss_url, {
         headers: { "user-agent": "CowinMagnetNewsBot/1.0 (+https://cowinmagnet.co.za)" },
-        signal: controller.signal
+        signal: controller.signal,
+        redirect: "error"
       });
       clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const xml = await res.text();
-      candidates.push(...parseFeed(xml, source));
+      const contentLength = Number(res.headers.get("content-length") || 0);
+      if (contentLength > 2_000_000) throw new Error("RSS response exceeds 2 MB limit");
+      const buffer = await res.arrayBuffer();
+      if (buffer.byteLength > 2_000_000) throw new Error("RSS response exceeds 2 MB limit");
+      const parsed = parseFeed(Buffer.from(buffer).toString("utf8"), source)
+        .filter((candidate) => sourceUrlAllowed(candidate.canonical_source_url, source));
+      candidates.push(...parsed);
+      sourceHealth.push({ id: source.id, ok: true, fetched_at: new Date().toISOString(), candidate_count: parsed.length });
     } catch (error) {
-      errors.push({ source: source.id, error: error?.message || String(error) });
+      const message = error?.message || String(error);
+      errors.push({ source: source.id, error: message });
+      sourceHealth.push({ id: source.id, ok: false, fetched_at: new Date().toISOString(), error: message });
     }
   }
   const now = Date.now();
   return {
     candidates: candidates.filter((candidate) => isRecentEnough(candidate, now, settings.lookbackHours)),
-    errors
+    errors,
+    sourceHealth,
+    sources
   };
+}
+
+function dayKey(value, timezone) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(new Date(value));
+}
+
+function applySourceHealth(sources, sourceHealth) {
+  const results = new Map(sourceHealth.map((item) => [item.id, item]));
+  return sources.map((source) => {
+    const health = results.get(source.id);
+    if (!health) return source;
+    if (health.ok) {
+      return { ...source, last_fetched_at: health.fetched_at, last_success_at: health.fetched_at, failure_count: 0, last_error: "" };
+    }
+    return {
+      ...source,
+      last_fetched_at: health.fetched_at,
+      failure_count: Number(source.failure_count || 0) + 1,
+      last_error: health.error
+    };
+  });
+}
+
+async function sendNewsAlert(payload) {
+  const endpoint = String(process.env.NEWS_ALERT_WEBHOOK_URL || "").trim();
+  if (!endpoint) return { delivered: false, reason: "No NEWS_ALERT_WEBHOOK_URL configured" };
+  const url = absoluteUrl(endpoint);
+  if (!url || !url.startsWith("https://")) return { delivered: false, reason: "Alert webhook must use HTTPS" };
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json", "user-agent": "CowinMagnetNewsBot/1.0" },
+      body: JSON.stringify({ service: "cowinmagnet.co.za news automation", occurred_at: new Date().toISOString(), ...payload }),
+      signal: AbortSignal.timeout(8000),
+      redirect: "error"
+    });
+    return { delivered: response.ok, status: response.status };
+  } catch (error) {
+    return { delivered: false, reason: error?.message || String(error) };
+  }
 }
 
 export async function runNewsAutomation(options = {}) {
@@ -688,8 +822,8 @@ export async function runNewsAutomation(options = {}) {
     readDataJson("data/articles/articles.json", []),
     readDataJson("data/products/products.json", [])
   ]);
-  const today = new Intl.DateTimeFormat("en-CA", { timeZone: settings.timezone, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-  const publishedToday = articles.filter((item) => isPublishedNewsArticle(item) && String(item.published_at || item.date || "").startsWith(today));
+  const today = dayKey(new Date(), settings.timezone);
+  const publishedToday = articles.filter((item) => isPublishedNewsArticle(item) && dayKey(item.published_at || item.date, settings.timezone) === today);
   const need = Math.max(0, settings.dailyTarget - publishedToday.length);
   const job = {
     id: `JOB-${Date.now()}-${hashText(startedAt).slice(0, 6)}`,
@@ -702,7 +836,15 @@ export async function runNewsAutomation(options = {}) {
   };
   const jobs = await readDataJson("data/news/news-jobs.json", []);
   jobs.unshift(job);
-  await writeDataJson("data/news/news-jobs.json", jobs.slice(0, 500));
+  try {
+    await writeDataJson("data/news/news-jobs.json", jobs.slice(0, 500));
+  } catch (error) {
+    job.status = "blocked";
+    job.completed_at = new Date().toISOString();
+    job.error_message = error instanceof PersistentStorageError ? error.message : "Unable to create a durable news job record.";
+    await sendNewsAlert({ severity: "critical", type: "news-storage-unavailable", message: job.error_message, target: settings.dailyTarget, published_today: publishedToday.length });
+    return { published: [], need, errors: [{ source: "storage", error: job.error_message }], job };
+  }
   if (!need) {
     job.status = "completed";
     job.completed_at = new Date().toISOString();
@@ -711,17 +853,26 @@ export async function runNewsAutomation(options = {}) {
     await auditDay(today, settings, articles);
     return { published: [], need: 0, errors: [], job };
   }
-  const { candidates, errors } = await collectNewsCandidates(settings);
+  const { candidates, errors, sourceHealth, sources } = await collectNewsCandidates(settings);
+  await writeDataJson("data/news/news-sources.json", applySourceHealth(sources, sourceHealth));
   const newArticles = [];
   let missingImages = 0;
+  const rejected = { duplicate: 0, low_relevance: 0, missing_owned_image: 0 };
   for (const candidate of candidates) {
     if (newArticles.length >= need) break;
-    if (isDuplicate(candidate, [...articles, ...newArticles], settings.dedupDays)) continue;
+    if (isDuplicate(candidate, [...articles, ...newArticles], settings.dedupDays)) {
+      rejected.duplicate += 1;
+      continue;
+    }
     const related = scoreProducts(candidate, products);
-    if (!related.length || related[0].relevance_score < settings.relevanceThreshold) continue;
-    const resolvedImage = await resolveCandidateImage(candidate);
+    if (!related.length || related[0].relevance_score < settings.relevanceThreshold) {
+      rejected.low_relevance += 1;
+      continue;
+    }
+    const resolvedImage = await resolveCandidateImage(candidate, related);
     if (!resolvedImage.url) {
       missingImages += 1;
+      rejected.missing_owned_image += 1;
       continue;
     }
     const candidateWithImage = {
@@ -747,9 +898,12 @@ export async function runNewsAutomation(options = {}) {
   job.status = newArticles.length >= need ? "completed" : "failed";
   job.completed_at = new Date().toISOString();
   job.error_message = newArticles.length >= need ? "" : `Published ${newArticles.length} of ${need} required articles`;
-  job.metadata = { ...job.metadata, collected: candidates.length, published: newArticles.length, missingImages, sourceErrors: errors };
+  job.metadata = { ...job.metadata, collected: candidates.length, published: newArticles.length, missingImages, sourceErrors: errors, sourceHealth, rejected };
   await finishJob(job);
-  await auditDay(today, settings, updatedArticles);
+  const audit = await auditDay(today, settings, updatedArticles);
+  if (audit.status !== "complete" || errors.length) {
+    await sendNewsAlert({ severity: audit.status === "complete" ? "warning" : "critical", type: audit.status === "complete" ? "news-source-health" : "news-daily-target-missed", date: today, target: settings.dailyTarget, published: audit.published_count, source_errors: errors.map((item) => item.source) });
+  }
   return { published: newArticles, need, errors, job };
 }
 
@@ -762,7 +916,7 @@ async function finishJob(job) {
 }
 
 async function auditDay(date, settings, articles) {
-  const published = articles.filter((item) => isPublishedNewsArticle(item) && String(item.published_at || item.date || "").startsWith(date));
+  const published = articles.filter((item) => isPublishedNewsArticle(item) && dayKey(item.published_at || item.date, settings.timezone) === date);
   const audits = await readDataJson("data/news/news-publication-audits.json", []);
   const record = {
     id: `AUDIT-${date}`,

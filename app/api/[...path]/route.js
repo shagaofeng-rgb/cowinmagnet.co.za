@@ -791,13 +791,22 @@ function validCronRequest(request) {
 
 async function handleCronNews(request) {
   if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
-  const result = await runNewsAutomation();
+  let result;
+  try {
+    result = await runNewsAutomation();
+  } catch (error) {
+    console.error(`[news-cron] Automation failed: ${error?.message || error}`);
+    return response({ success: false, error: "News automation failed before publication. Review News Jobs and storage health.", requestId: token(8) }, 503);
+  }
+  if (result.job?.status === "blocked") {
+    return response({ success: false, error: result.job.error_message, data: result, requestId: token(8) }, 503);
+  }
   let sitemap = null;
   if (result.published?.length) {
     await markSitemapDirty({ source: "news-automation", action: "published", objectId: result.job?.id || "", url: "/en-za/news/" });
     sitemap = (await runSitemapAudit({ trigger: "news-cron" })).run;
   }
-  return response({ success: true, data: { ...result, sitemap }, requestId: token(8) });
+  return response({ success: result.job?.status === "completed", data: { ...result, sitemap }, requestId: token(8) }, result.job?.status === "completed" ? 200 : 503);
 }
 
 async function handleCronGoogleSeo(request) {

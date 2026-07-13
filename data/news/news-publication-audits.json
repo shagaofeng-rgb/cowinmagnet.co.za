@@ -1,5 +1,15 @@
 [
   {
+    "id": "AUDIT-2026-07-13",
+    "date": "2026-07-13",
+    "timezone": "Africa/Johannesburg",
+    "target_count": 4,
+    "published_count": 0,
+    "missing_count": 4,
+    "status": "missing",
+    "checked_at": "2026-07-13T09:03:16.318Z"
+  },
+  {
     "id": "AUDIT-2026-07-05",
     "date": "2026-07-05",
     "timezone": "Africa/Johannesburg",

@@ -8,8 +8,8 @@
     "language": "en",
     "country": "Global",
     "credibility_score": 0.84,
-    "enabled": true,
-    "allowed_for_auto_publish": true,
+    "enabled": false,
+    "allowed_for_auto_publish": false,
     "last_fetched_at": "",
     "failure_count": 0
   },
@@ -52,7 +52,25 @@
     "credibility_score": 0.8,
     "enabled": true,
     "allowed_for_auto_publish": true,
-    "last_fetched_at": "",
-    "failure_count": 0
+    "last_fetched_at": "2026-07-13T09:03:15.469Z",
+    "failure_count": 0,
+    "last_success_at": "2026-07-13T09:03:15.469Z",
+    "last_error": ""
+  },
+  {
+    "id": "canadian-mining-journal",
+    "domain": "canadianminingjournal.com",
+    "publisher_name": "Canadian Mining Journal",
+    "source_type": "rss",
+    "rss_url": "https://www.canadianminingjournal.com/feed/",
+    "language": "en",
+    "country": "Canada",
+    "credibility_score": 0.77,
+    "enabled": true,
+    "allowed_for_auto_publish": true,
+    "last_fetched_at": "2026-07-13T09:03:16.316Z",
+    "failure_count": 0,
+    "last_success_at": "2026-07-13T09:03:16.316Z",
+    "last_error": ""
   }
 ]

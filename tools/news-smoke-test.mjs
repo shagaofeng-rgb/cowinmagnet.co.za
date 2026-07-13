@@ -3,6 +3,7 @@ import {
   canonicalizeUrl,
   createArticle,
   isDuplicate,
+  isOwnedProductImage,
   normalizeTitle,
   scoreProducts,
   slugify
@@ -46,16 +47,19 @@ const products = [
 ];
 
 assert.equal(candidate.canonical_source_url, "https://example.com/news/copper-mine");
+assert.equal(canonicalizeUrl("file:///etc/passwd"), "");
 assert.equal(slugify("Permanent Overband Magnetic Separator: Mining View"), "permanent-overband-magnetic-separator-mining-view");
 assert.equal(normalizeTitle("Mine: Conveyor, Capacity!"), "mine conveyor capacity");
 
 const related = scoreProducts(candidate, products);
 assert.ok(related.length >= 1, "product relevance should find at least one product");
-assert.ok(related[0].relevance_score > 0.28, "product relevance should pass default threshold");
+assert.ok(related[0].relevance_score >= 0.18, "product relevance should pass the configured default threshold");
+assert.equal(scoreProducts({ ...candidate, source_title: "Underground truck fleet expansion", summary: "A mine announced new vehicle deliveries." }, products).length, 0, "generic mining news must not be linked to products");
 
-const article = createArticle(candidate, related);
+const article = createArticle({ ...candidate, cover_image_url: products[0].image }, related);
 assert.equal(article.status, "published");
-assert.equal(article.cover_image_url, "https://example.com/images/copper-mine-conveyor.jpg");
+assert.equal(article.cover_image_url, products[0].image);
+assert.equal(isOwnedProductImage(article.cover_image_url), true);
 assert.ok(article.slug);
 assert.ok(article.source_published_at);
 assert.ok(article.related_products.length === 1);
@@ -63,6 +67,7 @@ assert.ok(article.content.includes("Original News Facts"));
 
 const noImageArticle = createArticle({ ...candidate, cover_image_url: "" }, related);
 assert.equal(noImageArticle.status, "draft");
+assert.equal(createArticle(candidate, related).status, "draft", "third-party source images must not trigger auto-publication");
 
 assert.equal(isDuplicate(candidate, [article], 7), true);
 assert.equal(isDuplicate({ ...candidate, canonical_source_url: "https://example.com/other/", source_fingerprint: "x", event_fingerprint: "y", normalized_title: "unrelated cement production story" }, [article], 7), false);
