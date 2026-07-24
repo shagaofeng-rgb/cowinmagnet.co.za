@@ -104,11 +104,32 @@ input, select, textarea { width: 100%; min-height: 44px; padding: 10px 11px; bor
 .faq-item button::after { content: "+"; }
 .faq-item button[aria-expanded="true"]::after { content: "-"; }
 .faq-item div { padding: 0 15px 15px; color: var(--muted); }
-.gallery-main { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
-.gallery-thumbs { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 8px; }
-.gallery-thumbs button { padding: 0; border: 2px solid transparent; border-radius: 7px; overflow: hidden; cursor: pointer; }
+.gallery-main { width: 100%; aspect-ratio: 4/3; object-fit: contain; border-radius: 8px; border: 1px solid var(--line); background: #f4f7fb; padding: 12px; }
+[data-gallery] { display: grid; gap: 12px; }
+[data-gallery] .gallery-main { min-height: 300px; }
+.gallery-thumbs { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 0; }
+.gallery-thumbs button { padding: 0; border: 2px solid transparent; border-radius: 7px; overflow: hidden; cursor: pointer; background: #f4f7fb; }
 .gallery-thumbs button[aria-current="true"] { border-color: var(--green); }
-.gallery-thumbs img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.gallery-thumbs img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: contain; padding: 4px; }
+
+/* Product pages use a denser technical layout without changing product data. */
+.page-hero + .section.layout > aside:has([data-gallery]) { min-width: 0; }
+.page-hero + .section.layout > article.panel { display: grid; align-content: start; gap: 12px; }
+.page-hero + .section.layout > article.panel h2 { margin: 0; font-size: 23px; }
+.page-hero + .section.layout > article.panel p { margin: 0; }
+.page-hero + .section.layout > article.panel .check-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 18px; }
+.page-hero + .section.layout > article.panel .check-list li { font-size: 14px; }
+.page-hero ~ .section.band .table-wrap { border-radius: 8px; box-shadow: 0 8px 28px rgba(13,35,25,.05); }
+.page-hero ~ .section.band .table-wrap table { font-size: 13px; line-height: 1.35; }
+.page-hero ~ .section.band .table-wrap th,
+.page-hero ~ .section.band .table-wrap td { padding: 9px 12px; }
+.page-hero ~ .section.band .table-wrap th { min-width: 210px; width: 34%; font-size: 12px; }
+.page-hero ~ .section.layout article.panel > h2:not(:first-child) { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 22px; }
+.page-hero ~ .section.layout article.panel > p { max-width: 78ch; font-size: 15px; }
+.page-hero ~ .section.layout article.panel > .check-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 20px; }
+.page-hero ~ .section.layout > aside.panel { position: sticky; top: 96px; align-self: start; display: grid; gap: 12px; }
+.page-hero ~ .section.layout > aside.panel h3,
+.page-hero ~ .section.layout > aside.panel p { margin: 0; }
 .footer { background: #101b15; color: var(--white); }
 .footer-main.simple { display: flex; justify-content: space-between; gap: 24px; align-items: center; padding: 28px clamp(16px,5vw,72px); }
 .footer-brand { max-width: 560px; }
@@ -122,5 +143,5 @@ input, select, textarea { width: 100%; min-height: 44px; padding: 10px 11px; bor
 .footer-bottom nav { display: flex; flex-wrap: wrap; gap: 14px; justify-content: flex-end; }
 @media (max-width: 1180px) { .desktop-nav a, .desktop-nav button { padding-inline: 8px; font-size: 14px; } .brand { min-width: 172px; } }
 @media (max-width: 1100px) { .desktop-nav { display: none; } .mobile-toggle { display: inline-flex; } .grid.four, .grid, .mega-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } .filter-panel { grid-template-columns: repeat(2,minmax(0,1fr)); } }
-@media (max-width: 760px) { .site-header { align-items: center; } .brand { min-width: 0; } .brand-logo { width: 40px; height: 40px; } .brand small { display: none; } .language-select { display: none; } .quote-link { min-height: 40px; padding-inline: 12px; } .hero, .layout { grid-template-columns: 1fr; } .grid.four, .grid, .filter-panel, .quote-form { grid-template-columns: 1fr; } .footer-main.simple, .footer-bottom { flex-direction: column; align-items: flex-start; } .footer-contact, .footer-bottom nav { justify-content: flex-start; } .mega-panel { top: 86px; width: calc(100vw - 20px); max-height: calc(100vh - 105px); overflow-y: auto; } .mega-grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .site-header { align-items: center; } .brand { min-width: 0; } .brand-logo { width: 40px; height: 40px; } .brand small { display: none; } .language-select { display: none; } .quote-link { min-height: 40px; padding-inline: 12px; } .hero, .layout { grid-template-columns: 1fr; } .grid.four, .grid, .filter-panel, .quote-form { grid-template-columns: 1fr; } .footer-main.simple, .footer-bottom { flex-direction: column; align-items: flex-start; } .footer-contact, .footer-bottom nav { justify-content: flex-start; } .mega-panel { top: 86px; width: calc(100vw - 20px); max-height: calc(100vh - 105px); overflow-y: auto; } .mega-grid { grid-template-columns: 1fr; } [data-gallery] .gallery-main { min-height: 250px; } .page-hero + .section.layout > article.panel .check-list, .page-hero ~ .section.layout article.panel > .check-list { grid-template-columns: 1fr; } .page-hero ~ .section.layout > aside.panel { position: static; } .page-hero ~ .section.band .table-wrap th { min-width: 155px; } }
 @media (max-width: 430px) { .site-header { gap: 8px; padding-inline: 12px; } .brand { flex: 0 0 40px; width: 40px; gap: 0; } .brand strong, .brand small { display: none; } .header-actions { gap: 6px; } .quote-link { padding-inline: 10px; font-size: 13px; } .mobile-toggle { padding-inline: 10px; } }

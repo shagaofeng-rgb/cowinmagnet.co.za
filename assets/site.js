@@ -174,7 +174,11 @@
     thumbs.forEach((thumb) => {
       thumb.addEventListener("click", () => {
         const src = thumb.getAttribute("data-src");
-        if (main && src) main.setAttribute("src", src);
+        if (main && src) {
+          main.setAttribute("src", src);
+          const image = thumb.querySelector("img");
+          if (image?.alt) main.setAttribute("alt", image.alt.replace(/thumbnail/i, "product image"));
+        }
         thumbs.forEach((item) => item.setAttribute("aria-current", "false"));
         thumb.setAttribute("aria-current", "true");
       });
