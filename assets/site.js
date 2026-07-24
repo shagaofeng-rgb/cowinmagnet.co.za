@@ -33,6 +33,31 @@
 
   trackPageview();
 
+  // Keep the public information architecture deliberately focused: products,
+  // industries, company, news and contact. Existing detail URLs stay available.
+  const primaryNav = document.querySelector(".desktop-nav");
+  if (primaryNav) {
+    primaryNav.innerHTML = [
+      ["Products", "/en-za/products/"],
+      ["Industries", "/en-za/industries/"],
+      ["About Us", "/en-za/about/"],
+      ["News", "/en-za/news/"],
+      ["Contact", "/en-za/contact/"]
+    ].map(([label, href]) => `<a href="${href}">${label}</a>`).join("");
+  }
+  const mobileNavigation = document.querySelector("[data-mobile-panel]");
+  if (mobileNavigation) {
+    mobileNavigation.innerHTML = [
+      ["Products", "/en-za/products/"],
+      ["Industries", "/en-za/industries/"],
+      ["About Us", "/en-za/about/"],
+      ["News", "/en-za/news/"],
+      ["Contact", "/en-za/contact/"]
+    ].map(([label, href]) => `<div class="mobile-links"><a href="${href}">${label}</a></div>`).join("");
+  }
+  document.querySelectorAll("[data-mega-panel]").forEach((panel) => panel.setAttribute("hidden", ""));
+  document.querySelectorAll("[data-mega-button]").forEach((button) => button.setAttribute("hidden", ""));
+
   const header = document.querySelector(".site-header");
   const mobileButton = document.querySelector("[data-mobile-toggle]");
   const mobilePanel = document.querySelector("[data-mobile-panel]");
