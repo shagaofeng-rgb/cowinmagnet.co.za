@@ -37,13 +37,12 @@
   // industries, company, news and contact. Existing detail URLs stay available.
   const primaryNav = document.querySelector(".desktop-nav");
   if (primaryNav) {
-    primaryNav.innerHTML = [
-      ["Products", "/en-za/products/"],
-      ["Industries", "/en-za/industries/"],
-      ["About Us", "/en-za/about/"],
-      ["News", "/en-za/news/"],
-      ["Contact", "/en-za/contact/"]
-    ].map(([label, href]) => `<a href="${href}">${label}</a>`).join("");
+    primaryNav.innerHTML = `
+      <button type="button" data-mega-button aria-expanded="false" aria-controls="mega-products">Products</button>
+      <button type="button" data-mega-button aria-expanded="false" aria-controls="mega-industries">Industries</button>
+      <a href="/en-za/about/">About Us</a>
+      <a href="/en-za/news/">News</a>
+      <a href="/en-za/contact/">Contact</a>`;
   }
   const mobileNavigation = document.querySelector("[data-mobile-panel]");
   if (mobileNavigation) {
@@ -55,8 +54,22 @@
       ["Contact", "/en-za/contact/"]
     ].map(([label, href]) => `<div class="mobile-links"><a href="${href}">${label}</a></div>`).join("");
   }
-  document.querySelectorAll("[data-mega-panel]").forEach((panel) => panel.setAttribute("hidden", ""));
-  document.querySelectorAll("[data-mega-button]").forEach((button) => button.setAttribute("hidden", ""));
+  const conciseMenus = {
+    "mega-products": [
+      ["Equipment Families", [["Suspended & Self-Cleaning Iron Removers", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Magnetic Separation Equipment", "/en-za/products/magnetic-separation-equipment/"], ["Metal Detection & Recovery Sorting", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Magnetic Components & Filters", "/en-za/products/magnetic-components-and-filters/"]]],
+      ["Selection Support", [["View Product Overview", "/en-za/products/"], ["Request a Quote", "/en-za/request-a-quote/"]]]
+    ],
+    "mega-industries": [
+      ["Core Industries", [["Mining & Beneficiation", "/en-za/industries/mining/"], ["Recycling", "/en-za/industries/recycling/"], ["Cement & Aggregates", "/en-za/industries/cement/"], ["Coal & Power", "/en-za/industries/coal-handling/"]]],
+      ["Application Support", [["View All Industries", "/en-za/industries/"], ["Get Selection Advice", "/en-za/request-a-quote/"]]]
+    ]
+  };
+  Object.entries(conciseMenus).forEach(([id, columns]) => {
+    const panel = document.getElementById(id);
+    if (!panel) return;
+    panel.innerHTML = `<div class="mega-grid concise">${columns.map(([title, links]) => `<nav class="mega-col"><h3>${title}</h3>${links.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}</nav>`).join("")}</div>`;
+    panel.setAttribute("hidden", "");
+  });
 
   const header = document.querySelector(".site-header");
   const mobileButton = document.querySelector("[data-mobile-toggle]");
@@ -64,6 +77,16 @@
   const megaButtons = document.querySelectorAll("[data-mega-button]");
   const megaPanels = document.querySelectorAll("[data-mega-panel]");
   const backdrop = document.querySelector("[data-nav-backdrop]");
+  let hoverCloseTimer;
+
+  function cancelHoverClose() {
+    window.clearTimeout(hoverCloseTimer);
+  }
+
+  function scheduleHoverClose() {
+    cancelHoverClose();
+    hoverCloseTimer = window.setTimeout(closeMenus, 140);
+  }
 
   function closeMenus() {
     header?.classList.remove("menu-open", "mega-open");
@@ -97,6 +120,23 @@
         panel.removeAttribute("hidden");
       }
     });
+    button.addEventListener("pointerenter", () => {
+      cancelHoverClose();
+      const id = button.getAttribute("aria-controls");
+      const panel = id ? document.getElementById(id) : null;
+      if (panel?.hasAttribute("hidden")) {
+        closeMenus();
+        header?.classList.add("mega-open");
+        button.setAttribute("aria-expanded", "true");
+        panel.removeAttribute("hidden");
+      }
+    });
+    button.addEventListener("pointerleave", scheduleHoverClose);
+  });
+
+  megaPanels.forEach((panel) => {
+    panel.addEventListener("pointerenter", cancelHoverClose);
+    panel.addEventListener("pointerleave", scheduleHoverClose);
   });
 
   backdrop?.addEventListener("click", closeMenus);
