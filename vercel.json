@@ -34,10 +34,6 @@
   ],
   "crons": [
     {
-      "path": "/api/cron/news",
-      "schedule": "0 */3 * * *"
-    },
-    {
       "path": "/api/cron/google-seo",
       "schedule": "0 2 * * *"
     },

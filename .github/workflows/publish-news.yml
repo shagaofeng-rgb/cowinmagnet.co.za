@@ -1,0 +1,44 @@
+name: Publish industry news
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-industry-news
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: node tools/publish-scheduled-news.mjs
+        env:
+          NEWS_STORAGE_MODE: git
+          NEWS_AUTO_PUBLISH: "true"
+          NEWS_TIMEZONE: Africa/Johannesburg
+      - name: Commit published articles
+        run: |
+          if git diff --quiet -- data/articles/articles.json; then
+            echo "No eligible article to publish in this run."
+            exit 0
+          fi
+          git config user.name "Cowinmagnet News Automation"
+          git config user.email "news-bot@cowinmagnet.co.za"
+          git add data/articles/articles.json
+          git commit -m "chore: publish scheduled industry news"
+          git push origin main

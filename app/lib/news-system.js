@@ -12,6 +12,12 @@ let pool;
 let schemaReady;
 const activeLocks = new Set();
 const databaseFailureMessages = new Map();
+const GIT_BACKED_NEWS_PATHS = new Set([
+  "articles/articles.json",
+  "news/news-sources.json",
+  "news/news-jobs.json",
+  "news/news-publication-audits.json"
+]);
 
 export class PersistentStorageError extends Error {
   constructor(message, cause) {
@@ -136,6 +142,20 @@ function safeWritableDataPath(relativePath) {
   return join(writableDataRoot, cleanDataPath(relativePath));
 }
 
+export function isGitBackedNewsPath(relativePath) {
+  return process.env.NEWS_STORAGE_MODE !== "database" && GIT_BACKED_NEWS_PATHS.has(cleanDataPath(relativePath));
+}
+
+async function readBundledDataJson(relativePath, fallback) {
+  try {
+    const raw = await readFile(safeDataPath(relativePath), "utf8");
+    if (!raw.trim()) return fallback;
+    return JSON.parse(raw.replace(/^\uFEFF/, ""));
+  } catch {
+    return fallback;
+  }
+}
+
 function databaseConnectionString() {
   if (!process.env.DATABASE_URL) return "";
   try {
@@ -197,6 +217,9 @@ async function writeDatabaseJson(relativePath, value) {
 }
 
 export async function readDataJson(relativePath, fallback) {
+  // Scheduled news is committed by GitHub Actions, then delivered with the Vercel build.
+  // Prefer that durable release snapshot over the quota-limited generic JSON database.
+  if (isGitBackedNewsPath(relativePath)) return readBundledDataJson(relativePath, fallback);
   try {
     const databaseValue = await readDatabaseJson(relativePath);
     if (databaseValue !== null) return databaseValue;
@@ -208,13 +231,9 @@ export async function readDataJson(relativePath, fallback) {
       console.warn(`[news-store] Database read failed for ${relativePath}: ${message}`);
     }
   }
-  try {
-    const raw = await readFile(safeDataPath(relativePath), "utf8");
-    if (!raw.trim()) return fallback;
-    return JSON.parse(raw.replace(/^\uFEFF/, ""));
-  } catch {
-    if (!process.env.VERCEL) return fallback;
-  }
+  const bundled = await readBundledDataJson(relativePath, null);
+  if (bundled !== null) return bundled;
+  if (!process.env.VERCEL) return fallback;
   try {
     const raw = await readFile(safeWritableDataPath(relativePath), "utf8");
     if (!raw.trim()) return fallback;
@@ -324,6 +343,8 @@ export function canonicalizeUrl(value) {
 function xmlDecode(value = "") {
   return String(value)
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .replace(/&#x([0-9a-f]+);/gi, (_match, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_match, decimal) => String.fromCodePoint(Number.parseInt(decimal, 10)))
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
@@ -557,7 +578,7 @@ function isRecentEnough(candidate, now, lookbackHours) {
 
 function sourceFactSummary(value) {
   const summary = xmlDecode(value)
-    .replace(/^the post\s+.+?\s+appeared first on\s+.+?\.?$/i, "")
+    .replace(/\bthe post\s+.+?\s+appeared first on\s+.+?(?:\.|$)/i, "")
     .replace(/\s+/g, " ")
     .trim();
   if (!summary || /[\uFFFD]/.test(summary)) return "";
