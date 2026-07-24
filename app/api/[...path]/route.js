@@ -235,6 +235,11 @@ function verifyAdminCredentials(identifier, password) {
 async function readJson(relativePath) {
   const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) return jsonFiles.get(relativePath) ?? null;
+  // Scheduled news is committed by GitHub Actions. Keep the public API and
+  // rendered news pages on the same release snapshot when database storage is unavailable.
+  if (cleanPath === "articles/articles.json" && process.env.NEWS_STORAGE_MODE !== "database") {
+    return readDataJson(relativePath, jsonFiles.get(relativePath) ?? []);
+  }
   try {
     const databaseValue = await readDatabaseJson(relativePath);
     if (databaseValue !== null) return databaseValue;
