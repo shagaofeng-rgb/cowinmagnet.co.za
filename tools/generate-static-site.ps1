@@ -100,6 +100,7 @@ if (Test-Path -LiteralPath $editableProductFile) {
       seoTitle = $_.seoTitle
       seoDescription = $_.seoDescription
       updatedAt = $_.updatedAt
+      canonicalUrl = $_.canonicalUrl
     }
   }
 } elseif (Test-Path -LiteralPath $syncedProductFile) {
@@ -180,7 +181,7 @@ $products = @($products | ForEach-Object {
     @("shippingInformation","Export documentation and logistics communication can be coordinated from China. No local stock claim is made."),
     @("downloads",@()),@("relatedProducts",@()),@("relatedIndustries",@("Mining","Coal Handling","Conveyor Systems")),@("relatedSolutions",@("Tramp Iron Removal","Crusher Protection")),@("relatedMarkets",@("South Africa","Botswana","Zambia")),
     @("seoKeywords",@("magnetic separator South Africa","overband magnet South Africa","conveyor belt magnet South Africa","tramp iron removal South Africa")),
-    @("canonicalUrl","/en-za/products/$($p.categorySlug)/$($p.slug)/"),@("openGraphImage",$p.image),@("productStatus","published"),@("sortOrder",$sortIndex),@("featured",($sortIndex -le 60)),
+    @("canonicalUrl",$(if($p.canonicalUrl){$p.canonicalUrl}else{"/en-za/products/$($p.categorySlug)/$($p.slug)/"})),@("openGraphImage",$p.image),@("productStatus","published"),@("sortOrder",$sortIndex),@("featured",($sortIndex -le 60)),
     @("createdAt",$(if($p.importedAt){$p.importedAt}else{(Get-Date).ToUniversalTime().ToString("o")})),@("updatedAt",$(if($p.updatedAt){$p.updatedAt}else{(Get-Date).ToUniversalTime().ToString("o")}))
   )) {
     $p | Add-Member -NotePropertyName $member[0] -NotePropertyValue $member[1] -Force

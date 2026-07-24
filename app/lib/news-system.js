@@ -626,7 +626,7 @@ export function scoreProducts(candidate, products) {
         category: product.category,
         categorySlug: product.categorySlug,
         image: product.image || product.mainImage || "/assets/images/hero-mining-conveyor-magnet.webp",
-        url: `/en-za/products/${product.categorySlug || "products"}/${product.slug}/`,
+        url: product.canonicalUrl || `/en-za/products/${product.categorySlug || "products"}/${product.slug}/`,
         relevance_score: Number(score.toFixed(3)),
         relationship_reason: `Related to ${product.category || "magnetic separation"} and African material handling applications.`
       };
