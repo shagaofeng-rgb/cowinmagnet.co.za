@@ -26,6 +26,9 @@ function pageShell({ title, description, canonical, body, schema = [], image = "
   <link rel="canonical" href="${siteUrl}${canonical}">
   <link rel="alternate" hreflang="en-ZA" href="${siteUrl}${canonical}">
   <link rel="alternate" hreflang="x-default" href="${siteUrl}${canonical}">
+  <link rel="icon" href="/favicon.ico?v=20260725" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260725">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260725">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:type" content="article">
@@ -38,7 +41,7 @@ function pageShell({ title, description, canonical, body, schema = [], image = "
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/en-za/"><img class="brand-logo" src="/assets/images/cowinmagnet-logo.jpg" alt="Cowinmagnet logo"><span><strong>Cowinmagnet</strong><small>South Africa</small></span></a>
+    <a class="brand" href="/en-za/"><img class="brand-logo" src="/assets/images/cowinmagnet-logo.png" alt="Cowinmagnet logo"><span><strong>Cowinmagnet</strong><small>South Africa</small></span></a>
     <nav class="desktop-nav" aria-label="Primary navigation">
       <a href="/en-za/products/">Products</a>
       <a href="/en-za/industries/">Industries</a>
@@ -51,7 +54,7 @@ function pageShell({ title, description, canonical, body, schema = [], image = "
   <main>${body}</main>
   <footer class="footer">
     <section class="footer-main simple">
-      <div class="footer-brand"><a class="brand" href="/en-za/"><img class="brand-logo" src="/assets/images/cowinmagnet-logo.jpg" alt="Cowinmagnet logo"><span><strong>Cowinmagnet</strong><small>South Africa</small></span></a><p>Magnetic separation equipment support for African mining and industrial projects.</p></div>
+      <div class="footer-brand"><a class="brand" href="/en-za/"><img class="brand-logo" src="/assets/images/cowinmagnet-logo.png" alt="Cowinmagnet logo"><span><strong>Cowinmagnet</strong><small>South Africa</small></span></a><p>Magnetic separation equipment support for African mining and industrial projects.</p></div>
       <div class="footer-contact"><a href="mailto:davidsha@cowinmagnet.com">davidsha@cowinmagnet.com</a><a href="https://wa.me/8615665135205">WhatsApp: +86 156 6513 5205</a><a class="button primary" href="/en-za/request-a-quote/">Request a Quote</a></div>
     </section>
   </footer>
