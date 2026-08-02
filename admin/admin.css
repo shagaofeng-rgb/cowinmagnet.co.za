@@ -11,7 +11,7 @@
   --green: #4ee28a;
   --danger: #ff7466;
   --shadow: 0 22px 70px rgba(0,0,0,.28);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.55; }
@@ -103,4 +103,72 @@ tr:hover td { background: rgba(255,255,255,.025); }
 @media (max-width: 640px) {
   .cards, .metric-grid, .mini-grid, .sidebar nav { grid-template-columns: 1fr; }
   .admin-main { padding: 24px 14px; }
+}
+
+/* Shared visual system for the operating interface. */
+:root {
+  --bg: #08131b;
+  --panel: #0e1a25;
+  --panel-2: #132333;
+  --line: #263c4e;
+  --text: #f5f8fb;
+  --muted: #9eb1c1;
+  --blue: #39bff0;
+  --cyan: #80ddd7;
+  --yellow: #f5c849;
+  --green: #65d59a;
+  --danger: #ff8376;
+  --shadow: 0 16px 42px rgba(0, 0, 0, .2);
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+body { background: var(--bg); -webkit-font-smoothing: antialiased; }
+button, input, textarea, select, a { transition: border-color .18s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid rgba(57, 191, 240, .48); outline-offset: 3px; }
+.button { min-height: 43px; border-radius: 8px; }
+.button.primary { box-shadow: 0 8px 18px rgba(245, 200, 73, .13); }
+.button.primary:hover { background: #ffe07b; transform: translateY(-1px); }
+.button.secondary:hover { border-color: #45627b; background: #142237; }
+.brand-logo { border-radius: 9px; padding: 3px; }
+.eyebrow { margin-bottom: 9px; font-size: 12px; color: #a9d8d3; letter-spacing: .03em; }
+.hero-copy { max-width: 68ch; line-height: 1.65; }
+.login-screen { background: #08131b; }
+.login-card { padding: 34px; border-radius: 14px; border-color: rgba(128, 221, 215, .2); background: #0d1927; box-shadow: 0 20px 52px rgba(0, 0, 0, .26); }
+.login-card h1 { font-size: clamp(30px, 4vw, 42px); line-height: 1.13; letter-spacing: -.018em; }
+input, textarea, select { min-height: 46px; border-radius: 8px; background: #0a1523; }
+input:hover, textarea:hover, select:hover { border-color: #3f5f78; }
+input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(57, 191, 240, .14); outline: 0; }
+.admin-shell { background: #08131b; }
+.sidebar { width: 250px; padding: 20px 14px; border-right-color: #1c3040; background: #071018; }
+.sidebar nav { gap: 5px; }
+.sidebar nav button { min-height: 46px; border-radius: 8px; color: #bbccda; }
+.sidebar nav button.active, .sidebar nav button:hover { background: rgba(245, 200, 73, .12); border-color: rgba(245, 200, 73, .28); color: #fff8dc; }
+.sidebar-footer { padding-top: 18px; }
+.admin-main { padding: clamp(28px, 4vw, 56px); }
+.topbar, .admin-topbar { margin-bottom: 30px; }
+.topbar h1, .admin-topbar h1 { font-size: clamp(32px, 3.8vw, 54px); line-height: 1.06; letter-spacing: -.024em; }
+.sync-strip { border-radius: 10px; border-color: rgba(128, 221, 215, .28); background: rgba(128, 221, 215, .08); }
+.cards, .metric-grid { gap: 16px; }
+.metric, .metric-card, .section-card { border-radius: 12px; border-color: #233a4c; box-shadow: 0 1px 0 rgba(255, 255, 255, .03); }
+.metric-card:hover, .section-card:hover { border-color: #3d637c; }
+.metric strong, .metric-card strong { font-size: clamp(30px, 3vw, 40px); }
+.section-card { padding: clamp(18px, 2.4vw, 26px); }
+.toolbar { gap: 12px; padding: 12px; border: 1px solid #233a4c; border-radius: 10px; background: #0d1a28; }
+.toolbar.compact { padding: 0; border: 0; background: transparent; }
+.table-wrap { border: 1px solid #233a4c; border-radius: 10px; background: #0d1927; }
+th, td { padding: 15px 14px; }
+th { background: rgba(128, 221, 215, .05); color: #d9f2f3; }
+tr:hover td { background: rgba(128, 221, 215, .045); }
+.editor { border-radius: 12px; border-color: #233a4c; background: #0d1927; box-shadow: 0 1px 0 rgba(255, 255, 255, .03); }
+.badge { background: #173548; }
+.bar { background: #1a2e3f; }
+.bar span { background: linear-gradient(90deg, var(--cyan), var(--yellow)); }
+@media (max-width: 1120px) {
+  .sidebar { width: auto; }
+}
+@media (max-width: 640px) {
+  .login-card { padding: 24px; }
+  .admin-main { padding: 24px 14px; }
+  .sidebar { padding: 14px; }
+  .sidebar nav button { min-height: 44px; }
 }
