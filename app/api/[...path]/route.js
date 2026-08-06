@@ -19,8 +19,6 @@ const writableDataRoot = join(tmpdir(), "cowinmagnet-africa-data");
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "davidsha@cowinmagnet.com").trim().toLowerCase();
 const adminUser = process.env.ADMIN_USER || adminEmail;
-const bootstrapAdminSecret = "5JIAbVeSKp8Pem7s6vKyHctMoBL7EUOySRTJkTK9SbU";
-const bootstrapAdminPasswordHash = "e5fb073a922b15a1ad52661b2ac7f3c9d4c6c674400d8f7aa9b42418bb475da3";
 
 const { Pool } = pg;
 let pool;
@@ -97,7 +95,7 @@ function sessionSecret() {
     process.env.ADMIN_PASSWORD_HASH ||
     process.env.ADMIN_PASSWORD ||
     process.env.ADMIN_DEFAULT_PASSWORD ||
-    bootstrapAdminSecret
+    ""
   );
 }
 
@@ -213,7 +211,7 @@ function hashAdminPassword(password) {
 }
 
 function isAdminAuthConfigured() {
-  return Boolean(process.env.ADMIN_PASSWORD_HASH || process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || bootstrapAdminPasswordHash);
+  return Boolean(process.env.ADMIN_PASSWORD_HASH || process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD);
 }
 
 function passwordVariants(password) {
@@ -225,7 +223,7 @@ function verifyAdminCredentials(identifier, password) {
   if (!validIdentity || !password || !isAdminAuthConfigured()) return false;
 
   const variants = passwordVariants(password);
-  const expectedHash = process.env.ADMIN_PASSWORD_HASH || bootstrapAdminPasswordHash;
+  const expectedHash = process.env.ADMIN_PASSWORD_HASH;
   if (expectedHash) return variants.some((item) => hashAdminPassword(item) === expectedHash);
   if (process.env.ADMIN_PASSWORD) return variants.includes(process.env.ADMIN_PASSWORD);
   if (process.env.ADMIN_DEFAULT_PASSWORD) return variants.includes(process.env.ADMIN_DEFAULT_PASSWORD);
@@ -300,6 +298,178 @@ async function bodyJson(request) {
     return await request.json();
   } catch {
     return {};
+  }
+}
+
+function pluginResponse(code, msg, status = 200) {
+  return NextResponse.json({ code, msg }, {
+    status,
+    headers: {
+      "cache-control": "no-store",
+      "x-robots-tag": "noindex, nofollow"
+    }
+  });
+}
+
+async function bodyFields(request) {
+  const type = request.headers.get("content-type") || "";
+  if (type.includes("application/json")) {
+    const body = await bodyJson(request);
+    return Object.fromEntries(Object.entries(body || {}).map(([key, value]) => [key, String(value ?? "")]));
+  }
+  if (type.includes("multipart/form-data") || type.includes("application/x-www-form-urlencoded")) {
+    try {
+      const form = await request.formData();
+      return Object.fromEntries([...form.entries()].map(([key, value]) => [key, typeof value === "string" ? value : value.name || ""]));
+    } catch {
+      return {};
+    }
+  }
+  const text = await request.text().catch(() => "");
+  if (!text) return {};
+  try {
+    const parsed = JSON.parse(text);
+    return Object.fromEntries(Object.entries(parsed || {}).map(([key, value]) => [key, String(value ?? "")]));
+  } catch {
+    return Object.fromEntries(new URLSearchParams(text).entries());
+  }
+}
+
+function safeEqualText(a, b) {
+  const left = Buffer.from(String(a || ""));
+  const right = Buffer.from(String(b || ""));
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
+function sanitizeArticleHtml(value) {
+  return String(value || "")
+    .replace(/<script\b[\s\S]*?<\/script>/gi, "")
+    .replace(/<style\b[\s\S]*?<\/style>/gi, "")
+    .replace(/<iframe\b[\s\S]*?<\/iframe>/gi, "")
+    .replace(/<object\b[\s\S]*?<\/object>/gi, "")
+    .replace(/<embed\b[\s\S]*?>/gi, "")
+    .replace(/\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s(?:href|src)\s*=\s*(["'])\s*javascript:[\s\S]*?\1/gi, "");
+}
+
+function validCoverImage(value) {
+  const url = String(value || "").trim();
+  if (!url) return "";
+  try {
+    const parsed = new URL(url);
+    if (!["https:", "http:"].includes(parsed.protocol)) return "";
+    const host = parsed.hostname.replace(/^www\./, "");
+    if (host === "cowinmagnet.co.za" || host === "cowinmagnet.com") return "";
+    if (!(/\.(avif|webp|png|jpe?g)(?:$|[?#])/i.test(parsed.pathname + parsed.search) || /(^|\.)images\.(pexels|unsplash)\.com$/i.test(parsed.hostname))) return "";
+    return parsed.toString();
+  } catch {
+    return "";
+  }
+}
+
+function articleWebhookSign() {
+  return String(process.env.WEBHOOK_ARTICLE_SIGN || "");
+}
+
+function plainText(value) {
+  return String(value || "")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isVerificationOnly(fields) {
+  const title = plainText(fields.title);
+  const content = plainText(fields.content);
+  if (!title || !content) return true;
+  if (content.length < 20) return true;
+  return /^(test|testing|demo|placeholder|验证|测试)$/i.test(title) || /^(test|testing|demo|placeholder|验证|测试)$/i.test(content);
+}
+
+function isSupportedWebhookClass(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  return normalized === "blog" || normalized === "31";
+}
+
+function makeWebhookBlogArticle(fields, existingArticles) {
+  const now = new Date().toISOString();
+  const title = String(fields.title || "").trim();
+  const baseSlug = slugifyAdmin(title).slice(0, 88) || `plugin-blog-${Date.now()}`;
+  let slug = baseSlug;
+  let suffix = 2;
+  while (existingArticles.some((item) => item.slug === slug)) slug = `${baseSlug}-${suffix++}`;
+  const content = sanitizeArticleHtml(fields.content);
+  const imageUrl = validCoverImage(fields.image_url) || "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1600&q=80";
+  const excerpt = String(content)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 155) || title;
+  const webhookContentHash = hash(`${title}\n${plainText(content)}`);
+  const category = String(fields.class_id || "").trim() || "blog";
+  return {
+    id: `BLOG-WEBHOOK-${hash(`${title}:${now}`).slice(0, 14)}`,
+    article_type: "blog",
+    slug,
+    title,
+    excerpt,
+    summary: excerpt,
+    content,
+    status: "published",
+    language: "en-ZA",
+    category: category === "31" || category.toLowerCase() === "blog" ? "Blog" : category,
+    tags: ["plugin-published", "blog"],
+    cover_image_url: imageUrl,
+    cover_image_source_url: imageUrl,
+    cover_image_page_url: imageUrl,
+    cover_image_alt: title,
+    cover_image_caption: "Cover image provided through the article publishing webhook.",
+    cover_image_status: "external-editorial-image",
+    author_id: String(fields.author_id || ""),
+    author_name: String(fields.author_id || "admin"),
+    date: now.slice(0, 10),
+    published_at: now,
+    updated_at: now,
+    seo_title: title.slice(0, 65),
+    seo_description: excerpt,
+    seoTitle: title.slice(0, 65),
+    seoDescription: excerpt,
+    canonical_url: `/en-za/blog/${slug}/`,
+    primary_keyword: title.toLowerCase(),
+    secondary_keywords: [],
+    geo_summary: excerpt,
+    key_takeaways: [],
+    related_products: [],
+    product_ids: [],
+    webhook_content_hash: webhookContentHash,
+    manualOverrideAt: now,
+    created_at: now
+  };
+}
+
+async function handleArticleWebhook(request) {
+  if (request.method !== "POST") return pluginResponse(0, "仅支持POST请求", 405);
+  const fields = await bodyFields(request);
+  const expectedSign = articleWebhookSign();
+  if (!isSupportedWebhookClass(fields.class_id)) return pluginResponse(0, "Only the Blog category is supported");
+  if (!expectedSign) return pluginResponse(0, "发布接口秘钥未配置");
+  if (!safeEqualText(fields.sign, expectedSign)) return pluginResponse(0, "秘钥错误");
+  if (isVerificationOnly(fields)) return pluginResponse(1, "验证成功");
+
+  try {
+    const articles = await readDataJson("data/articles/articles.json", []);
+    const article = makeWebhookBlogArticle(fields, articles);
+    const duplicate = articles.find((item) => item.webhook_content_hash && item.webhook_content_hash === article.webhook_content_hash);
+    if (duplicate) return pluginResponse(1, "发布成功");
+    await writeDataJson("data/articles/articles.json", [article, ...articles]);
+    try {
+      scheduleSitemapAudit({ source: "article-webhook", action: "created", objectId: article.slug, url: article.canonical_url });
+    } catch (auditError) {
+      console.warn(`[article-webhook] Sitemap audit scheduling failed: ${auditError?.message || auditError}`);
+    }
+    return pluginResponse(1, "发布成功");
+  } catch (error) {
+    return pluginResponse(0, error?.message || "数据录入失败，请重试");
   }
 }
 
@@ -816,7 +986,7 @@ async function handleCronNews(request) {
 
 async function handleCronGoogleSeo(request) {
   if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
-  const sitemap = await runSitemapAudit({ trigger: "daily-cron", submit: true });
+  const sitemap = await runSitemapAudit({ trigger: "three-day-cron", submit: true });
   try {
     const googleSeo = await syncGoogleSeo("cron");
     return response({ success: true, data: { sitemap: sitemap.run, googleSeo }, requestId: token(8) });
@@ -1167,7 +1337,10 @@ async function handleAdmin(request, path) {
   if (path === "admin/news/sources" && request.method === "GET") return response({ success: true, data: (await getNewsState()).sources, requestId: token(8) });
   if (path === "admin/news/sources" && request.method === "PUT") {
     const body = await bodyJson(request);
-    const sources = Array.isArray(body.sources) ? body.sources : [];
+    const sources = (Array.isArray(body.sources) ? body.sources : []).map((source) => ({
+      ...source,
+      manualOverrideAt: new Date().toISOString()
+    }));
     await writeDataJson("data/news/news-sources.json", sources);
     await audit(session.user, "News Sources Updated", "NewsSource", "sources", "News source whitelist/blacklist settings updated");
     return response({ success: true, data: sources, requestId: token(8) });
@@ -1199,6 +1372,7 @@ async function handleAdmin(request, path) {
       sourceUrl: String(body.sourceUrl || ""),
       seoTitle: String(body.seoTitle || body.title || ""),
       seoDescription: String(body.seoDescription || body.summary || ""),
+      manualOverrideAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
     if (article) Object.assign(article, payload);
@@ -1288,6 +1462,7 @@ async function dispatch(request, context) {
   const params = await context.params;
   const path = (params.path || []).join("/");
 
+  if (path === "webhook/send_article") return handleArticleWebhook(request);
   if (path === "login" && request.method === "POST") return handleLogin(request);
   if (path === "admin/login" && request.method === "POST") return handleLogin(request, { redirect: true });
   if (path === "session" && request.method === "GET") return handleSession();

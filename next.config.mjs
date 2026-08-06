@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
+  skipTrailingSlashRedirect: true,
   poweredByHeader: false,
   async redirects() {
     return [
@@ -16,11 +17,6 @@ const nextConfig = {
         destination: "https://cowinmagnet.co.za/:path*/",
         permanent: true
       },
-      {
-        source: "/",
-        destination: "/en-za/",
-        permanent: true
-      }
     ];
   },
   async headers() {

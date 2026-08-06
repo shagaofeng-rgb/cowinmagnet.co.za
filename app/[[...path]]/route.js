@@ -49,6 +49,9 @@ async function readRouteFile(parts) {
 export async function GET(_request, context) {
   const params = await context.params;
   const parts = params.path || [];
+  if (!parts.length) {
+    return Response.redirect(new URL("/en-za/", _request.url), 308);
+  }
   if (parts.join("/") === "admin/dashboard") {
     return Response.redirect(new URL("/admin/", _request.url), 303);
   }
@@ -125,5 +128,30 @@ export async function GET(_request, context) {
   return new Response(notFound?.body || "Not found", {
     status: 404,
     headers: { "content-type": "text/html; charset=utf-8" }
+  });
+}
+
+export async function POST(request, context) {
+  const params = await context.params;
+  const parts = params.path || [];
+  if (parts.length) {
+    return new Response(JSON.stringify({ code: 0, msg: "接口不存在" }), {
+      status: 404,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "x-robots-tag": "noindex, nofollow"
+      }
+    });
+  }
+
+  const target = new URL("/api/webhook/send_article", request.url);
+  const body = await request.text();
+  return fetch(target, {
+    method: "POST",
+    headers: {
+      "content-type": request.headers.get("content-type") || "application/x-www-form-urlencoded"
+    },
+    body
   });
 }
