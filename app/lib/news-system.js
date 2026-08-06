@@ -146,6 +146,37 @@ export function isGitBackedNewsPath(relativePath) {
   return process.env.NEWS_STORAGE_MODE !== "database" && GIT_BACKED_NEWS_PATHS.has(cleanDataPath(relativePath));
 }
 
+function recordKey(record, index) {
+  if (!record || typeof record !== "object") return `index:${index}`;
+  return String(record.id || record.slug || record.source_fingerprint || record.canonical_source_url || record.domain || `index:${index}`);
+}
+
+function hasManualOverride(record) {
+  return Boolean(record?.manualOverrideAt || record?.manual_override_at || record?.webhook_content_hash);
+}
+
+// Automated News is released through GitHub Actions. Keep that release snapshot
+// authoritative, while allowing explicitly manual admin overrides in PostgreSQL
+// to be reflected immediately without overwriting scheduled publications.
+export function mergeGitBackedData(releaseSnapshot, databaseSnapshot) {
+  if (!Array.isArray(releaseSnapshot)) return databaseSnapshot ?? releaseSnapshot;
+  if (!Array.isArray(databaseSnapshot)) return releaseSnapshot;
+
+  const databaseByKey = new Map(databaseSnapshot.map((record, index) => [recordKey(record, index), record]));
+  const seen = new Set();
+  const merged = releaseSnapshot.map((record, index) => {
+    const key = recordKey(record, index);
+    seen.add(key);
+    const databaseRecord = databaseByKey.get(key);
+    return databaseRecord && hasManualOverride(databaseRecord) ? { ...record, ...databaseRecord } : record;
+  });
+
+  for (const [key, record] of databaseByKey) {
+    if (!seen.has(key) && hasManualOverride(record)) merged.push(record);
+  }
+  return merged;
+}
+
 async function readBundledDataJson(relativePath, fallback) {
   try {
     const raw = await readFile(safeDataPath(relativePath), "utf8");
@@ -218,8 +249,21 @@ async function writeDatabaseJson(relativePath, value) {
 
 export async function readDataJson(relativePath, fallback) {
   // Scheduled news is committed by GitHub Actions, then delivered with the Vercel build.
-  // Prefer that durable release snapshot over the quota-limited generic JSON database.
-  if (isGitBackedNewsPath(relativePath)) return readBundledDataJson(relativePath, fallback);
+  // Prefer that durable release snapshot, with explicit admin overrides merged in.
+  if (isGitBackedNewsPath(relativePath)) {
+    const bundled = await readBundledDataJson(relativePath, fallback);
+    try {
+      const databaseValue = await readDatabaseJson(relativePath);
+      return mergeGitBackedData(bundled, databaseValue);
+    } catch (error) {
+      const message = error?.message || String(error);
+      if (databaseFailureMessages.get(relativePath) !== message) {
+        databaseFailureMessages.set(relativePath, message);
+        console.warn(`[news-store] Database read failed for ${relativePath}: ${message}`);
+      }
+      return bundled;
+    }
+  }
   try {
     const databaseValue = await readDatabaseJson(relativePath);
     if (databaseValue !== null) return databaseValue;
