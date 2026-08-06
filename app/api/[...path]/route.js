@@ -5,7 +5,7 @@ import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { after, NextResponse } from "next/server";
-import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
+import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, withDataLock, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 
@@ -448,20 +448,26 @@ function makeWebhookBlogArticle(fields, existingArticles) {
 }
 
 async function handleArticleWebhook(request) {
-  if (request.method !== "POST") return pluginResponse(0, "仅支持POST请求", 405);
+  if (request.method !== "POST") return pluginResponse(0, "Only POST requests are supported", 405);
   const fields = await bodyFields(request);
   const expectedSign = articleWebhookSign();
   if (!isSupportedWebhookClass(fields.class_id)) return pluginResponse(0, "Only the Blog category is supported");
-  if (!expectedSign) return pluginResponse(0, "发布接口秘钥未配置");
-  if (!safeEqualText(fields.sign, expectedSign)) return pluginResponse(0, "秘钥错误");
+  if (!expectedSign) return pluginResponse(0, "Publishing secret is not configured");
+  if (!safeEqualText(fields.sign, expectedSign)) return pluginResponse(0, "Invalid secret");
   if (isVerificationOnly(fields)) return pluginResponse(1, "验证成功");
 
   try {
-    const articles = await readDataJson("data/articles/articles.json", []);
-    const article = makeWebhookBlogArticle(fields, articles);
-    const duplicate = articles.find((item) => item.webhook_content_hash && item.webhook_content_hash === article.webhook_content_hash);
-    if (duplicate) return pluginResponse(1, "发布成功");
-    await writeDataJson("data/articles/articles.json", [article, ...articles]);
+    const article = await withDataLock("article-webhook-publish", async () => {
+      const articles = await readDataJson("data/articles/articles.json", []);
+      const draft = makeWebhookBlogArticle(fields, articles);
+      const duplicate = articles.find((item) => item.webhook_content_hash && item.webhook_content_hash === draft.webhook_content_hash);
+      if (duplicate) return duplicate;
+      await writeDataJson("data/articles/articles.json", [draft, ...articles]);
+      const updatedArticles = await readDataJson("data/articles/articles.json", []);
+      const persisted = updatedArticles.find((item) => item.slug === draft.slug);
+      if (!persisted) throw new Error("Published article was not readable after database write");
+      return draft;
+    });
     try {
       scheduleSitemapAudit({ source: "article-webhook", action: "created", objectId: article.slug, url: article.canonical_url });
     } catch (auditError) {
@@ -469,10 +475,9 @@ async function handleArticleWebhook(request) {
     }
     return pluginResponse(1, "发布成功");
   } catch (error) {
-    return pluginResponse(0, error?.message || "数据录入失败，请重试");
+    return pluginResponse(0, error?.message || "Database insert failed, please retry");
   }
 }
-
 function makeSessionCookie(csrf) {
   const payload = {
     user: adminEmail,
@@ -936,7 +941,7 @@ async function publicBlogList(request) {
   const page = Math.max(1, Number(url.searchParams.get("page") || 1));
   const limit = Math.min(50, Math.max(1, Number(url.searchParams.get("limit") || 12)));
   const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
-  const articles = (await readJson("data/articles/articles.json"))
+  const articles = (await readDataJson("data/articles/articles.json", []))
     .filter(isPublishedBlogArticle)
     .filter((item) => !q || `${item.title} ${item.excerpt || ""} ${item.summary || ""}`.toLowerCase().includes(q))
     .sort((a, b) => String(b.published_at || b.date || "").localeCompare(String(a.published_at || a.date || "")));
@@ -945,14 +950,14 @@ async function publicBlogList(request) {
 }
 
 async function publicBlogDetail(slug) {
-  const articles = await readJson("data/articles/articles.json");
+  const articles = await readDataJson("data/articles/articles.json", []);
   const article = articles.find((item) => item.slug === slug && isPublishedBlogArticle(item));
   if (!article) return response({ success: false, error: "Blog article not found", requestId: token(8) }, 404);
   return response({ success: true, data: article, requestId: token(8) });
 }
 
 async function publicProductBlog(productId) {
-  const articles = (await readJson("data/articles/articles.json")).filter(isPublishedBlogArticle);
+  const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedBlogArticle);
   const rows = articles.filter((item) => (item.related_products || []).some((product) => product.product_id === productId || product.slug === productId));
   return response({ success: true, data: rows, requestId: token(8) });
 }
