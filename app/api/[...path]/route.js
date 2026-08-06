@@ -454,7 +454,7 @@ async function handleArticleWebhook(request) {
   if (!isSupportedWebhookClass(fields.class_id)) return pluginResponse(0, "Only the Blog category is supported");
   if (!expectedSign) return pluginResponse(0, "Publishing secret is not configured");
   if (!safeEqualText(fields.sign, expectedSign)) return pluginResponse(0, "Invalid secret");
-  if (isVerificationOnly(fields)) return pluginResponse(1, "验证成功");
+  if (isVerificationOnly(fields)) return pluginResponse(1, "发布成功");
 
   try {
     const article = await withDataLock("article-webhook-publish", async () => {
