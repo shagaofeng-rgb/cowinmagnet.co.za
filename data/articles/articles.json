@@ -1,32 +1,73 @@
-﻿[
-    {
-        "slug":  "how-to-select-an-overband-magnet",
-        "title":  "How to Select an Overband Magnet",
-        "summary":  "Selection factors for conveyor magnets in mining and industrial applications.",
-        "date":  "2026-06-09"
-    },
-    {
-        "slug":  "permanent-vs-electromagnetic-separator",
-        "title":  "Permanent vs Electromagnetic Separator",
-        "summary":  "How to compare permanent and electromagnetic separator options.",
-        "date":  "2026-06-09"
-    },
-    {
-        "slug":  "magnetic-separator-for-coal-handling",
-        "title":  "Magnetic Separator for Coal Handling",
-        "summary":  "Key considerations for coal conveyors and transfer points.",
-        "date":  "2026-06-09"
-    },
-    {
-        "slug":  "crusher-protection-in-mining",
-        "title":  "Crusher Protection in Mining",
-        "summary":  "How magnetic separation supports crusher protection.",
-        "date":  "2026-06-09"
-    },
-    {
-        "slug":  "magnetic-separator-maintenance",
-        "title":  "Magnetic Separator Maintenance",
-        "summary":  "Maintenance planning for suspended magnets and overband separators.",
-        "date":  "2026-06-09"
-    }
+[
+  {
+    "slug": "south-africa-july-mining-updates-conveyor-protection",
+    "title": "What South Africa's July Mining Updates Mean for Conveyor Protection Decisions",
+    "summary": "A source-based engineering interpretation of recent mining updates and the selection data needed for conveyor protection reviews.",
+    "excerpt": "Recent industry updates point to a familiar engineering priority: protect the material path with verified selection data, not generic specifications.",
+    "content": "<h2>What happened</h2>\n<p>South African mining teams received two useful signals on 23 July 2026. Anglo American's second-quarter production report said that Kumba and Minas-Rio maintained stable operational performance in premium iron ore, while the wider portfolio continued to manage cost and supply-chain pressure. On the same day, the Minerals Council South Africa's Mining Modernisation Showcase brought together mining leaders, policymakers, researchers, labour, technology providers and innovation partners to discuss the sector's future.</p>\n<p>Neither update is a purchasing announcement for a particular magnetic separator, and neither should be read as evidence of a specific mine configuration. Together, however, they underline a practical point for plant and materials-handling teams: stable production depends on making conveyor protection, maintenance access and selection data part of everyday engineering decisions rather than leaving them until a failure occurs.</p>\n<h2>Where the process is exposed</h2>\n<p>In an iron-ore, manganese, chrome, coal, aggregate or bulk-material circuit, unwanted ferrous tramp metal can enter a conveyor stream through feed contamination, worn equipment, maintenance activity or upstream handling. The exposure is rarely limited to a single transfer point. It can appear before a crusher, at a transfer chute, ahead of a screen, or in a reclaim and stockpile route. The consequence is not automatically a breakdown, but the risk is real enough that the separation point and its maintenance plan should be considered together.</p>\n<p>Modernisation also makes selection discipline more important. A separator that is physically difficult to inspect, conflicts with a chute, cannot discharge collected material safely, or is selected without confirmed conveyor data can create its own operating burden. A useful project discussion therefore starts with the material path and the constraints around it, not with a generic headline specification.</p>\n<h2>How a magnetic solution fits</h2>\n<p>For conveyor-fed material where continuous removal of ferrous tramp material is required, a permanent overband magnetic separator can be considered as one configuration. The COWIN product catalogue records this family as a permanent magnetic circuit with a self-cleaning discharge arrangement, while final configuration remains subject to actual process conditions. It should not be presented as a universal answer: suitability depends on the material, the conveyor layout, the clearance available and the selected installation arrangement.</p>\n<p>Where the main decision is protection of downstream equipment, the engineering question is usually whether the magnet is positioned where it can act on the material stream effectively and where collected metal can be removed without creating a secondary hazard. In a recovery application, the objective and downstream material flow may be different. These choices should be kept separate in the quotation and review process.</p>\n<h2>Practical selection checklist</h2>\n<ul><li>Conveyor belt width, belt speed and burden depth at the proposed separation point.</li><li>Material description, including particle size, moisture, temperature and the type of ferrous contamination to be addressed.</li><li>Installation position, conveyor direction, available suspension height and structural support information.</li><li>Whether the process needs manual cleaning or a continuous self-cleaning discharge arrangement.</li><li>Available discharge space, guard requirements, dust conditions and safe maintenance access.</li><li>Any upstream metal detector, downstream crusher, screen or other equipment that changes the process objective.</li></ul>\n<h2>Illustrative decision path</h2>\n<p><strong>Illustrative only, not a customer case:</strong> a bulk-handling team identifies recurring ferrous contamination before a downstream machine. It first maps the conveyor geometry and operating conditions, then confirms whether the priority is equipment protection or material recovery. If continuous discharge is required and the process supports an overband arrangement, the team can request a configuration review with the belt, burden, clearance and material information listed above. If those inputs are not yet available, the appropriate next step is data collection rather than an unsupported performance claim.</p>\n<h2>Key takeaways</h2>\n<ul><li>Recent South African mining updates reinforce the value of disciplined operating and maintenance decisions, but do not prove a specific product need at any site.</li><li>Conveyor protection should be assessed from the material path, installation constraints and downstream risk.</li><li>Permanent and self-cleaning arrangements must be selected against verified project conditions, not mixed into a generic product description.</li><li>Requesting data before a quotation protects both the buyer and the engineering review.</li></ul>\n<h2>Questions buyers ask</h2>\n<h3>Does every conveyor need an overband magnet?</h3><p>No. The need, location and configuration depend on the process objective, contamination risk and physical installation conditions.</p>\n<h3>Can a product be selected from belt width alone?</h3><p>No. Belt width is useful, but burden depth, suspension height, material and conveyor layout also affect the engineering review.</p>\n<h3>Is this article evidence of a COWIN installation at Kumba or another South African mine?</h3><p>No. This is an independent engineering interpretation of public industry updates. It does not claim a customer installation, local office, local stock or local service team.</p>\n<h3>What should be sent with a quote request?</h3><p>Send the conveyor and material details in the selection checklist, together with photographs or a layout drawing where available.</p>\n<h2>Sources and methodology</h2>\n<p>This is an original engineering interpretation. It does not reproduce the source reports and does not make claims about an individual mine's equipment decisions. The factual background was checked against <a href=\"https://southafrica.angloamerican.com/media/press-releases/2026/23-07-2026\" rel=\"nofollow noopener noreferrer\" target=\"_blank\">Anglo American's Q2 2026 Production Report</a>, published 23 July 2026, and the <a href=\"https://www.mineralscouncil.org.za/special-features\" rel=\"nofollow noopener noreferrer\" target=\"_blank\">Minerals Council South Africa Mining Modernisation Showcase</a>, listed 23 July 2026. Both sources were accessed on 8 August 2026.</p>\n<p>For a project-specific discussion, <a href=\"/en-za/request-a-quote/\">send operating data to COWIN MAGNET</a> so that the configuration can be reviewed against the actual process.</p>",
+    "status": "published",
+    "article_type": "news",
+    "category": "Mining & Mineral Processing",
+    "published_at": "2026-08-08T08:00:00.000Z",
+    "updated_at": "2026-08-08T08:00:00.000Z",
+    "author_name": "Cowin Magnet South Africa Editorial Team",
+    "source_url": "https://southafrica.angloamerican.com/media/press-releases/2026/23-07-2026",
+    "source_title": "Q2 2026 Production Report",
+    "source_publisher": "Anglo American South Africa",
+    "source_published_at": "2026-07-23T00:00:00.000Z",
+    "source_fetched_at": "2026-08-08T08:00:00.000Z",
+    "source_urls": [
+      "https://southafrica.angloamerican.com/media/press-releases/2026/23-07-2026",
+      "https://www.mineralscouncil.org.za/special-features"
+    ],
+    "cover_image_url": "/assets/images/source-products/permanent-overband-magnetic-separator.jpg",
+    "cover_image_alt": "COWIN permanent overband magnetic separator for conveyor-fed material",
+    "cover_image_caption": "COWIN product image. Configuration must be confirmed against actual process conditions.",
+    "key_takeaways": [
+      "Industry updates are context, not evidence of a specific mine's equipment purchase.",
+      "Conveyor protection selection starts with real material and installation data.",
+      "A permanent overband configuration should be reviewed against the actual operating conditions."
+    ],
+    "related_products": [
+      {
+        "name": "Permanent Overband Magnetic Separator",
+        "category": "Conveyor Protection",
+        "image": "/assets/images/source-products/permanent-overband-magnetic-separator.jpg",
+        "url": "/en-za/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/",
+        "relationship_reason": "Consider for conveyor-fed material where a self-cleaning overband arrangement is reviewed."
+      }
+    ],
+    "editorial_method": "source-based-manual-review",
+    "image_rights": "COWIN owned product media"
+  },
+  {
+    "slug": "how-to-select-an-overband-magnet",
+    "title": "How to Select an Overband Magnet",
+    "summary": "Selection factors for conveyor magnets in mining and industrial applications.",
+    "date": "2026-06-09"
+  },
+  {
+    "slug": "permanent-vs-electromagnetic-separator",
+    "title": "Permanent vs Electromagnetic Separator",
+    "summary": "How to compare permanent and electromagnetic separator options.",
+    "date": "2026-06-09"
+  },
+  {
+    "slug": "magnetic-separator-for-coal-handling",
+    "title": "Magnetic Separator for Coal Handling",
+    "summary": "Key considerations for coal conveyors and transfer points.",
+    "date": "2026-06-09"
+  },
+  {
+    "slug": "crusher-protection-in-mining",
+    "title": "Crusher Protection in Mining",
+    "summary": "How magnetic separation supports crusher protection.",
+    "date": "2026-06-09"
+  },
+  {
+    "slug": "magnetic-separator-maintenance",
+    "title": "Magnetic Separator Maintenance",
+    "summary": "Maintenance planning for suspended magnets and overband separators.",
+    "date": "2026-06-09"
+  }
 ]

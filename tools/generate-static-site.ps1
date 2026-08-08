@@ -252,6 +252,17 @@ $articles = @(
   "crusher-protection-in-mining|Crusher Protection in Mining|How magnetic separation supports crusher protection.",
   "magnetic-separator-maintenance|Magnetic Separator Maintenance|Maintenance planning for suspended magnets and overband separators."
 ) | ForEach-Object { $p=$_.Split("|"); [pscustomobject]@{slug=$p[0]; title=$p[1]; summary=$p[2]; date="2026-06-09"} }
+$articleFile = Join-Path $root "data\articles\articles.json"
+if (Test-Path -LiteralPath $articleFile) {
+  $storedArticles = @(Get-Content -LiteralPath $articleFile -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ })
+  if ($storedArticles.Count) { $articles = $storedArticles }
+}
+
+function ArticleDateText($article) {
+  $value = if ($article.published_at) { $article.published_at } elseif ($article.date) { $article.date } elseif ($article.created_at) { $article.created_at } else { "" }
+  if (-not $value) { return "" }
+  return ([string]$value).Substring(0, [Math]::Min(10, ([string]$value).Length))
+}
 
 $downloads = @(
   "Product Catalogue|Catalogue|Pending production PDF. Configure final file path before launch.",
@@ -776,10 +787,12 @@ foreach($sub in @("company-profile","quality-control","export-service","oem-odm-
   WritePage "$base/about/$sub/" "$((Get-Culture).TextInfo.ToTitleCase($sub.Replace('-',' '))) | Cowinmagnet" "About Cowinmagnet $sub support for magnetic separation equipment export projects." "$((Get-Culture).TextInfo.ToTitleCase($sub.Replace('-',' ')))" ((PageHero "<a href='$base/'>Home</a> / <a href='$base/about/'>About</a> / $sub" "About" "$((Get-Culture).TextInfo.ToTitleCase($sub.Replace('-',' ')))" "Information page for Cowinmagnet support workflow.") + "<section class='section'><article class='panel'><p>Cowinmagnet coordinates this support as an export and solution partner. The page avoids self-owned factory and local South African entity claims.</p></article></section>")
 }
 
-WritePage "$base/news/" "News | Cowinmagnet South Africa" "Local news, project updates and magnetic separator articles for South Africa and African markets." "News" ((PageHero "<a href='$base/'>Home</a> / News" "News" "Cowinmagnet South Africa News" "Publish local market news, project updates and magnetic separator guidance here.") + "<section class='section'><form class='filter-panel'><label>Search news<input data-site-search type='search' placeholder='coal, maintenance, overband'></label><label>Category<select><option>All</option><option>Local News</option><option>Selection</option><option>Maintenance</option><option>Mining</option></select></label></form><div class='grid'>$(($articles | ForEach-Object {"<a class='card news-card' href='$base/news/$($_.slug)/'><p class='eyebrow'>$($_.date)</p><h3>$($_.title)</h3><p>$($_.summary)</p><span class='tag'>News</span></a>"}) -join '')</div></section>")
-WritePage "$base/blog/" "News Archive | Cowinmagnet South Africa" "Legacy blog archive for Cowinmagnet South Africa news and magnetic separator articles." "News Archive" ((PageHero "<a href='$base/'>Home</a> / News Archive" "Archive" "News Archive" "This legacy blog route is kept for older links. Current updates are published in News.") + "<section class='section'><div class='grid'>$(($articles | ForEach-Object {"<a class='card news-card' href='$base/news/$($_.slug)/'><p class='eyebrow'>$($_.date)</p><h3>$($_.title)</h3><p>$($_.summary)</p><span class='tag'>Open in News</span></a>"}) -join '')</div></section>")
+WritePage "$base/news/" "News | Cowinmagnet South Africa" "Source-based industry news and magnetic separator guidance for South Africa and African markets." "News" ((PageHero "<a href='$base/'>Home</a> / News" "News" "Cowinmagnet South Africa News" "Source-based industry analysis and magnetic separator guidance for African project teams.") + "<section class='section'><form class='filter-panel'><label>Search news<input data-site-search type='search' placeholder='coal, maintenance, overband'></label><label>Category<select><option>All</option><option>Mining</option><option>Coal Handling</option><option>Cement and Aggregates</option><option>Recycling</option></select></label></form><div class='grid'>$(($articles | Where-Object { -not $_.status -or $_.status -eq 'published' } | ForEach-Object {"<a class='card news-card' href='$base/news/$($_.slug)/'><p class='eyebrow'>$(ArticleDateText $_)</p><h3>$($_.title)</h3><p>$(if($_.excerpt){$_.excerpt}else{$_.summary})</p><span class='tag'>$(if($_.category){$_.category}else{'News'})</span></a>"}) -join '')</div></section>")
+WritePage "$base/blog/" "News Archive | Cowinmagnet South Africa" "Legacy blog archive for Cowinmagnet South Africa news and magnetic separator articles." "News Archive" ((PageHero "<a href='$base/'>Home</a> / News Archive" "Archive" "News Archive" "This legacy blog route is kept for older links. Current updates are published in News.") + "<section class='section'><div class='grid'>$(($articles | Where-Object { -not $_.status -or $_.status -eq 'published' } | ForEach-Object {"<a class='card news-card' href='$base/news/$($_.slug)/'><p class='eyebrow'>$(ArticleDateText $_)</p><h3>$($_.title)</h3><p>$(if($_.excerpt){$_.excerpt}else{$_.summary})</p><span class='tag'>Open in News</span></a>"}) -join '')</div></section>")
 foreach($a in $articles) {
-  $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section layout'><article class='panel'><p><strong>Date:</strong> $($a.date)</p><h2>Overview</h2><p>$($a.summary) Equipment must be selected according to verified operating data, not generic assumptions.</p><h2>Selection factors</h2><ul class='check-list'><li>Material type and conveyor data</li><li>Installation position and available clearance</li><li>Dust, heat, humidity and voltage conditions</li><li>Maintenance access and spare parts planning</li></ul><h2>Local publishing note</h2><p>This page structure is ready for South Africa and Africa market news. Replace this draft article body with verified local news content when available.</p></article><aside class='panel'><h3>Related products</h3><a href='$base/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/'>Permanent Overband Magnetic Separator</a><a class='button primary' href='$base/request-a-quote/'>Enquire</a></aside></section>"
+  $articleDate = ArticleDateText $a
+  $articleContent = if($a.content){$a.content}else{"<h2>Overview</h2><p>$($a.summary) Equipment must be selected according to verified operating data, not generic assumptions.</p><h2>Selection factors</h2><ul class='check-list'><li>Material type and conveyor data</li><li>Installation position and available clearance</li><li>Dust, heat, humidity and voltage conditions</li><li>Maintenance access and spare parts planning</li></ul>"}
+  $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section layout'><article class='panel'><p><strong>Date:</strong> $articleDate</p>$articleContent</article><aside class='panel'><h3>Related products</h3><a href='$base/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/'>Permanent Overband Magnetic Separator</a><a class='button primary' href='$base/request-a-quote/'>Enquire</a></aside></section>"
   $body = $body.Replace("Local publishing note", "Selection guidance").Replace("This page structure is ready for South Africa and Africa market news. Replace this draft article body with verified local news content when available.", "Use verified operating data and a project-specific engineering review before selecting equipment.").Replace("$base/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/", "$base/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/")
   WritePage "$base/news/$($a.slug)/" "$($a.title) | Cowinmagnet News" "$($a.summary)" $a.title $body
   WritePage "$base/blog/$($a.slug)/" "$($a.title) | Cowinmagnet News" "$($a.summary)" $a.title ((PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section'><article class='panel'><p>This legacy article URL is kept for older links.</p><a class='button primary' href='$base/news/$($a.slug)/'>Open current News page</a></article></section>")
@@ -840,7 +853,9 @@ ConvertTo-Json -InputObject @($categories) -Depth 8 | Set-Content -LiteralPath (
 ConvertTo-Json -InputObject @($industries) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "industries\industries.json") -Encoding UTF8
 ConvertTo-Json -InputObject @($solutions) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "solutions\solutions.json") -Encoding UTF8
 ConvertTo-Json -InputObject @($markets) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "markets\markets.json") -Encoding UTF8
-ConvertTo-Json -InputObject @($articles) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "articles\articles.json") -Encoding UTF8
+if (-not (Test-Path -LiteralPath $articleFile)) {
+  ConvertTo-Json -InputObject @($articles) -Depth 8 | Set-Content -LiteralPath $articleFile -Encoding UTF8
+}
 ConvertTo-Json -InputObject @($downloads) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "downloads\downloads.json") -Encoding UTF8
 @{
   supportedLocales=@("en-za","af-za","zu-za","xh-za","st-za","tn-za");
@@ -855,6 +870,13 @@ $searchIndex += $markets | ForEach-Object { [pscustomobject]@{title=$_.name; typ
 $searchIndex += $articles | ForEach-Object { [pscustomobject]@{title=$_.title; type="News"; url="/en-za/news/$($_.slug)/"; summary=$_.summary} }
 $searchIndex += $downloads | ForEach-Object { [pscustomobject]@{title=$_.name; type="Download"; url="/en-za/downloads/"; summary=$_.status} }
 ConvertTo-Json -InputObject @($searchIndex) -Depth 5 | Set-Content -LiteralPath (Join-Path $dataRoot "search-index.json") -Encoding UTF8
+
+# Windows PowerShell's UTF8 Set-Content adds a BOM. Static HTML is served as UTF-8
+# without one so repeated builds do not create unrelated file churn.
+Get-ChildItem -LiteralPath $root -Recurse -Filter "index.html" | ForEach-Object {
+  $text = [System.IO.File]::ReadAllText($_.FullName)
+  [System.IO.File]::WriteAllText($_.FullName, $text.TrimStart([char]0xFEFF), (New-Object System.Text.UTF8Encoding($false)))
+}
 
 # Sitemaps and robots
 $allPages = Get-ChildItem -Path (Join-Path $root "en-za") -Recurse -Filter index.html | ForEach-Object {
