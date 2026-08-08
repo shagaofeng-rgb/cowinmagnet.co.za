@@ -190,5 +190,41 @@
         "destination":  "/en-za/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/",
         "permanent":  true,
         "reason":  "Product classification route normalization"
+    },
+    {
+        "source":  "/en-za/products/permanent-overband-magnetic-separator/",
+        "destination":  "/en-za/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/",
+        "permanent":  true,
+        "reason":  "Stable product shortcut to canonical verified product page"
+    },
+    {
+        "source":  "/en-za/products/suspended-permanent-magnetic-separator/",
+        "destination":  "/en-za/products/suspended-and-self-unloading-iron-removers/suspended-permanent-magnetic-separator/",
+        "permanent":  true,
+        "reason":  "Stable product shortcut to canonical verified product page"
+    },
+    {
+        "source":  "/en-za/products/suspended-electromagnetic-separator/",
+        "destination":  "/en-za/products/suspended-and-self-unloading-iron-removers/suspended-electromagnetic-conveyor-belt-separator/",
+        "permanent":  true,
+        "reason":  "Stable product shortcut to canonical verified product page"
+    },
+    {
+        "source":  "/en-za/products/wet-drum-magnetic-separator/",
+        "destination":  "/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/",
+        "permanent":  true,
+        "reason":  "Stable product shortcut to canonical verified product page"
+    },
+    {
+        "source":  "/en-za/products/eddy-current-separator/",
+        "destination":  "/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/",
+        "permanent":  true,
+        "reason":  "Stable product shortcut to canonical verified product page"
+    },
+    {
+        "source":  "/en-za/products/magnetic-head-pulley/",
+        "destination":  "/en-za/products/magnetic-separation-equipment/magnetic-head-pulley/",
+        "permanent":  true,
+        "reason":  "Stable product shortcut to canonical verified product page"
     }
 ]
