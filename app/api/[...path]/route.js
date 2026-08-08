@@ -5,7 +5,7 @@ import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { after, NextResponse } from "next/server";
-import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
+import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPublishedNewsArticle, sanitizePublishedArticleHtml } from "../../lib/news-system.js";
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 import { newsAutomationStatus, queueNewsSource, reviewNewsDraft, runNewsAutomation } from "../../lib/news-automation.js";
@@ -342,17 +342,6 @@ function safeEqualText(a, b) {
   return left.length === right.length && crypto.timingSafeEqual(left, right);
 }
 
-function sanitizeArticleHtml(value) {
-  return String(value || "")
-    .replace(/<script\b[\s\S]*?<\/script>/gi, "")
-    .replace(/<style\b[\s\S]*?<\/style>/gi, "")
-    .replace(/<iframe\b[\s\S]*?<\/iframe>/gi, "")
-    .replace(/<object\b[\s\S]*?<\/object>/gi, "")
-    .replace(/<embed\b[\s\S]*?>/gi, "")
-    .replace(/\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(/\s(?:href|src)\s*=\s*(["'])\s*javascript:[\s\S]*?\1/gi, "");
-}
-
 function validCoverImage(value) {
   const url = String(value || "").trim();
   return /^\/assets\/images\/[a-z0-9_./-]+$/i.test(url) ? url : "";
@@ -389,7 +378,7 @@ function makeWebhookBlogArticle(fields, existingArticles) {
   let slug = baseSlug;
   let suffix = 2;
   while (existingArticles.some((item) => item.slug === slug)) slug = `${baseSlug}-${suffix++}`;
-  const content = sanitizeArticleHtml(fields.content);
+  const content = sanitizePublishedArticleHtml(fields.content);
   const imageUrl = validCoverImage(fields.image_url) || "/assets/images/hero-mining-conveyor-magnet.webp";
   const excerpt = String(content)
     .replace(/<[^>]+>/g, " ")
@@ -446,7 +435,6 @@ async function handleArticleWebhook(request) {
   if (!expectedSign) return pluginResponse(0, "Publishing secret is not configured");
   if (!safeEqualText(fields.sign, expectedSign)) return pluginResponse(0, "Invalid secret");
   if (isVerificationOnly(fields)) return pluginResponse(1, "\u9a8c\u8bc1\u6210\u529f");
-  if (isVerificationOnly(fields)) return pluginResponse(1, "发布成功");
 
   try {
     const article = await withDataLock("article-webhook-publish", async () => {
@@ -466,7 +454,6 @@ async function handleArticleWebhook(request) {
       console.warn(`[article-webhook] Sitemap audit scheduling failed: ${auditError?.message || auditError}`);
     }
     return pluginResponse(1, "\u53d1\u5e03\u6210\u529f");
-    return pluginResponse(1, "发布成功");
   } catch (error) {
     return pluginResponse(0, error?.message || "Database insert failed, please retry");
   }
@@ -1344,16 +1331,37 @@ async function handleAdmin(request, path) {
     if (!slug || !body.title) return response({ success: false, error: "Slug and title are required", requestId: token(8) }, 400);
     const articles = await readJson("data/articles/articles.json");
     const article = articles.find((item) => item.slug === slug);
+    const hasField = (field) => Object.prototype.hasOwnProperty.call(body, field);
+    const content = sanitizePublishedArticleHtml(hasField("content") ? body.content : article?.content || "");
+    const sourceUrl = String(body.sourceUrl ?? body.source_url ?? article?.source_url ?? article?.sourceUrl ?? "").trim();
+    const coverImage = validCoverImage(body.cover_image_url ?? body.coverImage ?? article?.cover_image_url ?? "");
+    const status = String(body.status || article?.status || "published");
+    if (!article && status === "published" && (!sourceUrl || !coverImage || plainText(content).length < 80)) {
+      return response({ success: false, error: "Published News requires a source URL, owned cover image and complete article body", requestId: token(8) }, 400);
+    }
     const payload = {
       article_type: "news",
       slug,
       title: String(body.title || ""),
-      summary: String(body.summary || ""),
-      date: String(body.date || new Date().toISOString().slice(0, 10)),
-      status: String(body.status || "published"),
-      sourceUrl: String(body.sourceUrl || ""),
-      seoTitle: String(body.seoTitle || body.title || ""),
-      seoDescription: String(body.seoDescription || body.summary || ""),
+      summary: String(body.summary ?? article?.summary ?? ""),
+      content,
+      date: String(body.date || article?.date || new Date().toISOString().slice(0, 10)),
+      published_at: String(body.published_at || article?.published_at || new Date().toISOString()),
+      status,
+      category: String(body.category ?? article?.category ?? "Industry insight"),
+      sourceUrl,
+      source_url: sourceUrl,
+      canonical_source_url: sourceUrl,
+      source_name: String(body.source_name ?? article?.source_name ?? ""),
+      source_published_at: String(body.source_published_at ?? article?.source_published_at ?? ""),
+      cover_image_url: coverImage,
+      cover_image_source_url: String(body.cover_image_source_url ?? article?.cover_image_source_url ?? ""),
+      cover_image_page_url: String(body.cover_image_page_url ?? article?.cover_image_page_url ?? ""),
+      cover_image_alt: String(body.cover_image_alt ?? article?.cover_image_alt ?? body.title ?? ""),
+      cover_image_caption: String(body.cover_image_caption ?? article?.cover_image_caption ?? ""),
+      cover_image_status: String(body.cover_image_status ?? article?.cover_image_status ?? "owned-media"),
+      seoTitle: String(body.seoTitle ?? article?.seoTitle ?? body.title ?? ""),
+      seoDescription: String(body.seoDescription ?? article?.seoDescription ?? body.summary ?? ""),
       manualOverrideAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };

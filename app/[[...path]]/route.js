@@ -144,17 +144,6 @@ export async function POST(request, context) {
       }
     });
   }
-  if (parts.length) {
-    return new Response(JSON.stringify({ code: 0, msg: "接口不存在" }), {
-      status: 404,
-      headers: {
-        "content-type": "application/json; charset=utf-8",
-        "cache-control": "no-store",
-        "x-robots-tag": "noindex, nofollow"
-      }
-    });
-  }
-
   const target = new URL("/api/webhook/send_article", request.url);
   const body = await request.text();
   return fetch(target, {
