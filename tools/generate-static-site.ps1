@@ -158,15 +158,15 @@ $products = @($products | ForEach-Object {
   )
   $translations = [pscustomobject]@{
     "en-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription=$p.shortDescription; fullDescription=$p.fullDescription; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "af-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Machine-translated content for reference. English technical values remain authoritative."; fullDescription="Machine-translated content for reference. Verified Afrikaans product copy is pending."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "zu-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Machine-translated content for reference. English technical values remain authoritative."; fullDescription="Machine-translated content for reference. Verified isiZulu product copy is pending."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "xh-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Machine-translated content for reference. English technical values remain authoritative."; fullDescription="Machine-translated content for reference. Verified isiXhosa product copy is pending."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "st-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Machine-translated content for reference. English technical values remain authoritative."; fullDescription="Machine-translated content for reference. Verified Sesotho product copy is pending."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "tn-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Machine-translated content for reference. English technical values remain authoritative."; fullDescription="Machine-translated content for reference. Verified Setswana product copy is pending."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "fr-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Future French content field prepared."; fullDescription="Future French content field prepared."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "pt-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Future Portuguese content field prepared."; fullDescription="Future Portuguese content field prepared."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "sw-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Future Swahili content field prepared."; fullDescription="Future Swahili content field prepared."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "ar-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="Future Arabic content field prepared."; fullDescription="Future Arabic content field prepared."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "af-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "zu-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "xh-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "st-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "tn-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "fr-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "pt-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "sw-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
+    "ar-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
   }
   foreach($member in @(
     @("productId",$productId),@("sku",$sku),@("englishProductName",$p.name),@("translations",$translations),@("mainImage",$p.image),@("gallery",$gallery),
@@ -265,11 +265,11 @@ function ArticleDateText($article) {
 }
 
 $downloads = @(
-  "Product Catalogue|Catalogue|Pending production PDF. Configure final file path before launch.",
-  "Technical Data Sheets|Datasheet|Pending product-specific PDFs.",
+  "Product Catalogue|Catalogue|Available on request after the required product range is confirmed.",
+  "Technical Data Sheets|Datasheet|Available on request after product model and application review.",
   "Installation Drawings|Drawing|Available after product selection and layout confirmation.",
-  "Selection Questionnaire|Form|Use the Request a Quote form until PDF is attached.",
-  "Maintenance Manuals|Manual|Pending verified product documents.",
+  "Selection Questionnaire|Form|Use the Request a Quote form to provide project information.",
+  "Maintenance Manuals|Manual|Available after the product model and operating conditions are confirmed.",
   "Spare Parts Lists|Parts|Prepared after confirmed product model."
 ) | ForEach-Object { $p=$_.Split("|"); [pscustomobject]@{name=$p[0]; type=$p[1]; status=$p[2]} }
 
@@ -308,7 +308,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
         legalName="Quzhou Qiying Import & Export Co., Ltd.";
         url="https://www.cowinmagnet.com";
         areaServed=@("South Africa","Botswana","Namibia","Zimbabwe","Zambia","Mozambique","Angola","Ghana","Nigeria","Kenya","Tanzania","Democratic Republic of the Congo");
-        description="Magnetic separation equipment solution provider, export partner and service partner for South Africa and Africa.";
+        description="COWIN MAGNET supports product selection and export coordination for projects in South Africa and across Africa.";
       },
       @{
         "@type"="WebPage";
@@ -329,7 +329,7 @@ function HeaderHtml($path, $title, $description, $h1, $body, $schema = "") {
   $industriesButtonClass = if($active -eq "Industries"){" class='active'"}else{""}
   $resourcesButtonClass = if($active -eq "Resources"){" class='active'"}else{""}
   $companyButtonClass = if($active -eq "Company"){" class='active'"}else{""}
-  $langs = @("en-za","af-za","zu-za","xh-za","st-za","tn-za") | ForEach-Object { $selected = if($_ -eq $locale){" selected"}else{""}; "<option value='$_'$selected>$($_.ToUpperInvariant())</option>" }
+  $langs = @($locale) | ForEach-Object { "<option value='$_' selected>$($_.ToUpperInvariant())</option>" }
   $homePreload = if($path -eq "$base/"){"  <link rel=`"preload`" as=`"image`" href=`"$heroLcpImage`" type=`"image/webp`" fetchpriority=`"high`">"}else{""}
 @"
 <!doctype html>
@@ -376,8 +376,8 @@ $homePreload
       <div class="mega-grid">
         <div class="mega-feature"><img src="/assets/images/product-permanent-overband-magnet.webp" alt="Overband magnetic separator"><h3>Product selection support</h3><p>Compare permanent, electromagnetic and component options for African conveyor applications.</p><a class="button primary" href="$base/products/">View Products</a></div>
         <nav class="mega-col"><h3>Iron Removers</h3><a href="$base/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/">RCYD Permanent Self-Dumping Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/">RCDD Electromagnetic Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/suspended-permanent-magnetic-separator/">Suspended Permanent Magnetic Separator</a><a href="$base/products/suspended-and-self-unloading-iron-removers/">All Iron Removers</a></nav>
-        <nav class="mega-col"><h3>Separation and Sorting</h3><a href="$base/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/">Belt High Gradient Magnetic Separator</a><a href="$base/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/">Eccentric Eddy Current Separator</a><a href="$base/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/">GLS Channel Metal Separator</a><a href="$base/products/magnetic-separation-equipment/">All Separation Equipment</a></nav>
-        <nav class="mega-col"><h3>Components and Industry</h3><a href="$base/products/magnetic-separation-equipment/magnetic-head-pulley/">Magnetic Head Pulley</a><a href="$base/products/magnetic-separation-equipment/drum-magnet/">Drum Magnet</a><a href="$base/products/magnetic-components-and-filters/magnetic-grid/">Magnetic Grid</a><a href="$base/products/">All Products</a></nav>
+        <nav class="mega-col"><h3>Separation and Sorting</h3><a href="$base/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/">Belt High-Gradient Magnetic Separator</a><a href="$base/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/">Eccentric Eddy Current Separator</a><a href="$base/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/">GLS Channel Metal Separator</a><a href="$base/products/magnetic-separation-equipment/">All Separation Equipment</a></nav>
+        <nav class="mega-col"><h3>Components and Filters</h3><a href="$base/products/magnetic-separation-equipment/magnetic-head-pulley/">Magnetic Head Pulley</a><a href="$base/products/magnetic-separation-equipment/drum-magnet/">Drum Magnet</a><a href="$base/products/magnetic-components-and-filters/magnetic-grid/">Magnetic Grid</a><a href="$base/products/">All Products</a></nav>
       </div>
     </section>
     <section id="mega-industries" class="mega-panel" data-mega-panel hidden>
@@ -813,10 +813,10 @@ foreach($guide in $supportCards) {
   $guideBody = (PageHero "<a href='$base/'>Home</a> / <a href='$base/technical-support/'>Technical Support</a> / $($guide.name)" "Guide" $guide.name $guide.description) + "<section class='section layout'><article class='panel'><h2>Engineering review scope</h2><p>This guide helps prepare product selection information for African mining, conveyor and industrial sites. It does not replace project-specific confirmation.</p><h2>Data to confirm</h2><ul class='check-list'><li>Material type and maximum lump size</li><li>Conveyor belt width, speed and burden depth</li><li>Suspension height and installation position</li><li>Dust, humidity, temperature, altitude and corrosion conditions</li><li>Voltage, frequency and number of phases</li></ul><h2>Next step</h2><p>Send the confirmed data through the request form so the equipment family and configuration can be reviewed.</p></article><aside class='panel'><h3>Related action</h3><a class='button primary' href='$base/request-a-quote/'>Request a Quote</a><a class='button secondary' href='$base/products/'>View Products</a></aside></section>"
   WritePage "$base/technical-support/$($guide.slug)/" "$($guide.name) | Cowinmagnet Technical Support" "$($guide.description) for magnetic separator project review in South Africa and Africa." $guide.name $guideBody
 }
-WritePage "$base/downloads/" "Downloads | Cowinmagnet South Africa" "Configurable download centre for catalogues, datasheets, drawings, questionnaires, manuals and spare parts lists." "Downloads" ((PageHero "<a href='$base/'>Home</a> / Downloads" "Downloads" "Download Centre" "Unavailable documents are clearly marked instead of using broken links.") + "<section class='section'><div class='grid'>$(($downloads | ForEach-Object {"<article class='card'><p class='eyebrow'>$($_.type)</p><h3>$($_.name)</h3><p>$($_.status)</p><span class='tag'>Unavailable until configured</span></article>"}) -join '')</div></section>")
+WritePage "$base/downloads/" "Downloads | Cowinmagnet South Africa" "Request catalogues, datasheets, drawings, questionnaires, manuals and spare parts lists for the selected product and application." "Downloads" ((PageHero "<a href='$base/'>Home</a> / Downloads" "Downloads" "Download Centre" "Request documents for the product series and operating conditions under review.") + "<section class='section'><div class='grid'>$(($downloads | ForEach-Object {"<article class='card'><p class='eyebrow'>$($_.type)</p><h3>$($_.name)</h3><p>$($_.status)</p><a class='text-link' href='$base/request-a-quote/'>Request documents</a></article>"}) -join '')</div></section>")
 
-$aboutBody = (PageHero "<a href='$base/'>Home</a> / About Us" "About" "About Cowinmagnet" "Magnetic separation equipment solution provider, export partner and service partner for South Africa and Africa.") + "<section class='section layout'><article class='panel'><h2>Company positioning</h2><p>Quzhou Qiying Import & Export Co., Ltd. supports international customers with product selection, supplier resource integration, OEM/ODM coordination, production follow-up, pre-shipment inspection, export documentation, logistics coordination, remote installation guidance, spare parts support and after-sales communication.</p><h2>Not a factory-direct claim</h2><p>This website does not claim own factory, South African branch, local warehouse, local stock or local installation team.</p></article><aside class='panel'><h3>Company information</h3><p>Quzhou Qiying Import & Export Co., Ltd.</p><p>Room 110, 1st Floor, Building 1, Qushidai Future Building, Kecheng District, Quzhou, Zhejiang Province, China</p></aside></section>"
-WritePage "$base/about/" "About Cowinmagnet | South Africa and Africa Magnetic Separator Partner" "Learn about Cowinmagnet as a magnetic separation equipment solution, export and service partner for African projects." "About Cowinmagnet" $aboutBody
+$aboutBody = (PageHero "<a href='$base/'>Home</a> / About Us" "About" "About Cowinmagnet" "Product selection and export coordination for industrial projects in South Africa and across Africa.") + "<section class='section layout'><article class='panel'><h2>What we support</h2><p>Quzhou Qiying Import & Export Co., Ltd. supports international buyers with product selection, supplier coordination, OEM/ODM coordination, production follow-up, pre-shipment inspection, export documentation, logistics coordination, remote installation guidance, spare-parts support and after-sales communication.</p><h2>Regional representation</h2><p>This website does not claim that COWIN MAGNET owns a factory, South African branch, local warehouse, local stock or local installation team.</p></article><aside class='panel'><h3>Company information</h3><p>Quzhou Qiying Import & Export Co., Ltd.</p><p>Room 110, 1st Floor, Building 1, Qushidai Future Building, Kecheng District, Quzhou, Zhejiang Province, China</p></aside></section>"
+WritePage "$base/about/" "About Cowinmagnet | Product Selection and Export Coordination" "Learn how Cowinmagnet supports product selection and export coordination for African industrial projects." "About Cowinmagnet" $aboutBody
 foreach($sub in @("company-profile","quality-control","export-service","oem-odm-coordination","why-choose-us")) {
   WritePage "$base/about/$sub/" "$((Get-Culture).TextInfo.ToTitleCase($sub.Replace('-',' '))) | Cowinmagnet" "About Cowinmagnet $sub support for magnetic separation equipment export projects." "$((Get-Culture).TextInfo.ToTitleCase($sub.Replace('-',' ')))" ((PageHero "<a href='$base/'>Home</a> / <a href='$base/about/'>About</a> / $sub" "About" "$((Get-Culture).TextInfo.ToTitleCase($sub.Replace('-',' ')))" "Information page for Cowinmagnet support workflow.") + "<section class='section'><article class='panel'><p>Cowinmagnet coordinates this support as an export and solution partner. The page avoids self-owned factory and local South African entity claims.</p></article></section>")
 }
@@ -840,14 +840,34 @@ WritePage "$base/request-a-quote/" "Request a Quote | Cowinmagnet South Africa" 
 WritePage "$base/contact/" "Contact Cowinmagnet South Africa | Magnetic Separator Support" "Contact Cowinmagnet for magnetic separation equipment selection, export coordination and African project support." "Contact Cowinmagnet" ((PageHero "<a href='$base/'>Home</a> / Contact" "Contact" "Contact Cowinmagnet" "Send product selection and project questions.") + "<section class='section layout'><article class='panel'><h2>Contact form</h2><form class='quote-form' data-quote-form><label>Name<input name='name' required></label><label>Company<input name='company' required></label><label>Email<input name='email' type='email' required></label><label>WhatsApp<input name='whatsapp' required></label><label class='full'>Message<textarea name='productRequired' required></textarea></label><button class='button primary full'>Send Inquiry</button><output class='form-status full' data-form-status></output></form></article><aside class='panel'><h3>Contact details</h3><p>Quzhou Qiying Import & Export Co., Ltd.</p><p>davidsha@cowinmagnet.com</p><p>WhatsApp: +86 156 6513 5205</p><p>Global website: www.cowinmagnet.com</p><p>Business hours: China business hours, export communication support for African inquiries.</p></aside></section>")
 WritePage "$base/search/" "Search | Cowinmagnet South Africa" "Search products, industries, solutions, markets, news and downloads." "Search Website" ((PageHero "<a href='$base/'>Home</a> / Search" "Search" "Search Website" "Search products, industries, solutions, markets, news and downloads.") + "<section class='section'><form class='filter-panel'><label>Search<input data-site-search type='search' placeholder='Type a keyword and press Enter'></label></form><div class='grid' data-search-results></div><div class='panel' data-search-empty><strong>Search no results state</strong><p>If no result matches, try product family, material, industry or country keywords.</p></div></section>")
 
+function LegalPageContent($legal) {
+  switch ($legal) {
+    "privacy-policy" {
+      return "<section class='section'><article class='panel article-prose'><h2>Information we collect</h2><p>When you submit an enquiry, we may collect your name, company, contact details, project requirements and supporting files. We use this information to respond to your request, prepare selection guidance and coordinate a quotation.</p><h2>How we use and protect information</h2><p>Information is used only for legitimate business communication, product selection and after-sales follow-up where requested. Access is limited to personnel and service providers involved in these activities. Do not send confidential project information unless you are authorised to share it.</p><h2>Contact</h2><p>To ask about information connected with an enquiry, contact <a href='mailto:davidsha@cowinmagnet.com'>davidsha@cowinmagnet.com</a>.</p></article></section>"
+    }
+    "cookie-policy" {
+      return "<section class='section'><article class='panel article-prose'><h2>Cookies and similar technologies</h2><p>This website may use essential cookies to provide core functions and may use analytics technologies to understand aggregate site use. These technologies do not change the technical information presented on product pages.</p><h2>Your choices</h2><p>You can control or delete cookies through your browser settings. Blocking essential cookies may affect some features, including form submission and language preferences.</p><h2>Contact</h2><p>For questions about this policy, contact <a href='mailto:davidsha@cowinmagnet.com'>davidsha@cowinmagnet.com</a>.</p></article></section>"
+    }
+    default {
+      return "<section class='section'><article class='panel article-prose'><h2>Use of this website</h2><p>Website content is provided for general product and process information. Product suitability, configuration, availability, drawings, specifications and commercial terms are confirmed only through a written quotation and engineering review.</p><h2>Technical information</h2><p>Selection depends on the actual material, process, installation conditions and applicable requirements. Do not rely on a webpage alone for design, safety or procurement decisions.</p><h2>Contact</h2><p>For a project-specific discussion, contact <a href='mailto:davidsha@cowinmagnet.com'>davidsha@cowinmagnet.com</a> or submit a <a href='$base/request-a-quote/'>quote request</a>.</p></article></section>"
+    }
+  }
+}
+
 foreach($legal in @("privacy-policy","cookie-policy","terms-and-conditions")) {
-  WritePage "$base/$legal/" "$((Get-Culture).TextInfo.ToTitleCase($legal.Replace('-',' '))) | Cowinmagnet" "$legal for Cowinmagnet South Africa and Africa local prototype." "$((Get-Culture).TextInfo.ToTitleCase($legal.Replace('-',' ')))" ((PageHero "<a href='$base/'>Home</a> / $legal" "Policy" "$((Get-Culture).TextInfo.ToTitleCase($legal.Replace('-',' ')))" "Policy page for the regional site prototype.") + "<section class='section'><article class='panel'><p>This page is prepared for deployment configuration and should be reviewed before production launch.</p></article></section>")
+  $legalTitle = (Get-Culture).TextInfo.ToTitleCase($legal.Replace('-',' '))
+  $legalDescription = switch ($legal) {
+    "privacy-policy" { "How COWIN MAGNET handles enquiry information for product selection and quotation support." }
+    "cookie-policy" { "Information about cookies and analytics technologies used on the COWIN MAGNET website." }
+    default { "Terms for using COWIN MAGNET website information and requesting project-specific product guidance." }
+  }
+  WritePage "$base/$legal/" "$legalTitle | Cowinmagnet" $legalDescription $legalTitle ((PageHero "<a href='$base/'>Home</a> / $legal" "Policy" $legalTitle $legalDescription) + (LegalPageContent $legal))
 }
 
 $notFound = (PageHero "<a href='$base/'>Home</a> / 404" "404" "Page Not Found" "The requested page could not be found.") + "<section class='section'><div class='grid'><a class='card' href='$base/'>Return Home</a><a class='card' href='$base/products/'>View Products</a><a class='card' href='$base/search/'>Search Website</a><a class='card' href='$base/contact/'>Contact Us</a></div></section>"
 WritePage "$base/404/" "Page Not Found | Cowinmagnet South Africa" "Page not found. Return home, view products, search website or contact Cowinmagnet." "Page Not Found" $notFound
 
-# First-phase language routes mirror the same page tree and show English fallback content until translations are verified.
+# Legacy regional language routes remain available with English technical content until verified translations are supplied.
 foreach($lang in @("af-za","zu-za","xh-za","st-za","tn-za")) {
   $sourceRoot = Join-Path $root "en-za"
   $targetRoot = Join-Path $root $lang
@@ -862,7 +882,7 @@ foreach($lang in @("af-za","zu-za","xh-za","st-za","tn-za")) {
     $content = $content.Replace('lang="en-ZA" data-locale="en-za"', "lang=""$lang"" data-locale=""$lang""")
     $content = $content.Replace("<option value='en-za' selected>", "<option value='en-za'>")
     $content = $content.Replace("<option value='$lang'>", "<option value='$lang' selected>")
-    $notice = "<section class='section band'><div class='panel'><strong>Translation notice</strong><p>This $lang route is prepared. Verified translation is pending, so English fallback content is shown on the corresponding page.</p></div></section>"
+    $notice = "<section class='section band'><div class='panel'><strong>English technical content</strong><p>This route currently provides the English version of COWIN MAGNET product information. Technical content is maintained in English to avoid untranslated engineering claims.</p></div></section>"
     $content = $content.Replace('</main>', "$notice`n  </main>")
     Set-Content -LiteralPath $target -Encoding UTF8 -NoNewline -Value (($content -replace '(?m)[ \t]+$', '').TrimEnd() + "`n")
   }
@@ -893,8 +913,8 @@ if (-not (Test-Path -LiteralPath $articleFile)) {
 }
 ConvertTo-Json -InputObject @($downloads) -Depth 8 | Set-Content -LiteralPath (Join-Path $dataRoot "downloads\downloads.json") -Encoding UTF8
 @{
-  supportedLocales=@("en-za","af-za","zu-za","xh-za","st-za","tn-za");
-  fallback="English fallback content is shown until verified translations are completed.";
+  supportedLocales=@("en-za");
+  fallback="English technical content is provided where a verified translation is not available.";
 } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $dataRoot "translations\locales.json") -Encoding UTF8
 
 $searchIndex = @()
@@ -908,9 +928,13 @@ ConvertTo-Json -InputObject @($searchIndex) -Depth 5 | Set-Content -LiteralPath 
 
 # Windows PowerShell's UTF8 Set-Content adds a BOM. Static HTML is served as UTF-8
 # without one so repeated builds do not create unrelated file churn.
-Get-ChildItem -LiteralPath $root -Recurse -Filter "index.html" | ForEach-Object {
-  $text = [System.IO.File]::ReadAllText($_.FullName)
-  [System.IO.File]::WriteAllText($_.FullName, $text.TrimStart([char]0xFEFF), (New-Object System.Text.UTF8Encoding($false)))
+@("en-za","af-za","zu-za","xh-za","st-za","tn-za") | ForEach-Object {
+  $localeRoot = Join-Path $root $_
+  if (-not (Test-Path -LiteralPath $localeRoot)) { return }
+  Get-ChildItem -LiteralPath $localeRoot -Recurse -Filter "index.html" | ForEach-Object {
+    $text = [System.IO.File]::ReadAllText($_.FullName)
+    [System.IO.File]::WriteAllText($_.FullName, $text.TrimStart([char]0xFEFF), (New-Object System.Text.UTF8Encoding($false)))
+  }
 }
 
 # Sitemaps and robots

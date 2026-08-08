@@ -2,12 +2,12 @@
     {
         "name":  "Product Catalogue",
         "type":  "Catalogue",
-        "status":  "Pending production PDF. Configure final file path before launch."
+        "status":  "Available on request after the required product range is confirmed."
     },
     {
         "name":  "Technical Data Sheets",
         "type":  "Datasheet",
-        "status":  "Pending product-specific PDFs."
+        "status":  "Available on request after product model and application review."
     },
     {
         "name":  "Installation Drawings",
@@ -17,12 +17,12 @@
     {
         "name":  "Selection Questionnaire",
         "type":  "Form",
-        "status":  "Use the Request a Quote form until PDF is attached."
+        "status":  "Use the Request a Quote form to provide project information."
     },
     {
         "name":  "Maintenance Manuals",
         "type":  "Manual",
-        "status":  "Pending verified product documents."
+        "status":  "Available after the product model and operating conditions are confirmed."
     },
     {
         "name":  "Spare Parts Lists",
