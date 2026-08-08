@@ -31,7 +31,7 @@ npm run sitemap:generate -- --force --submit --verbose
 
 ## Scheduled execution
 
-Vercel runs `/api/cron/google-seo` daily at `02:00 UTC`. That existing job first checks and records Sitemap consistency, then optionally submits the sitemap and synchronizes Search Console analytics. News remains on its existing three-hour job. Do not add a second scheduler.
+Vercel runs `/api/cron/google-seo` every three days at `02:00 UTC`, followed by `/api/cron/gsc-inspection` at `02:30 UTC`. These jobs check and record sitemap consistency, then optionally submit the sitemap and synchronize Search Console analytics. No News or Blog auto-publishing scheduler is active.
 
 Required production secret:
 

@@ -1,0 +1,36 @@
+{
+  "id": "CW-AF-gtc-wet-plate-magnetic-separator",
+  "productSlug": "gtc-wet-plate-magnetic-separator",
+  "productName": "GTC wet plate magnetic separator",
+  "productFamily": "unclassified-product-family",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "gtc-wet-plate-magnetic-separator",
+    "sourceUrl": "https://cowinmagnet.com/en/products/gtc-wet-plate-magnetic-separator",
+    "productImage": "/assets/images/source-products/gtc-wet-plate-magnetic-separator.jpg",
+    "category": "Magnetic Separation Equipment"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "correct product family and working principle",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Industrial material handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.946Z"
+}

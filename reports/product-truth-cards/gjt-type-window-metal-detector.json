@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-gjt-type-window-metal-detector",
+  "productSlug": "gjt-type-window-metal-detector",
+  "productName": "GJT type window metal detector",
+  "productFamily": "conveyor-metal-detector",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "gjt-type-window-metal-detector",
+    "sourceUrl": "https://cowinmagnet.com/en/products/gjt-type-window-metal-detector",
+    "productImage": "/assets/images/source-products/gjt-type-window-metal-detector.jpg",
+    "category": "Metal Detection & Recovery Sorting"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "detection aperture",
+    "sensitivity application range",
+    "alarm/reject interface",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Crusher protection",
+    "Quarrying and aggregates",
+    "Coal handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.956Z"
+}

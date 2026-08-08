@@ -11,7 +11,7 @@ const root = /*turbopackIgnore: true*/ process.cwd();
 function safePath(parts) {
   const relative = normalize(join(...parts.filter(Boolean)));
   if (relative.startsWith("..") || relative.includes(`..${sep}`)) return null;
-  return join(root, relative);
+  return join(/*turbopackIgnore: true*/ root, relative);
 }
 
 const types = new Map([
@@ -40,7 +40,7 @@ async function readRouteFile(parts) {
   const filePath = safePath(htmlParts);
   if (!filePath) return null;
   try {
-    return { body: await readFile(filePath), filePath };
+    return { body: await readFile(/*turbopackIgnore: true*/ filePath), filePath };
   } catch {
     return null;
   }
@@ -134,6 +134,16 @@ export async function GET(_request, context) {
 export async function POST(request, context) {
   const params = await context.params;
   const parts = params.path || [];
+  if (parts.length) {
+    return new Response(JSON.stringify({ code: 0, msg: "\u63a5\u53e3\u4e0d\u5b58\u5728" }), {
+      status: 404,
+      headers: {
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store",
+        "x-robots-tag": "noindex, nofollow"
+      }
+    });
+  }
   if (parts.length) {
     return new Response(JSON.stringify({ code: 0, msg: "接口不存在" }), {
       status: 404,

@@ -1,3 +1,15 @@
+import legacyProductRedirects from "./data/seo/legacy-product-redirects.json" with { type: "json" };
+
+const productRouteLocales = ["af-za", "xh-za", "zu-za"];
+const nextRedirects = legacyProductRedirects.map(({ source, destination, permanent }) => ({ source, destination, permanent }));
+const localeProductRedirects = productRouteLocales.flatMap((locale) =>
+  nextRedirects.map((redirect) => ({
+    ...redirect,
+    source: redirect.source.replace("/en-za/", `/${locale}/`),
+    destination: redirect.destination.replace("/en-za/", `/${locale}/`)
+  }))
+);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   trailingSlash: true,
@@ -5,6 +17,8 @@ const nextConfig = {
   poweredByHeader: false,
   async redirects() {
     return [
+      ...nextRedirects,
+      ...localeProductRedirects,
       {
         source: "/",
         has: [{ type: "host", value: "www.cowinmagnet.co.za" }],

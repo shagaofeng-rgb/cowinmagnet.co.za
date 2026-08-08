@@ -1,0 +1,39 @@
+{
+  "id": "CW-AF-hecs-type-eddy-current-metal-sorting-machine",
+  "productSlug": "hecs-type-eddy-current-metal-sorting-machine",
+  "productName": "HECS type eddy current metal sorting machine",
+  "productFamily": "eddy-current-separator",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "hecs-type-eddy-current-metal-sorting-machine",
+    "sourceUrl": "https://cowinmagnet.com/en/products/hecs-type-eddy-current-metal-sorting-machine",
+    "productImage": "/assets/images/source-products/hecs-type-eddy-current-metal-sorting-machine.jpg",
+    "category": "Metal Detection & Recovery Sorting"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "rotor configuration",
+    "feed-size range",
+    "splitter adjustment",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Recycling and material recovery",
+    "Non-ferrous metal sorting"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.957Z"
+}

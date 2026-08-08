@@ -7,7 +7,7 @@ const source = path.resolve(process.argv[2] || "");
 const ignoredDirectories = new Set([".git", ".next", ".deploy-tools", "node_modules", "data"]);
 const textExtensions = new Set([".html", ".js", ".ps1"]);
 const brandAssetPath = "/assets/images/cowinmagnet-logo.png";
-const faviconVersion = "20260725";
+const faviconVersion = "20260808";
 
 if (!process.argv[2]) {
   throw new Error("Usage: node tools/refresh-brand-assets.mjs <path-to-logo.png>");

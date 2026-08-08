@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-magnetic-head-pulley",
+  "productSlug": "magnetic-head-pulley",
+  "productName": "Magnetic Head Pulley",
+  "productFamily": "magnetic-head-pulley",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "magnetic-head-pulley",
+    "sourceUrl": "https://cowinmagnet.com/en/products/magnetic-head-pulley",
+    "productImage": "/assets/images/source-products/magnetic-head-pulley.jpg",
+    "category": "Magnetic Separation Equipment"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "pulley dimensions",
+    "magnetic circuit grade",
+    "conveyor integration details",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Recycling and material recovery",
+    "Mining conveyors",
+    "Coal handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.951Z"
+}

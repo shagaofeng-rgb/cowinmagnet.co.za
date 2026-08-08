@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover",
+  "productSlug": "rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover",
+  "productName": "RCDFJ type forced oil circulation self dumping electromagnetic iron remover",
+  "productFamily": "self-cleaning-electromagnetic-overband",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover",
+    "sourceUrl": "https://cowinmagnet.com/en/products/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover",
+    "productImage": "/assets/images/source-products/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover.jpg",
+    "category": "Suspended & Self-Cleaning Iron Removers"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "input power",
+    "coil/cooling configuration",
+    "self-cleaning drive details",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Mining conveyors",
+    "Coal handling",
+    "Heavy-duty bulk material handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.966Z"
+}

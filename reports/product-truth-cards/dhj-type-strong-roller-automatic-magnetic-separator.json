@@ -1,0 +1,38 @@
+{
+  "id": "CW-AF-dhj-type-strong-roller-automatic-magnetic-separator",
+  "productSlug": "dhj-type-strong-roller-automatic-magnetic-separator",
+  "productName": "DHJ type strong roller automatic magnetic separator",
+  "productFamily": "dry-magnetic-separator",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "dhj-type-strong-roller-automatic-magnetic-separator",
+    "sourceUrl": "https://cowinmagnet.com/en/products/dhj-type-strong-roller-automatic-magnetic-separator",
+    "productImage": "/assets/images/source-products/dhj-type-strong-roller-automatic-magnetic-separator.jpg",
+    "category": "Magnetic Separation Equipment"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "correct product family and working principle",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Mineral processing",
+    "Dry pre-concentration",
+    "Material recovery"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.944Z"
+}

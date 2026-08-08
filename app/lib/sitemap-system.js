@@ -203,7 +203,7 @@ async function inspectStaticRoute(pathname, expectedUrl) {
 
 async function readJsonFile(relativePath, fallback) {
   try {
-    return JSON.parse((await readFile(join(ROOT, relativePath), "utf8")).replace(/^\uFEFF/, ""));
+    return JSON.parse((await readFile(join(/*turbopackIgnore: true*/ ROOT, relativePath), "utf8")).replace(/^\uFEFF/, ""));
   } catch {
     return fallback;
   }

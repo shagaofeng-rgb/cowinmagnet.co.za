@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-gls-type-integral-channel-metal-separator",
+  "productSlug": "gls-type-integral-channel-metal-separator",
+  "productName": "GLS type integral channel metal separator",
+  "productFamily": "conveyor-metal-detector",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "gls-type-integral-channel-metal-separator",
+    "sourceUrl": "https://cowinmagnet.com/en/products/gls-type-integral-channel-metal-separator",
+    "productImage": "/assets/images/source-products/gls-type-integral-channel-metal-separator.jpg",
+    "category": "Magnetic Separation Equipment"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "detection aperture",
+    "sensitivity application range",
+    "alarm/reject interface",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Crusher protection",
+    "Quarrying and aggregates",
+    "Coal handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.946Z"
+}

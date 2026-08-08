@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-round-electromagnetic-lifting-magnet",
+  "productSlug": "round-electromagnetic-lifting-magnet",
+  "productName": "Round Electromagnetic Lifting Magnet",
+  "productFamily": "suspended-electromagnetic-separator",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "round-electromagnetic-lifting-magnet",
+    "sourceUrl": "https://cowinmagnet.com/en/products/round-electromagnetic-lifting-magnet",
+    "productImage": "/assets/images/source-products/round-electromagnetic-lifting-magnet.webp",
+    "category": "Magnetic Separation Equipment"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "input power",
+    "coil/cooling configuration",
+    "control cabinet requirements",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Mining conveyors",
+    "Coal handling",
+    "Bulk material handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.953Z"
+}

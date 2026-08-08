@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-permanent-overband-magnetic-separator",
+  "productSlug": "permanent-overband-magnetic-separator",
+  "productName": "Permanent Overband Magnetic Separator",
+  "productFamily": "permanent-overband-or-self-cleaning",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "permanent-overband-magnetic-separator",
+    "sourceUrl": "https://cowinmagnet.com/en/products/permanent-overband-magnetic-separator",
+    "productImage": "/assets/images/source-products/permanent-overband-magnetic-separator.jpg",
+    "category": "Suspended & Self-Cleaning Iron Removers"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "self-cleaning belt arrangement",
+    "drive details where applicable",
+    "belt speed and duty",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Mining conveyors",
+    "Coal handling",
+    "Quarrying and bulk handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.960Z"
+}

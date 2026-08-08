@@ -1,0 +1,36 @@
+{
+  "id": "CW-AF-qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box",
+  "productSlug": "qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box",
+  "productName": "QJZ mining explosion-proof permanent magnet iron remover control box",
+  "productFamily": "unclassified-product-family",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box",
+    "sourceUrl": "https://cowinmagnet.com/en/products/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box",
+    "productImage": "/assets/images/source-products/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box.jpg",
+    "category": "Suspended & Self-Cleaning Iron Removers"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "correct product family and working principle",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Industrial material handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.961Z"
+}

@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+  "productSlug": "rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+  "productName": "RBCDB explosion-proof disc type electromagnetic iron remover",
+  "productFamily": "suspended-electromagnetic-separator",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+    "sourceUrl": "https://cowinmagnet.com/en/products/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+    "productImage": "/assets/images/source-products/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover.jpg",
+    "category": "Suspended & Self-Cleaning Iron Removers"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "input power",
+    "coil/cooling configuration",
+    "control cabinet requirements",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Mining conveyors",
+    "Coal handling",
+    "Bulk material handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.961Z"
+}

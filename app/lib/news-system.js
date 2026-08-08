@@ -301,3 +301,20 @@ export function escapeHtml(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+const internalEditorialHeading = /(?:seo\s*meta|seo\s*title|meta\s*description|url\s*slug|primary\s*keyword|secondary\s*keywords|search\s*intent|target\s*country|target\s*buyer|suggested\s*cta|ai\s*citation\s*ready\s*summary|internal\s*linking\s*suggestions|cms(?:\s+publishing)?\s*checklist)/i;
+
+export function stripInternalEditorialBlocks(value) {
+  let html = String(value || "").replace(/<section\b[^>]*>\s*<h[1-6][^>]*>\s*SEO\s*Meta\s*<\/h[1-6]>[\s\S]*?<\/section>\s*/gi, "");
+  const headings = [...html.matchAll(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi)];
+  const firstInternal = headings.findIndex((heading) => {
+    const plainHeading = String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return internalEditorialHeading.test(plainHeading) || /^json-ld schema$/i.test(plainHeading);
+  });
+  if (firstInternal < 0) return html;
+  const remainingAreInternal = headings.slice(firstInternal).every((heading) => {
+    const plainHeading = String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    return internalEditorialHeading.test(plainHeading) || /^json-ld schema$/i.test(plainHeading);
+  });
+  return remainingAreInternal ? html.slice(0, headings[firstInternal].index).trim() : html;
+}

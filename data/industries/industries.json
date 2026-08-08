@@ -1,5 +1,35 @@
 ﻿[
     {
+        "slug":  "mining-and-mineral-processing",
+        "name":  "Mining and Mineral Processing",
+        "description":  "Selection support for magnetic separation, tramp iron removal and recovery duties in mining and mineral processing projects.",
+        "image":  "/assets/images/hero-mining-conveyor-magnet.webp"
+    },
+    {
+        "slug":  "coal-handling-and-washing",
+        "name":  "Coal Handling and Washing",
+        "description":  "Selection support for coal conveyors, transfer points, wash-plant feed and equipment protection duties.",
+        "image":  "/assets/images/hero-mining-conveyor-magnet.webp"
+    },
+    {
+        "slug":  "aggregates-quarries-and-cement",
+        "name":  "Aggregates, Quarries and Cement",
+        "description":  "Selection support for crusher protection and material stream cleanup in aggregate, quarry and cement processes.",
+        "image":  "/assets/images/application-quarry-aggregate.webp"
+    },
+    {
+        "slug":  "recycling-and-material-recovery",
+        "name":  "Recycling and Material Recovery",
+        "description":  "Selection support for ferrous and non-ferrous recovery from prepared recycling material streams.",
+        "image":  "/assets/images/application-recycling-separation.webp"
+    },
+    {
+        "slug":  "ports-power-and-bulk-handling",
+        "name":  "Ports, Power and Bulk Handling",
+        "description":  "Selection support for conveyors, transfer points and outdoor bulk handling conditions.",
+        "image":  "/assets/images/application-port-bulk-handling.webp"
+    },
+    {
         "slug":  "mining",
         "name":  "Mining",
         "description":  "Mining operations require tramp iron removal to reduce crusher and conveyor damage risk.",

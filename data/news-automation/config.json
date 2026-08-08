@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "mode": "preproduction",
+  "enabled": false,
+  "schedule": {
+    "discovery": "0 7 * * *",
+    "editorial": "0 8 */2 * *",
+    "weeklyReport": "0 9 * * 1"
+  },
+  "requiredPreproductionApprovals": 6,
+  "maxSourceAgeDays": 90,
+  "minIndependentSources": 2,
+  "maxRetries": 2,
+  "updatedAt": "2026-08-08T00:00:00.000Z"
+}

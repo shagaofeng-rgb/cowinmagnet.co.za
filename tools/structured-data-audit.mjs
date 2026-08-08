@@ -75,6 +75,18 @@ for (const file of files) {
   if (relativePath.split("/").length === 3 && !hasWebPage) missingWebPage.push(relative(root, file));
 }
 
+const summary = {
+  scannedFiles: files.length,
+  invalidItems: invalid.length,
+  fixedFiles,
+  removedItems,
+  parseErrors,
+  missingWebPage,
+  generatedAt: new Date().toISOString(),
+  policy: "Product rich-result markup is omitted until truthful offer, price, availability, or review data is available."
+};
+await writeFile(join(root, "reports", "schema-validation.json"), `${JSON.stringify(summary, null, 2)}\n`);
+
 if (!fix) {
   assert.deepEqual(parseErrors, [], `Invalid JSON-LD found: ${JSON.stringify(parseErrors)}`);
   assert.deepEqual(invalid, [], `Product snippet markup is missing truthful offers/reviews: ${JSON.stringify(invalid.slice(0, 10))}`);
@@ -82,10 +94,7 @@ if (!fix) {
 }
 
 console.log(JSON.stringify({
-  scannedFiles: files.length,
-  invalidItems: invalid.length,
-  fixedFiles,
-  removedItems,
+  ...summary,
   parseErrors: parseErrors.length,
   missingWebPage: missingWebPage.length
 }, null, 2));

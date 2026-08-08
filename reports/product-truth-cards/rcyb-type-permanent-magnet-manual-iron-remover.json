@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-rcyb-type-permanent-magnet-manual-iron-remover",
+  "productSlug": "rcyb-type-permanent-magnet-manual-iron-remover",
+  "productName": "RCYB type permanent magnet manual iron remover",
+  "productFamily": "suspended-permanent-magnetic-separator",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "rcyb-type-permanent-magnet-manual-iron-remover",
+    "sourceUrl": "https://cowinmagnet.com/en/products/rcyb-type-permanent-magnet-manual-iron-remover",
+    "productImage": "/assets/images/source-products/rcyb-type-permanent-magnet-manual-iron-remover.jpg",
+    "category": "Suspended & Self-Cleaning Iron Removers"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "installation orientation",
+    "manual cleaning method",
+    "suspension height",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Mining conveyors",
+    "Coal handling",
+    "Aggregates and bulk handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.969Z"
+}

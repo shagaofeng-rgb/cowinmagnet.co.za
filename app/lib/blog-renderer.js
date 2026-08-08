@@ -2,6 +2,14 @@
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.APP_URL || "https://cowinmagnet.co.za").replace(/\/$/, "");
 
+function safeArticleContent(value) {
+  const internal = /(?:seo\s*meta|seo\s*title|meta\s*description|url\s*slug|primary\s*keyword|secondary\s*keywords|search\s*intent|target\s*country|target\s*buyer|suggested\s*cta|ai\s*citation\s*ready\s*summary|internal\s*linking\s*suggestions|cms(?:\s+publishing)?\s*checklist|json-ld\s*schema)/i;
+  let html = String(value || "").replace(/<section\b[^>]*>\s*<h[1-6][^>]*>\s*SEO\s*Meta\s*<\/h[1-6]>[\s\S]*?<\/section>\s*/gi, "");
+  const headings = [...html.matchAll(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi)];
+  const firstInternal = headings.findIndex((heading) => internal.test(String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()));
+  return firstInternal >= 0 && headings.slice(firstInternal).every((heading) => internal.test(String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim())) ? html.slice(0, headings[firstInternal].index).trim() : html;
+}
+
 function blogArticles(items) {
   return items
     .filter(isPublishedBlogArticle)
@@ -26,9 +34,9 @@ function pageShell({ title, description, canonical, body, schema = [], image = "
   <link rel="canonical" href="${siteUrl}${canonical}">
   <link rel="alternate" hreflang="en-ZA" href="${siteUrl}${canonical}">
   <link rel="alternate" hreflang="x-default" href="${siteUrl}${canonical}">
-  <link rel="icon" href="/favicon.ico?v=20260725" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260725">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260725">
+  <link rel="icon" href="/favicon.ico?v=20260808" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260808">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260808">
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:type" content="article">
@@ -126,7 +134,7 @@ export async function renderBlogArticle(slug) {
     <article class="panel">
       <p><strong>Published:</strong> ${escapeHtml((item.published_at || item.date || "").slice(0, 10))} - <strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))} - <strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</p>
       <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
-      ${item.content || ""}
+      ${safeArticleContent(item.content)}
     </article>
     <aside class="panel">
       <h2>Related Products</h2>

@@ -8,6 +8,7 @@ import { after, NextResponse } from "next/server";
 import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
+import { newsAutomationStatus, queueNewsSource, reviewNewsDraft, runNewsAutomation } from "../../lib/news-automation.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -233,8 +234,8 @@ function verifyAdminCredentials(identifier, password) {
 async function readJson(relativePath) {
   const cleanPath = normalize(relativePath.replace(/^data[\\/]/, ""));
   if (cleanPath.startsWith("..") || cleanPath.includes(`..${sep}`)) return jsonFiles.get(relativePath) ?? null;
-  // Scheduled news is committed by GitHub Actions. Keep the public API and
-  // rendered news pages on the same release snapshot when database storage is unavailable.
+  // Published News and Blog content is read from the release snapshot unless a
+  // verified manual or webhook update exists in PostgreSQL.
   if (cleanPath === "articles/articles.json" && process.env.NEWS_STORAGE_MODE !== "database") {
     return readDataJson(relativePath, jsonFiles.get(relativePath) ?? []);
   }
@@ -354,17 +355,7 @@ function sanitizeArticleHtml(value) {
 
 function validCoverImage(value) {
   const url = String(value || "").trim();
-  if (!url) return "";
-  try {
-    const parsed = new URL(url);
-    if (!["https:", "http:"].includes(parsed.protocol)) return "";
-    const host = parsed.hostname.replace(/^www\./, "");
-    if (host === "cowinmagnet.co.za" || host === "cowinmagnet.com") return "";
-    if (!(/\.(avif|webp|png|jpe?g)(?:$|[?#])/i.test(parsed.pathname + parsed.search) || /(^|\.)images\.(pexels|unsplash)\.com$/i.test(parsed.hostname))) return "";
-    return parsed.toString();
-  } catch {
-    return "";
-  }
+  return /^\/assets\/images\/[a-z0-9_./-]+$/i.test(url) ? url : "";
 }
 
 function articleWebhookSign() {
@@ -399,7 +390,7 @@ function makeWebhookBlogArticle(fields, existingArticles) {
   let suffix = 2;
   while (existingArticles.some((item) => item.slug === slug)) slug = `${baseSlug}-${suffix++}`;
   const content = sanitizeArticleHtml(fields.content);
-  const imageUrl = validCoverImage(fields.image_url) || "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1600&q=80";
+  const imageUrl = validCoverImage(fields.image_url) || "/assets/images/hero-mining-conveyor-magnet.webp";
   const excerpt = String(content)
     .replace(/<[^>]+>/g, " ")
     .replace(/\s+/g, " ")
@@ -420,11 +411,11 @@ function makeWebhookBlogArticle(fields, existingArticles) {
     category: category === "31" || category.toLowerCase() === "blog" ? "Blog" : category,
     tags: ["plugin-published", "blog"],
     cover_image_url: imageUrl,
-    cover_image_source_url: imageUrl,
-    cover_image_page_url: imageUrl,
+    cover_image_source_url: "",
+    cover_image_page_url: "",
     cover_image_alt: title,
-    cover_image_caption: "Cover image provided through the article publishing webhook.",
-    cover_image_status: "external-editorial-image",
+    cover_image_caption: "COWIN product media selected for this article.",
+    cover_image_status: "owned-media",
     author_id: String(fields.author_id || ""),
     author_name: String(fields.author_id || "admin"),
     date: now.slice(0, 10),
@@ -454,6 +445,7 @@ async function handleArticleWebhook(request) {
   if (!isSupportedWebhookClass(fields.class_id)) return pluginResponse(0, "Only the Blog category is supported");
   if (!expectedSign) return pluginResponse(0, "Publishing secret is not configured");
   if (!safeEqualText(fields.sign, expectedSign)) return pluginResponse(0, "Invalid secret");
+  if (isVerificationOnly(fields)) return pluginResponse(1, "\u9a8c\u8bc1\u6210\u529f");
   if (isVerificationOnly(fields)) return pluginResponse(1, "发布成功");
 
   try {
@@ -473,6 +465,7 @@ async function handleArticleWebhook(request) {
     } catch (auditError) {
       console.warn(`[article-webhook] Sitemap audit scheduling failed: ${auditError?.message || auditError}`);
     }
+    return pluginResponse(1, "\u53d1\u5e03\u6210\u529f");
     return pluginResponse(1, "发布成功");
   } catch (error) {
     return pluginResponse(0, error?.message || "Database insert failed, please retry");
@@ -863,17 +856,17 @@ async function adminMedia(request, session) {
 }
 
 async function adminSyncState() {
-  const [googleSeo, googleJobs, sitemapState, sitemapRuns, storage] = await Promise.all([
+  const [googleSeo, googleJobs, sitemapState, sitemapRuns, storage, newsState] = await Promise.all([
     readJson("data/seo/google-search-console.json"),
     readJson("data/seo/google-seo-jobs.json"),
     readDataJson("data/seo/sitemap-state.json", {}),
     readDataJson("data/seo/sitemap-runs.json", []),
-    Promise.resolve({ mode: storageMode(), databaseConfigured: Boolean(process.env.DATABASE_URL) })
+    Promise.resolve({ mode: storageMode(), databaseConfigured: Boolean(process.env.DATABASE_URL) }),
+    newsAutomationStatus()
   ]);
-  const newsState = { jobs: [] };
   return {
     sources: [
-      { id: "news", name: "行业新闻自动同步", configured: true, status: newsState.jobs?.[0]?.status || "pending", lastSync: newsState.jobs?.[0]?.completed_at || "", successCount: newsState.jobs?.filter((job) => job.status === "completed").length || 0, failedCount: newsState.jobs?.filter((job) => job.status === "failed").length || 0 },
+      { id: "news", name: "News automation", configured: newsState.enabled, status: newsState.productionReady ? "ready" : "gated", lastSync: newsState.latestRun?.startedAt || "", successCount: newsState.counts.published, failedCount: newsState.counts.runs - newsState.counts.published },
       { id: "google-seo", name: "Google SEO 数据", configured: googleSeoConfig().configured, status: googleJobs?.[0]?.status || "pending", lastSync: googleSeo?.syncedAt || "", successCount: googleJobs?.filter((job) => job.status === "completed").length || 0, failedCount: googleJobs?.filter((job) => job.status === "failed").length || 0 },
       { id: "storage", name: "后台持久化存储", configured: storage.databaseConfigured, status: storage.mode, lastSync: new Date().toISOString(), successCount: 1, failedCount: 0 }
     ],
@@ -883,7 +876,7 @@ async function adminSyncState() {
     sitemapState,
     sitemapRuns: (sitemapRuns || []).slice(0, 20),
     jobs: [
-      ...(Array.isArray(newsState.jobs) ? newsState.jobs.map((job) => ({ ...job, type: "news" })) : []),
+      ...(newsState.latestRun ? [{ ...newsState.latestRun, type: "news", time: newsState.latestRun.startedAt, status: newsState.latestRun.result, message: (newsState.latestRun.blockers || []).join(" ") }] : []),
       ...(Array.isArray(googleJobs) ? googleJobs.map((job) => ({ ...job, type: "google-seo" })) : [])
     ].slice(0, 30),
     storage
@@ -963,7 +956,7 @@ async function publicProductBlog(productId) {
 }
 
 function validCronRequest(request) {
-  const secret = process.env.CRON_SECRET || process.env.NEWS_CRON_SECRET || "";
+  const secret = process.env.CRON_SECRET || "";
   if (!secret) return !process.env.VERCEL && process.env.NODE_ENV !== "production";
   const header = request.headers.get("authorization") || request.headers.get("x-cron-secret") || "";
   return header === secret || header === `Bearer ${secret}`;
@@ -1021,6 +1014,16 @@ async function handleCronGscInspection(request) {
   }
   const report = await runGoogleUrlInspection();
   return response({ success: true, data: report, requestId: token(8) });
+}
+
+async function handleCronNewsAutomation(request) {
+  if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
+  try {
+    const result = await runNewsAutomation("vercel-cron");
+    return response({ success: true, data: result, requestId: token(8) });
+  } catch (error) {
+    return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 500);
+  }
 }
 
 function sourceFromReferrer(referrer) {
@@ -1313,6 +1316,25 @@ async function handleAdmin(request, path) {
   }
 
   if (path === "admin/news" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  if (path === "admin/news-automation" && request.method === "GET") return response({ success: true, data: await newsAutomationStatus(), requestId: token(8) });
+  if (path === "admin/news-automation/sources" && request.method === "POST") {
+    try {
+      const source = await queueNewsSource(await bodyJson(request), session.user);
+      await audit(session.user, "News Source Queued", "News automation", source.id, source.url);
+      return response({ success: true, data: source, requestId: token(8) }, 201);
+    } catch (error) {
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
+    }
+  }
+  if (path === "admin/news-automation/review" && request.method === "POST") {
+    try {
+      const draft = await reviewNewsDraft(await bodyJson(request), session.user);
+      await audit(session.user, "News Draft Reviewed", "News automation", draft.id, draft.qa?.passed ? "Passed quality gate" : draft.qa?.failures?.join("; ") || "Rejected");
+      return response({ success: true, data: draft, requestId: token(8) });
+    } catch (error) {
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
+    }
+  }
   if (path === "admin/news/export" && request.method === "GET") return csvResponse("news.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"));
   if (path === "admin/blog" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
   if (path === "admin/blog/export" && request.method === "GET") return csvResponse("blog.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"));
@@ -1425,6 +1447,7 @@ async function dispatch(request, context) {
   if (path === "track" && request.method === "POST") return handleTrack(request);
   if (path === "cron/google-seo" && ["GET", "POST"].includes(request.method)) return handleCronGoogleSeo(request);
   if (path === "cron/gsc-inspection" && ["GET", "POST"].includes(request.method)) return handleCronGscInspection(request);
+  if (path === "cron/news-publish" && ["GET", "POST"].includes(request.method)) return handleCronNewsAutomation(request);
   if (path === "news" && request.method === "GET") return publicNewsList(request);
   if (path === "news/categories" && request.method === "GET") return publicNewsCategories();
   const publicNewsMatch = path.match(/^news\/([^/]+)$/);

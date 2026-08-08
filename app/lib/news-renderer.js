@@ -2,6 +2,14 @@ import { escapeHtml, isExternalNewsImage, isPublishedNewsArticle, readDataJson }
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.APP_URL || "https://cowinmagnet.co.za").replace(/\/$/, "");
 
+function safeArticleContent(value) {
+  const internal = /(?:seo\s*meta|seo\s*title|meta\s*description|url\s*slug|primary\s*keyword|secondary\s*keywords|search\s*intent|target\s*country|target\s*buyer|suggested\s*cta|ai\s*citation\s*ready\s*summary|internal\s*linking\s*suggestions|cms(?:\s+publishing)?\s*checklist|json-ld\s*schema)/i;
+  let html = String(value || "").replace(/<section\b[^>]*>\s*<h[1-6][^>]*>\s*SEO\s*Meta\s*<\/h[1-6]>[\s\S]*?<\/section>\s*/gi, "");
+  const headings = [...html.matchAll(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi)];
+  const firstInternal = headings.findIndex((heading) => internal.test(String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()));
+  return firstInternal >= 0 && headings.slice(firstInternal).every((heading) => internal.test(String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim())) ? html.slice(0, headings[firstInternal].index).trim() : html;
+}
+
 function newsImageUrl(value) {
   if (String(value || "").startsWith("/assets/images/news/")) return `${siteUrl}${value}`;
   if (isExternalNewsImage(value)) return value;
@@ -22,9 +30,9 @@ function pageShell({ title, description, canonical, body, schema = [], feed = tr
   <link rel="canonical" href="${siteUrl}${canonical}">
   <link rel="alternate" hreflang="en-ZA" href="${siteUrl}${canonical}">
   <link rel="alternate" hreflang="x-default" href="${siteUrl}${canonical}">
-  <link rel="icon" href="/favicon.ico?v=20260725" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260725">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260725">
+  <link rel="icon" href="/favicon.ico?v=20260808" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=20260808">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=20260808">
   ${feed ? `<link rel="alternate" type="application/rss+xml" title="Cowinmagnet South Africa News" href="${siteUrl}/en-za/news/feed.xml">` : ""}
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
@@ -134,7 +142,7 @@ export async function renderNewsArticle(slug) {
       <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
       ${item.cover_image_caption ? `<p class="image-caption">${escapeHtml(item.cover_image_caption)}</p>` : ""}
       <section class="ai-summary"><h2>Key Takeaways</h2><ul>${(item.key_takeaways || []).map((takeaway) => `<li>${escapeHtml(takeaway)}</li>`).join("")}</ul></section>
-      ${item.content || ""}
+      ${safeArticleContent(item.content)}
       <h2>Original Source</h2>
       <ul class="check-list">
         <li><strong>Original title:</strong> ${escapeHtml(item.source_title || "")}</li>

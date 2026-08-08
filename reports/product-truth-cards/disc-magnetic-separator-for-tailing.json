@@ -1,0 +1,36 @@
+{
+  "id": "CW-AF-disc-magnetic-separator-for-tailing",
+  "productSlug": "disc-magnetic-separator-for-tailing",
+  "productName": "Disc Magnetic Separator for Tailing",
+  "productFamily": "unclassified-product-family",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "disc-magnetic-separator-for-tailing",
+    "sourceUrl": "https://cowinmagnet.com/en/products/disc-magnetic-separator-for-tailing",
+    "productImage": "/assets/images/source-products/disc-magnetic-separator-for-tailing.jpg",
+    "category": "Magnetic Separation Equipment"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "correct product family and working principle",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Industrial material handling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.944Z"
+}

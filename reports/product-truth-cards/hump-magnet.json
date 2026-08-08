@@ -1,0 +1,38 @@
+{
+  "id": "CW-AF-hump-magnet",
+  "productSlug": "hump-magnet",
+  "productName": "Hump Magnet",
+  "productFamily": "magnetic-filter-or-component",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "hump-magnet",
+    "sourceUrl": "https://cowinmagnet.com/en/products/hump-magnet",
+    "productImage": "/assets/images/source-products/hump-magnet.webp",
+    "category": "Magnetic Components & Filters"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "correct product family and working principle",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Bulk material handling",
+    "Mineral processing",
+    "Recycling"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.926Z"
+}

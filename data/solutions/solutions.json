@@ -1,5 +1,15 @@
 ﻿[
     {
+        "slug":  "conveyor-protection",
+        "name":  "Conveyor Protection",
+        "description":  "Reduce the risk of belt damage, transfer-point blockages and downstream equipment disruption from tramp metal and unsuitable material separation."
+    },
+    {
+        "slug":  "non-ferrous-metal-recovery",
+        "name":  "Non-Ferrous Metal Recovery",
+        "description":  "Review prepared material, particle size, feed presentation and downstream collection for non-ferrous separation."
+    },
+    {
         "slug":  "tramp-iron-removal",
         "name":  "Tramp Iron Removal",
         "description":  "Remove ferrous tramp metal before it reaches crushers, screens or process equipment."

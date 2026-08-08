@@ -1,0 +1,40 @@
+{
+  "id": "CW-AF-ctzs-type-upward-suction-magnetic-separator",
+  "productSlug": "ctzs-type-upward-suction-magnetic-separator",
+  "productName": "CTZS type upward suction magnetic separator",
+  "productFamily": "wet-drum-or-wet-magnetic-separator",
+  "status": "needs-engineering-review",
+  "verifiedFields": {
+    "sourceProductId": "ctzs-type-upward-suction-magnetic-separator",
+    "sourceUrl": "https://cowinmagnet.com/en/products/ctzs-type-upward-suction-magnetic-separator",
+    "productImage": "/assets/images/source-products/ctzs-type-upward-suction-magnetic-separator.jpg",
+    "category": "Magnetic Separation Equipment"
+  },
+  "allowedClaims": [
+    "Product identity and image recorded in the current catalogue",
+    "Final configuration is confirmed against actual process conditions"
+  ],
+  "forbiddenClaims": [
+    "Unverified numeric performance",
+    "Unverified South African local presence",
+    "Unverified certification, stock, lead time, installation team, case study or customer review"
+  ],
+  "pendingFields": [
+    "drum diameter and length",
+    "tank type",
+    "slurry and particle-size range",
+    "confirmed model/series drawing",
+    "application-specific dimensions",
+    "approved performance values",
+    "verified options and exclusions",
+    "reviewer approval"
+  ],
+  "applicationsToConfirm": [
+    "Mineral processing",
+    "Ore concentration",
+    "Tailings recovery"
+  ],
+  "sourceRecord": "data/products/products.json",
+  "reviewer": null,
+  "updatedAt": "2026-08-08T07:11:40.941Z"
+}
