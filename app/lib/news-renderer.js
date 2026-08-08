@@ -1,13 +1,9 @@
-import { escapeHtml, isExternalNewsImage, isPublishedNewsArticle, readDataJson } from "./news-system.js";
+import { escapeHtml, isExternalNewsImage, isPublishedNewsArticle, readDataJson, sanitizePublishedArticleHtml } from "./news-system.js";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.APP_URL || "https://cowinmagnet.co.za").replace(/\/$/, "");
 
 function safeArticleContent(value) {
-  const internal = /(?:seo\s*meta|seo\s*title|meta\s*description|url\s*slug|primary\s*keyword|secondary\s*keywords|search\s*intent|target\s*country|target\s*buyer|suggested\s*cta|ai\s*citation\s*ready\s*summary|internal\s*linking\s*suggestions|cms(?:\s+publishing)?\s*checklist|json-ld\s*schema)/i;
-  let html = String(value || "").replace(/<section\b[^>]*>\s*<h[1-6][^>]*>\s*SEO\s*Meta\s*<\/h[1-6]>[\s\S]*?<\/section>\s*/gi, "");
-  const headings = [...html.matchAll(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi)];
-  const firstInternal = headings.findIndex((heading) => internal.test(String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()));
-  return firstInternal >= 0 && headings.slice(firstInternal).every((heading) => internal.test(String(heading[1]).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim())) ? html.slice(0, headings[firstInternal].index).trim() : html;
+  return sanitizePublishedArticleHtml(value);
 }
 
 function newsImageUrl(value) {
@@ -137,7 +133,7 @@ export async function renderNewsArticle(slug) {
     <p>${escapeHtml(item.excerpt || item.summary || "")}</p>
   </section>
   <section class="section layout">
-    <article class="panel">
+    <article class="panel article-prose">
       <p><strong>Published:</strong> ${escapeHtml((articleDate(item) || "").slice(0, 10))} · <strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))} · <strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</p>
       <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
       ${item.cover_image_caption ? `<p class="image-caption">${escapeHtml(item.cover_image_caption)}</p>` : ""}

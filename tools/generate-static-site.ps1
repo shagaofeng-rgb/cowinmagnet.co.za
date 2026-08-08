@@ -439,6 +439,40 @@ function PageHero($crumbs, $eyebrow, $h1, $lead) {
 "@
 }
 
+function HtmlEncode($value) {
+  return [System.Net.WebUtility]::HtmlEncode([string]$value)
+}
+
+function IsInternalEditorialHeading($value) {
+  $plain = ([regex]::Replace([string]$value, '<[^>]+>', ' ') -replace '\s+', ' ').Trim()
+  return $plain -match '(?i)(seo\s*meta|seo\s*title|meta\s*description|url\s*slug|primary\s*keyword|secondary\s*keywords|search\s*intent|target\s*country|target\s*buyer|suggested\s*cta|ai\s*citation\s*ready\s*summary|internal\s*linking\s*suggestions|cms(?:\s+publishing)?\s*checklist|json-ld\s*schema)'
+}
+
+function SafeArticleHtml($value) {
+  $html = [string]$value
+  $html = [regex]::Replace($html, '(?is)```.*?```', '')
+  $html = [regex]::Replace($html, '(?is)<(?:pre|code|script|style|iframe|object|embed|form|input|button|textarea|select|svg|math)\b[^>]*>.*?</(?:pre|code|script|style|iframe|object|embed|form|input|button|textarea|select|svg|math)\s*>', '')
+  $html = [regex]::Replace($html, '(?is)<(?:script|style|iframe|object|embed|form|input|button|textarea|select|svg|math)\b[^>]*\/?\s*>', '')
+  $headings = [regex]::Matches($html, '(?is)<h[1-6]\b[^>]*>(.*?)</h[1-6]>')
+  for ($index = $headings.Count - 1; $index -ge 0; $index--) {
+    if (IsInternalEditorialHeading $headings[$index].Groups[1].Value) {
+      $end = if ($index -lt ($headings.Count - 1)) { $headings[$index + 1].Index } else { $html.Length }
+      $html = $html.Remove($headings[$index].Index, $end - $headings[$index].Index)
+    }
+  }
+  $html = [regex]::Replace($html, '(?i)\s+on[a-z0-9:_-]+\s*=\s*(?:"[^"]*"|''[^'']*''|[^\s>]+)', '')
+  $html = [regex]::Replace($html, '(?i)\s+style\s*=\s*(?:"[^"]*"|''[^'']*''|[^\s>]+)', '')
+  return [regex]::Replace($html, '(?is)\s+(href|src)\s*=\s*(["''])\s*(?:javascript|data):.*?\2', ' $1="#"').Trim()
+}
+
+function ArticleCover($article) {
+  $url = [string]$article.cover_image_url
+  if (-not $url -or $url -notmatch '^(?:/assets/images/|https://)') { return '' }
+  $alt = HtmlEncode $(if ($article.cover_image_alt) { $article.cover_image_alt } else { $article.title })
+  $caption = if ($article.cover_image_caption) { "<figcaption>$(HtmlEncode $article.cover_image_caption)</figcaption>" } else { '' }
+  return "<figure class='article-cover'><img src='$url' alt='$alt' loading='eager' decoding='async'>$caption</figure>"
+}
+
 function WritePage($path, $title, $description, $h1, $body, $schema = "") {
   $target = Join-Path $root ($path.TrimStart("/") -replace "/$","/index.html")
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $target) | Out-Null
@@ -791,8 +825,9 @@ WritePage "$base/news/" "News | Cowinmagnet South Africa" "Source-based industry
 WritePage "$base/blog/" "News Archive | Cowinmagnet South Africa" "Legacy blog archive for Cowinmagnet South Africa news and magnetic separator articles." "News Archive" ((PageHero "<a href='$base/'>Home</a> / News Archive" "Archive" "News Archive" "This legacy blog route is kept for older links. Current updates are published in News.") + "<section class='section'><div class='grid'>$(($articles | Where-Object { -not $_.status -or $_.status -eq 'published' } | ForEach-Object {"<a class='card news-card' href='$base/news/$($_.slug)/'><p class='eyebrow'>$(ArticleDateText $_)</p><h3>$($_.title)</h3><p>$(if($_.excerpt){$_.excerpt}else{$_.summary})</p><span class='tag'>Open in News</span></a>"}) -join '')</div></section>")
 foreach($a in $articles) {
   $articleDate = ArticleDateText $a
-  $articleContent = if($a.content){$a.content}else{"<h2>Overview</h2><p>$($a.summary) Equipment must be selected according to verified operating data, not generic assumptions.</p><h2>Selection factors</h2><ul class='check-list'><li>Material type and conveyor data</li><li>Installation position and available clearance</li><li>Dust, heat, humidity and voltage conditions</li><li>Maintenance access and spare parts planning</li></ul>"}
-  $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section layout'><article class='panel'><p><strong>Date:</strong> $articleDate</p>$articleContent</article><aside class='panel'><h3>Related products</h3><a href='$base/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/'>Permanent Overband Magnetic Separator</a><a class='button primary' href='$base/request-a-quote/'>Enquire</a></aside></section>"
+  $articleContent = if($a.content){SafeArticleHtml $a.content}else{"<h2>Overview</h2><p>$($a.summary) Equipment must be selected according to verified operating data, not generic assumptions.</p><h2>Selection factors</h2><ul class='check-list'><li>Material type and conveyor data</li><li>Installation position and available clearance</li><li>Dust, heat, humidity and voltage conditions</li><li>Maintenance access and spare parts planning</li></ul>"}
+  $articleCover = ArticleCover $a
+  $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section layout'><article class='panel article-prose'><p><strong>Date:</strong> $articleDate</p>$articleCover$articleContent</article><aside class='panel'><h3>Related products</h3><a href='$base/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/'>Permanent Overband Magnetic Separator</a><a class='button primary' href='$base/request-a-quote/'>Enquire</a></aside></section>"
   $body = $body.Replace("Local publishing note", "Selection guidance").Replace("This page structure is ready for South Africa and Africa market news. Replace this draft article body with verified local news content when available.", "Use verified operating data and a project-specific engineering review before selecting equipment.").Replace("$base/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/", "$base/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/")
   WritePage "$base/news/$($a.slug)/" "$($a.title) | Cowinmagnet News" "$($a.summary)" $a.title $body
   WritePage "$base/blog/$($a.slug)/" "$($a.title) | Cowinmagnet News" "$($a.summary)" $a.title ((PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section'><article class='panel'><p>This legacy article URL is kept for older links.</p><a class='button primary' href='$base/news/$($a.slug)/'>Open current News page</a></article></section>")

@@ -304,6 +304,49 @@ export function escapeHtml(value) {
 
 const internalEditorialHeading = /(?:seo\s*meta|seo\s*title|meta\s*description|url\s*slug|primary\s*keyword|secondary\s*keywords|search\s*intent|target\s*country|target\s*buyer|suggested\s*cta|ai\s*citation\s*ready\s*summary|internal\s*linking\s*suggestions|cms(?:\s+publishing)?\s*checklist)/i;
 
+const articleUnsafeElements = /<(?:script|style|iframe|object|embed|form|input|button|textarea|select|svg|math)\b[^>]*>[\s\S]*?<\/(?:script|style|iframe|object|embed|form|input|button|textarea|select|svg|math)\s*>/gi;
+const articleUnsafeVoidElements = /<(?:script|style|iframe|object|embed|form|input|button|textarea|select|svg|math)\b[^>]*\/?\s*>/gi;
+const articleCodeBlocks = /(?:```[\s\S]*?```|<(?:pre|code)\b[^>]*>[\s\S]*?<\/(?:pre|code)\s*>)/gi;
+
+function editorialHeadingText(value) {
+  return String(value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function isInternalEditorialHeading(value) {
+  const heading = editorialHeadingText(value);
+  return internalEditorialHeading.test(heading) || /^json-ld schema$/i.test(heading);
+}
+
+function removeInternalHeadingSections(value) {
+  const html = String(value || "");
+  const headings = [...html.matchAll(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi)];
+  if (!headings.some((heading) => isInternalEditorialHeading(heading[1]))) return html;
+
+  let cursor = 0;
+  let cleaned = "";
+  headings.forEach((heading, index) => {
+    if (!isInternalEditorialHeading(heading[1])) return;
+    cleaned += html.slice(cursor, heading.index);
+    cursor = headings[index + 1]?.index ?? html.length;
+  });
+  return `${cleaned}${html.slice(cursor)}`;
+}
+
+/** Public articles may contain editorial HTML, but never executable markup or internal workflow notes. */
+export function sanitizePublishedArticleHtml(value) {
+  let html = stripInternalEditorialBlocks(value)
+    .replace(articleCodeBlocks, "")
+    .replace(articleUnsafeElements, "")
+    .replace(articleUnsafeVoidElements, "");
+
+  html = removeInternalHeadingSections(html)
+    .replace(/\s+on[a-z0-9:_-]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s+style\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s+(href|src)\s*=\s*(["'])\s*(?:javascript|data):[\s\S]*?\2/gi, (_, attribute) => ` ${attribute}="#"`);
+
+  return html.trim();
+}
+
 export function stripInternalEditorialBlocks(value) {
   let html = String(value || "").replace(/<section\b[^>]*>\s*<h[1-6][^>]*>\s*SEO\s*Meta\s*<\/h[1-6]>[\s\S]*?<\/section>\s*/gi, "");
   const headings = [...html.matchAll(/<h[1-6][^>]*>([\s\S]*?)<\/h[1-6]>/gi)];

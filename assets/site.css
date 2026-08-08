@@ -85,6 +85,22 @@ button, input, select, textarea { font: inherit; }
 .panel img { max-width: 100%; height: auto; }
 .panel p, .panel li, .panel a, .panel h1, .panel h2, .panel h3, .breadcrumbs { overflow-wrap: anywhere; word-break: break-word; }
 .panel pre, .panel code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.article-prose { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.article-prose > * { max-width: 100%; }
+.article-prose > p, .article-prose > ul, .article-prose > ol, .article-prose > blockquote { max-width: 76ch; }
+.article-prose p, .article-prose li { font-size: 16px; line-height: 1.72; }
+.article-prose h2 { margin: 34px 0 12px; font-size: 28px; line-height: 1.2; }
+.article-prose h3 { margin: 26px 0 8px; font-size: 21px; line-height: 1.3; }
+.article-prose ul, .article-prose ol { padding-left: 1.35rem; }
+.article-prose li + li { margin-top: 7px; }
+.article-prose a { color: var(--green-dark); text-decoration-thickness: 1px; text-underline-offset: 3px; overflow-wrap: anywhere; }
+.article-prose figure, .article-cover { margin: 24px 0; max-width: 100%; }
+.article-prose figure img, .article-prose > img, .article-cover img { display: block; width: 100%; max-width: 100%; height: auto; max-height: min(66vh, 720px); object-fit: contain; border: 1px solid var(--line); border-radius: 8px; background: #f4f7f5; }
+.article-prose figcaption, .article-cover figcaption, .image-caption { margin-top: 9px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.article-prose blockquote { margin: 24px 0; padding: 4px 0 4px 18px; border-left: 3px solid var(--gold); color: #3d5046; }
+.article-prose .table-wrap, .article-prose table { max-width: 100%; }
+.article-prose table { display: block; overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; white-space: normal; }
+.article-prose th, .article-prose td { min-width: 140px; overflow-wrap: anywhere; }
 .check-list { display: grid; gap: 9px; padding: 0; margin: 0; list-style: none; }
 .check-list li { position: relative; padding-left: 23px; color: var(--muted); }
 .check-list li::before { content: ""; position: absolute; left: 0; top: .55em; width: 10px; height: 10px; border-radius: 50%; background: var(--green); }
@@ -276,6 +292,14 @@ input:focus, select:focus, textarea:focus { border-color: var(--green); box-shad
   .card { padding: 17px; }
   .filter-panel { padding: 12px; }
   .footer-main.simple { width: 100%; padding-inline: clamp(16px, 5vw, 28px); }
+  .article-prose { padding-inline: 0; }
+  .article-prose p, .article-prose li { font-size: 16px; line-height: 1.68; }
+  .article-prose h2 { margin-top: 30px; font-size: 25px; }
+  .article-prose h3 { margin-top: 23px; font-size: 20px; }
+  .article-prose ul, .article-prose ol { padding-left: 1.15rem; }
+  .article-prose figure, .article-cover { margin-block: 20px; }
+  .article-prose figure img, .article-prose > img, .article-cover img { max-height: 54vh; padding: 4px; }
+  .article-prose th, .article-prose td { min-width: 126px; padding: 11px 12px; }
 }
 @media (max-width: 430px) {
   .site-header { padding-inline: 12px; }
