@@ -5,7 +5,7 @@ import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
 import { cookies, headers } from "next/headers";
 import { after, NextResponse } from "next/server";
-import { getNewsState, runNewsAutomation, readDataJson, collectNewsCandidates, writeDataJson, withDataLock, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
+import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPublishedNewsArticle } from "../../lib/news-system.js";
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 
@@ -863,14 +863,14 @@ async function adminMedia(request, session) {
 }
 
 async function adminSyncState() {
-  const [newsState, googleSeo, googleJobs, sitemapState, sitemapRuns, storage] = await Promise.all([
-    getNewsState(),
+  const [googleSeo, googleJobs, sitemapState, sitemapRuns, storage] = await Promise.all([
     readJson("data/seo/google-search-console.json"),
     readJson("data/seo/google-seo-jobs.json"),
     readDataJson("data/seo/sitemap-state.json", {}),
     readDataJson("data/seo/sitemap-runs.json", []),
     Promise.resolve({ mode: storageMode(), databaseConfigured: Boolean(process.env.DATABASE_URL) })
   ]);
+  const newsState = { jobs: [] };
   return {
     sources: [
       { id: "news", name: "行业新闻自动同步", configured: true, status: newsState.jobs?.[0]?.status || "pending", lastSync: newsState.jobs?.[0]?.completed_at || "", successCount: newsState.jobs?.filter((job) => job.status === "completed").length || 0, failedCount: newsState.jobs?.filter((job) => job.status === "failed").length || 0 },
@@ -967,26 +967,6 @@ function validCronRequest(request) {
   if (!secret) return !process.env.VERCEL && process.env.NODE_ENV !== "production";
   const header = request.headers.get("authorization") || request.headers.get("x-cron-secret") || "";
   return header === secret || header === `Bearer ${secret}`;
-}
-
-async function handleCronNews(request) {
-  if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
-  let result;
-  try {
-    result = await runNewsAutomation();
-  } catch (error) {
-    console.error(`[news-cron] Automation failed: ${error?.message || error}`);
-    return response({ success: false, error: "News automation failed before publication. Review News Jobs and storage health.", requestId: token(8) }, 503);
-  }
-  if (result.job?.status === "blocked") {
-    return response({ success: false, error: result.job.error_message, data: result, requestId: token(8) }, 503);
-  }
-  let sitemap = null;
-  if (result.published?.length) {
-    await markSitemapDirty({ source: "news-automation", action: "published", objectId: result.job?.id || "", url: "/en-za/news/" });
-    sitemap = (await runSitemapAudit({ trigger: "news-cron" })).run;
-  }
-  return response({ success: result.job?.status === "completed", data: { ...result, sitemap }, requestId: token(8) }, result.job?.status === "completed" ? 200 : 503);
 }
 
 async function handleCronGoogleSeo(request) {
@@ -1336,31 +1316,6 @@ async function handleAdmin(request, path) {
   if (path === "admin/news/export" && request.method === "GET") return csvResponse("news.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"));
   if (path === "admin/blog" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
   if (path === "admin/blog/export" && request.method === "GET") return csvResponse("blog.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"));
-  if (path === "admin/news/state" && request.method === "GET") return response({ success: true, data: await getNewsState(), requestId: token(8) });
-  if (path === "admin/news/jobs" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-jobs.json", []), requestId: token(8) });
-  if (path === "admin/news/audits" && request.method === "GET") return response({ success: true, data: await readDataJson("data/news/news-publication-audits.json", []), requestId: token(8) });
-  if (path === "admin/news/sources" && request.method === "GET") return response({ success: true, data: (await getNewsState()).sources, requestId: token(8) });
-  if (path === "admin/news/sources" && request.method === "PUT") {
-    const body = await bodyJson(request);
-    const sources = (Array.isArray(body.sources) ? body.sources : []).map((source) => ({
-      ...source,
-      manualOverrideAt: new Date().toISOString()
-    }));
-    await writeDataJson("data/news/news-sources.json", sources);
-    await audit(session.user, "News Sources Updated", "NewsSource", "sources", "News source whitelist/blacklist settings updated");
-    return response({ success: true, data: sources, requestId: token(8) });
-  }
-  if (path === "admin/news/collect" && request.method === "POST") {
-    const result = await collectNewsCandidates();
-    await audit(session.user, "News Collect", "NewsJob", "collect", `Collected ${result.candidates.length} recent candidates`);
-    return response({ success: true, data: result, requestId: token(8) });
-  }
-  if ((path === "admin/news/publish" || path === "admin/news/retry" || path === "admin/news/generate") && request.method === "POST") {
-    const result = await runNewsAutomation();
-    if (result.published?.length) scheduleSitemapAudit({ source: "news-automation", action: "published", objectId: result.job?.id || "", url: "/en-za/news/" });
-    await audit(session.user, "News Automation Run", "NewsJob", result.job.id, `Published ${result.published.length} news articles`);
-    return response({ success: true, data: result, requestId: token(8) });
-  }
   if (path === "admin/news" && request.method === "PUT") {
     const body = await bodyJson(request);
     const slug = String(body.slug || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -1430,12 +1385,6 @@ async function handleAdmin(request, path) {
   if (path === "admin/media/export" && request.method === "GET") return csvResponse("media.csv", await readJson("data/media/assets.json"));
   if (path === "admin/users" && ["GET", "PUT", "POST"].includes(request.method)) return adminUsers(request, session);
   if (path === "admin/sync" && request.method === "GET") return response({ success: true, data: await adminSyncState(), requestId: token(8) });
-  if (path === "admin/sync/news" && request.method === "POST") {
-    const result = await runNewsAutomation();
-    if (result.published?.length) scheduleSitemapAudit({ source: "news-automation", action: "published", objectId: result.job?.id || "", url: "/en-za/news/" });
-    await audit(session.user, "Manual Sync", "Sync", "news", `Manual news sync published ${result.published.length}`);
-    return response({ success: true, data: result, requestId: token(8) });
-  }
   if (path === "admin/sync/google-seo" && request.method === "POST") {
     try {
       const result = await syncGoogleSeo(session.user);
@@ -1474,7 +1423,6 @@ async function dispatch(request, context) {
   if (path === "logout" && request.method === "POST") return handleLogout();
   if (path === "enquiries" && request.method === "POST") return handleEnquiries(request);
   if (path === "track" && request.method === "POST") return handleTrack(request);
-  if (path === "cron/news" && ["GET", "POST"].includes(request.method)) return handleCronNews(request);
   if (path === "cron/google-seo" && ["GET", "POST"].includes(request.method)) return handleCronGoogleSeo(request);
   if (path === "cron/gsc-inspection" && ["GET", "POST"].includes(request.method)) return handleCronGscInspection(request);
   if (path === "news" && request.method === "GET") return publicNewsList(request);

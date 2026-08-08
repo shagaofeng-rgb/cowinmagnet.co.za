@@ -7,8 +7,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test:news": "node ./tools/news-smoke-test.mjs",
-    "news:publish": "node ./tools/publish-scheduled-news.mjs",
     "test:sitemap": "node --test ./tools/sitemap-test.mjs",
     "test:schema": "node ./tools/structured-data-audit.mjs",
     "fix:schema": "node ./tools/structured-data-audit.mjs --fix",
@@ -18,12 +16,12 @@
     "generate:static": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/generate-static-site.ps1"
   },
   "dependencies": {
-    "next": "^16.1.6",
+    "next": "16.3.0",
     "pg": "^8.22.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "overrides": {
-    "postcss": "^8.5.10"
+    "postcss": "8.5.23"
   }
 }
