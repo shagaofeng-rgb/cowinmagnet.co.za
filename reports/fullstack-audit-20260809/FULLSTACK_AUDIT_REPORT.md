@@ -50,7 +50,15 @@ Generated: 2026-08-09
 
 - The only verified public translation in `data/translations/locales.json` is `en-za`.
 - Regional legacy routes exist but serve English technical fallback and are marked noindex by the dynamic route. They were not represented as completed translations, and no product facts were translated or invented.
-- No public placeholder, encoding-corruption or internal editorial metadata findings were reported by the language audit across 1,139 HTML files.
+- No public encoding-corruption or internal editorial metadata findings were reported by the language audit across 1,139 HTML files. The remaining development-style search empty-state heading was replaced with reader-facing wording in the final hardening pass.
+
+## Final hardening pass: 2026-08-09
+
+- Added a second deny-by-default safeguard to `app/[[...path]]/route.js`. The dedicated `app/data/[...path]` route remains the primary allowlist, while the static catch-all now also denies internal data, source, report, backup, build and deployment/configuration paths. `/data/search-index.json` remains the only intentionally public data file.
+- Production-mode local HTTP verification: `/en-za/`, `/en-za/search/` and `/data/search-index.json` returned `200`; `/data/cms/enquiries.json`, `/data/seo/google-search-console.json`, `/package.json` and the server log path returned `404` with `X-Robots-Tag: noindex, nofollow`.
+- UI regression checks passed for the home page at 1440px and 390px, products at 390px, an RCYD product page at 390px, News at 1440px and Contact at 390px: no horizontal overflow, broken images or captured runtime errors.
+- Products navigation regression passed on desktop and mobile: the text link targets `/en-za/products/`, while the independent menu control opens and closes correctly.
+- `npm run test:sitemap`: 12 passed, 0 failed. `npm run build`: passed, including Next.js TypeScript validation.
 
 ## Known limits and follow-up
 

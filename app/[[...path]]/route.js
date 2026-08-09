@@ -11,6 +11,33 @@ const root = /*turbopackIgnore: true*/ process.cwd();
 // deployment version. This prevents a cached legacy stylesheet from rendering
 // the current page structure as unstyled content after a release.
 const siteAssetVersion = "20260809-layout-r2";
+const privateRouteRoots = new Set([
+  ".audit-backups",
+  ".git",
+  ".next",
+  "app",
+  "coverage",
+  "data",
+  "node_modules",
+  "reports",
+  "scripts",
+  "tools"
+]);
+const privateRootFiles = new Set([
+  "agents.md",
+  "claude.md",
+  "next.config.mjs",
+  "package-lock.json",
+  "package.json",
+  "plan.md",
+  "product_ux_fix_report.md",
+  "image_audit_before.md",
+  "image_audit_after.md",
+  "proxy.js",
+  "readme.md",
+  "server.ps1",
+  "vercel.json"
+]);
 
 function withVersionedStylesheet(html) {
   return html.replace(/((?:\.\.\/|\/)?assets\/site\.css)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`);
@@ -20,6 +47,15 @@ function safePath(parts) {
   const relative = normalize(join(...parts.filter(Boolean)));
   if (relative.startsWith("..") || relative.includes(`..${sep}`)) return null;
   return join(/*turbopackIgnore: true*/ root, relative);
+}
+
+function isPrivateStaticPath(parts) {
+  const first = String(parts[0] || "").toLowerCase();
+  const requestPath = parts.join("/").toLowerCase();
+  if (requestPath === "data/search-index.json") return false;
+  if (privateRouteRoots.has(first) || first.startsWith(".")) return true;
+  if (parts.length === 1 && (privateRootFiles.has(first) || first.startsWith("server-"))) return true;
+  return false;
 }
 
 const types = new Map([
@@ -57,7 +93,7 @@ async function readRouteFile(parts) {
 export async function GET(_request, context) {
   const params = await context.params;
   const parts = params.path || [];
-  if (["reports", ".audit-backups"].includes(parts[0])) {
+  if (isPrivateStaticPath(parts)) {
     return new Response("Not found", { status: 404, headers: { "x-robots-tag": "noindex, nofollow" } });
   }
   if (!parts.length) {
