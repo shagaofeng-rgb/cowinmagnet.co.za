@@ -75,62 +75,12 @@ $editableProductFile = Join-Path $root "data\products\products.json"
 $syncedProductFile = Join-Path $root "data\source-sync\main-site-products.json"
 if (Test-Path -LiteralPath $editableProductFile) {
   $syncedProducts = @(Get-Content -LiteralPath $editableProductFile -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ })
-  $products = $syncedProducts | ForEach-Object {
-    $categorySlug = if ($_.categorySlug) { $_.categorySlug } else { Slug $_.category }
-    if ($categorySlug -eq "magnetic-rollers-bars-and-components") { $categorySlug = "magnetic-rollers-bars-components" }
-    $categoryName = if ($_.category) { $_.category } else { (Get-Culture).TextInfo.ToTitleCase($categorySlug.Replace('-',' ')) }
-    [pscustomobject]@{
-      categorySlug = $categorySlug
-      category = $categoryName
-      slug = $_.slug
-      name = $_.name
-      cleaning = if($_.cleaning){$_.cleaning}elseif($_.specifications.discharge -match "self"){"self-cleaning"}elseif($_.specifications.discharge -match "automatic"){"automatic"}else{"manual"}
-      layout = if($_.layout){$_.layout}elseif($_.specifications.installationDirection -match "inline"){"inline"}else{"cross-belt"}
-      applications = @($_.applications)
-      type = if($_.type){$_.type}else{$_.specifications.magneticSystemType}
-      image = if($_.image){$_.image}elseif($_.images -and $_.images.Count){$_.images[0]}else{"/assets/images/hero-mining-conveyor-magnet.webp"}
-      sourceUrl = $_.sourceUrl
-      sourceProductId = $_.sourceProductId
-      shortDescription = $_.shortDescription
-      fullDescription = $_.fullDescription
-      features = @($_.features)
-      importedAt = $_.importedAt
-      lastSyncedAt = $_.lastSyncedAt
-      syncStatus = $_.syncStatus
-      seoTitle = $_.seoTitle
-      seoDescription = $_.seoDescription
-      updatedAt = $_.updatedAt
-      canonicalUrl = $_.canonicalUrl
-    }
-  }
+  # Retain every synchronized field. Product pages must use main-site content,
+  # not a smaller local shape populated with generated fallback text.
+  $products = @($syncedProducts)
 } elseif (Test-Path -LiteralPath $syncedProductFile) {
   $syncedProducts = @(Get-Content -LiteralPath $syncedProductFile -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ })
-  $products = $syncedProducts | ForEach-Object {
-    $categorySlug = if ($_.categorySlug) { $_.categorySlug } else { Slug $_.category }
-    if ($categorySlug -eq "magnetic-rollers-bars-and-components") { $categorySlug = "magnetic-rollers-bars-components" }
-    $categoryName = if ($_.category) { $_.category } else { (Get-Culture).TextInfo.ToTitleCase($categorySlug.Replace('-',' ')) }
-    [pscustomobject]@{
-      categorySlug = $categorySlug
-      category = $categoryName
-      slug = $_.slug
-      name = $_.name
-      cleaning = if($_.specifications.discharge -match "self"){"self-cleaning"}elseif($_.specifications.discharge -match "automatic"){"automatic"}else{"manual"}
-      layout = if($_.specifications.installationDirection -match "inline"){"inline"}else{"cross-belt"}
-      applications = @($_.applications)
-      type = $_.specifications.magneticSystemType
-      image = if($_.images -and $_.images.Count){$_.images[0]}else{"/assets/images/hero-mining-conveyor-magnet.webp"}
-      sourceUrl = $_.sourceUrl
-      sourceProductId = $_.sourceProductId
-      shortDescription = $_.shortDescription
-      fullDescription = $_.fullDescription
-      features = @($_.features)
-      importedAt = $_.importedAt
-      lastSyncedAt = $_.lastSyncedAt
-      syncStatus = $_.syncStatus
-      seoTitle = $_.seoTitle
-      seoDescription = $_.seoDescription
-    }
-  }
+  $products = @($syncedProducts)
 }
 
 $sortIndex = 0
@@ -139,48 +89,10 @@ $products = @($products | ForEach-Object {
   $p = $_
   $productId = if ($p.productId) { $p.productId } elseif ($p.sourceProductId) { "CW-AF-" + $p.sourceProductId } else { "CW-AF-" + $p.slug }
   $sku = if ($p.sku) { $p.sku } else { ($p.slug.ToUpperInvariant() -replace '[^A-Z0-9]+','-') }
-  $gallery = @()
-  if ($p.gallery) { $gallery += @($p.gallery) }
-  if ($p.image) { $gallery += $p.image }
-  $gallery += "/assets/images/hero-mining-conveyor-magnet.webp"
+  $gallery = @($p.gallery) + @($p.images) + @($p.image)
   $gallery = @($gallery | Where-Object { $_ } | Select-Object -Unique)
-  $technicalSpecifications = @(
-    [pscustomobject]@{ group="Magnetic System"; parameter="Magnetic Type"; value=$p.type; unit=""; sortOrder=10; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Magnetic System"; parameter="Magnetic Field Strength"; value="Confirm by selected model and application"; unit=""; sortOrder=20; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Conveyor Conditions"; parameter="Belt Width"; value="Confirm actual conveyor width"; unit="mm"; sortOrder=30; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Conveyor Conditions"; parameter="Belt Speed"; value="Confirm actual operating speed"; unit="m/s"; sortOrder=40; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Conveyor Conditions"; parameter="Material Layer Thickness"; value="Confirm burden depth"; unit="mm"; sortOrder=50; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Installation"; parameter="Cross-Belt or Inline"; value=$p.layout; unit=""; sortOrder=60; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Electrical"; parameter="Voltage"; value="Confirm site voltage"; unit="V"; sortOrder=70; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Electrical"; parameter="Frequency"; value="Confirm site frequency"; unit="Hz"; sortOrder=80; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Environment"; parameter="Indoor or Outdoor"; value="Confirm site environment"; unit=""; sortOrder=90; language="en-za"; visible=$true },
-    [pscustomobject]@{ group="Environment"; parameter="Coastal Environment"; value="Confirm humidity and corrosion exposure"; unit=""; sortOrder=100; language="en-za"; visible=$true }
-  )
-  $translations = [pscustomobject]@{
-    "en-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription=$p.shortDescription; fullDescription=$p.fullDescription; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "af-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "zu-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "xh-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "st-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "tn-za"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@($p.features); applications=@($p.applications); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "fr-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "pt-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "sw-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-    "ar-africa"=[pscustomobject]@{ name=$p.name; slug=$p.slug; shortDescription="English product information is currently provided for technical accuracy."; fullDescription="Product specifications and selection guidance are currently available in English."; features=@(); applications=@(); faq=@(); seoTitle=$p.seoTitle; seoDescription=$p.seoDescription }
-  }
   foreach($member in @(
-    @("productId",$productId),@("sku",$sku),@("englishProductName",$p.name),@("translations",$translations),@("mainImage",$p.image),@("gallery",$gallery),
-    @("workingPrinciple","The magnetic field attracts ferrous material from the material stream. Final configuration depends on duty, burden depth, installation height and discharge method."),
-    @("technicalSpecifications",$technicalSpecifications),
-    @("installationOptions",@("Cross-belt installation","Inline installation","Suspended over conveyor","Transfer point review")),
-    @("optionalConfigurations",@("Manual or self-cleaning discharge","Outdoor protection","Dust protection","Corrosion-resistant options","Control cabinet for electromagnetic models")),
-    @("operatingConditions",@("High dust","Outdoor installation","High ambient temperature","Heavy loads","Remote mining sites","Coastal humidity","Voltage fluctuation review")),
-    @("maintenanceInformation","Maintenance planning should cover safe access, clearance inspection, belt or discharge system checks and electrical inspection where applicable."),
-    @("spareParts","Spare parts can be coordinated after selected model and project configuration are confirmed."),
-    @("packagingInformation","Export packing and pre-shipment checks can be coordinated according to confirmed product model."),
-    @("shippingInformation","Export documentation and logistics communication can be coordinated from China. No local stock claim is made."),
-    @("downloads",@()),@("relatedProducts",@()),@("relatedIndustries",@("Mining","Coal Handling","Conveyor Systems")),@("relatedSolutions",@("Tramp Iron Removal","Crusher Protection")),@("relatedMarkets",@("South Africa","Botswana","Zambia")),
-    @("seoKeywords",@("magnetic separator South Africa","overband magnet South Africa","conveyor belt magnet South Africa","tramp iron removal South Africa")),
+    @("productId",$productId),@("sku",$sku),@("englishProductName",$p.name),@("mainImage",$p.image),@("gallery",$gallery),
     @("canonicalUrl",$(if($p.canonicalUrl){$p.canonicalUrl}else{"/en-za/products/$($p.categorySlug)/$($p.slug)/"})),@("openGraphImage",$p.image),@("productStatus","published"),@("sortOrder",$sortIndex),@("featured",($sortIndex -le 60)),
     @("createdAt",$(if($p.importedAt){$p.importedAt}else{(Get-Date).ToUniversalTime().ToString("o")})),@("updatedAt",$(if($p.updatedAt){$p.updatedAt}else{(Get-Date).ToUniversalTime().ToString("o")}))
   )) {
@@ -375,9 +287,9 @@ $homePreload
     <section id="mega-products" class="mega-panel" data-mega-panel hidden>
       <div class="mega-grid">
         <div class="mega-feature"><img src="/assets/images/product-permanent-overband-magnet.webp" alt="Overband magnetic separator"><h3>Product selection support</h3><p>Compare permanent, electromagnetic and component options for African conveyor applications.</p><a class="button primary" href="$base/products/">View Products</a></div>
-        <nav class="mega-col"><h3>Iron Removers</h3><a href="$base/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/">RCYD Permanent Self-Dumping Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/">RCDD Electromagnetic Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/suspended-permanent-magnetic-separator/">Suspended Permanent Magnetic Separator</a><a href="$base/products/suspended-and-self-unloading-iron-removers/">All Iron Removers</a></nav>
+        <nav class="mega-col"><h3>Iron Removers</h3><a href="$base/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/">RCYD Permanent Self-Dumping Iron Remover</a><a href="$base/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/">RCDD Electromagnetic Iron Remover</a><a href="$base/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/">Suspended Permanent Magnetic Separator</a><a href="$base/products/suspended-and-self-unloading-iron-removers/">All Iron Removers</a></nav>
         <nav class="mega-col"><h3>Separation and Sorting</h3><a href="$base/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/">Belt High-Gradient Magnetic Separator</a><a href="$base/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/">Eccentric Eddy Current Separator</a><a href="$base/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/">GLS Channel Metal Separator</a><a href="$base/products/magnetic-separation-equipment/">All Separation Equipment</a></nav>
-        <nav class="mega-col"><h3>Components and Filters</h3><a href="$base/products/magnetic-separation-equipment/magnetic-head-pulley/">Magnetic Head Pulley</a><a href="$base/products/magnetic-separation-equipment/drum-magnet/">Drum Magnet</a><a href="$base/products/magnetic-components-and-filters/magnetic-grid/">Magnetic Grid</a><a href="$base/products/">All Products</a></nav>
+        <nav class="mega-col"><h3>Components and Filters</h3><a href="$base/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/">Magnetic Head Pulley</a><a href="$base/products/metal-detection-and-recycling-sorting/drum-magnet/">Drum Magnet</a><a href="$base/products/magnetic-components-and-filters/magnetic-grid/">Magnetic Grid</a><a href="$base/products/">All Products</a></nav>
       </div>
     </section>
     <section id="mega-industries" class="mega-panel" data-mega-panel hidden>
@@ -488,6 +400,11 @@ function CardGrid($items, $hrefPrefix, $kind) {
   }) -join "") + '</div>'
 }
 
+<#
+Retired automatic product-profile generator. Product pages now render only
+the verified public content synchronised from www.cowinmagnet.com.
+#>
+<#
 function Get-ProductProfile($product) {
   $text = ("$($product.slug) $($product.name)").ToLowerInvariant()
   $family = "general-magnetic-equipment"
@@ -675,23 +592,44 @@ function Set-ProductTruthData($product) {
     $product | Add-Member -NotePropertyName $key -NotePropertyValue $values[$key] -Force
   }
 }
-
-foreach($product in $products) {
-  Set-ProductTruthData $product
-}
+#>
 
 function ProductCards($items) {
   '<div class="grid">' + (($items | ForEach-Object {
-    $profile = Get-ProductProfile $_
-    "<a class='card' data-product-card data-type='$($profile.cardType)' data-cleaning='$($profile.cleaning)' href='$base/products/$($_.categorySlug)/$($_.slug)/'><img src='$($_.image)' alt='$($_.name) image' loading='lazy'><p class='eyebrow'>$($_.category)</p><h3>$($_.name)</h3><p>$($profile.overview)</p><div class='tag-row'><span class='tag'>$($profile.cardType)</span><span class='tag'>$($profile.cleaning)</span></div></a>"
+    "<a class='card' data-product-card href='$base/products/$($_.categorySlug)/$($_.slug)/'><img src='$($_.image)' alt='$(HtmlEncode $_.name)' loading='lazy'><p class='eyebrow'>$(HtmlEncode $_.category)</p><h3>$(HtmlEncode $_.name)</h3><p>$(HtmlEncode $_.shortDescription)</p></a>"
   }) -join "") + '</div>'
 }
 
 function RelatedProducts($product, $allProducts) {
-  $profile = Get-ProductProfile $product
-  $sameFamily = @($allProducts | Where-Object { $_.slug -ne $product.slug -and (Get-ProductProfile $_).family -eq $profile.family })
   $sameCategory = @($allProducts | Where-Object { $_.slug -ne $product.slug -and $_.categorySlug -eq $product.categorySlug })
-  @($sameFamily + $sameCategory | Sort-Object slug -Unique | Select-Object -First 3)
+  @($sameCategory | Sort-Object sortOrder, slug | Select-Object -First 3)
+}
+
+function ProductGallery($product) {
+  $images = @($product.gallery | Where-Object { $_ } | Select-Object -Unique)
+  if (-not $images.Count) { return '' }
+  $thumbs = ($images | ForEach-Object -Begin {$index = 0} -Process {
+    $index++
+    $current = if ($index -eq 1) { " aria-current='true'" } else { '' }
+    "<button type='button' data-gallery-thumb data-src='$_'$current aria-label='Show image $index of $(HtmlEncode $product.name)'><img src='$_' alt='$(HtmlEncode $product.name) view $index' loading='lazy'></button>"
+  }) -join ''
+  return "<div class='product-gallery' data-gallery><img class='gallery-main' data-gallery-main src='$($images[0])' alt='$(HtmlEncode $product.name)' loading='eager' decoding='async'><div class='gallery-thumbs'>$thumbs</div></div>"
+}
+
+function SourceProductSections($product) {
+  $sections = @($product.sourceContent.sections | Where-Object { $_.title -and ($_.paragraphs.Count -or $_.items.Count -or $_.cards.Count -or $_.rows.Count) })
+  ($sections | ForEach-Object {
+    $section = $_
+    $intro = if($section.introduction){"<p class='product-section-intro'>$(HtmlEncode $section.introduction)</p>"}else{''}
+    $paragraphs = @($section.paragraphs | Where-Object { $_ -and $_ -ne $section.introduction } | Select-Object -Unique | ForEach-Object { "<p>$(HtmlEncode $_)</p>" }) -join ''
+    $cards = @($section.cards | Where-Object { $_.title -or $_.description } | ForEach-Object { "<article><span>$(HtmlEncode $_.title)</span><p>$(HtmlEncode $_.description)</p></article>" })
+    $cardHtml = if($cards.Count){"<div class='product-source-cards'>$($cards -join '')</div>"}else{''}
+    $items = @($section.items | Where-Object { $_ } | Select-Object -Unique | ForEach-Object { "<li>$(HtmlEncode $_)</li>" })
+    $itemHtml = if($items.Count){"<ul class='product-source-list'>$($items -join '')</ul>"}else{''}
+    $rows = @($section.rows | Where-Object { $_.Count -ge 2 } | ForEach-Object { "<div role='row'><span>$(HtmlEncode $_[0])</span><strong>$(HtmlEncode $_[1])</strong>$(if($_.Count -gt 2){"<span>$(HtmlEncode $_[2])</span>"})</div>" })
+    $rowHtml = if($rows.Count){"<div class='product-source-specifications' role='table'>$($rows -join '')</div>"}else{''}
+    "<section id='product-$($section.key)' class='product-source-section'><div class='product-source-heading'>$(if($section.eyebrow){"<p class='eyebrow'>$(HtmlEncode $section.eyebrow)</p>"})<h2>$(HtmlEncode $section.title)</h2>$intro</div><div class='product-source-body'>$paragraphs$cardHtml$itemHtml$rowHtml</div></section>"
+  }) -join ''
 }
 
 function FAQ($pairs) {
@@ -730,20 +668,11 @@ foreach($cat in $categories) {
   $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/products/'>Products</a> / $($cat.name)" "Product Category" $cat.name $cat.description) + "<section class='section'>$filter$(ProductCards $items)</section>"
   WritePage "$base/products/$($cat.slug)/" "$($cat.name) | Cowinmagnet South Africa" "$($cat.description) Product category for African mining and industrial applications." $cat.name $body
   foreach($product in $items) {
-    $profile = Get-ProductProfile $product
-    $rows = ($profile.specs | ForEach-Object { "<tr><th>$($_[0])</th><td>$($_[1])</td></tr>" }) -join ""
-    $gallery = "<div data-gallery><img class='gallery-main' data-gallery-main src='$($product.image)' alt='$($product.name) product image'><div class='gallery-thumbs'><button type='button' data-gallery-thumb data-src='$($product.image)' aria-current='true'><img src='$($product.image)' alt='$($product.name) thumbnail'></button></div></div>"
-    $features = ($profile.options | ForEach-Object { "<li>$_</li>" }) -join ""
-    $applications = ($profile.applications | ForEach-Object { "<li>$_</li>" }) -join ""
-    $selection = ($profile.selection | Select-Object -Unique | ForEach-Object { "<li>$_</li>" }) -join ""
     $relatedProducts = RelatedProducts $product $products
-    $relatedIndustries = @($industries | Where-Object { $profile.industries -contains $_.slug } | Select-Object -First 3)
-    $relatedSolutions = @($solutions | Where-Object { $profile.solutions -contains $_.slug } | Select-Object -First 3)
-    $faqPairs = @(@("What information is needed for selection?", "Provide the process, material, capacity, installation space and the selection items listed on this page."), @("Can this product be used outdoors?", "Outdoor suitability depends on the verified model and the dust, rain, humidity, corrosion and electrical protection requirements."), @("How can I request a configuration?", "Send the product name and process conditions through the enquiry form or WhatsApp so the required configuration can be reviewed."))
     $productUrl = "$siteUrl$base/products/$($cat.slug)/$($product.slug)/"
     # Do not emit Product rich-result markup without verified offer, inventory or review data.
     $productSchema = @{ "@context"="https://schema.org"; "@graph"=@(
-      @{ "@type"="WebPage"; name=$product.name; description=$profile.overview; primaryImageOfPage="$siteUrl$($product.image)"; url=$productUrl; inLanguage="en-ZA" },
+      @{ "@type"="WebPage"; name=$product.name; description=$product.shortDescription; primaryImageOfPage="$siteUrl$($product.image)"; url=$productUrl; inLanguage="en-ZA" },
       @{ "@type"="BreadcrumbList"; itemListElement=@(
         @{ "@type"="ListItem"; position=1; name="Home"; item="$siteUrl$base/" },
         @{ "@type"="ListItem"; position=2; name="Products"; item="$siteUrl$base/products/" },
@@ -751,38 +680,22 @@ foreach($cat in $categories) {
         @{ "@type"="ListItem"; position=4; name=$product.name; item=$productUrl }
       ) }
     ) } | ConvertTo-Json -Depth 8 -Compress
-    $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/products/'>Products</a> / <a href='$base/products/$($cat.slug)/'>$($cat.name)</a> / $($product.name)" "Product" $product.name "Selection support for $($product.name) in South Africa and African mining and industrial markets.") +
-    "<section class='section layout'><article class='panel'><h2>Product Overview</h2><p>$($profile.overview)</p><h2>Why this configuration</h2><p>$($profile.installation)</p><h2>Available options</h2><ul class='check-list'>$features</ul></article><aside><h2>Product Images</h2>$gallery</aside></section>" +
-    "<section class='section band'><div class='section-heading'><h2>Technical Specifications</h2><p>Only product-family fields are shown. Confirm final values with COWIN engineering before quotation.</p></div><div class='table-wrap'><table><tbody>$rows</tbody></table></div></section>" +
-    "<section class='section layout'><article class='panel'><h2>How it works</h2><p>$($profile.working)</p><h2>Typical applications and materials</h2><ul class='check-list'>$applications</ul><h2>Installation position and process flow</h2><p>$($profile.installation)</p><h2>How to select</h2><ul class='check-list'>$selection</ul><h2>South African and African project conditions</h2><p>Confirm dust, weather exposure, humidity, corrosion, power supply where applicable, logistics and maintenance access for the actual project. This site does not claim local stock, a South African office or a local installation team.</p></article><aside class='panel'><h3>Request a Quote</h3><p>Send the process details needed for selection. Final model and values are confirmed by COWIN engineering.</p><a class='button primary' href='$base/request-a-quote/'>Request a Quote</a><a class='button secondary' href='https://wa.me/8615665135205?text=Hello%2C%20I%20am%20interested%20in%20this%20equipment.%0AProduct%3A%20$($product.name)%0ACountry%3A%0ACompany%3A%0AProcess%20or%20material%3A'>Talk to an Engineer</a></aside></section>" +
-    "<section class='section band'><div class='section-heading'><h2>FAQ</h2></div>$(FAQ $faqPairs)</section>" +
-    $(if($relatedProducts.Count){"<section class='section'><div class='section-heading'><h2>Related Products</h2></div>$(ProductCards $relatedProducts)</section>"}else{""}) +
-    $(if($relatedIndustries.Count){"<section class='section band'><div class='section-heading'><h2>Related Industries</h2></div>$(CardGrid $relatedIndustries "$base/industries" "Industry")</section>"}else{""}) +
-    $(if($relatedSolutions.Count){"<section class='section'><div class='section-heading'><h2>Related Solutions</h2></div>$(CardGrid $relatedSolutions "$base/solutions" "Solution")</section>"}else{""})
+    $gallery = ProductGallery $product
+    $heroFacts = @($product.sourceContent.hero.quickFacts | ForEach-Object { "<div><dt>$(HtmlEncode $_.label)</dt><dd>$(HtmlEncode $_.value)</dd></div>" }) -join ''
+    $heroHighlights = @($product.sourceContent.hero.highlights | ForEach-Object { "<li>$(HtmlEncode $_)</li>" }) -join ''
+    $sections = SourceProductSections $product
+    $sectionNav = @($product.sourceContent.sections | Where-Object { $_.title -and ($_.paragraphs.Count -or $_.items.Count -or $_.cards.Count -or $_.rows.Count) } | ForEach-Object { "<a href='#product-$($_.key)'>$(HtmlEncode $_.title)</a>" }) -join ''
+    $quoteLink = "$base/request-a-quote/?product=$([uri]::EscapeDataString($product.name))"
+    $whatsAppMessage = [uri]::EscapeDataString("Hello COWIN MAGNET, I am reviewing $($product.name). Please help with configuration.")
+    $body = "<section class='product-page-hero'><nav class='breadcrumbs'><a href='$base/'>Home</a> / <a href='$base/products/'>Products</a> / <a href='$base/products/$($cat.slug)/'>$(HtmlEncode $cat.name)</a> / <span>$(HtmlEncode $product.name)</span></nav><div class='product-hero-grid'><div class='product-hero-media'>$gallery</div><div class='product-hero-copy'><p class='eyebrow'>$(HtmlEncode $cat.name)</p><h1>$(HtmlEncode $product.name)</h1><p>$(HtmlEncode $product.sourceContent.hero.summary)</p>$(if($heroHighlights){"<ul class='product-hero-highlights'>$heroHighlights</ul>"})<div class='product-hero-actions'><a class='button primary' href='$quoteLink'>Request a Quote</a><a class='button secondary' href='https://wa.me/8615665135205?text=$whatsAppMessage' target='_blank' rel='noopener noreferrer nofollow'>Talk to an Engineer</a></div>$(if($heroFacts){"<dl class='product-quick-facts'>$heroFacts</dl>"})</div></div></section><section class='product-detail-layout'><aside class='product-detail-nav'><p>On this page</p>$sectionNav</aside><article class='product-detail-content'>$sections$(if($relatedProducts.Count){"<section class='product-source-section'><div class='product-source-heading'><p class='eyebrow'>More equipment</p><h2>Related products</h2></div>$(ProductCards $relatedProducts)</section>"})</article><aside class='product-quote-panel'><p class='eyebrow'>Project inquiry</p><h2>Request product information</h2><p>Share your process details and the product name will be included with the inquiry.</p><a class='button primary' href='$quoteLink'>Request a Quote</a><a class='button secondary' href='mailto:davidsha@cowinmagnet.com?subject=$([uri]::EscapeDataString($product.name))'>Email COWIN MAGNET</a></aside></section>"
     # Quote-only configured equipment has no public price or verified reviews, so it is not eligible for Product snippets.
-    WritePage "$base/products/$($cat.slug)/$($product.slug)/" "$($product.name) | Cowinmagnet South Africa" "$($product.name) for the relevant South African and African industrial application. Final configuration is confirmed against project conditions." $product.name $body "<script type='application/ld+json'>$productSchema</script>"
-    continue
-    $specRows = @("Magnetic system type|$($product.type)","Magnetic field strength|Project-specific confirmation required","Suspension height|Confirm from belt surface and material layer depth","Belt width|Confirm actual conveyor width","Belt speed|Confirm actual operating speed","Material layer thickness|Confirm burden depth","Material particle size|Confirm maximum lump size","Installation direction|$($product.layout)","Manual or automatic discharge|$($product.cleaning)","Drive motor power|Configured by model","Magnet power|Configured by model","Cooling method|Permanent, air, oil or self-cooled depending on product","Voltage|Confirm site voltage","Frequency|Confirm site frequency","Number of phases|Confirm site supply","Protection rating|Outdoor configuration available after confirmation","Ambient temperature|Confirm maximum site temperature","Altitude|Confirm site altitude","Equipment dimensions|Configured by selected model","Equipment weight|Configured by selected model","Control cabinet|Optional for electromagnetic models","Outdoor configuration|Available after environmental review","Corrosion-resistant options|Available for coastal or corrosive sites")
-    $rows = ($specRows | ForEach-Object { $r=$_.Split("|"); "<tr><th>$($r[0])</th><td>$($r[1])</td></tr>" }) -join ""
-    $gallery = "<div data-gallery><img class='gallery-main' data-gallery-main src='$($product.image)' alt='$($product.name) main image'><div class='gallery-thumbs'><button type='button' data-gallery-thumb data-src='$($product.image)' aria-current='true'><img src='$($product.image)' alt='Thumbnail'></button><button type='button' data-gallery-thumb data-src='/assets/images/hero-mining-conveyor-magnet.webp'><img src='/assets/images/hero-mining-conveyor-magnet.webp' alt='Mining thumbnail'></button><button type='button' data-gallery-thumb data-src='/assets/images/application-quarry-aggregate.webp'><img src='/assets/images/application-quarry-aggregate.webp' alt='Quarry thumbnail'></button></div></div>"
-    $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/products/'>Products</a> / <a href='$base/products/$($cat.slug)/'>$($cat.name)</a> / $($product.name)" "Product" $product.name "Selection support for $($product.name) in South Africa and African mining and industrial markets.") +
-    "<section class='section layout'><article class='panel'><h2>Product Overview</h2><p>$($product.name) is reviewed for conveyor tramp iron removal, crusher protection and material separation projects. Final configuration must be confirmed according to actual conveyor and site conditions.</p><h2>Key Features</h2><ul class='check-list'><li>Application-led product selection</li><li>$($product.layout) installation review</li><li>$($product.cleaning) discharge option</li><li>Support for export documentation and logistics coordination</li></ul></article><aside><h2>Product Images</h2>$gallery</aside></section>" +
-    "<section class='section band'><div class='section-heading'><h2>Technical Specifications</h2><p>Values are not invented. Confirm project data before quotation.</p></div><div class='table-wrap'><table><tbody>$rows</tbody></table></div></section>" +
-    "<section class='section layout'><article class='panel'><h2>Working Principle</h2><p>The magnetic field attracts ferrous material from the conveyor stream. Discharge and installation method depend on the selected product family and operating duty.</p><h2>Main Applications</h2><ul class='check-list'>$(($product.applications | ForEach-Object {"<li>$_</li>"}) -join '')</ul><h2>Installation Options</h2><p>Cross-belt and inline layouts must be checked against conveyor structure, belt direction, available suspension height and maintenance access.</p><h2>Product Selection Guide</h2><p>Confirm material type, conveyor width, belt speed, material layer thickness, suspension height, maximum tramp iron size, operating hours, voltage, frequency, dust level, humidity and maintenance access.</p><h2>Optional Configurations</h2><ul class='check-list'><li>Manual or self-cleaning discharge</li><li>Cross-belt or inline arrangement</li><li>Outdoor protection and dust protection</li><li>Corrosion-resistant options for coastal or corrosive environments</li><li>Control cabinet options for electromagnetic models</li></ul><h2>South African Operating Conditions</h2><p>High dust, outdoor exposure, heat, remote sites, coastal humidity and voltage fluctuations require project-specific confirmation.</p><h2>Maintenance</h2><p>Maintenance planning should cover belt inspection, separator clearance, cleaning mechanism checks, electrical inspection and safe access.</p><h2>Spare Parts</h2><p>Spare parts support can be coordinated after the selected product model and project configuration are confirmed.</p><h2>Packaging and Shipping</h2><p>Cowinmagnet can coordinate pre-shipment checks, export documentation, packing communication and logistics support.</p></article><aside class='panel'><h3>Downloads</h3><p>PDF documents are configurable. Verified product documents are available on request after model confirmation.</p><h3>Request a Quote</h3><a class='button primary' href='$base/request-a-quote/'>Request a Quote</a><a class='button secondary' href='https://wa.me/8615665135205?text=Hello%2C%20I%20am%20interested%20in%20this%20magnetic%20separation%20equipment.%0AProduct%3A%20$($product.name)%0ACountry%3A%0ACompany%3A%0AMaterial%3A%0AConveyor%20belt%20width%3A%0ASuspension%20height%3A'>WhatsApp</a></aside></section>" +
-    "<section class='section band'><div class='section-heading'><h2>FAQ</h2></div>$(FAQ @(@('Can this product be used outdoors?','Outdoor use depends on dust, rain, humidity, corrosion and electrical protection requirements.'),@('Is this factory direct?','No factory-direct claim is made on this regional site.'),@('What should I send for quotation?','Send material type, conveyor width, belt speed, burden depth, capacity, suspension height and tramp iron size.')))</section>" +
-    "<section class='section'><div class='section-heading'><h2>Related Products</h2></div>$(ProductCards ($products | Where-Object slug -ne $product.slug | Select-Object -First 3))</section><section class='section band'><div class='section-heading'><h2>Related Industries</h2></div>$(CardGrid ($industries | Select-Object -First 3) "$base/industries" "Industry")</section><section class='section'><div class='section-heading'><h2>Related Solutions</h2></div>$(CardGrid ($solutions | Select-Object -First 3) "$base/solutions" "Solution")</section>"
-    # Quote-only configured equipment has no public price or verified reviews, so it is not eligible for Product snippets.
-    WritePage "$base/products/$($cat.slug)/$($product.slug)/" "$($product.name) | Cowinmagnet South Africa" "$($product.name) for mining, conveyor and industrial magnetic separation applications in South Africa and Africa." $product.name $body
+    WritePage "$base/products/$($cat.slug)/$($product.slug)/" "$($product.name) | COWIN MAGNET South Africa" $product.seoDescription $product.name $body "<script type='application/ld+json'>$productSchema</script>"
   }
 }
 
-$metalDetectorProducts = @($products | Where-Object { (Get-ProductProfile $_).family -eq "metal-detector" })
-$conveyorDetectorBody =
-  (PageHero "<a href='$base/'>Home</a> / <a href='$base/products/'>Products</a> / Conveyor Metal Detector" "Product Selection" "Conveyor Metal Detector" "Select a conveyor metal detector by aperture, target metal, belt geometry and the required alarm, stop or reject response.") +
-  "<section class='section layout'><article class='panel'><h2>Where a conveyor metal detector fits</h2><p>Conveyor metal detectors are used where unwanted metal must be detected before it reaches crushers, screens or downstream process equipment. The selected unit must match the conveyor geometry, material burden and required process response.</p><h2>Selection information to provide</h2><ul class='check-list'><li>Detector aperture and conveyor dimensions</li><li>Material depth, belt speed and target metal</li><li>Required alarm, stop or reject interface</li><li>Dust, moisture, temperature and electrical conditions</li></ul><h2>Available equipment</h2><p>Only the real detector models listed below are presented. Final sensitivity and integration are confirmed by COWIN engineering.</p></article><aside class='panel'><h3>Talk to an Engineer</h3><p>Share the conveyor layout and target contamination details for a configuration review.</p><a class='button primary' href='$base/request-a-quote/'>Request a Quote</a></aside></section>" +
-  "<section class='section band'><div class='section-heading'><h2>Conveyor Metal Detector Models</h2></div>$(ProductCards $metalDetectorProducts)</section>" +
-  "<section class='section'><div class='section-heading'><h2>Related Applications</h2></div>$(CardGrid ($industries | Where-Object { $_.slug -in @('coal-handling-and-washing','aggregates-quarries-and-cement','mining-and-mineral-processing') }) "$base/industries" "Industry")</section>"
-WritePage "$base/products/conveyor-metal-detector/" "Conveyor Metal Detector | Cowinmagnet South Africa" "Conveyor metal detector selection for crusher protection and bulk material handling projects in South Africa and Africa." "Conveyor Metal Detector" $conveyorDetectorBody
+$metalDetectorProducts = @($products | Where-Object { "$($_.name) $($_.category)" -match '(?i)metal detector|detector' })
+$conveyorDetectorBody = (PageHero "<a href='$base/'>Home</a> / <a href='$base/products/'>Products</a> / Conveyor Metal Detector" "Products" "Conveyor Metal Detector" "Current COWIN MAGNET product records in this equipment group.") + "<section class='section'>$(ProductCards $metalDetectorProducts)</section>"
+WritePage "$base/products/conveyor-metal-detector/" "Conveyor Metal Detector | COWIN MAGNET South Africa" "Current COWIN MAGNET conveyor metal detector product records." "Conveyor Metal Detector" $conveyorDetectorBody
 
 WritePage "$base/industries/" "Industries | Magnetic Separator Applications South Africa" "Explore mining, coal, iron ore, manganese, chrome, quarrying, recycling, cement and conveyor magnetic separator applications." "Industries" ((PageHero "<a href='$base/'>Home</a> / Industries" "Industries" "Magnetic Separator Applications by Industry" "Independent industry pages for African operating conditions.") + "<section class='section'>$(CardGrid $industries "$base/industries" "Industry")</section>")
 foreach($ind in $industries) {
@@ -827,8 +740,8 @@ foreach($a in $articles) {
   $articleDate = ArticleDateText $a
   $articleContent = if($a.content){SafeArticleHtml $a.content}else{"<h2>Overview</h2><p>$($a.summary) Equipment must be selected according to verified operating data, not generic assumptions.</p><h2>Selection factors</h2><ul class='check-list'><li>Material type and conveyor data</li><li>Installation position and available clearance</li><li>Dust, heat, humidity and voltage conditions</li><li>Maintenance access and spare parts planning</li></ul>"}
   $articleCover = ArticleCover $a
-  $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section layout'><article class='panel article-prose'><p><strong>Date:</strong> $articleDate</p>$articleCover$articleContent</article><aside class='panel'><h3>Related products</h3><a href='$base/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/'>Permanent Overband Magnetic Separator</a><a class='button primary' href='$base/request-a-quote/'>Enquire</a></aside></section>"
-  $body = $body.Replace("Local publishing note", "Selection guidance").Replace("This page structure is ready for South Africa and Africa market news. Replace this draft article body with verified local news content when available.", "Use verified operating data and a project-specific engineering review before selecting equipment.").Replace("$base/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/", "$base/products/suspended-and-self-unloading-iron-removers/permanent-overband-magnetic-separator/")
+  $body = (PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section layout'><article class='panel article-prose'><p><strong>Date:</strong> $articleDate</p>$articleCover$articleContent</article><aside class='panel'><h3>Related products</h3><a href='$base/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/'>Permanent Overband Magnetic Separator</a><a class='button primary' href='$base/request-a-quote/'>Enquire</a></aside></section>"
+  $body = $body.Replace("Local publishing note", "Selection guidance").Replace("This page structure is ready for South Africa and Africa market news. Replace this draft article body with verified local news content when available.", "Use verified operating data and a project-specific engineering review before selecting equipment.")
   WritePage "$base/news/$($a.slug)/" "$($a.title) | Cowinmagnet News" "$($a.summary)" $a.title $body
   WritePage "$base/blog/$($a.slug)/" "$($a.title) | Cowinmagnet News" "$($a.summary)" $a.title ((PageHero "<a href='$base/'>Home</a> / <a href='$base/news/'>News</a> / $($a.title)" "News" $a.title $a.summary) + "<section class='section'><article class='panel'><p>This legacy article URL is kept for older links.</p><a class='button primary' href='$base/news/$($a.slug)/'>Open current News page</a></article></section>")
 }

@@ -14,7 +14,7 @@
     "fix:schema": "node ./tools/structured-data-audit.mjs --fix",
     "sitemap:generate": "node ./tools/sitemap-generate.mjs",
     "gsc:inspect": "node ./tools/gsc-url-inspection.mjs",
-    "sync:products": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/sync-main-products.ps1",
+    "sync:products": "node ./tools/sync-main-products.mjs",
     "generate:static": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/generate-static-site.ps1"
   },
   "dependencies": {
