@@ -69,6 +69,14 @@ Generated: 2026-08-09
 - `README.md`
 - `tools/cdp-navigation-check.mjs`
 
+## Production verification after deployment
+
+- Deployment `dpl_DAS5EbiCqtugHaKQxwuuWnt4Gr4n` for commit `5a6ef9fe` reached `READY`.
+- `https://cowinmagnet.co.za/en-za/`, `/en-za/products/`, `/en-za/news/`, `/en-za/contact/` and `/en-za/request-a-quote/` each returned `200`.
+- `https://cowinmagnet.co.za/en-za` returned one `308` redirect to `/en-za/`.
+- `/data/search-index.json` remained public (`200`); the tested SEO, News automation and backup paths returned `404`.
+- Vercel reported no error or fatal serverless logs for this deployment during the post-deploy check.
+
 ## Screenshots and browser evidence
 
 - `home-1440.png`, `home-390.png`, `products-390.png`, `product-390-final.png`, `news-1280-final.png`, `contact-390.png`, `quote-390-final.png`, and `not-found-390.png` are stored beside this report.
