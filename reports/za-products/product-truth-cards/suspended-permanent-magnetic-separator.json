@@ -1,0 +1,69 @@
+{
+  "productName": "Suspended Permanent Magnetic Separator",
+  "series": "Suspended Permanent Magnetic Separator",
+  "model": null,
+  "productType": "Permanent magnetic separator",
+  "magnetType": "permanent",
+  "cleaningMode": "manual",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Suitable belt width",
+    "Recommended suspension height",
+    "Material burden depth",
+    "Magnetic circuit",
+    "Cleaning arrangement",
+    "Installation direction",
+    "Overall dimensions",
+    "Weight",
+    "Test method"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mining and mineral-processing conveyor lines",
+    "Coal handling and washing plants",
+    "Quarry and cement raw-material conveyors",
+    "Ports and bulk-material handling"
+  ],
+  "selectionInputs": [
+    "Conveyor belt width, speed and material burden depth",
+    "Suspension height and available structural support",
+    "Expected size and frequency of ferromagnetic tramp material",
+    "Safe access and isolation procedure for manual cleaning",
+    "Dust, corrosion, temperature and outdoor exposure"
+  ],
+  "allowedClaims": [
+    "Permanent magnetic separator",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/suspended-permanent-magnetic-separator-01.webp"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Permanent or electromagnetic magnet system where applicable",
+    "Manual-clean or self-cleaning discharge arrangement",
+    "Cross-belt or inline mounting review",
+    "Suspension frame and guarding coordinated to site layout"
+  ],
+  "whatItHelpsSolve": [
+    "Helps remove ferromagnetic tramp material before downstream equipment",
+    "Supports practical crusher and conveyor protection planning",
+    "Keeps a defined manual-cleaning point in the material flow"
+  ],
+  "maintenance": [
+    "Isolate the conveyor before inspection or cleaning.",
+    "Inspect the suspension structure, guards and safe access route.",
+    "Remove captured ferrous material only under the agreed site procedure."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

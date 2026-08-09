@@ -49,6 +49,9 @@ async function readRouteFile(parts) {
 export async function GET(_request, context) {
   const params = await context.params;
   const parts = params.path || [];
+  if (["reports", ".audit-backups"].includes(parts[0])) {
+    return new Response("Not found", { status: 404, headers: { "x-robots-tag": "noindex, nofollow" } });
+  }
   if (!parts.length) {
     return Response.redirect(new URL("/en-za/", _request.url), 308);
   }

@@ -1,0 +1,70 @@
+{
+  "productName": "RCDC type air-cooled self dumping electromagnetic iron remover",
+  "series": "RCDC",
+  "model": "RCDC",
+  "productType": "Self-cleaning electromagnetic iron remover",
+  "magnetType": "electromagnetic",
+  "cleaningMode": "self_cleaning",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Input power",
+    "Cooling configuration",
+    "Duty cycle",
+    "Insulation and protection",
+    "Discharge belt drive",
+    "Belt speed",
+    "Control and protection",
+    "Recommended suspension height",
+    "Overall dimensions",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mining and mineral-processing conveyor lines",
+    "Coal handling and washing plants",
+    "Heavy-duty aggregate and cement conveyors",
+    "Ports and bulk-material handling"
+  ],
+  "selectionInputs": [
+    "Conveyor belt width, speed, burden depth and suspension height",
+    "Expected tramp iron profile, discharge direction and duty cycle",
+    "Site voltage, frequency, phases and control requirements",
+    "Cooling clearance, discharge-belt space and access",
+    "Dust, humidity, corrosion and outdoor exposure"
+  ],
+  "allowedClaims": [
+    "Self-cleaning electromagnetic iron remover",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Permanent or electromagnetic magnet system where applicable",
+    "Manual-clean or self-cleaning discharge arrangement",
+    "Cross-belt or inline mounting review",
+    "Suspension frame and guarding coordinated to site layout"
+  ],
+  "whatItHelpsSolve": [
+    "Helps remove ferromagnetic tramp material where continuous discharge is required",
+    "Supports a project-specific review of magnetic, electrical and discharge conditions",
+    "Provides a defined route for captured material away from the working zone"
+  ],
+  "maintenance": [
+    "Isolate electrical and mechanical drives before service.",
+    "Inspect the discharge belt, drive, scrapers, guards and cooling arrangement.",
+    "Check control and protection devices according to the selected model documentation."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

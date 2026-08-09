@@ -390,3 +390,18 @@ input:focus, select:focus, textarea:focus { border-color: var(--green); box-shad
   .product-source-heading h2 { font-size: 28px; }
   .product-hero-media .gallery-main { min-height: 280px; }
 }
+
+/* Product-detail-only audit rebuild. These rules do not alter listing or editorial pages. */
+.product-overview-status { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.product-overview-status span { padding: 7px 10px; border: 1px solid var(--line); border-radius: 4px; color: #365043; background: #f5f8f5; font-size: 12px; font-weight: 700; line-height: 1.35; }
+.product-inquiry-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 26px; padding: clamp(18px, 3vw, 30px); border: 1px solid var(--line); border-radius: 8px; background: #f5f8f5; }
+.product-inquiry-form label { display: grid; gap: 7px; min-width: 0; color: #294334; font-size: 13px; font-weight: 800; }
+.product-inquiry-form input, .product-inquiry-form textarea { width: 100%; box-sizing: border-box; padding: 11px 12px; border: 1px solid #b9c9bd; border-radius: 4px; background: var(--surface); color: #183426; font: inherit; font-weight: 400; }
+.product-inquiry-form input:focus, .product-inquiry-form textarea:focus { outline: 2px solid var(--green); outline-offset: 1px; border-color: var(--green); }
+.product-inquiry-form .full { grid-column: 1 / -1; }
+.product-inquiry-form .form-status { min-height: 1.3em; font-size: 14px; font-weight: 700; }
+@media (max-width: 760px) {
+  .product-inquiry-form { grid-template-columns: 1fr; padding: 18px; }
+  .product-inquiry-form .full { grid-column: auto; }
+  .product-overview-status { display: grid; grid-template-columns: 1fr; }
+}

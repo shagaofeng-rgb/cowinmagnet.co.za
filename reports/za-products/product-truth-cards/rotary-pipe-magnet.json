@@ -1,0 +1,67 @@
+{
+  "productName": "Rotary Pipe Magnet",
+  "series": "Rotary Pipe Magnet",
+  "model": null,
+  "productType": "Magnetic filter or separator component",
+  "magnetType": "filter",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Opening or pipe connection",
+    "Magnetic element arrangement",
+    "Material of construction",
+    "Flow or pressure condition",
+    "Temperature condition",
+    "Cleaning method",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Gravity-fed bulk-material streams",
+    "Pipeline or chute installations subject to connection confirmation",
+    "Powder, granule or processed-material contamination control",
+    "Industrial process lines where cleaning access can be provided"
+  ],
+  "selectionInputs": [
+    "Material type, particle size and flow condition",
+    "Opening, pipe connection or installation envelope",
+    "Flow rate, pressure, temperature and material properties where applicable",
+    "Expected contamination and required cleaning interval",
+    "Access for safe cleaning and maintenance"
+  ],
+  "allowedClaims": [
+    "Magnetic filter or separator component",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/rotary-pipe-magnet-01.png"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Magnetic bar, grid, drawer, trap, rotary or pipeline construction as applicable",
+    "Housing connection and installation orientation",
+    "Cleaning access matched to the material and maintenance practice",
+    "Contact material and temperature suitability confirmed for the duty"
+  ],
+  "whatItHelpsSolve": [
+    "Helps capture ferrous contamination at a defined process point",
+    "Supports a cleaner material stream before downstream equipment or processing",
+    "Keeps the connection and cleaning method matched to the actual duty"
+  ],
+  "maintenance": [
+    "Isolate the process before opening or cleaning the magnetic assembly.",
+    "Use the agreed cleaning procedure for the selected housing and magnetic elements.",
+    "Inspect seals, connections and access hardware before returning to service."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

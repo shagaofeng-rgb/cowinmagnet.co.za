@@ -1,0 +1,70 @@
+{
+  "productName": "RCYDII type permanent magnet self dumping iron remover",
+  "series": "RCYDII",
+  "model": "RCYDII",
+  "productType": "Permanent self-cleaning iron remover",
+  "magnetType": "permanent",
+  "cleaningMode": "self_cleaning",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Suitable belt width",
+    "Recommended suspension height",
+    "Material burden depth",
+    "Magnetic circuit",
+    "Discharge belt arrangement",
+    "Drive configuration",
+    "Belt speed",
+    "Iron discharge direction",
+    "Overall dimensions",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mining and mineral-processing conveyor lines",
+    "Coal handling and washing plants",
+    "Aggregate and cement conveyor protection",
+    "Ports and bulk-material handling"
+  ],
+  "selectionInputs": [
+    "Conveyor belt width, speed and material burden depth",
+    "Suspension height, installation direction and discharge side",
+    "Expected tramp iron size, frequency and duty cycle",
+    "Space for the discharge belt, guards and maintenance",
+    "Dust, corrosion, temperature and outdoor exposure"
+  ],
+  "allowedClaims": [
+    "Permanent self-cleaning iron remover",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/rcydii-type-permanent-magnet-self-dumping-iron-remover-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Permanent or electromagnetic magnet system where applicable",
+    "Manual-clean or self-cleaning discharge arrangement",
+    "Cross-belt or inline mounting review",
+    "Suspension frame and guarding coordinated to site layout"
+  ],
+  "whatItHelpsSolve": [
+    "Helps remove ferromagnetic tramp material continuously from a conveyor stream",
+    "Supports protection planning for crushers, screens and transfer equipment",
+    "Provides a defined discharge route for captured ferrous material"
+  ],
+  "maintenance": [
+    "Follow lockout and guarding procedures before service.",
+    "Inspect discharge-belt tracking, scraper condition and captured-metal discharge.",
+    "Check the suspension structure and access route at the interval agreed for the duty."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

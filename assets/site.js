@@ -251,6 +251,17 @@
   const quoteSubmit = quoteForm?.querySelector("button[type='submit'], button:not([type])");
   const quoteFile = quoteForm?.querySelector("[type='file']");
   quoteFile?.closest("label")?.setAttribute("hidden", "");
+  document.querySelectorAll("[data-product-enquiry-form]").forEach((form) => {
+    const params = new URLSearchParams(window.location.search);
+    const source = form.querySelector("[name='sourceUrl']");
+    const language = form.querySelector("[name='pageLanguage']");
+    if (source) source.value = window.location.href;
+    if (language) language.value = document.documentElement.dataset.locale || "en-za";
+    ["utm_source", "utm_medium", "utm_campaign"].forEach((key) => {
+      const field = form.querySelector(`[name='${key}']`);
+      if (field) field.value = params.get(key) || "";
+    });
+  });
   if (quoteSubmit && /local|demo/i.test(quoteSubmit.textContent || "")) {
     quoteSubmit.textContent = window.location.pathname.includes("request-a-quote") ? "Submit Inquiry" : "Send Inquiry";
   }

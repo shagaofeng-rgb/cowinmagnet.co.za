@@ -1,0 +1,66 @@
+{
+  "productName": "QCG wet roller magnetic separator",
+  "series": "QCG wet roller magnetic separator",
+  "model": null,
+  "productType": "Industrial magnetic-process auxiliary equipment",
+  "magnetType": "auxiliary",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Application duty",
+    "Installation interface",
+    "Operating condition",
+    "Power supply where applicable",
+    "Overall dimensions",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mining and mineral-processing support duties",
+    "Bulk-material handling and conveyor projects",
+    "Process control or material-handling interfaces",
+    "Project-specific equipment packages"
+  ],
+  "selectionInputs": [
+    "Required application duty and process position",
+    "Installation interface and available space",
+    "Material, electrical or control information where applicable",
+    "Environmental conditions and maintenance access",
+    "Project drawings or photographs where available"
+  ],
+  "allowedClaims": [
+    "Industrial magnetic-process auxiliary equipment",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/qcg-wet-roller-magnetic-separator-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Magnetic bar, grid, drawer, trap, rotary or pipeline construction as applicable",
+    "Housing connection and installation orientation",
+    "Cleaning access matched to the material and maintenance practice",
+    "Contact material and temperature suitability confirmed for the duty"
+  ],
+  "whatItHelpsSolve": [
+    "Helps complete a defined material-handling or magnetic-process duty",
+    "Supports integration with the selected process arrangement",
+    "Keeps final configuration dependent on the operating and installation conditions"
+  ],
+  "maintenance": [
+    "Isolate the equipment before service.",
+    "Inspect the selected interfaces, guards and connections.",
+    "Follow the supplier-approved maintenance plan once the final configuration is confirmed."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

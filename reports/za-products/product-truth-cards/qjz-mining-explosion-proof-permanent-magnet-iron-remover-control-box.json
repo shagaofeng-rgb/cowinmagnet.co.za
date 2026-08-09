@@ -1,0 +1,66 @@
+{
+  "productName": "QJZ mining explosion-proof permanent magnet iron remover control box",
+  "series": "QJZ",
+  "model": "QJZ",
+  "productType": "Industrial magnetic-process auxiliary equipment",
+  "magnetType": "auxiliary",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Application duty",
+    "Installation interface",
+    "Operating condition",
+    "Power supply where applicable",
+    "Overall dimensions",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mining and mineral-processing support duties",
+    "Bulk-material handling and conveyor projects",
+    "Process control or material-handling interfaces",
+    "Project-specific equipment packages"
+  ],
+  "selectionInputs": [
+    "Required application duty and process position",
+    "Installation interface and available space",
+    "Material, electrical or control information where applicable",
+    "Environmental conditions and maintenance access",
+    "Project drawings or photographs where available"
+  ],
+  "allowedClaims": [
+    "Industrial magnetic-process auxiliary equipment",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Voltage and current matched to the connected equipment",
+    "Control mode and interlocks defined for the line",
+    "Enclosure and installation environment reviewed",
+    "Required documentation confirmed before order"
+  ],
+  "whatItHelpsSolve": [
+    "Helps complete a defined material-handling or magnetic-process duty",
+    "Supports integration with the selected process arrangement",
+    "Keeps final configuration dependent on the operating and installation conditions"
+  ],
+  "maintenance": [
+    "Isolate the equipment before service.",
+    "Inspect the selected interfaces, guards and connections.",
+    "Follow the supplier-approved maintenance plan once the final configuration is confirmed."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

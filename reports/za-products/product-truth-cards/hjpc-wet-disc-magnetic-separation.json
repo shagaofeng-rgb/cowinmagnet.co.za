@@ -1,0 +1,68 @@
+{
+  "productName": "HJPC wet disc magnetic separation",
+  "series": "HJPC",
+  "model": "HJPC",
+  "productType": "High-gradient or specialist mineral magnetic separator",
+  "magnetType": "dry_magnetic",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Applicable mineral",
+    "Feed particle size",
+    "Magnetic field configuration",
+    "Slurry density or feed condition",
+    "Water requirement",
+    "Process capacity",
+    "Power",
+    "Testwork requirement"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mineral beneficiation projects with a defined magnetic-separation stage",
+    "Chrome, manganese, iron-bearing or other mineral streams subject to testwork",
+    "Tailings, recovery or upgrading reviews",
+    "Process lines where feed condition and target mineral response are confirmed"
+  ],
+  "selectionInputs": [
+    "Mineral composition, objective and representative sample data",
+    "Particle-size distribution and dry or slurry feed condition",
+    "Target magnetic fraction and downstream process route",
+    "Water, slurry, power and installation constraints where applicable",
+    "Laboratory, pilot or plant test information where available"
+  ],
+  "allowedClaims": [
+    "High-gradient or specialist mineral magnetic separator",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/hjpc-wet-disc-magnetic-separation-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Dry or wet process position, where applicable",
+    "Feed arrangement and product discharge direction",
+    "Magnetic circuit or intensity class confirmed by material",
+    "Wear, water and slurry handling details reviewed for the site"
+  ],
+  "whatItHelpsSolve": [
+    "Helps define a specialist magnetic separation stage in a mineral process",
+    "Supports review of target mineral response before equipment selection",
+    "Keeps recovery or grade expectations dependent on representative process evidence"
+  ],
+  "maintenance": [
+    "Isolate power, feed and moving equipment before inspection.",
+    "Inspect the selected separation zone, feed arrangement and discharge areas.",
+    "Use the supplier-approved maintenance plan once the final configuration is confirmed."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

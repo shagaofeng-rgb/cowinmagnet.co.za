@@ -1,0 +1,714 @@
+{
+  "generatedAt": "2026-08-09T04:48:32.157Z",
+  "scope": "/en-za/products/** only",
+  "productCount": 88,
+  "productPagesFound": 88,
+  "productSchemaPresent": 88,
+  "breadcrumbPresent": 88,
+  "items": [
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/suspended-electromagnetic-conveyor-belt-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/round-electromagnetic-lifting-magnet/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/suspended-and-self-unloading-iron-removers/rcyb-type-permanent-magnet-manual-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/suspended-and-self-unloading-iron-removers/rcdb-type-self-cooling-plate-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/dry-drum-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cgb-type-rotary-semi-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctn-wet-full-countercurrent-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cts-type-wet-co-current-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcps-self-dumping-disc-type-permanent-magnet-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rct-type-fully-magnetic-drum/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcya-type-inclined-pipeline-permanent-magnet-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcydii-type-permanent-magnet-self-dumping-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcye-type-permanent-magnet-self-dumping-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcyf-type-vertical-pipeline-permanent-magnet-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctb-wet-semi-countercurrent-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/dcx-wet-fully-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separation/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/hjlh-wet-vertical-ring-high-gradient-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/hjpc-wet-disc-magnetic-separation/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/clt-type-magnetic-desliming-tank/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctb-type-semi-countercurrent-wet-selection-machine/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctdg-type-permanent-magnet-bulk-dry-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/cts-type-downstream-wet-pre-selection-machine/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctzs-type-upward-suction-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/hcg-type-dry-pre-selection-machine/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/hjlh-type-vertical-ring-high-gradient-magnetic-separation/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ljk-type-magnetic-ore-special-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/wbc-semi-magnetic-tailings-recovery-machine/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-separation-equipment/hmdn-coal-washing-special-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/dls-type-window-metal-detector/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/gjt-type-window-metal-detector/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/hecp-eddy-current-metal-sorting-machine/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/hecs-type-eddy-current-metal-sorting-machine/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/electromagnet-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/metal-detection-and-recycling-sorting/stainless-steel-separation-conveyor/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/clc-type-wet-slot-magnetic-filter/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/ctq-type-roller-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/cyg-wet-pipeline-magnetic-filter/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/dhj-type-strong-roller-automatic-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/drawer-magnet/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/hump-magnet/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/magnetic-grid/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/magnetic-rod/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/magnetic-trap/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/rotary-pipe-magnet/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/magnetic-components-and-filters/permanent-filter-bar-magnetic-neodymium-rod/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/high-frequency-screen/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/rbcdd-explosion-proof-electromagnetic-self-dumping-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    },
+    {
+      "url": "/en-za/products/industry-application-equipment/rbcyd-explosion-proof-permanent-magnet-self-dumping-iron-remover/",
+      "expectedProduct": true,
+      "expectedBreadcrumbList": true,
+      "currentPageFound": true,
+      "currentContainsProduct": true,
+      "currentContainsBreadcrumb": true
+    }
+  ]
+}

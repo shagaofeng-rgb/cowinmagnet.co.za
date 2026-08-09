@@ -29,14 +29,9 @@ function isProduct(value) {
   return type === "Product" || (Array.isArray(type) && type.includes("Product"));
 }
 
-function validProductSnippet(value) {
-  if (value.review || value.aggregateRating) return true;
-  const offers = Array.isArray(value.offers) ? value.offers : value.offers ? [value.offers] : [];
-  return offers.some((offer) => (
-    offer?.price !== undefined ||
-    offer?.priceSpecification?.price !== undefined ||
-    (offer?.lowPrice !== undefined && offer?.priceCurrency)
-  ));
+function validProductMarkup(value) {
+  // Industrial equipment may have no public price, availability, rating or review.
+  return Boolean(value?.name && value?.description && value?.url && value?.brand?.name);
 }
 
 const files = await htmlFiles(productsRoot);
@@ -59,7 +54,7 @@ for (const file of files) {
       return tag;
     }
     hasWebPage ||= nodes(data).some((item) => item?.["@type"] === "WebPage");
-    const invalidProducts = nodes(data).filter((item) => isProduct(item) && !validProductSnippet(item));
+    const invalidProducts = nodes(data).filter((item) => isProduct(item) && !validProductMarkup(item));
     if (!invalidProducts.length) return tag;
     invalid.push(...invalidProducts.map((item) => ({ file: relative(root, file), name: item.name || "Unnamed product" })));
     if (!fix || isProduct(data) === false) return tag;
@@ -83,13 +78,13 @@ const summary = {
   parseErrors,
   missingWebPage,
   generatedAt: new Date().toISOString(),
-  policy: "Product rich-result markup is omitted until truthful offer, price, availability, or review data is available."
+  policy: "Product markup contains only visible, truthful identity fields. Offers, prices, availability, ratings and reviews are omitted until real publishable data is available."
 };
 await writeFile(join(root, "reports", "schema-validation.json"), `${JSON.stringify(summary, null, 2)}\n`);
 
 if (!fix) {
   assert.deepEqual(parseErrors, [], `Invalid JSON-LD found: ${JSON.stringify(parseErrors)}`);
-  assert.deepEqual(invalid, [], `Product snippet markup is missing truthful offers/reviews: ${JSON.stringify(invalid.slice(0, 10))}`);
+  assert.deepEqual(invalid, [], `Product markup is missing required truthful identity fields: ${JSON.stringify(invalid.slice(0, 10))}`);
   assert.deepEqual(missingWebPage, [], `Product detail pages are missing WebPage structured data: ${JSON.stringify(missingWebPage.slice(0, 10))}`);
 }
 

@@ -1,0 +1,68 @@
+{
+  "productName": "HECP eddy current metal sorting machine",
+  "series": "HECP",
+  "model": "HECP",
+  "productType": "Eddy-current separator",
+  "magnetType": "eddy_current",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Rotor configuration",
+    "Belt width",
+    "Feed particle size",
+    "Process capacity",
+    "Splitter adjustment",
+    "Rotor speed",
+    "Power",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Recycling and material-recovery facilities",
+    "Prepared MRF and RDF streams",
+    "Non-ferrous recovery stages after suitable feed preparation",
+    "Industrial scrap sorting subject to feed assessment"
+  ],
+  "selectionInputs": [
+    "Target non-ferrous metals and feed contamination",
+    "Feed particle-size range and material presentation",
+    "Required throughput and upstream ferrous removal stage",
+    "Belt width, splitter arrangement and discharge space",
+    "Power, dust control and maintenance access"
+  ],
+  "allowedClaims": [
+    "Eddy-current separator",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/hecp-eddy-current-metal-sorting-machine-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Feed conveyor and metering arrangement",
+    "Ferrous pre-separation coordinated with the sorting stage",
+    "Particle-size range confirmed from screened feed",
+    "Downstream collection and access planned with the line"
+  ],
+  "whatItHelpsSolve": [
+    "Helps separate suitable non-ferrous material from a prepared stream",
+    "Supports a defined split between recovered and non-recovered material",
+    "Keeps performance discussion tied to feed preparation and the selected splitter setting"
+  ],
+  "maintenance": [
+    "Isolate power and moving parts before service.",
+    "Inspect feed presentation, rotor housing, belt tracking and splitter condition.",
+    "Maintain guards and access controls in line with the selected equipment documentation."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

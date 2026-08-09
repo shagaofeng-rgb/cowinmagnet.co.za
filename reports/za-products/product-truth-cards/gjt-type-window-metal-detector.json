@@ -1,0 +1,67 @@
+{
+  "productName": "GJT Window Metal Detector",
+  "series": "GJT",
+  "model": "GJT",
+  "productType": "Industrial metal detector",
+  "magnetType": "metal_detection",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Detection aperture",
+    "Test piece and sensitivity requirement",
+    "Conveyor speed",
+    "Alarm or interlock output",
+    "Integration arrangement",
+    "Environmental condition",
+    "Power supply"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Crusher-feed and quarry conveyor protection",
+    "Coal and bulk-material handling lines",
+    "Mining and mineral-processing conveyors",
+    "Cement and aggregate material inspection"
+  ],
+  "selectionInputs": [
+    "Detection aperture and conveyor geometry",
+    "Target metal, test-piece requirement and sensitivity objective",
+    "Material burden, particle size and conveyor speed",
+    "Alarm, stop or reject interlock requirement",
+    "Electrical supply and environmental conditions"
+  ],
+  "allowedClaims": [
+    "Industrial metal detector",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/gjt-type-window-metal-detector-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Window or channel size",
+    "Alarm, stop or reject signal arrangement",
+    "Conveyor interface and belt condition review",
+    "Electrical and communication interface confirmed for the line"
+  ],
+  "whatItHelpsSolve": [
+    "Helps detect unwanted metal at a defined conveyor location",
+    "Supports an alarm, stop or reject response selected for the process",
+    "Keeps detection performance linked to the aperture, material effect and test requirement"
+  ],
+  "maintenance": [
+    "Isolate the electrical supply before inspection.",
+    "Verify detector and interlock operation using the agreed site test procedure.",
+    "Keep the sensing zone, supports and cable routing clear of unauthorised changes."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

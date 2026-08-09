@@ -1,0 +1,68 @@
+{
+  "productName": "RCDA type air-cooled electromagnetic iron remover",
+  "series": "RCDA",
+  "model": "RCDA",
+  "productType": "Electromagnetic suspended separator",
+  "magnetType": "electromagnetic",
+  "cleaningMode": "manual",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Input power",
+    "Cooling configuration",
+    "Duty cycle",
+    "Insulation and protection",
+    "Recommended suspension height",
+    "Control arrangement",
+    "Overall dimensions",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mining and mineral-processing conveyor lines",
+    "Coal handling and washing plants",
+    "Quarry and cement conveyor protection",
+    "Bulk-material transfer points"
+  ],
+  "selectionInputs": [
+    "Conveyor belt width, speed, burden depth and suspension height",
+    "Expected tramp iron profile and process duty",
+    "Site voltage, frequency, phases and protection requirements",
+    "Cooling clearance, dust control and maintenance access",
+    "Installation structure and safe manual-cleaning arrangement"
+  ],
+  "allowedClaims": [
+    "Electromagnetic suspended separator",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/rcda-type-air-cooled-electromagnetic-iron-remover-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Permanent or electromagnetic magnet system where applicable",
+    "Manual-clean or self-cleaning discharge arrangement",
+    "Cross-belt or inline mounting review",
+    "Suspension frame and guarding coordinated to site layout"
+  ],
+  "whatItHelpsSolve": [
+    "Helps identify a project-specific electromagnetic separation stage",
+    "Supports upstream ferrous-material removal before sensitive equipment",
+    "Allows electrical and environmental conditions to be reviewed with the configuration"
+  ],
+  "maintenance": [
+    "Isolate and verify the electrical supply before inspection.",
+    "Inspect the suspension arrangement, electrical connections and guards.",
+    "Maintain the selected cooling and cleaning arrangement to the supplier-approved schedule."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

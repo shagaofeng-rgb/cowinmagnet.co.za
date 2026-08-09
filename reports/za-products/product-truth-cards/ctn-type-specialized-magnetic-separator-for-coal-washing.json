@@ -1,0 +1,68 @@
+{
+  "productName": "CTN type specialized magnetic separator for coal washing",
+  "series": "CTN",
+  "model": "CTN",
+  "productType": "Wet magnetic separator",
+  "magnetType": "wet_magnetic",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Drum diameter × length",
+    "Tank type",
+    "Feed particle size",
+    "Slurry density",
+    "Process capacity",
+    "Drum speed",
+    "Power",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Mineral beneficiation circuits following feed and mineral assessment",
+    "Iron-bearing mineral recovery and concentration duties",
+    "Coal-washing magnetic separation stages where applicable",
+    "Tailings or process-stream recovery reviews"
+  ],
+  "selectionInputs": [
+    "Mineral type and magnetic response",
+    "Feed particle-size distribution and target separation objective",
+    "Slurry density, water conditions and available process space",
+    "Required feed rate and downstream concentrate or tailings route",
+    "Representative sample or plant test information where available"
+  ],
+  "allowedClaims": [
+    "Wet magnetic separator",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/ctn-type-specialized-magnetic-separator-for-coal-washing-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Dry or wet process position, where applicable",
+    "Feed arrangement and product discharge direction",
+    "Magnetic circuit or intensity class confirmed by material",
+    "Wear, water and slurry handling details reviewed for the site"
+  ],
+  "whatItHelpsSolve": [
+    "Helps define a magnetic separation stage within a slurry process",
+    "Supports separation planning around feed condition and downstream streams",
+    "Keeps selection linked to mineral response and process evidence"
+  ],
+  "maintenance": [
+    "Isolate the equipment and slurry feed before inspection.",
+    "Inspect the selected drum, tank, drive and discharge areas for wear or build-up.",
+    "Follow the agreed water, slurry and guarding procedures for the selected configuration."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}

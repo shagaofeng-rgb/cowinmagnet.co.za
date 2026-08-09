@@ -14,7 +14,12 @@ function safeDataPath(parts) {
 
 export async function GET(_request, context) {
   const params = await context.params;
-  const filePath = safeDataPath(params.path || []);
+  const parts = params.path || [];
+  // Product-sync records carry internal provenance and are build-only input.
+  if (["products", "source-sync", "cms"].includes(parts[0])) {
+    return new Response("Not found", { status: 404, headers: { "x-robots-tag": "noindex, nofollow" } });
+  }
+  const filePath = safeDataPath(parts);
   if (!filePath || !filePath.endsWith(".json")) return new Response("Forbidden", { status: 403 });
 
   try {

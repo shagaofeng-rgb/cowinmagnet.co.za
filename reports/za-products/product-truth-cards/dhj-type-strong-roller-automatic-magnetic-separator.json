@@ -1,0 +1,67 @@
+{
+  "productName": "DHJ type strong roller automatic magnetic separator",
+  "series": "DHJ type strong roller automatic magnetic separator",
+  "model": null,
+  "productType": "Dry magnetic separator",
+  "magnetType": "dry_magnetic",
+  "cleaningMode": "not_applicable",
+  "verifiedSpecs": {},
+  "pendingSpecs": [
+    "Model / series",
+    "Magnetic circuit",
+    "Feed particle size",
+    "Feed moisture",
+    "Process capacity",
+    "Feed arrangement",
+    "Power",
+    "Weight"
+  ],
+  "referenceOnlySpecs": {},
+  "applications": [
+    "Dry mineral pre-concentration and beneficiation reviews",
+    "Prepared ore and bulk-material separation stages",
+    "Coal or mineral feed preparation where applicable",
+    "Recovery or cleaning stages subject to material assessment"
+  ],
+  "selectionInputs": [
+    "Mineral type and magnetic response",
+    "Feed particle-size distribution and moisture",
+    "Feed rate and separation objective",
+    "Feed preparation, dust control and discharge arrangement",
+    "Representative sample or plant test information where available"
+  ],
+  "allowedClaims": [
+    "Dry magnetic separator",
+    "Support for South African and African projects",
+    "Final configuration is confirmed against project conditions"
+  ],
+  "prohibitedClaims": [
+    "South African factory or office",
+    "local stock",
+    "local installation team",
+    "guaranteed recovery or throughput",
+    "unverified gauss, mT, price, certification, rating or inventory claim"
+  ],
+  "mediaIds": [
+    "/assets/images/source-products/dhj-type-strong-roller-automatic-magnetic-separator-01.jpg"
+  ],
+  "supplierConfirmed": false,
+  "contentSource": "COWIN MAGNET main-site public product record",
+  "sourceOptions": [
+    "Magnetic bar, grid, drawer, trap, rotary or pipeline construction as applicable",
+    "Housing connection and installation orientation",
+    "Cleaning access matched to the material and maintenance practice",
+    "Contact material and temperature suitability confirmed for the duty"
+  ],
+  "whatItHelpsSolve": [
+    "Helps assess a dry magnetic separation stage against the feed condition",
+    "Supports separation planning before downstream processing",
+    "Keeps selection tied to mineral response, particle size and moisture"
+  ],
+  "maintenance": [
+    "Isolate the feed and drive before inspection.",
+    "Inspect feed presentation, guards and discharge areas for build-up or wear.",
+    "Maintain dust control and safe access in line with the selected equipment arrangement."
+  ],
+  "status": "Available subject to project and supplier confirmation"
+}
