@@ -1,0 +1,73 @@
+{
+  "generatedAt": "2026-08-09T05:37:04.902Z",
+  "layout": [
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "href": "/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/",
+      "navHref": "/en-za/products/",
+      "products": 3
+    },
+    {
+      "width": 375,
+      "scrollWidth": 375,
+      "href": "/en-za/products/magnetic-separation-equipment/",
+      "navHref": "/en-za/products/",
+      "products": 50
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "href": "/en-za/products/metal-detection-and-recycling-sorting/dls-type-window-metal-detector/",
+      "navHref": "/en-za/products/",
+      "products": 3
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768,
+      "href": "/en-za/products/",
+      "navHref": "/en-za/products/",
+      "products": 88
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024,
+      "href": "/en-za/products/magnetic-components-and-filters/",
+      "navHref": "/en-za/products/",
+      "products": 16
+    },
+    {
+      "width": 1280,
+      "scrollWidth": 1265,
+      "href": "/en-za/products/",
+      "navHref": "/en-za/products/",
+      "products": 88
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1425,
+      "href": "/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/",
+      "navHref": "/en-za/products/",
+      "products": 3
+    }
+  ],
+  "desktop": {
+    "href": "http://localhost:8096/en-za/products/",
+    "opened": true,
+    "closed": true,
+    "focusReturned": true
+  },
+  "mobile": {
+    "href": "http://localhost:8096/en-za/products/",
+    "expanded": true,
+    "closed": true,
+    "scrollLocked": false
+  },
+  "filter": {
+    "visibleAfterWetDrum": 1,
+    "restored": 88
+  },
+  "directNavigation": {
+    "path": "/en-za/products/"
+  }
+}

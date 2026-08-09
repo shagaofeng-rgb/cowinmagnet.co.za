@@ -34,6 +34,11 @@ for (const product of products) {
   test(/BreadcrumbList/.test(html), "BreadcrumbList JSON-LD");
   test(html.includes(`<link rel="canonical" href="https://cowinmagnet.co.za${product.canonicalUrl}">`), "canonical");
   test(fields.every((field) => html.includes(`name='${field}'`)), "product enquiry fields");
+  const labelTargets = [...html.matchAll(/<label for='([^']+)'/g)].map((match) => match[1]);
+  test(labelTargets.length >= 15 && labelTargets.every((id) => html.includes(`id='${id}'`)), "product enquiry labels");
+  const galleryImageCount = new Set(product.gallery || []).size;
+  test(galleryImageCount > 1 || !html.includes("data-gallery-thumb"), "single-image gallery has no duplicate thumbnails");
+  test(html.includes("product-process-diagram"), "product-specific process diagram");
   test(!terms.some((term) => term.test(html)), "public leak scan");
   test(!forbidden[productKind(product)]?.some((term) => term.test(html)), "product-type attribute mix");
   for (const image of product.gallery || []) {

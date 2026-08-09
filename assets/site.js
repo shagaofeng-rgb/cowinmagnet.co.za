@@ -37,26 +37,25 @@
   // industries, company, news and contact. Existing detail URLs stay available.
   const primaryNav = document.querySelector(".desktop-nav");
   if (primaryNav) {
+    const isCurrentSection = (path) => window.location.pathname.startsWith(path);
     primaryNav.innerHTML = `
-      <button type="button" data-mega-button aria-expanded="false" aria-controls="mega-products">Products</button>
-      <button type="button" data-mega-button aria-expanded="false" aria-controls="mega-industries">Industries</button>
+      <span class="nav-split"><a href="/en-za/products/"${isCurrentSection("/en-za/products/") ? ' aria-current="page"' : ""}>Products</a><button type="button" data-mega-button aria-expanded="false" aria-controls="mega-products" aria-label="Open Products menu"><span aria-hidden="true">&#8964;</span></button></span>
+      <span class="nav-split"><a href="/en-za/industries/"${isCurrentSection("/en-za/industries/") ? ' aria-current="page"' : ""}>Industries</a><button type="button" data-mega-button aria-expanded="false" aria-controls="mega-industries" aria-label="Open Industries menu"><span aria-hidden="true">&#8964;</span></button></span>
       <a href="/en-za/about/">About Us</a>
       <a href="/en-za/news/">News</a>
       <a href="/en-za/contact/">Contact</a>`;
   }
   const mobileNavigation = document.querySelector("[data-mobile-panel]");
   if (mobileNavigation) {
-    mobileNavigation.innerHTML = [
-      ["Products", "/en-za/products/"],
-      ["Industries", "/en-za/industries/"],
-      ["About Us", "/en-za/about/"],
-      ["News", "/en-za/news/"],
-      ["Contact", "/en-za/contact/"]
-    ].map(([label, href]) => `<div class="mobile-links"><a href="${href}">${label}</a></div>`).join("");
+    const mobileGroups = [
+      ["Products", "/en-za/products/", "mobile-products", [["View All Products", "/en-za/products/"], ["Iron Removers", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Magnetic Separation", "/en-za/products/magnetic-separation-equipment/"], ["Metal Detection & Recovery", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Components & Filters", "/en-za/products/magnetic-components-and-filters/"], ["Industry Equipment", "/en-za/products/industry-application-equipment/"]]],
+      ["Industries", "/en-za/industries/", "mobile-industries", [["View All Industries", "/en-za/industries/"], ["Mining", "/en-za/industries/mining/"], ["Coal Handling", "/en-za/industries/coal-handling/"], ["Recycling", "/en-za/industries/recycling/"], ["Ports & Bulk Terminals", "/en-za/industries/ports-bulk-terminals/"]]]
+    ];
+    mobileNavigation.innerHTML = `${mobileGroups.map(([label, href, id, links]) => `<div class="mobile-group"><div class="mobile-group-row"><a href="${href}"${window.location.pathname.startsWith(href) ? ' aria-current="page"' : ""}>${label}</a><button type="button" data-mobile-group aria-expanded="false" aria-controls="${id}" aria-label="Open ${label} menu"><span aria-hidden="true">&#8964;</span></button></div><div id="${id}" class="mobile-links" hidden>${links.map(([text, link]) => `<a href="${link}">${text}</a>`).join("")}</div></div>`).join("")}<div class="mobile-links"><a href="/en-za/about/">About Us</a><a href="/en-za/news/">News</a><a href="/en-za/contact/">Contact</a></div>`;
   }
   const conciseMenus = {
     "mega-products": [
-      ["Equipment Families", [["Suspended & Self-Cleaning Iron Removers", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Magnetic Separation Equipment", "/en-za/products/magnetic-separation-equipment/"], ["Metal Detection & Recovery Sorting", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Magnetic Components & Filters", "/en-za/products/magnetic-components-and-filters/"]]],
+      ["Equipment Families", [["View All Products", "/en-za/products/"], ["Suspended & Self-Cleaning Iron Removers", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Magnetic Separation Equipment", "/en-za/products/magnetic-separation-equipment/"], ["Metal Detection & Recovery Sorting", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Magnetic Components & Filters", "/en-za/products/magnetic-components-and-filters/"], ["Industry Application Equipment", "/en-za/products/industry-application-equipment/"]]],
       ["Selection Support", [["View Product Overview", "/en-za/products/"], ["Request a Quote", "/en-za/request-a-quote/"]]]
     ],
     "mega-industries": [
@@ -78,6 +77,7 @@
   const megaPanels = document.querySelectorAll("[data-mega-panel]");
   const backdrop = document.querySelector("[data-nav-backdrop]");
   let hoverCloseTimer;
+  let focusReturnTarget;
 
   function cancelHoverClose() {
     window.clearTimeout(hoverCloseTimer);
@@ -88,48 +88,53 @@
     hoverCloseTimer = window.setTimeout(closeMenus, 140);
   }
 
-  function closeMenus() {
+  function closeMenus({ restoreFocus = false } = {}) {
     header?.classList.remove("menu-open", "mega-open");
     document.body.classList.remove("scroll-locked");
     mobileButton?.setAttribute("aria-expanded", "false");
     mobilePanel?.setAttribute("hidden", "");
     megaButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
     megaPanels.forEach((panel) => panel.setAttribute("hidden", ""));
+    if (restoreFocus && focusReturnTarget) focusReturnTarget.focus();
   }
 
   mobileButton?.addEventListener("click", () => {
     const opening = mobilePanel?.hasAttribute("hidden");
+    if (!opening) return closeMenus({ restoreFocus: true });
+    focusReturnTarget = mobileButton;
     closeMenus();
     if (opening) {
       header?.classList.add("menu-open");
       document.body.classList.add("scroll-locked");
       mobileButton.setAttribute("aria-expanded", "true");
       mobilePanel?.removeAttribute("hidden");
+      window.setTimeout(() => mobilePanel?.querySelector("a, button")?.focus(), 0);
     }
   });
 
+  function openMega(button, moveFocus = false) {
+    const id = button.getAttribute("aria-controls");
+    const panel = id ? document.getElementById(id) : null;
+    if (!panel) return;
+    focusReturnTarget = button;
+    closeMenus();
+    header?.classList.add("mega-open");
+    button.setAttribute("aria-expanded", "true");
+    panel.removeAttribute("hidden");
+    if (moveFocus) window.setTimeout(() => panel.querySelector("a")?.focus(), 0);
+  }
+
   megaButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      const id = button.getAttribute("aria-controls");
-      const panel = id ? document.getElementById(id) : null;
-      const opening = panel?.hasAttribute("hidden");
-      closeMenus();
-      if (opening && panel) {
-        header?.classList.add("mega-open");
-        button.setAttribute("aria-expanded", "true");
-        panel.removeAttribute("hidden");
-      }
+      const panel = document.getElementById(button.getAttribute("aria-controls"));
+      if (!panel?.hasAttribute("hidden")) return closeMenus({ restoreFocus: true });
+      openMega(button, true);
     });
     button.addEventListener("pointerenter", () => {
       cancelHoverClose();
       const id = button.getAttribute("aria-controls");
       const panel = id ? document.getElementById(id) : null;
-      if (panel?.hasAttribute("hidden")) {
-        closeMenus();
-        header?.classList.add("mega-open");
-        button.setAttribute("aria-expanded", "true");
-        panel.removeAttribute("hidden");
-      }
+      if (panel?.hasAttribute("hidden")) openMega(button);
     });
     button.addEventListener("pointerleave", scheduleHoverClose);
   });
@@ -141,7 +146,21 @@
 
   backdrop?.addEventListener("click", closeMenus);
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenus();
+    if (event.key === "Escape") closeMenus({ restoreFocus: true });
+    if (event.key === "Tab" && mobilePanel && !mobilePanel.hasAttribute("hidden")) {
+      const focusable = [...mobilePanel.querySelectorAll("a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])")]
+        .filter((element) => !element.closest("[hidden]"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
   });
   document.querySelectorAll(".site-header a").forEach((link) => {
     link.addEventListener("click", closeMenus);
@@ -233,13 +252,17 @@
       const text = String(form.get("q") || "").toLowerCase();
       const type = String(form.get("type") || "");
       const cleaning = String(form.get("cleaning") || "");
+      const category = String(form.get("category") || "");
+      const application = String(form.get("application") || "");
       let visible = 0;
       cards.forEach((card) => {
         const haystack = card.textContent.toLowerCase();
         const okText = !text || haystack.includes(text);
         const okType = !type || card.dataset.type === type;
         const okCleaning = !cleaning || card.dataset.cleaning === cleaning;
-        const ok = okText && okType && okCleaning;
+        const okCategory = !category || card.dataset.category === category;
+        const okApplication = !application || card.dataset.application?.includes(application);
+        const ok = okText && okType && okCleaning && okCategory && okApplication;
         card.toggleAttribute("hidden", !ok);
         if (ok) visible += 1;
       });

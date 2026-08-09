@@ -17,6 +17,10 @@
     "sync:products": "node ./tools/sync-main-products.mjs",
     "audit:za-products": "node ./tools/audit-za-products.mjs",
     "render:za-products": "node ./tools/render-za-product-details.mjs",
+    "render:product-discovery": "node ./tools/render-product-discovery-pages.mjs",
+    "audit:images": "node ./tools/image-audit.mjs",
+    "upgrade:en-za-navigation": "node ./tools/upgrade-en-za-navigation.mjs",
+    "remediate:en-za-home-images": "node ./tools/remediate-en-za-home-images.mjs",
     "generate:static": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/generate-static-site.ps1"
   },
   "dependencies": {

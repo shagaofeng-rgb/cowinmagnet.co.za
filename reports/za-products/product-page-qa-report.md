@@ -1,6 +1,6 @@
 # South Africa Product-Page QA
 
-Generated: 2026-08-09T04:48:32.157Z
+Generated: 2026-08-09T05:14:43.829Z
 
 ## Scope
 - Product data, product URLs, product images, product schemas and product-detail pages only.

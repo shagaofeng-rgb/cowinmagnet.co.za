@@ -35,21 +35,42 @@ function overview(product, truth) {
 function gallery(product) {
   const images = [...new Set(product.gallery || [])];
   if (!images.length) return "";
+  if (images.length === 1) {
+    return `<div class='product-gallery product-gallery-single' data-gallery><img class='gallery-main' data-gallery-main src='${escapeHtml(images[0])}' alt='${escapeHtml(product.name)} product view' fetchpriority='high' decoding='async'></div>`;
+  }
   const thumbs = images.map((image, index) => `<button type='button' data-gallery-thumb data-src='${escapeHtml(image)}'${index === 0 ? " aria-current='true'" : ""} aria-label='Show image ${index + 1} of ${escapeHtml(product.name)}'><img src='${escapeHtml(image)}' alt='${escapeHtml(product.name)} view ${index + 1}' loading='lazy'></button>`).join("");
   return `<div class='product-gallery' data-gallery><img class='gallery-main' data-gallery-main src='${escapeHtml(images[0])}' alt='${escapeHtml(product.name)}' loading='eager' decoding='async'><div class='gallery-thumbs'>${thumbs}</div></div>`;
 }
 
 function technicalTable(truth) {
   const verified = Object.entries(truth.verifiedSpecs).map(([field, value]) => `<div role='row'><span>${escapeHtml(field)}</span><strong>${escapeHtml(value)}</strong><span>Verified public product record</span></div>`);
-  const pending = truth.pendingSpecs.map((field) => `<div role='row'><span>${escapeHtml(field)}</span><strong>Available on request</strong><span>To be confirmed by COWIN engineering</span></div>`);
+  const pending = truth.pendingSpecs.length ? [`<div role='row'><span>Project configuration items</span><strong>Available on request</strong><span>${escapeHtml(truth.pendingSpecs.join("; "))}. To be confirmed for the project.</span></div>`] : [];
   return `<div class='product-source-specifications' role='table'>${[...verified, ...pending].join("")}</div>`;
+}
+
+function processDiagram(product) {
+  const kind = productKind(product);
+  const steps = {
+    permanent_manual: ["Feed conveyor", "Tramp-iron risk point", "Suspended magnet", "Manual cleaning", "Protected equipment"],
+    permanent_self_cleaning: ["Feed conveyor", "Tramp-iron risk point", "Magnetic capture", "Ferrous discharge", "Protected equipment"],
+    electromagnetic_manual: ["Feed conveyor", "Tramp-iron risk point", "Electromagnetic separator", "Manual cleaning", "Protected equipment"],
+    electromagnetic_self_cleaning: ["Feed conveyor", "Tramp-iron risk point", "Electromagnetic separator", "Continuous discharge", "Protected equipment"],
+    wet_magnetic: ["Slurry feed", "Magnetic drum zone", "Magnetic fraction", "Non-magnetic stream", "Downstream process"],
+    dry_magnetic: ["Prepared feed", "Magnetic separation zone", "Magnetic fraction", "Non-magnetic fraction", "Process discharge"],
+    high_gradient: ["Prepared mineral feed", "Specialist magnetic zone", "Target fraction", "Residual stream", "Process review"],
+    metal_detection: ["Conveyor feed", "Detection aperture", "Alarm or interlock", "Response point", "Protected equipment"],
+    eddy_current: ["Prepared feed", "Ferrous pre-separation", "Eddy-current rotor", "Non-ferrous fraction", "Residual material"],
+    filter: ["Material flow", "Magnetic element", "Captured contamination", "Cleaning access", "Protected process"],
+    auxiliary: ["Process input", "Equipment interface", "Project operating condition", "Configured duty", "Downstream process"]
+  }[kind];
+  return `<ol class='product-process-diagram' aria-label='Typical ${escapeHtml(product.name)} process flow'>${steps.map((step, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span><strong>${escapeHtml(step)}</strong></li>`).join("")}</ol>`;
 }
 
 function sourceProcess(product, truth) {
   const process = product.sourceContent?.sections?.find((item) => item.key === "process");
   const items = process?.items?.length ? process.items : truth.selectionInputs.slice(0, 5);
   const intro = process?.introduction || "The final material path and installation position are confirmed from the project layout.";
-  return section("how-it-works", "How it works", "How it works", intro, list(items));
+  return section("how-it-works", "How it works", "How it works", intro, `${processDiagram(product)}${list(items)}`);
 }
 
 function sourceFeatures(product) {
@@ -79,7 +100,9 @@ function related(product) {
 
 function inquiryForm(product, truth) {
   const model = truth.model || "";
-  return `<section id='product-inquiry' class='product-source-section'><div class='product-source-heading'><p class='eyebrow'>Project inquiry</p><h2>Request a project-specific review</h2><p class='product-section-intro'>Share the operating details below. The product, source URL, UTM values and page language travel with this inquiry.</p></div><form class='quote-form product-inquiry-form' data-quote-form data-product-enquiry-form><input type='hidden' name='productName' value='${escapeHtml(product.name)}'><input type='hidden' name='productRequired' value='${escapeHtml(product.name)}'><input type='hidden' name='model' value='${escapeHtml(model)}'><input type='hidden' name='sourceUrl' value='${escapeHtml(product.canonicalUrl)}'><input type='hidden' name='pageLanguage' value='en-za'><input type='hidden' name='utm_source'><input type='hidden' name='utm_medium'><input type='hidden' name='utm_campaign'><label>Name<input name='name' required></label><label>Company<input name='company' required></label><label>Email<input name='email' type='email' required></label><label>WhatsApp<input name='whatsapp'></label><label>Country<input name='country' required></label><label>Industry<input name='industry'></label><label>Material or target mineral<input name='material'></label><label>Contamination or separation target<input name='contamination'></label><label>Conveyor width or pipe size<input name='beltWidth'></label><label>Belt speed or flow rate<input name='beltSpeed'></label><label>Burden depth or particle size<input name='particleSize'></label><label>Suspension height or installation space<input name='suspensionHeight'></label><label>Power supply<input name='powerSupply'></label><label>Environment<input name='environment'></label><label class='full'>Project message<textarea name='projectDescription' rows='5'></textarea></label><button class='button primary full' type='submit'>Request a Quote</button><output class='form-status full' data-form-status></output></form></section>`;
+  const prefix = `inquiry-${product.slug}`;
+  const input = (name, label, { type = "text", required = false } = {}) => `<div class='product-field'><label for='${prefix}-${name}'>${label}${required ? " <span aria-hidden='true'>*</span>" : ""}</label><input id='${prefix}-${name}' name='${name}' type='${type}'${required ? " required aria-required='true'" : ""}></div>`;
+  return `<section id='product-inquiry' class='product-source-section'><div class='product-source-heading'><p class='eyebrow'>Project inquiry</p><h2>Request a project-specific review</h2><p class='product-section-intro'>Share the operating details below. The product, source URL, UTM values and page language travel with this inquiry.</p></div><form class='quote-form product-inquiry-form' data-quote-form data-product-enquiry-form novalidate><input type='hidden' name='productName' value='${escapeHtml(product.name)}'><input type='hidden' name='productRequired' value='${escapeHtml(product.name)}'><input type='hidden' name='model' value='${escapeHtml(model)}'><input type='hidden' name='sourceUrl' value='${escapeHtml(product.canonicalUrl)}'><input type='hidden' name='pageLanguage' value='en-za'><input type='hidden' name='utm_source'><input type='hidden' name='utm_medium'><input type='hidden' name='utm_campaign'>${input("name", "Name", { required: true })}${input("company", "Company", { required: true })}${input("email", "Email", { type: "email", required: true })}${input("whatsapp", "WhatsApp")}${input("country", "Country", { required: true })}${input("industry", "Industry")}${input("material", "Material or target mineral")}${input("contamination", "Contamination or separation target")}${input("beltWidth", "Conveyor width or pipe size")}${input("beltSpeed", "Belt speed or flow rate")}${input("particleSize", "Burden depth or particle size")}${input("suspensionHeight", "Suspension height or installation space")}${input("powerSupply", "Power supply")}${input("environment", "Environment")}<div class='product-field full'><label for='${prefix}-projectDescription'>Project message</label><textarea id='${prefix}-projectDescription' name='projectDescription' rows='5'></textarea></div><button class='button primary full' type='submit'>Request a Quote</button><output class='form-status full' data-form-status aria-live='polite'></output></form></section>`;
 }
 
 function productSchema(product, truth, description) {
