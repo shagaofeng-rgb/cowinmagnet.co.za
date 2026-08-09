@@ -481,11 +481,10 @@
         quoteForm.reset();
       })
       .catch((error) => {
-        const key = "cowinmagnet_africa_quote_submissions";
-        const records = JSON.parse(localStorage.getItem(key) || "[]");
-        records.push({ duplicateKey, payload, submittedAt: new Date().toISOString(), syncStatus: "api-failed" });
-        localStorage.setItem(key, JSON.stringify(records.slice(-100)));
-        status.textContent = `${error.message} Inquiry kept locally for retry.`;
+        // A browser copy is not a reliable CRM record and may contain personal
+        // contact data. Keep the completed fields on screen and make the failed
+        // server handoff explicit so visitors can retry without losing context.
+        status.textContent = `${error.message} Your inquiry was not sent. Please retry or contact us by WhatsApp.`;
         status.dataset.state = "error";
       })
       .finally(() => {

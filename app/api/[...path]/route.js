@@ -24,6 +24,23 @@ const adminUser = process.env.ADMIN_USER || adminEmail;
 const { Pool } = pg;
 let pool;
 let schemaReady;
+const enquiryRateWindowMs = 60 * 1000;
+const enquiryRateLimit = 8;
+const recentEnquiryRequests = new Map();
+
+function enquiryRequestKey(request) {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0];
+  return String(forwarded || request.headers.get("x-real-ip") || "unknown").trim().slice(0, 128);
+}
+
+function enquiryRateLimitExceeded(request) {
+  const key = enquiryRequestKey(request);
+  const now = Date.now();
+  const active = (recentEnquiryRequests.get(key) || []).filter((time) => now - time < enquiryRateWindowMs);
+  active.push(now);
+  recentEnquiryRequests.set(key, active);
+  return active.length > enquiryRateLimit;
+}
 
 function databaseConnectionString() {
   if (!process.env.DATABASE_URL) return "";
@@ -1087,13 +1104,22 @@ function handleLogout() {
 
 async function handleEnquiries(request) {
   const body = await bodyJson(request);
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return response({ success: false, error: "Inquiry data must be an object", requestId: token(8) }, 400);
+  }
   if (JSON.stringify(body).length > 50_000) return response({ success: false, error: "Inquiry payload is too large", requestId: token(8) }, 413);
+  if (enquiryRateLimitExceeded(request)) {
+    return response({ success: false, error: "Too many inquiry attempts. Please wait a minute and try again.", requestId: token(8) }, 429);
+  }
   const clean = (value, max = 500) => String(value || "").trim().slice(0, max);
   const name = clean(body.name, 120);
   const email = clean(body.email, 254).toLowerCase();
   if (!name || !email) return response({ success: false, error: "Name and email are required", requestId: token(8) }, 400);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return response({ success: false, error: "Valid email is required", requestId: token(8) }, 400);
   if (body.website) return response({ success: true, data: { received: true }, requestId: token(8) });
+  if (storageMode() === "vercel-tmp") {
+    return response({ success: false, error: "Inquiry storage is temporarily unavailable. Please contact us by WhatsApp or email.", requestId: token(8) }, 503);
+  }
 
   const items = await readJson("data/cms/enquiries.json");
   const company = clean(body.company, 180);
@@ -1110,7 +1136,9 @@ async function handleEnquiries(request) {
   const payload = {};
   for (const [key, value] of Object.entries(body)) {
     if (["duplicateKey", "website", "fileUpload"].includes(key)) continue;
-    payload[key] = typeof value === "string" ? clean(value, key === "projectDescription" ? 5000 : 1000) : value;
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+      payload[key] = clean(value, key === "projectDescription" ? 5000 : 1000);
+    }
   }
   const record = {
     id,
@@ -1133,6 +1161,10 @@ async function handleEnquiries(request) {
   };
   items.push(record);
   await writeJson("data/cms/enquiries.json", items);
+  const persisted = await readJson("data/cms/enquiries.json");
+  if (!persisted.some((item) => item.id === id)) {
+    throw new Error("Inquiry could not be verified after storage");
+  }
   await audit("public-form", "Enquiry Created", "Enquiry", id, `New website inquiry saved from ${record.sourcePage}`);
   return response({ success: true, data: record, requestId: token(8) });
 }

@@ -91,7 +91,7 @@ The generated production pages use `index,follow`, production canonical URLs, an
 - Product and application structure for magnetic separation equipment.
 - Generated visual assets for the hero, product cards, quarrying, recycling, and port bulk-handling sections.
 - Local CMS admin interface under `/admin/`.
-- Server-side local inquiry capture stored in `data/cms/enquiries.json`.
+- Local development inquiry capture in `data/cms/enquiries.json`; production enquiries require `DATABASE_URL` and are verified after write before a success response is returned.
 - Product editor that writes back to `data/products/products.json`.
 - Dashboard, content overview, SEO/language/media/users/settings/audit-log modules for local maintenance.
 - Production-ready static public pages for `https://cowinmagnet.co.za`.

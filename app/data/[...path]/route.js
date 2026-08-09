@@ -5,6 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const dataRoot = join(process.cwd(), "data");
+const publicDataFiles = new Set(["search-index.json"]);
 
 function safeDataPath(parts) {
   const relative = normalize(join(...parts.filter(Boolean)));
@@ -15,8 +16,10 @@ function safeDataPath(parts) {
 export async function GET(_request, context) {
   const params = await context.params;
   const parts = params.path || [];
-  // Product-sync records carry internal provenance and are build-only input.
-  if (["products", "source-sync", "cms"].includes(parts[0])) {
+  const requestedFile = parts.join("/");
+  // Public pages use only the search index. All CMS, automation, SEO and
+  // backup records remain server-side inputs and must not be downloadable.
+  if (!publicDataFiles.has(requestedFile)) {
     return new Response("Not found", { status: 404, headers: { "x-robots-tag": "noindex, nofollow" } });
   }
   const filePath = safeDataPath(parts);
