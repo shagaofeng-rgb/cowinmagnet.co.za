@@ -15,6 +15,11 @@ const nextConfig = {
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   poweredByHeader: false,
+  // The admin shell is served through the dynamic route and reads these files at runtime.
+  // Include them explicitly so Vercel's output tracing ships the CSS and application script.
+  outputFileTracingIncludes: {
+    "/*": ["./admin/**/*"]
+  },
   async redirects() {
     return [
       ...nextRedirects,
