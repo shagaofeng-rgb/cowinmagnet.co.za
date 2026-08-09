@@ -5,7 +5,7 @@ const fileLikePath = /(?:^|\/)[^/]+\.[^/]+$/;
 export function proxy(request) {
   if (!['GET', 'HEAD'].includes(request.method)) return NextResponse.next();
 
-  const { pathname } = request.nextUrl;
+  const pathname = new URL(request.url).pathname;
   if (
     pathname === "/" ||
     pathname.endsWith("/") ||
@@ -17,11 +17,9 @@ export function proxy(request) {
     return NextResponse.next();
   }
 
-  const url = request.nextUrl.clone();
-  url.pathname = `${pathname}/`;
-  return NextResponse.redirect(url, 308);
+  // Use a raw URL instead of mutating request.nextUrl. This keeps the slash in
+  // the Location header for dynamic static-file routes such as /en-za.
+  return NextResponse.redirect(new URL(`${pathname}/`, request.url), 308);
 }
 
-export const config = {
-  matcher: "/:path*"
-};
+export const config = { matcher: "/:path*" };

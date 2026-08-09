@@ -12,8 +12,9 @@ const localeProductRedirects = productRouteLocales.flatMap((locale) =>
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: true,
+  trailingSlash: false,
   skipTrailingSlashRedirect: true,
+  skipProxyUrlNormalize: true,
   poweredByHeader: false,
   // The admin shell is served through the dynamic route and reads these files at runtime.
   // Include them explicitly so Vercel's output tracing ships the CSS and application script.

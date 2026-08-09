@@ -33,44 +33,84 @@
 
   trackPageview();
 
-  // Keep the public information architecture deliberately focused: products,
-  // industries, company, news and contact. Existing detail URLs stay available.
+  // Keep the public information architecture focused on the decisions a buyer
+  // needs to make. Existing detail URLs stay available behind these groups.
+  const panelAliases = [
+    ["mega-resources", "mega-solutions"],
+    ["mega-company", "mega-resources"]
+  ];
+  panelAliases.forEach(([currentId, nextId]) => {
+    const panel = document.getElementById(currentId);
+    if (panel && !document.getElementById(nextId)) panel.id = nextId;
+  });
   const primaryNav = document.querySelector(".desktop-nav");
   if (primaryNav) {
     const isCurrentSection = (path) => window.location.pathname.startsWith(path);
     primaryNav.innerHTML = `
       <span class="nav-split"><a href="/en-za/products/"${isCurrentSection("/en-za/products/") ? ' aria-current="page"' : ""}>Products</a><button type="button" data-mega-button aria-expanded="false" aria-controls="mega-products" aria-label="Open Products menu"><span aria-hidden="true">&#8964;</span></button></span>
       <span class="nav-split"><a href="/en-za/industries/"${isCurrentSection("/en-za/industries/") ? ' aria-current="page"' : ""}>Industries</a><button type="button" data-mega-button aria-expanded="false" aria-controls="mega-industries" aria-label="Open Industries menu"><span aria-hidden="true">&#8964;</span></button></span>
-      <a href="/en-za/about/">About Us</a>
-      <a href="/en-za/news/">News</a>
-      <a href="/en-za/contact/">Contact</a>`;
+      <span class="nav-split"><a href="/en-za/solutions/"${isCurrentSection("/en-za/solutions/") ? ' aria-current="page"' : ""}>Solutions</a><button type="button" data-mega-button aria-expanded="false" aria-controls="mega-solutions" aria-label="Open Solutions menu"><span aria-hidden="true">&#8964;</span></button></span>
+      <span class="nav-split"><a href="/en-za/news/"${isCurrentSection("/en-za/news/") ? ' aria-current="page"' : ""}>Resources</a><button type="button" data-mega-button aria-expanded="false" aria-controls="mega-resources" aria-label="Open Resources menu"><span aria-hidden="true">&#8964;</span></button></span>
+      <a href="/en-za/about/"${isCurrentSection("/en-za/about/") ? ' aria-current="page"' : ""}>About COWIN</a>
+      <a href="/en-za/contact/"${isCurrentSection("/en-za/contact/") ? ' aria-current="page"' : ""}>Contact</a>`;
+  }
+  const headerActions = document.querySelector(".header-actions");
+  if (headerActions && !headerActions.querySelector("[data-whatsapp-link]")) {
+    const quote = headerActions.querySelector(".quote-link");
+    const whatsapp = document.createElement("a");
+    whatsapp.className = "header-whatsapp";
+    whatsapp.href = "https://wa.me/8615665135205?text=Hello%20COWIN%20MAGNET%2C%20I%20would%20like%20selection%20support.";
+    whatsapp.target = "_blank";
+    whatsapp.rel = "noopener noreferrer nofollow";
+    whatsapp.dataset.whatsappLink = "";
+    whatsapp.setAttribute("aria-label", "Contact COWIN MAGNET on WhatsApp");
+    whatsapp.textContent = "WhatsApp";
+    quote?.before(whatsapp);
   }
   const mobileNavigation = document.querySelector("[data-mobile-panel]");
   if (mobileNavigation) {
     const mobileGroups = [
-      ["Products", "/en-za/products/", "mobile-products", [["View All Products", "/en-za/products/"], ["Iron Removers", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Magnetic Separation", "/en-za/products/magnetic-separation-equipment/"], ["Metal Detection & Recovery", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Components & Filters", "/en-za/products/magnetic-components-and-filters/"], ["Industry Equipment", "/en-za/products/industry-application-equipment/"]]],
-      ["Industries", "/en-za/industries/", "mobile-industries", [["View All Industries", "/en-za/industries/"], ["Mining", "/en-za/industries/mining/"], ["Coal Handling", "/en-za/industries/coal-handling/"], ["Recycling", "/en-za/industries/recycling/"], ["Ports & Bulk Terminals", "/en-za/industries/ports-bulk-terminals/"]]]
+      ["Products", "/en-za/products/", "mobile-products", [["Conveyor Iron Removal", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Mineral Processing", "/en-za/products/magnetic-separation-equipment/"], ["Recycling & Detection", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Filters & Components", "/en-za/products/magnetic-components-and-filters/"]]],
+      ["Industries", "/en-za/industries/", "mobile-industries", [["Mining & Mineral Processing", "/en-za/industries/mining/"], ["Coal Handling & Washing", "/en-za/industries/coal-handling/"], ["Aggregates & Cement", "/en-za/industries/quarry-aggregates/"], ["Recycling & Recovery", "/en-za/industries/recycling/"]]],
+      ["Solutions", "/en-za/solutions/", "mobile-solutions", [["Crusher Protection", "/en-za/solutions/crusher-protection/"], ["Tramp Iron Removal", "/en-za/solutions/tramp-iron-removal/"], ["Conveyor Belt Protection", "/en-za/solutions/conveyor-belt-protection/"], ["Non-Ferrous Recovery", "/en-za/solutions/non-ferrous-metal-recovery/"]]],
+      ["Resources", "/en-za/news/", "mobile-resources", [["News & Insights", "/en-za/news/"], ["Selection Guides", "/en-za/technical-support/product-selection-guide/"], ["Installation Guides", "/en-za/technical-support/installation-guide/"], ["Technical Documents", "/en-za/downloads/"]]]
     ];
-    mobileNavigation.innerHTML = `${mobileGroups.map(([label, href, id, links]) => `<div class="mobile-group"><div class="mobile-group-row"><a href="${href}"${window.location.pathname.startsWith(href) ? ' aria-current="page"' : ""}>${label}</a><button type="button" data-mobile-group aria-expanded="false" aria-controls="${id}" aria-label="Open ${label} menu"><span aria-hidden="true">&#8964;</span></button></div><div id="${id}" class="mobile-links" hidden>${links.map(([text, link]) => `<a href="${link}">${text}</a>`).join("")}</div></div>`).join("")}<div class="mobile-links"><a href="/en-za/about/">About Us</a><a href="/en-za/news/">News</a><a href="/en-za/contact/">Contact</a></div>`;
+    mobileNavigation.innerHTML = `${mobileGroups.map(([label, href, id, links]) => `<div class="mobile-group"><div class="mobile-group-row"><a href="${href}"${window.location.pathname.startsWith(href) ? ' aria-current="page"' : ""}>${label}</a><button type="button" data-mobile-group aria-expanded="false" aria-controls="${id}" aria-label="Open ${label} menu"><span aria-hidden="true">&#8964;</span></button></div><div id="${id}" class="mobile-links" hidden>${links.map(([text, link]) => `<a href="${link}">${text}</a>`).join("")}</div></div>`).join("")}<div class="mobile-links mobile-direct-links"><a href="/en-za/about/">About COWIN</a><a href="/en-za/contact/">Contact</a><a href="https://wa.me/8615665135205" target="_blank" rel="noopener noreferrer nofollow">WhatsApp</a><a class="quote-link" href="/en-za/request-a-quote/">Request a Quote</a></div>`;
   }
   const conciseMenus = {
     "mega-products": [
-      ["Equipment Families", [["View All Products", "/en-za/products/"], ["Suspended & Self-Cleaning Iron Removers", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Magnetic Separation Equipment", "/en-za/products/magnetic-separation-equipment/"], ["Metal Detection & Recovery Sorting", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Magnetic Components & Filters", "/en-za/products/magnetic-components-and-filters/"], ["Industry Application Equipment", "/en-za/products/industry-application-equipment/"]]],
-      ["Selection Support", [["View Product Overview", "/en-za/products/"], ["Request a Quote", "/en-za/request-a-quote/"]]]
+      ["Conveyor iron removal", [["Permanent Overband Separator", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Suspended Permanent Separator", "/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/"], ["Suspended Electromagnetic Separator", "/en-za/products/suspended-and-self-unloading-iron-removers/"], ["Magnetic Head Pulley", "/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/"]]],
+      ["Mineral processing", [["Wet Drum Separator", "/en-za/products/magnetic-separation-equipment/"], ["Dry Drum Separator", "/en-za/products/magnetic-separation-equipment/"], ["High-Gradient Separator", "/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/"], ["Coal Washing Equipment", "/en-za/products/magnetic-separation-equipment/"]]],
+      ["Recycling & detection", [["Eddy Current Separator", "/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/"], ["Conveyor Metal Detector", "/en-za/products/conveyor-metal-detector/"], ["Stainless Separation Conveyor", "/en-za/products/metal-detection-and-recycling-sorting/"], ["Magnetic Drum Separator", "/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/"]]],
+      ["Filters & components", [["Drawer Magnet", "/en-za/products/magnetic-components-and-filters/"], ["Magnetic Grid / Rod", "/en-za/products/magnetic-components-and-filters/magnetic-grid/"], ["Pipeline Magnetic Filter", "/en-za/products/magnetic-components-and-filters/"], ["View All Products", "/en-za/products/"]]]
     ],
     "mega-industries": [
-      ["Core Industries", [["Mining & Beneficiation", "/en-za/industries/mining/"], ["Recycling", "/en-za/industries/recycling/"], ["Cement & Aggregates", "/en-za/industries/cement/"], ["Coal & Power", "/en-za/industries/coal-handling/"]]],
-      ["Application Support", [["View All Industries", "/en-za/industries/"], ["Get Selection Advice", "/en-za/request-a-quote/"]]]
+      ["Process industries", [["Mining & Mineral Processing", "/en-za/industries/mining/"], ["Coal Handling & Washing", "/en-za/industries/coal-handling/"], ["Aggregates, Quarrying & Cement", "/en-za/industries/quarry-aggregates/"], ["Recycling & Material Recovery", "/en-za/industries/recycling/"]]],
+      ["Bulk-material projects", [["Ports, Power & Bulk Handling", "/en-za/industries/ports-bulk-terminals/"], ["Cement", "/en-za/industries/cement/"], ["South African project support", "/en-za/markets/south-africa/"], ["View all industries", "/en-za/industries/"]]]
+    ],
+    "mega-solutions": [
+      ["Protection", [["Crusher Protection", "/en-za/solutions/crusher-protection/"], ["Tramp Iron Removal", "/en-za/solutions/tramp-iron-removal/"], ["Conveyor Belt Protection", "/en-za/solutions/conveyor-belt-protection/"]]],
+      ["Recovery and purity", [["Magnetic Mineral Recovery", "/en-za/solutions/"], ["Non-Ferrous Metal Recovery", "/en-za/solutions/non-ferrous-metal-recovery/"], ["Fine Iron Contamination Control", "/en-za/solutions/"], ["View all solutions", "/en-za/solutions/"]]]
+    ],
+    "mega-resources": [
+      ["Selection resources", [["Product selection guide", "/en-za/technical-support/product-selection-guide/"], ["Installation guide", "/en-za/technical-support/installation-guide/"], ["Technical documents", "/en-za/downloads/"]]],
+      ["Latest and support", [["News & Insights", "/en-za/news/"], ["Selection FAQ", "/en-za/technical-support/product-selection-guide/"], ["Contact COWIN", "/en-za/contact/"], ["Request a quote", "/en-za/request-a-quote/"]]]
     ]
   };
   Object.entries(conciseMenus).forEach(([id, columns]) => {
     const panel = document.getElementById(id);
     if (!panel) return;
-    panel.innerHTML = `<div class="mega-grid concise">${columns.map(([title, links]) => `<nav class="mega-col"><h3>${title}</h3>${links.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}</nav>`).join("")}</div>`;
+    panel.innerHTML = `<div class="mega-grid concise">${columns.map(([title, links]) => `<nav class="mega-col"><h3>${title}</h3>${links.map(([label, href]) => `<a href="${href}">${label}</a>`).join("")}</nav>`).join("")}</div><div class="mega-menu-cta"><span>Need help selecting equipment?</span><a href="/en-za/request-a-quote/">Talk to an engineer</a></div>`;
     panel.setAttribute("hidden", "");
   });
 
   const header = document.querySelector(".site-header");
+  if (header && !document.querySelector(".utility-strip")) {
+    const utility = document.createElement("aside");
+    utility.className = "utility-strip";
+    utility.innerHTML = `<span>Magnetic separation support for African industrial projects</span><span><a href="mailto:davidsha@cowinmagnet.com">davidsha@cowinmagnet.com</a><a href="https://wa.me/8615665135205" target="_blank" rel="noopener noreferrer nofollow">WhatsApp +86 156 6513 5205</a></span>`;
+    header.before(utility);
+  }
   const mobileButton = document.querySelector("[data-mobile-toggle]");
   const mobilePanel = document.querySelector("[data-mobile-panel]");
   const megaButtons = document.querySelectorAll("[data-mega-button]");
@@ -247,7 +287,7 @@
   const productFilter = document.querySelector("[data-product-filter]");
   if (productFilter) {
     const cards = document.querySelectorAll("[data-product-card]");
-    productFilter.addEventListener("input", () => {
+    const applyProductFilters = () => {
       const form = new FormData(productFilter);
       const text = String(form.get("q") || "").toLowerCase();
       const type = String(form.get("type") || "");
@@ -267,10 +307,96 @@
         if (ok) visible += 1;
       });
       document.querySelector("[data-product-empty]")?.toggleAttribute("hidden", visible > 0);
-    });
+      const count = document.querySelector("[data-product-match-count]");
+      if (count) count.textContent = String(visible);
+      const catalogue = document.querySelector(".full-product-catalogue");
+      if (catalogue && (text || type || cleaning || category || application)) catalogue.open = true;
+    };
+    productFilter.addEventListener("input", applyProductFilters);
+    productFilter.addEventListener("change", applyProductFilters);
+    productFilter.addEventListener("reset", () => window.setTimeout(applyProductFilters, 0));
   }
 
   const quoteForm = document.querySelector("[data-quote-form]");
+  function enhanceQuoteWorkflow(form) {
+    if (!form || !window.location.pathname.includes("/request-a-quote/") || form.dataset.quoteStepsReady === "true") return;
+    const labels = [...form.querySelectorAll(":scope > label")];
+    if (labels.length < 6) return;
+    const groups = [
+      { title: "Project contact", description: "Tell us who to contact and where the project is based.", names: ["name", "company", "country", "region", "email", "whatsapp", "preferredLanguage", "industry"] },
+      { title: "Material and equipment", description: "Describe the duty, material stream and requested equipment.", names: ["productRequired", "materialType", "materialSize", "capacity", "beltWidth", "beltSpeed", "layerThickness", "suspensionHeight", "installationPosition", "layout", "cleaning", "trampIronSize", "trampIronWeight"] },
+      { title: "Operating conditions", description: "Add the site conditions that affect final configuration.", names: ["operatingHours", "siteType", "temperature", "altitude", "dustLevel", "humidity", "coastal", "voltage", "frequency", "phases"] }
+    ];
+    const steps = groups.map((group, index) => {
+      const fieldset = document.createElement("fieldset");
+      fieldset.className = "quote-step";
+      fieldset.dataset.quoteStep = String(index);
+      fieldset.hidden = index !== 0;
+      fieldset.innerHTML = `<legend>${group.title}</legend><p>${group.description}</p>`;
+      return fieldset;
+    });
+    const used = new Set();
+    groups.forEach((group, index) => {
+      group.names.forEach((name) => {
+        const label = labels.find((item) => item.querySelector(`[name='${name}']`));
+        if (label) {
+          steps[index].append(label);
+          used.add(label);
+        }
+      });
+    });
+    labels.filter((label) => !used.has(label)).forEach((label) => steps[2].append(label));
+    const progress = document.createElement("ol");
+    progress.className = "quote-progress";
+    progress.setAttribute("aria-label", "Inquiry progress");
+    progress.innerHTML = groups.map((group, index) => `<li${index === 0 ? " aria-current='step'" : ""}><span>${index + 1}</span>${group.title}</li>`).join("");
+    const controls = document.createElement("div");
+    controls.className = "quote-step-controls";
+    controls.innerHTML = `<button type="button" class="button secondary" data-quote-previous>Back</button><button type="button" class="button primary" data-quote-next>Continue</button>`;
+    form.prepend(progress);
+    steps.forEach((step) => form.insertBefore(step, form.querySelector("button[type='submit']")));
+    form.insertBefore(controls, form.querySelector("button[type='submit']"));
+    const submit = form.querySelector("button[type='submit']");
+    const status = form.querySelector("[data-form-status]");
+    const storageKey = "cowinmagnet_africa_quote_draft";
+    const draft = JSON.parse(localStorage.getItem(storageKey) || "null");
+    if (draft && typeof draft === "object") {
+      Object.entries(draft).forEach(([name, value]) => {
+        const field = form.querySelector(`[name='${CSS.escape(name)}']`);
+        if (field && typeof value === "string") field.value = value;
+      });
+      if (status) status.textContent = "Your saved inquiry draft has been restored.";
+    }
+    let active = 0;
+    const update = () => {
+      steps.forEach((step, index) => step.toggleAttribute("hidden", index !== active));
+      progress.querySelectorAll("li").forEach((item, index) => item.toggleAttribute("aria-current", index === active));
+      controls.querySelector("[data-quote-previous]").toggleAttribute("hidden", active === 0);
+      controls.querySelector("[data-quote-next]").toggleAttribute("hidden", active === steps.length - 1);
+      submit?.toggleAttribute("hidden", active !== steps.length - 1);
+      steps[active].querySelector("input, textarea, select")?.focus({ preventScroll: true });
+    };
+    controls.querySelector("[data-quote-next]").addEventListener("click", () => {
+      const fields = [...steps[active].querySelectorAll("input, textarea, select")];
+      const invalid = fields.find((field) => !field.checkValidity());
+      if (invalid) return invalid.reportValidity();
+      active += 1;
+      update();
+    });
+    controls.querySelector("[data-quote-previous]").addEventListener("click", () => {
+      active = Math.max(0, active - 1);
+      update();
+    });
+    form.addEventListener("input", () => {
+      const values = Object.fromEntries(new FormData(form).entries());
+      delete values.fileUpload;
+      localStorage.setItem(storageKey, JSON.stringify(values));
+    });
+    form.dataset.quoteDraftKey = storageKey;
+    form.dataset.quoteStepsReady = "true";
+    update();
+  }
+  enhanceQuoteWorkflow(quoteForm);
   const quoteSubmit = quoteForm?.querySelector("button[type='submit'], button:not([type])");
   const quoteFile = quoteForm?.querySelector("[type='file']");
   quoteFile?.closest("label")?.setAttribute("hidden", "");
@@ -351,6 +477,7 @@
         if (!response.ok || data.success === false) throw new Error(data.error || "Submission failed.");
         status.textContent = `Inquiry saved. Reference: ${data.data.id}`;
         status.dataset.state = "success";
+        if (quoteForm.dataset.quoteDraftKey) localStorage.removeItem(quoteForm.dataset.quoteDraftKey);
         quoteForm.reset();
       })
       .catch((error) => {

@@ -32,6 +32,13 @@ function overview(product, truth) {
   return words.length > 160 ? `${words.slice(0, 159).join(" ")}.` : output;
 }
 
+function heroSummary(product, truth) {
+  const source = plainText(product.shortDescription || product.sourceContent?.hero?.summary || "");
+  const selection = `Selected for ${truth.applications.slice(0, 2).join(" and ").toLowerCase()} where the final configuration must match the real material flow and installation conditions.`;
+  const words = `${source} ${selection}`.split(/\s+/).filter(Boolean);
+  return words.length > 76 ? `${words.slice(0, 75).join(" ")}.` : words.join(" ");
+}
+
 function gallery(product) {
   const images = [...new Set(product.gallery || [])];
   if (!images.length) return "";
@@ -156,7 +163,7 @@ function main(product) {
     related(product),
     inquiryForm(product, truth)
   ].join("");
-  return { description, schema: productSchema(product, truth, description), html: `<main><section class='product-page-hero'><nav class='breadcrumbs'><a href='/en-za/'>Home</a> / <a href='/en-za/products/'>Products</a> / <a href='/en-za/products/${escapeHtml(product.categorySlug)}/'>${escapeHtml(product.category)}</a> / <span>${escapeHtml(product.name)}</span></nav><div class='product-hero-grid'><div class='product-hero-media'>${gallery(product)}</div><div class='product-hero-copy'><p class='eyebrow'>${escapeHtml(truth.productType)}</p><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(overview(product, truth))}</p><div class='product-hero-actions'><a class='button primary' href='#product-inquiry'>Request a Quote</a><a class='button secondary' href='https://wa.me/8615665135205?text=${encodeURIComponent(`Hello COWIN MAGNET, I am reviewing ${product.name}. Please help with configuration.`)}' target='_blank' rel='noopener noreferrer nofollow'>Talk to an Engineer</a></div>${factHtml}</div></div></section><section class='product-detail-layout'><aside class='product-detail-nav'><p>On this page</p>${nav}</aside><article class='product-detail-content'>${body}</article><aside class='product-quote-panel'><p class='eyebrow'>Project inquiry</p><h2>Request product information</h2><p>Share process details for a product-specific review.</p><a class='button primary' href='#product-inquiry'>Request a Quote</a><a class='button secondary' href='${quoteLink}'>Open full quote form</a></aside></section></main>` };
+  return { description, schema: productSchema(product, truth, description), html: `<main><section class='product-page-hero'><nav class='breadcrumbs'><a href='/en-za/'>Home</a> / <a href='/en-za/products/'>Products</a> / <a href='/en-za/products/${escapeHtml(product.categorySlug)}/'>${escapeHtml(product.category)}</a> / <span>${escapeHtml(product.name)}</span></nav><div class='product-hero-grid'><div class='product-hero-media'>${gallery(product)}</div><div class='product-hero-copy'><p class='eyebrow'>${escapeHtml(truth.productType)}</p><h1>${escapeHtml(product.name)}</h1><p>${escapeHtml(heroSummary(product, truth))}</p><div class='product-hero-actions'><a class='button primary' href='#product-inquiry'>Request a Quote</a><a class='button secondary' href='https://wa.me/8615665135205?text=${encodeURIComponent(`Hello COWIN MAGNET, I am reviewing ${product.name}. Please help with configuration.`)}' target='_blank' rel='noopener noreferrer nofollow'>Talk to an Engineer</a></div>${factHtml}</div></div></section><section class='product-detail-layout'><aside class='product-detail-nav'><p>On this page</p>${nav}</aside><article class='product-detail-content'>${body}</article><aside class='product-quote-panel'><p class='eyebrow'>Project inquiry</p><h2>Request product information</h2><p>Share process details for a product-specific review.</p><a class='button primary' href='#product-inquiry'>Request a Quote</a><a class='button secondary' href='${quoteLink}'>Open full quote form</a></aside></section></main>` };
 }
 
 for (const product of products) {
