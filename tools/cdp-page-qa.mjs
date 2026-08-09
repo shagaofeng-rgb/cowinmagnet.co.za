@@ -1,6 +1,6 @@
 import { writeFile } from "node:fs/promises";
 
-const [url, width = "1440", height = "1000", screenshotPath] = process.argv.slice(2);
+const [url, width = "1440", height = "1000", screenshotPath, captureMode = "full"] = process.argv.slice(2);
 if (!url || !screenshotPath) throw new Error("Usage: node tools/cdp-page-qa.mjs <url> <width> <height> <screenshotPath>");
 
 const target = await fetch(`http://localhost:9223/json/new?${encodeURIComponent(url)}`, { method: "PUT" }).then((response) => response.json());
@@ -49,12 +49,13 @@ const evaluation = await command("Runtime.evaluate", {
     wideElements: [...document.querySelectorAll('body *')].map((element) => { const r = element.getBoundingClientRect(); return { tag: element.tagName, className: element.className, left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width) }; }).filter((item) => item.right > innerWidth + 1 || item.left < -1).slice(0, 12),
     brokenImages: [...document.images].filter((image) => image.loading !== 'lazy' && (!image.complete || image.naturalWidth === 0)).map((image) => image.currentSrc || image.src),
     h1: [...document.querySelectorAll('h1')].map((element) => element.textContent.trim()),
-    buttons: [...document.querySelectorAll('button, a.button')].filter((element) => { const r = element.getBoundingClientRect(); return r.width < 40 || r.height < 40; }).length
+    buttons: [...document.querySelectorAll('button, a.button')].filter((element) => { const r = element.getBoundingClientRect(); return r.width < 40 || r.height < 40; }).length,
+    heroSecondary: (() => { const element = document.querySelector('.industrial-home-hero .button.secondary'); if (!element) return null; const style = getComputedStyle(element); return { background: style.backgroundColor, color: style.color, borderColor: style.borderColor }; })()
   })`,
   returnByValue: true
 });
 const inspection = JSON.parse(evaluation.result.value);
-const screenshot = await command("Page.captureScreenshot", { format: "png", captureBeyondViewport: true, fromSurface: true });
+const screenshot = await command("Page.captureScreenshot", { format: "png", captureBeyondViewport: captureMode !== "viewport", fromSurface: true });
 await writeFile(screenshotPath, Buffer.from(screenshot.data, "base64"));
 socket.close();
 console.log(JSON.stringify({ ...inspection, horizontalOverflow: inspection.documentWidth > inspection.viewport.width + 1, runtimeErrors: errors }, null, 2));

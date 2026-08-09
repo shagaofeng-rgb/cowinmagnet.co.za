@@ -84,7 +84,7 @@ function productCard(item) {
 
 export async function renderNewsList() {
   const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedNewsArticle);
-  const body = `<section class="page-hero">
+  const body = `<section class="page-hero news-list-hero">
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / News</nav>
     <p class="eyebrow">News</p>
     <h1>Cowinmagnet South Africa News</h1>

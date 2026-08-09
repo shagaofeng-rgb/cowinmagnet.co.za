@@ -7,6 +7,14 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const root = /*turbopackIgnore: true*/ process.cwd();
+// Static HTML pages are generated as files, so their stylesheet URL needs a
+// deployment version. This prevents a cached legacy stylesheet from rendering
+// the current page structure as unstyled content after a release.
+const siteAssetVersion = "20260809-layout-r2";
+
+function withVersionedStylesheet(html) {
+  return html.replace(/((?:\.\.\/|\/)?assets\/site\.css)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`);
+}
 
 function safePath(parts) {
   const relative = normalize(join(...parts.filter(Boolean)));
@@ -59,7 +67,7 @@ export async function GET(_request, context) {
     return Response.redirect(new URL("/admin/", _request.url), 303);
   }
   if (parts.join("/") === "en-za/news") {
-    return new Response(await renderNewsList(), {
+    return new Response(withVersionedStylesheet(await renderNewsList()), {
       headers: {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "public, max-age=0, s-maxage=300"
@@ -75,7 +83,7 @@ export async function GET(_request, context) {
     });
   }
   if (parts.join("/") === "en-za/blog") {
-    return new Response(await renderBlogList(), {
+    return new Response(withVersionedStylesheet(await renderBlogList()), {
       headers: {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "public, max-age=0, s-maxage=300"
@@ -93,7 +101,7 @@ export async function GET(_request, context) {
   if (parts.length === 3 && parts[0] === "en-za" && parts[1] === "blog") {
     const html = await renderBlogArticle(parts[2]);
     if (html) {
-      return new Response(html, {
+      return new Response(withVersionedStylesheet(html), {
         headers: {
           "content-type": "text/html; charset=utf-8",
           "cache-control": "public, max-age=0, s-maxage=300"
@@ -104,7 +112,7 @@ export async function GET(_request, context) {
   if (parts.length === 3 && parts[0] === "en-za" && parts[1] === "news") {
     const html = await renderNewsArticle(parts[2]);
     if (html) {
-      return new Response(html, {
+      return new Response(withVersionedStylesheet(html), {
         headers: {
           "content-type": "text/html; charset=utf-8",
           "cache-control": "public, max-age=0, s-maxage=300"
@@ -117,7 +125,9 @@ export async function GET(_request, context) {
     const locale = String(parts[0] || "").toLowerCase();
     const isUnverifiedTranslation = ["af-za", "zu-za", "xh-za", "st-za", "tn-za"].includes(locale);
     const isIncompleteContent = /local prototype|prepared for deployment|pending production|verified translation is pending/i.test(file.body.toString("utf8"));
-    return new Response(file.body, {
+    const isHtml = contentType(file.filePath) === "text/html; charset=utf-8";
+    const body = isHtml ? withVersionedStylesheet(file.body.toString("utf8")) : file.body;
+    return new Response(body, {
       headers: {
         "content-type": contentType(file.filePath),
         "cache-control": "public, max-age=0, s-maxage=300",

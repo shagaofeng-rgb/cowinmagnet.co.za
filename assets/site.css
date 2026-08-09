@@ -692,15 +692,18 @@ body { background: var(--paper); color: var(--ink); }
 
 /* Landing, industry and solution layouts use a small number of strong bands rather than repeated generic cards. */
 .industrial-home, .industrial-hub { overflow: clip; }
-.industrial-home-hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr); align-items: center; min-height: min(650px, calc(100vh - 110px)); padding: clamp(64px, 8vw, 116px) max(16px, calc((100vw - var(--content-width)) / 2)); color: #ffffff; background: var(--green-dark); }
-.industrial-home-hero > picture { position: absolute; inset: 0; z-index: -2; }
-.industrial-home-hero > picture::after { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7,27,50,.96), rgba(11,37,69,.78) 54%, rgba(7,27,50,.22)); content: ""; }
+.industrial-home-hero { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr); align-items: center; min-height: min(650px, calc(100vh - 110px)); padding: clamp(64px, 8vw, 116px) max(16px, calc((100vw - var(--content-width)) / 2)); color: #ffffff; background: var(--green-dark); }
+.industrial-home-hero > picture { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; pointer-events: none; }
+.industrial-home-hero > picture::after { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(7,27,50,.96), rgba(11,37,69,.78) 54%, rgba(7,27,50,.22)); content: ""; }
 .industrial-home-hero img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.industrial-home-hero-copy, .industrial-hero-tags { position: relative; z-index: 2; }
 .industrial-home-hero-copy { max-width: 690px; }
 .industrial-home-hero-copy > p:first-child, .industrial-home span, .industrial-hub-hero > span, .industrial-section-heading > span, .industrial-selection-panel span, .industrial-final-cta span { display: block; margin-bottom: 16px; color: #f1ae6a; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .industrial-home-hero h1 { max-width: 12ch; margin: 0; font-size: clamp(42px, 5.4vw, 72px); line-height: 1.04; letter-spacing: 0; }
 .industrial-home-hero-copy > p:not(:first-child) { max-width: 62ch; margin: 22px 0 0; color: #d7e3ef; font-size: 18px; line-height: 1.65; }
 .industrial-home-hero-copy > div { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.industrial-home-hero .button.secondary { border-color: rgba(255,255,255,.72); background: rgba(7,27,50,.24); color: #ffffff; }
+.industrial-home-hero .button.secondary:hover { border-color: #ffffff; background: rgba(255,255,255,.12); color: #ffffff; }
 .industrial-hero-tags { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-self: end; padding: 0; margin: 0; list-style: none; }
 .industrial-hero-tags li { padding: 14px 10px; border: 1px solid rgba(255,255,255,.22); border-radius: 6px; background: rgba(7,27,50,.48); color: #ffffff; font-size: 13px; font-weight: 800; text-align: center; }
 .industrial-section { width: min(100%, var(--content-width)); margin: 0 auto; padding: clamp(54px, 7vw, 100px) 0; }
@@ -776,7 +779,7 @@ body { background: var(--paper); color: var(--ink); }
 @media (max-width: 760px) {
   .industrial-home-hero { min-height: 560px; padding: 52px 16px 30px; }
   .industrial-home-hero > picture::after { background: linear-gradient(90deg, rgba(7,27,50,.95), rgba(11,37,69,.76)); }
-  .industrial-home-hero h1 { font-size: clamp(38px, 11vw, 50px); }
+  .industrial-home-hero h1 { font-size: clamp(38px, 10.5vw, 44px); }
   .industrial-home-hero-copy > p:not(:first-child) { font-size: 16px; }
   .industrial-hero-tags { margin-top: 32px; }
   .industrial-section { width: auto; margin-inline: 16px; }
@@ -789,4 +792,15 @@ body { background: var(--paper); color: var(--ink); }
   .industrial-final-cta > div:last-child { width: 100%; }
   .industrial-final-cta .button { flex: 1; }
   .industrial-hub-hero { padding: 48px 16px; }
+}
+
+/* Final page-level polish: keep the public CSS clear of legacy overrides. */
+.industrial-home-hero .button.secondary { border-color: #ffffff !important; background: #ffffff !important; color: #071b32 !important; }
+.industrial-home-hero .button.secondary:hover { border-color: #e7eef5 !important; background: #e7eef5 !important; color: #071b32 !important; }
+.news-list-hero { padding-block: clamp(48px, 5vw, 72px); }
+.news-list-hero h1 { max-width: 15ch; }
+.news-list-hero > p:last-child { max-width: 60ch; }
+
+@media (max-width: 760px) {
+  .news-list-hero { padding-block: 40px; }
 }
