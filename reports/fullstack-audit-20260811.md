@@ -8,6 +8,22 @@ that require an authenticated database, Vercel, Google Search Console, or
 administrator session. No production customer enquiry or unpublished content
 was created during the audit.
 
+## Production deployment evidence
+
+- Commit: `0bb29573ce25fe6e5ba17716eb0c979d3756139d`
+- Vercel production deployment: `dpl_37XWJfYFPSDW2SXSgzcXudZT4rgT`, state `READY`
+- Vercel build log: `Build Completed in /vercel/output [5s]`; errors-only query
+  contained no build error.
+- Post-deployment HTTPS checks: home `1.094s`, products `0.765s`, Blog
+  `0.719s`, Blog API `0.812s`, News API `0.594s`, sitemap `0.625s`, and
+  robots `0.438s`; every checked URL returned HTTP 200.
+- A safe unsigned root Webhook check returned HTTP 200 with
+  `{"code":0,"msg":"Invalid secret"}`. Vercel recorded the expected
+  `blog_webhook_rejected` structured event for that request, without logging a
+  secret or body.
+- Vercel runtime-error query for the 15 minutes following deployment returned
+  no runtime errors.
+
 ## Confirmed working
 
 | Area | Evidence | Result |
