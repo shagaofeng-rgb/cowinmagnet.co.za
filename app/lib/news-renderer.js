@@ -123,7 +123,6 @@ export async function renderNewsArticle(slug) {
   const articles = await readDataJson("data/articles/articles.json", []);
   const item = articles.find((article) => article.slug === slug && isPublishedNewsArticle(article));
   if (!item) return null;
-  const products = item.related_products || [];
   const canonical = articleUrl(item);
   const sourceDate = item.source_published_at ? new Date(item.source_published_at).toISOString() : "";
   const body = `<section class="page-hero">
@@ -150,11 +149,6 @@ export async function renderNewsArticle(slug) {
       </ul>
       <p><em>This article is based on public source information and independent analysis. Original reporting copyright belongs to the original publisher.</em></p>
     </article>
-    <aside class="panel">
-      <h2>Related Products</h2>
-      <div class="grid compact">${products.map(productCard).join("") || "<p>Related products will be confirmed after application review.</p>"}</div>
-      <a class="button primary" href="/en-za/request-a-quote/">Send Operating Data</a>
-    </aside>
   </section>`;
   return pageShell({
     title: item.seo_title || item.seoTitle || `${item.title} | Cowinmagnet News`,
@@ -175,9 +169,7 @@ export async function renderNewsArticle(slug) {
         publisher: { "@type": "Organization", name: "Cowin Magnet South Africa" },
         mainEntityOfPage: `${siteUrl}${canonical}`,
         articleSection: item.category || "News",
-        keywords: item.secondary_keywords || item.tags || [],
-        about: products.map((product) => product.name),
-        mentions: products.map((product) => ({ "@type": "Product", name: product.name, url: `${siteUrl}${product.url}` }))
+        keywords: item.secondary_keywords || item.tags || []
       },
       {
         "@type": "BreadcrumbList",

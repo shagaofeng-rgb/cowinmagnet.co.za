@@ -1,15 +1,20 @@
 {
-  "version": 1,
+  "version": 2,
+  "siteId": "cowinmagnet-za",
+  "siteUrl": "https://cowinmagnet.co.za",
+  "locale": "en-ZA",
+  "timezone": "Africa/Johannesburg",
   "mode": "production",
   "enabled": true,
   "schedule": {
-    "discovery": "0 7 * * *",
+    "discovery": "0 */12 * * *",
     "editorial": "0 8 */2 * *",
     "weeklyReport": "0 9 * * 1"
   },
   "requiredPreproductionApprovals": 0,
   "publishIntervalHours": 48,
-  "maxSourceAgeDays": 90,
+  "candidateMaxAgeHours": 72,
+  "fallbackCandidateMaxAgeDays": 7,
   "minIndependentSources": 2,
   "maxRetries": 2,
   "updatedAt": "2026-08-11T00:00:00.000Z"

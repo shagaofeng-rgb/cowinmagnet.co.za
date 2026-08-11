@@ -19,17 +19,22 @@ export const newsAutomationPaths = {
 };
 
 export const defaultNewsAutomationConfig = {
-  version: 1,
+  version: 2,
+  siteId: "cowinmagnet-za",
+  siteUrl: "https://cowinmagnet.co.za",
+  locale: "en-ZA",
+  timezone: "Africa/Johannesburg",
   mode: "production",
   enabled: true,
   schedule: {
-    discovery: "0 7 * * *",
+    discovery: "0 */12 * * *",
     editorial: "0 8 */2 * *",
     weeklyReport: "0 9 * * 1"
   },
   requiredPreproductionApprovals: 0,
   publishIntervalHours: 48,
-  maxSourceAgeDays: 90,
+  candidateMaxAgeHours: 72,
+  fallbackCandidateMaxAgeDays: 7,
   minIndependentSources: 2,
   maxRetries: 2,
   updatedAt: "2026-08-08T00:00:00.000Z"
@@ -69,6 +74,10 @@ function isRecent(value, maxDays, now = new Date()) {
   return !Number.isNaN(date.valueOf()) && date <= now && now - date <= maxDays * DAY;
 }
 
+function candidateFingerprint(source) {
+  return crypto.createHash("sha256").update(`${source.url}|${source.title}|${source.publishedAt}`).digest("hex");
+}
+
 function similarity(left, right) {
   const tokens = (value) => new Set(String(value || "").toLowerCase().match(/[a-z0-9]{3,}/g) || []);
   const a = tokens(left);
@@ -97,7 +106,8 @@ export function evaluateNewsDraft({ draft = {}, sources = [], products = [], rec
   if (selectedSources.length < Number(config.minIndependentSources || 2) || independentHosts.size < Number(config.minIndependentSources || 2)) {
     failures.push("At least two independent, recorded source URLs are required.");
   }
-  if (selectedSources.some((source) => !validUrl(source.url) || !isRecent(source.publishedAt, Number(config.maxSourceAgeDays || 90), now))) {
+  const permittedAgeDays = Number(config.candidateMaxAgeHours || 72) / 24;
+  if (selectedSources.some((source) => !validUrl(source.url) || !isRecent(source.publishedAt, permittedAgeDays, now))) {
     failures.push("Each source must have a valid URL and a publication date within the approved freshness window.");
   }
   if (!relatedProducts.length) failures.push("At least one verified COWIN product truth card must be linked.");
@@ -229,11 +239,40 @@ function articleBody(sources, product, now) {
 <h2>Key takeaways</h2>
 <ul><li>Industry developments are context for engineering decisions, not evidence of a specific equipment purchase.</li><li>Magnetic separation selection starts with the process objective and verified site data.</li><li>Installation, cleaning and maintenance access must be considered together.</li><li>Unknown project values should be confirmed during review rather than replaced by generic claims.</li></ul>
 <h2>Sources and methodology</h2><p>This article is an original engineering interpretation generated from current public-source metadata and checked by automated publication gates. It does not reproduce source articles or infer equipment purchases.</p><ul>${sourceList}</ul>
-<p>Sources were accessed ${now.toLocaleDateString("en-ZA", { dateStyle: "long", timeZone: "UTC" })}. For a configuration review, <a href="/en-za/request-a-quote/">send the operating data to COWIN MAGNET</a>.</p>`);
+<p>Sources were accessed ${now.toLocaleDateString("en-ZA", { dateStyle: "long", timeZone: "UTC" })}. This page is an independent editorial summary and analysis; it is not a product offer or a statement by the source publisher.</p>`);
 }
 
 function slugify(value) {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 90);
+}
+
+export async function runNewsIngest(trigger = "cron", options = {}) {
+  return withDataLock("news-automation-ingest", async () => {
+    const now = options.now ? new Date(options.now) : new Date();
+    const data = await loadAutomationData();
+    const maxAgeHours = Number(data.config.candidateMaxAgeHours || 72);
+    const discovered = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: Math.ceil(maxAgeHours / 24) });
+    const usedUrls = new Set(data.articles.filter((article) => article.article_type === "news").flatMap((article) => array(article.source_urls || article.source_url)));
+    const existing = new Map(data.candidates.map((candidate) => [candidate.fingerprint || candidateFingerprint(candidate), candidate]));
+    const candidates = [...data.candidates];
+    for (const source of discovered) {
+      const fingerprint = candidateFingerprint(source);
+      if (usedUrls.has(source.url) || existing.has(fingerprint)) continue;
+      const ageHours = (now - new Date(source.publishedAt)) / 3600000;
+      if (ageHours < 0 || ageHours > maxAgeHours) continue;
+      candidates.unshift({
+        ...source, id: `candidate_${fingerprint.slice(0, 16)}`, fingerprint, site_id: data.config.siteId,
+        status: "candidate", score: Math.min(100, 55 + Number(source.score || 0) * 10 + (source.trustTier === "primary" ? 20 : 0)),
+        discovered_at: now.toISOString(), updated_at: now.toISOString(), reject_reason: ""
+      });
+    }
+    const run = { id: id("ingest", trigger), site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "ingested", discovered: discovered.length, candidates: candidates.filter((item) => item.status === "candidate").length };
+    if (!options.dryRun) await Promise.all([
+      writeDataJson(newsAutomationPaths.candidates, candidates.slice(0, 500)),
+      writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200))
+    ]);
+    return { result: "ingested", run, discovered: discovered.length, candidates: candidates.filter((item) => item.status === "candidate").length };
+  });
 }
 
 export async function runNewsAutomation(trigger = "cron", options = {}) {
@@ -246,15 +285,16 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
     const lastPublished = data.articles.filter((article) => article.status === "published" && article.article_type === "news").sort((a, b) => new Date(b.published_at) - new Date(a.published_at))[0];
     const interval = Number(data.config.publishIntervalHours || 48) * 3600000;
     if (!options.force && lastPublished && now - new Date(lastPublished.published_at) < interval) return { result: "not_due", nextEligibleAt: new Date(new Date(lastPublished.published_at).valueOf() + interval).toISOString() };
-    const discovered = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: data.config.maxSourceAgeDays });
     const usedUrls = new Set(data.articles.flatMap((article) => array(article.source_urls || article.source_url)));
-    const unused = discovered.filter((source) => !usedUrls.has(source.url));
-    const chosen = [];
-    for (const source of unused) if (!chosen.some((item) => host(item.url) === host(source.url))) chosen.push(source);
+    const primaryWindow = Number(data.config.candidateMaxAgeHours || 72) * 3600000;
+    const fallbackWindow = Number(data.config.fallbackCandidateMaxAgeDays || 7) * DAY;
+    const unused = data.candidates.filter((candidate) => candidate.site_id === data.config.siteId && candidate.status === "candidate" && !usedUrls.has(candidate.url) && now - new Date(candidate.publishedAt) <= fallbackWindow);
+    const preferred = unused.filter((candidate) => now - new Date(candidate.publishedAt) <= primaryWindow);
+    const chosen = [...preferred, ...unused.filter((candidate) => !preferred.includes(candidate))].sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).filter((source, index, all) => !all.slice(0, index).some((item) => host(item.url) === host(source.url)));
     if (chosen.length < data.config.minIndependentSources) throw new Error("Fewer than two unused independent current sources were available.");
     const sourceRecords = chosen.slice(0, 2).map((source) => ({ ...source, id: `source_${crypto.createHash("sha256").update(source.url).digest("hex").slice(0, 16)}`, status: "verified" }));
     const product = data.products.find((item) => item.slug === "permanent-overband-magnetic-separator") || data.products[0];
-    const title = `What Recent South African Industry Updates Mean for Conveyor Protection`;
+    const title = `What ${chosen[0].title} Means for Material Handling Decisions`;
     const content = articleBody(sourceRecords, product, now);
     const draft = { id: id("draft", title), title, content, sourceIds: sourceRecords.map((source) => source.id), productSlugs: [product.slug], imageUrls: [product.image] };
     const qa = evaluateNewsDraft({ draft, sources: [...sourceRecords, ...data.sources], products: data.products, recentArticles: data.articles, config: data.config, now });
@@ -272,10 +312,11 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
       image_rights: "COWIN owned product media", related_products: [{ name: product.name, category: product.category, image: product.image, url: product.canonicalUrl || `/en-za/products/${product.categorySlug}/${product.slug}/`, relationship_reason: "Relevant to conveyor protection configuration reviews." }],
       editorial_method: "automated-source-based-quality-gate", publication_run_id: runId, automation_published_at: now.toISOString()
     };
-    const run = { id: runId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "published", articleSlug: article.slug, sourceUrls: article.source_urls, qa: qa.metrics, retryCount: 0 };
+    const run = { id: runId, site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "published", articleSlug: article.slug, sourceUrls: article.source_urls, qa: qa.metrics, retryCount: 0 };
     if (options.dryRun) return { result: "dry_run", article, run, qa };
     await Promise.all([
       writeDataJson(newsAutomationPaths.sources, [...sourceRecords, ...data.sources.filter((item) => !sourceRecords.some((source) => source.id === item.id))]),
+      writeDataJson(newsAutomationPaths.candidates, data.candidates.map((candidate) => sourceRecords.some((source) => source.url === candidate.url) ? { ...candidate, status: "used", used_at: now.toISOString(), article_slug: article.slug } : candidate)),
       writeDataJson(newsAutomationPaths.drafts, [{ ...draft, status: "published", qa }, ...data.drafts]),
       writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200)),
       writeDataJson("data/articles/articles.json", [article, ...data.articles])

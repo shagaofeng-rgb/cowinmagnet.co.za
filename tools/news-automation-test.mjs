@@ -4,8 +4,8 @@ import { evaluateNewsDraft } from "../app/lib/news-automation.js";
 
 const product = { slug: "suspended-permanent-magnetic-separator", truthCardStatus: "verified" };
 const sources = [
-  { id: "a", url: "https://gov.example.org/notice", publishedAt: "2026-08-01" },
-  { id: "b", url: "https://association.example.com/report", publishedAt: "2026-08-02" }
+  { id: "a", url: "https://gov.example.org/notice", publishedAt: "2026-08-07" },
+  { id: "b", url: "https://association.example.com/report", publishedAt: "2026-08-07" }
 ];
 const content = Array.from({ length: 920 }, () => "engineering").join(" ");
 
