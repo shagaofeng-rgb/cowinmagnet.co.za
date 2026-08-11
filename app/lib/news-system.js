@@ -275,7 +275,11 @@ export function isExternalEditorialImage(value) {
 
 function isSourcedBlogImage(item) {
   const image = String(item.cover_image_url || "");
-  return isExternalEditorialImage(image) || (
+  // Webhook submissions are limited to a local media-library path before this
+  // point. Those COWIN-owned images are legitimate Blog covers even when an
+  // external attribution URL is not present.
+  return (item.cover_image_status === "owned-media" && /^\/assets\/images\/[a-z0-9_./-]+$/i.test(image)) ||
+    isExternalEditorialImage(image) || (
     image.startsWith("/assets/images/blog/") &&
     isExternalEditorialImage(item.cover_image_source_url || item.cover_image_page_url)
   );
