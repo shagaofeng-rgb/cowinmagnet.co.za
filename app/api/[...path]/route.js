@@ -286,6 +286,10 @@ async function writeJson(relativePath, value) {
   } catch (error) {
     console.warn(`[africa-json-store] Database write failed for ${relativePath}: ${error?.message || error}`);
   }
+  // Serverless temporary storage disappears between invocations. Returning a
+  // successful admin response after writing there would falsely imply that a
+  // production change was durable.
+  if (process.env.VERCEL) throw new Error("Persistent storage is unavailable. No change was committed.");
   const filePath = join(dataRoot, cleanPath);
   const payload = `${JSON.stringify(value, null, 2)}\n`;
   try {
@@ -327,6 +331,11 @@ function pluginResponse(code, msg, status = 200) {
       "x-robots-tag": "noindex, nofollow"
     }
   });
+}
+
+function operationalLog(event, fields = {}) {
+  // Keep production logs useful for incident review without exposing request bodies or secrets.
+  console.info(JSON.stringify({ event, at: new Date().toISOString(), ...fields }));
 }
 
 async function bodyFields(request) {
@@ -446,11 +455,21 @@ function makeWebhookBlogArticle(fields, existingArticles) {
 
 async function handleArticleWebhook(request) {
   if (request.method !== "POST") return pluginResponse(0, "Only POST requests are supported", 405);
+  const startedAt = Date.now();
   const fields = await bodyFields(request);
   const expectedSign = articleWebhookSign();
-  if (!isSupportedWebhookClass(fields.class_id)) return pluginResponse(0, "Only the Blog category is supported");
-  if (!expectedSign) return pluginResponse(0, "Publishing secret is not configured");
-  if (!safeEqualText(fields.sign, expectedSign)) return pluginResponse(0, "Invalid secret");
+  if (!isSupportedWebhookClass(fields.class_id)) {
+    operationalLog("blog_webhook_rejected", { reason: "unsupported-class", classId: String(fields.class_id || "") });
+    return pluginResponse(0, "Only the Blog category is supported");
+  }
+  if (!expectedSign) {
+    operationalLog("blog_webhook_rejected", { reason: "secret-not-configured" });
+    return pluginResponse(0, "Publishing secret is not configured");
+  }
+  if (!safeEqualText(fields.sign, expectedSign)) {
+    operationalLog("blog_webhook_rejected", { reason: "invalid-secret", classId: String(fields.class_id || "") });
+    return pluginResponse(0, "Invalid secret");
+  }
   if (isVerificationOnly(fields)) return pluginResponse(1, "\u9a8c\u8bc1\u6210\u529f");
 
   try {
@@ -470,8 +489,18 @@ async function handleArticleWebhook(request) {
     } catch (auditError) {
       console.warn(`[article-webhook] Sitemap audit scheduling failed: ${auditError?.message || auditError}`);
     }
+    operationalLog("blog_webhook_published", {
+      slug: article.slug,
+      classId: String(fields.class_id || ""),
+      durationMs: Date.now() - startedAt
+    });
     return pluginResponse(1, "\u53d1\u5e03\u6210\u529f");
   } catch (error) {
+    operationalLog("blog_webhook_failed", {
+      reason: error?.message || "database-insert-failed",
+      classId: String(fields.class_id || ""),
+      durationMs: Date.now() - startedAt
+    });
     return pluginResponse(0, error?.message || "Database insert failed, please retry");
   }
 }
@@ -672,8 +701,38 @@ async function runGoogleUrlInspection() {
   const manifest = await readDataJson("data/seo/sitemap-manifest.json", { entries: [] });
   const urls = [...new Set((manifest.entries || []).map((item) => item.url || item.loc).filter(Boolean))];
   if (!urls.length) throw new Error("Sitemap manifest contains no inspectable URLs");
-  const report = await inspectGoogleUrls(urls, { concurrency: 4 });
+  const priorState = await readDataJson("data/seo/gsc-url-inspection-state.json", {});
+  const batchSize = Math.min(24, Math.max(1, Number(process.env.GSC_INSPECTION_BATCH_SIZE || 12)));
+  const start = Number(priorState.nextOffset || 0) % urls.length;
+  const batch = Array.from({ length: Math.min(batchSize, urls.length) }, (_, index) => urls[(start + index) % urls.length]);
+  const batchReport = await inspectGoogleUrls(batch, { concurrency: 3 });
+  const previous = await readDataJson("data/seo/gsc-url-inspection.json", {});
+  const resultsByUrl = new Map((previous.results || []).map((item) => [item.url, item]));
+  for (const result of batchReport.results) resultsByUrl.set(result.url, result);
+  const results = urls.map((url) => resultsByUrl.get(url)).filter(Boolean);
+  const group = (key) => Object.fromEntries(Object.entries(results.reduce((counts, item) => {
+    const value = item[key] || "Unknown";
+    counts[value] = (counts[value] || 0) + 1;
+    return counts;
+  }, {})).sort((left, right) => right[1] - left[1]));
+  const report = {
+    ...batchReport,
+    total: urls.length,
+    inspectedThisRun: batch.length,
+    nextOffset: (start + batch.length) % urls.length,
+    cycleStartedAt: start === 0 ? new Date().toISOString() : priorState.cycleStartedAt || "",
+    byVerdict: group("verdict"),
+    byCoverageState: group("coverageState"),
+    results
+  };
   await writeDataJson("data/seo/gsc-url-inspection.json", report);
+  await writeDataJson("data/seo/gsc-url-inspection-state.json", {
+    nextOffset: report.nextOffset,
+    cycleStartedAt: report.cycleStartedAt,
+    lastRunAt: report.inspectedAt,
+    lastBatchSize: batch.length,
+    totalUrls: urls.length
+  });
   return report;
 }
 
@@ -1016,8 +1075,18 @@ async function handleCronGscInspection(request) {
       requestId: token(8)
     });
   }
-  const report = await runGoogleUrlInspection();
-  return response({ success: true, data: report, requestId: token(8) });
+  try {
+    const report = await runGoogleUrlInspection();
+    operationalLog("gsc_inspection_completed", {
+      total: report.total || 0,
+      inspectedThisRun: report.inspectedThisRun || 0,
+      nextOffset: report.nextOffset || 0
+    });
+    return response({ success: true, data: report, requestId: token(8) });
+  } catch (error) {
+    operationalLog("gsc_inspection_failed", { reason: error?.message || String(error) });
+    return response({ success: false, error: "Google URL inspection failed", requestId: token(8) }, 500);
+  }
 }
 
 async function handleCronNewsAutomation(request) {
