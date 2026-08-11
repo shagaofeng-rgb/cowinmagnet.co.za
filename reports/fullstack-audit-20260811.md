@@ -23,6 +23,12 @@ was created during the audit.
   secret or body.
 - Vercel runtime-error query for the 15 minutes following deployment returned
   no runtime errors.
+- Additional safe negative tests after deployment: `/api/admin/sync/`,
+  `/api/cron/google-seo/`, and `/api/cron/gsc-inspection/?summary=1` each
+  returned HTTP 401 without credentials; an empty `POST /api/enquiries/`
+  returned HTTP 400 (`Name and email are required`) and did not create an
+  enquiry. This confirms that the private management/Cron routes are not
+  publicly exposed and that server-side enquiry validation is active.
 
 ## Confirmed working
 
@@ -86,6 +92,12 @@ Webhook. No OAuth client, vendor SDK, or second Blog scheduler was found.
 | Google API response and next production cron execution | `CRON_SECRET` and Google service-account material are private. | Use Vercel Cron logs after the next run. The expected inspection log is `gsc_inspection_completed` with `inspectedThisRun <= 24`. |
 | Slow query and queue metrics | The current data store is a JSONB document table and the session cannot access production database metrics. | Monitor PostgreSQL query statistics and Vercel function duration. Do not migrate the content model without a backup and migration plan. |
 | Customer enquiry delivery | No real customer form was submitted, to avoid polluting production enquiries. | Use an approved internal test address and confirm the record, notification and UI status under an admin session. |
+
+The historical Vercel timeout recorded at 2026-08-08 02:30 UTC corresponds to
+the former all-URL GSC inspection implementation. The fixed route has not yet
+reached its next scheduled execution in this audit window; its first real
+batched run should be checked in Vercel runtime logs for
+`gsc_inspection_completed`.
 
 ## Risks and rollback
 
