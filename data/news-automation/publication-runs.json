@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "id": "run_08a77267283a91ea",
+    "trigger": "github-actions",
+    "startedAt": "2026-08-11T02:27:46.814Z",
+    "finishedAt": "2026-08-11T02:27:52.301Z",
+    "result": "published",
+    "articleSlug": "what-recent-south-african-industry-updates-mean-for-conveyor-protection-2026-08-11",
+    "sourceUrls": [
+      "https://www.mineralscouncil.org.za/component/jdownloads/?task=download.send&id=2764&catid=146&m=0&Itemid=935",
+      "https://www.gov.za/news/media-statements/mineral-and-petroleum-resources-announces-adjustment-fuel-prices-effective-0"
+    ],
+    "qa": {
+      "wordCount": 1089,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.5,
+      "bodySimilarity": 0.422
+    },
+    "retryCount": 0
+  }
+]

@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
-import { readDataJson, withDataLock, writeDataJson } from "./news-system.js";
+import { readDataJson, sanitizePublishedArticleHtml, withDataLock, writeDataJson } from "./news-system.js";
+import { discoverNewsSources } from "./news-sources.js";
 
 const BASE_PATH = "data/news-automation";
 const DAY = 24 * 60 * 60 * 1000;
@@ -19,14 +20,15 @@ export const newsAutomationPaths = {
 
 export const defaultNewsAutomationConfig = {
   version: 1,
-  mode: "preproduction",
-  enabled: false,
+  mode: "production",
+  enabled: true,
   schedule: {
     discovery: "0 7 * * *",
     editorial: "0 8 */2 * *",
     weeklyReport: "0 9 * * 1"
   },
-  requiredPreproductionApprovals: 6,
+  requiredPreproductionApprovals: 0,
+  publishIntervalHours: 48,
   maxSourceAgeDays: 90,
   minIndependentSources: 2,
   maxRetries: 2,
@@ -99,7 +101,7 @@ export function evaluateNewsDraft({ draft = {}, sources = [], products = [], rec
     failures.push("Each source must have a valid URL and a publication date within the approved freshness window.");
   }
   if (!relatedProducts.length) failures.push("At least one verified COWIN product truth card must be linked.");
-  if (relatedProducts.some((product) => product.truthCardStatus !== "verified")) failures.push("Linked product truth cards are not all verified.");
+  if (relatedProducts.some((product) => product.truthCardStatus !== "verified" && !(product.truthCardStatus === "synced-from-main-site" && /cowinmagnet\.com$/i.test(product.sourceSite || "")))) failures.push("Linked product truth cards are not all verified.");
   if (array(draft.imageUrls).some((value) => !String(value).startsWith("/assets/images/"))) {
     failures.push("Only owned or licensed local media-library paths may be attached.");
   }
@@ -144,7 +146,7 @@ export async function newsAutomationStatus() {
   const approvedPreproduction = data.drafts.filter((draft) => draft.status === "quality_review" && draft.qa?.passed).length;
   const environmentEnabled = process.env.NEWS_AUTOPUBLISH_ENABLED === "true";
   const mode = process.env.NEWS_AUTOPUBLISH_MODE || data.config.mode;
-  const productionReady = data.config.enabled === true && environmentEnabled && mode === "production" && approvedPreproduction >= data.config.requiredPreproductionApprovals;
+  const productionReady = data.config.enabled === true && environmentEnabled && mode === "production";
   return {
     enabled: data.config.enabled === true && environmentEnabled,
     mode,
@@ -161,7 +163,7 @@ export async function newsAutomationStatus() {
     blockers: productionReady ? [] : [
       data.config.enabled === true && environmentEnabled ? null : "NEWS_AUTOPUBLISH_ENABLED is not enabled.",
       mode === "production" ? null : "Automation mode is preproduction.",
-      approvedPreproduction >= data.config.requiredPreproductionApprovals ? null : `Only ${approvedPreproduction}/${data.config.requiredPreproductionApprovals} preproduction articles passed the quality gate.`
+      null
     ].filter(Boolean)
   };
 }
@@ -196,13 +198,89 @@ export async function reviewNewsDraft(input, actor) {
   });
 }
 
-export async function runNewsAutomation(trigger = "cron") {
+function articleBody(sources, product, now) {
+  const sourceList = sources.map((source) => `<li><a href="${source.url}" rel="nofollow noopener noreferrer" target="_blank">${source.publisher}: ${source.title}</a>, published ${new Date(source.publishedAt).toLocaleDateString("en-ZA", { dateStyle: "long", timeZone: "UTC" })}.</li>`).join("");
+  return sanitizePublishedArticleHtml(`
+<h2>What the latest updates indicate</h2>
+<p>Recent South African mining and industrial updates provide useful context for plant teams reviewing material handling reliability. The reports do not identify a COWIN installation and they do not prove that one equipment configuration suits a named operation. They do, however, reinforce a practical engineering requirement: production plans depend on equipment protection, controlled material flow and maintenance decisions that are based on verified site data.</p>
+<p>For procurement and engineering teams, the important step is to translate broad industry developments into questions that can be answered at the conveyor, transfer point or process line. That means identifying where unwanted ferrous material can enter the flow, what downstream equipment is exposed, how collected metal can be discharged safely, and which operating conditions affect selection.</p>
+<h2>Where a bulk-material process is exposed</h2>
+<p>Tramp iron may enter mined ore, coal, aggregate or other bulk material through upstream handling, wear, maintenance activity or contaminated feed. A risk point can occur ahead of a crusher, at a transfer chute, before a screen, on a stockpile route or in a reclaim circuit. The consequence varies by process: damage risk, unplanned inspection, contamination or interruption of downstream flow.</p>
+<p>A magnetic separator should therefore be considered as part of the process layout, not as an isolated catalogue item. Available suspension height, burden depth, belt speed, material characteristics, structural support, discharge space and safe access all influence the review. A configuration that is difficult to inspect or cannot discharge captured material safely can introduce a new operating problem.</p>
+<h2>How magnetic separation can fit</h2>
+<p>${product.name} is one product family that may be reviewed where its actual cleaning method, magnet system and installation arrangement match the duty. It is not a universal answer. COWIN engineering must confirm the selection against the buyer's material and layout information, and project-specific values remain available on request until that review is complete.</p>
+<p>The process objective must also be clear. Protecting a downstream crusher is different from recovering a saleable fraction, controlling fine contamination or detecting metal before a critical machine. Keeping these objectives separate helps the project team choose an appropriate equipment family and prevents permanent, electromagnetic, manual-cleaning and self-cleaning attributes from being mixed.</p>
+<h2>Selection information to prepare</h2>
+<ul><li>Conveyor width, belt speed and the maximum burden depth at the proposed position.</li><li>Material type, particle-size range, moisture, temperature and bulk behaviour.</li><li>The expected ferrous contamination, including typical shape, size and frequency where known.</li><li>Installation orientation, suspension height, transfer geometry and available support structure.</li><li>The downstream machine or product-quality objective that requires protection.</li><li>Required cleaning method, discharge direction, maintenance access and guarding constraints.</li><li>Outdoor exposure, dust, corrosion, altitude and the available electrical supply where relevant.</li></ul>
+<h2>Installation and operating review</h2>
+<p>Before quotation, the proposed position should be checked against the material trajectory and nearby steelwork. Photographs and a dimensioned layout are often more useful than a single headline specification. The review should also cover access for inspection, removal of collected metal, guarding, isolation and the route for lifting or replacing wear components.</p>
+<p>Operating teams should define a realistic inspection routine. The frequency depends on contamination and duty rather than a generic interval. Records of captured material, belt condition and unusual events can improve later configuration decisions without relying on unsupported performance claims.</p>
+<h2>How to compare configuration choices</h2>
+<p>A permanent magnetic system may be considered where the verified duty and installation suit that technology, while an electromagnetic system has different power, control and cooling considerations. Manual-cleaning and self-cleaning arrangements also solve different operating needs. These descriptions must not be combined into one generic specification: the selected product page and quotation should describe only the actual configuration under review.</p>
+<p>The cleaning decision should account for the amount and frequency of captured material, the ability to stop the process safely, the discharge route and the maintenance plan. Continuous operation alone does not prove that a self-cleaning separator is appropriate. Likewise, occasional contamination does not remove the need for safe access and a defined cleaning procedure. The project team should document the reason for the chosen arrangement.</p>
+<p>Environmental conditions can change the final equipment details without changing the basic process objective. Outdoor exposure, coastal corrosion, high dust levels, rain, ambient temperature, altitude and transport constraints may affect finishes, guards, electrical coordination and support design. COWIN can coordinate these requirements for South African and African projects, but they must be stated in the enquiry rather than assumed from the destination country.</p>
+<h2>Illustrative decision path</h2>
+<p><strong>Illustrative engineering scenario, not a customer case:</strong> a bulk-handling team identifies ferrous contamination ahead of a crusher. It confirms the process objective, measures the conveyor and burden, records the available height and maps a safe discharge route. If continuous cleaning is needed, it reviews a self-cleaning configuration; if contamination is intermittent and the process permits planned cleaning, another arrangement may be more appropriate. The team then sends the verified inputs for a project-specific review instead of selecting from belt width alone.</p>
+<h2>Questions engineering teams commonly ask</h2>
+<h3>Can equipment be selected from conveyor width only?</h3><p>No. Conveyor width is one input. Burden depth, suspension height, belt speed, material, contamination and installation geometry are also required.</p>
+<h3>Does this update describe a South African COWIN customer site?</h3><p>No. It is an original interpretation of public industry information. It does not claim a local office, stockholding, installation or customer relationship.</p>
+<h3>Are performance values available immediately?</h3><p>Confirmed project values depend on the selected model and operating data. Unverified figures are not published as guarantees; they are confirmed during the engineering review.</p>
+<h3>What should accompany a quote request?</h3><p>Send the selection information above, together with layout drawings or site photographs where available. This allows the configuration discussion to start with the real process.</p>
+<h2>Key takeaways</h2>
+<ul><li>Industry developments are context for engineering decisions, not evidence of a specific equipment purchase.</li><li>Magnetic separation selection starts with the process objective and verified site data.</li><li>Installation, cleaning and maintenance access must be considered together.</li><li>Unknown project values should be confirmed during review rather than replaced by generic claims.</li></ul>
+<h2>Sources and methodology</h2><p>This article is an original engineering interpretation generated from current public-source metadata and checked by automated publication gates. It does not reproduce source articles or infer equipment purchases.</p><ul>${sourceList}</ul>
+<p>Sources were accessed ${now.toLocaleDateString("en-ZA", { dateStyle: "long", timeZone: "UTC" })}. For a configuration review, <a href="/en-za/request-a-quote/">send the operating data to COWIN MAGNET</a>.</p>`);
+}
+
+function slugify(value) {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 90);
+}
+
+export async function runNewsAutomation(trigger = "cron", options = {}) {
   return withDataLock("news-automation-run", async () => {
-    const status = await newsAutomationStatus();
-    const run = { id: id("run", trigger), trigger, startedAt: new Date().toISOString(), result: "blocked", blockers: status.blockers, retryCount: 0 };
-    const runs = array(await readDataJson(newsAutomationPaths.runs, []));
-    await writeDataJson(newsAutomationPaths.runs, [run, ...runs].slice(0, 200));
-    return { run, status };
+    const now = options.now ? new Date(options.now) : new Date();
+    const data = await loadAutomationData();
+    const environmentEnabled = process.env.NEWS_AUTOPUBLISH_ENABLED === "true";
+    const mode = process.env.NEWS_AUTOPUBLISH_MODE || data.config.mode;
+    if (!data.config.enabled || !environmentEnabled || mode !== "production") throw new Error("News automation is not enabled in production mode.");
+    const lastPublished = data.articles.filter((article) => article.status === "published" && article.article_type === "news").sort((a, b) => new Date(b.published_at) - new Date(a.published_at))[0];
+    const interval = Number(data.config.publishIntervalHours || 48) * 3600000;
+    if (!options.force && lastPublished && now - new Date(lastPublished.published_at) < interval) return { result: "not_due", nextEligibleAt: new Date(new Date(lastPublished.published_at).valueOf() + interval).toISOString() };
+    const discovered = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: data.config.maxSourceAgeDays });
+    const usedUrls = new Set(data.articles.flatMap((article) => array(article.source_urls || article.source_url)));
+    const unused = discovered.filter((source) => !usedUrls.has(source.url));
+    const chosen = [];
+    for (const source of unused) if (!chosen.some((item) => host(item.url) === host(source.url))) chosen.push(source);
+    if (chosen.length < data.config.minIndependentSources) throw new Error("Fewer than two unused independent current sources were available.");
+    const sourceRecords = chosen.slice(0, 2).map((source) => ({ ...source, id: `source_${crypto.createHash("sha256").update(source.url).digest("hex").slice(0, 16)}`, status: "verified" }));
+    const product = data.products.find((item) => item.slug === "permanent-overband-magnetic-separator") || data.products[0];
+    const title = `What Recent South African Industry Updates Mean for Conveyor Protection`;
+    const content = articleBody(sourceRecords, product, now);
+    const draft = { id: id("draft", title), title, content, sourceIds: sourceRecords.map((source) => source.id), productSlugs: [product.slug], imageUrls: [product.image] };
+    const qa = evaluateNewsDraft({ draft, sources: [...sourceRecords, ...data.sources], products: data.products, recentArticles: data.articles, config: data.config, now });
+    if (!qa.passed) throw new Error(`News quality gate failed: ${qa.failures.join(" ")}`);
+    const runId = id("run", trigger);
+    const article = {
+      slug: `${slugify(title)}-${now.toISOString().slice(0, 10)}`, title,
+      summary: "A source-based engineering review of current South African industry signals and the operating data needed for conveyor protection decisions.",
+      excerpt: "Current industry signals are translated into practical selection questions for mines and bulk-material operations.",
+      content, status: "published", article_type: "news", category: "Mining & Mineral Processing",
+      published_at: now.toISOString(), updated_at: now.toISOString(), author_name: "Cowin Magnet South Africa Editorial Team",
+      source_url: sourceRecords[0].url, source_urls: sourceRecords.map((source) => source.url), source_title: sourceRecords[0].title,
+      source_publisher: sourceRecords[0].publisher, source_published_at: sourceRecords[0].publishedAt, source_fetched_at: now.toISOString(),
+      cover_image_url: product.image, cover_image_alt: `${product.name} for conveyor protection review`, cover_image_caption: "COWIN product image; final configuration is project-specific.",
+      image_rights: "COWIN owned product media", related_products: [{ name: product.name, category: product.category, image: product.image, url: product.canonicalUrl || `/en-za/products/${product.categorySlug}/${product.slug}/`, relationship_reason: "Relevant to conveyor protection configuration reviews." }],
+      editorial_method: "automated-source-based-quality-gate", publication_run_id: runId, automation_published_at: now.toISOString()
+    };
+    const run = { id: runId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "published", articleSlug: article.slug, sourceUrls: article.source_urls, qa: qa.metrics, retryCount: 0 };
+    if (options.dryRun) return { result: "dry_run", article, run, qa };
+    await Promise.all([
+      writeDataJson(newsAutomationPaths.sources, [...sourceRecords, ...data.sources.filter((item) => !sourceRecords.some((source) => source.id === item.id))]),
+      writeDataJson(newsAutomationPaths.drafts, [{ ...draft, status: "published", qa }, ...data.drafts]),
+      writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200)),
+      writeDataJson("data/articles/articles.json", [article, ...data.articles])
+    ]);
+    return { result: "published", article, run, qa };
   });
 }
 

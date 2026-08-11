@@ -111,11 +111,11 @@ function recordKey(record, index) {
 }
 
 function hasManualOverride(record) {
-  return Boolean(record?.manualOverrideAt || record?.manual_override_at || record?.webhook_content_hash);
+  return Boolean(record?.manualOverrideAt || record?.manual_override_at || record?.webhook_content_hash || record?.automation_published_at || record?.publication_run_id);
 }
 
-// Existing releases remain visible while explicit manual or webhook changes in
-// PostgreSQL take precedence. No scheduled publisher writes to this data layer.
+// Existing releases remain visible while explicit manual, webhook, or audited
+// automation publications in PostgreSQL take precedence.
 export function mergeReleaseSnapshot(releaseSnapshot, databaseSnapshot) {
   if (!Array.isArray(releaseSnapshot)) return databaseSnapshot ?? releaseSnapshot;
   if (!Array.isArray(databaseSnapshot)) return releaseSnapshot;
