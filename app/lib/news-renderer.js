@@ -125,20 +125,20 @@ export async function renderNewsArticle(slug) {
   if (!item) return null;
   const canonical = articleUrl(item);
   const sourceDate = item.source_published_at ? new Date(item.source_published_at).toISOString() : "";
-  const body = `<section class="page-hero">
+  const body = `<section class="page-hero news-article-hero">
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / <a href="/en-za/news/">News</a> / ${escapeHtml(item.title)}</nav>
     <p class="eyebrow">${escapeHtml(item.category || "News")}</p>
     <h1>${escapeHtml(item.title)}</h1>
     <p>${escapeHtml(item.excerpt || item.summary || "")}</p>
   </section>
-  <section class="section layout">
-    <article class="panel article-prose">
-      <p><strong>Published:</strong> ${escapeHtml((articleDate(item) || "").slice(0, 10))} · <strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))} · <strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</p>
-      <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
+  <section class="news-article-shell">
+    <article class="article-prose news-article-body">
+      <p><span><strong>Published:</strong> ${escapeHtml((articleDate(item) || "").slice(0, 10))}</span><span><strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))}</span><span><strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</span></p>
+      <figure class="news-article-cover"><img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}"></figure>
       ${item.cover_image_caption ? `<p class="image-caption">${escapeHtml(item.cover_image_caption)}</p>` : ""}
       <section class="ai-summary"><h2>Key Takeaways</h2><ul>${(item.key_takeaways || []).map((takeaway) => `<li>${escapeHtml(takeaway)}</li>`).join("")}</ul></section>
       ${safeArticleContent(item.content)}
-      <h2>Original Source</h2>
+      <section class="news-source-panel"><h2>Original Source</h2>
       <ul class="check-list">
         <li><strong>Original title:</strong> ${escapeHtml(item.source_title || "")}</li>
         <li><strong>Publisher:</strong> ${escapeHtml(item.source_publisher || "")}</li>
@@ -147,7 +147,7 @@ export async function renderNewsArticle(slug) {
         <li><strong>Collected by this site:</strong> ${escapeHtml(item.source_fetched_at || "")}</li>
         <li><a href="${escapeHtml(item.source_url || item.sourceUrl || "#")}" rel="nofollow noopener noreferrer" target="_blank">Read the original source</a></li>
       </ul>
-      <p><em>This article is based on public source information and independent analysis. Original reporting copyright belongs to the original publisher.</em></p>
+      <p><em>This article is based on public source information and independent analysis. Original reporting copyright belongs to the original publisher.</em></p></section>
     </article>
   </section>`;
   return pageShell({
