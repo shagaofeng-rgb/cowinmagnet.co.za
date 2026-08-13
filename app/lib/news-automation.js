@@ -106,9 +106,9 @@ export function evaluateNewsDraft({ draft = {}, sources = [], products = [], rec
   if (selectedSources.length < Number(config.minIndependentSources || 2) || independentHosts.size < Number(config.minIndependentSources || 2)) {
     failures.push("At least two independent, recorded source URLs are required.");
   }
-  const permittedAgeDays = Number(config.candidateMaxAgeHours || 72) / 24;
+  const permittedAgeDays = Number(config.fallbackCandidateMaxAgeDays || 7);
   if (selectedSources.some((source) => !validUrl(source.url) || !isRecent(source.publishedAt, permittedAgeDays, now))) {
-    failures.push("Each source must have a valid URL and a publication date within the approved freshness window.");
+    failures.push("Each source must have a valid URL and a publication date within the approved primary or fallback freshness window.");
   }
   if (!relatedProducts.length) failures.push("At least one verified COWIN product truth card must be linked.");
   if (relatedProducts.some((product) => product.truthCardStatus !== "verified" && !(product.truthCardStatus === "synced-from-main-site" && /cowinmagnet\.com$/i.test(product.sourceSite || "")))) failures.push("Linked product truth cards are not all verified.");
@@ -251,7 +251,8 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
     const now = options.now ? new Date(options.now) : new Date();
     const data = await loadAutomationData();
     const maxAgeHours = Number(data.config.candidateMaxAgeHours || 72);
-    const discovered = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: Math.ceil(maxAgeHours / 24) });
+    const fallbackMaxAgeDays = Number(data.config.fallbackCandidateMaxAgeDays || 7);
+    const discovered = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: fallbackMaxAgeDays });
     const usedUrls = new Set(data.articles.filter((article) => article.article_type === "news").flatMap((article) => array(article.source_urls || article.source_url)));
     const existing = new Map(data.candidates.map((candidate) => [candidate.fingerprint || candidateFingerprint(candidate), candidate]));
     const candidates = [...data.candidates];
@@ -259,10 +260,11 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
       const fingerprint = candidateFingerprint(source);
       if (usedUrls.has(source.url) || existing.has(fingerprint)) continue;
       const ageHours = (now - new Date(source.publishedAt)) / 3600000;
-      if (ageHours < 0 || ageHours > maxAgeHours) continue;
+      if (ageHours < 0 || ageHours > fallbackMaxAgeDays * 24) continue;
       candidates.unshift({
         ...source, id: `candidate_${fingerprint.slice(0, 16)}`, fingerprint, site_id: data.config.siteId,
         status: "candidate", score: Math.min(100, 55 + Number(source.score || 0) * 10 + (source.trustTier === "primary" ? 20 : 0)),
+        freshness_tier: ageHours <= maxAgeHours ? "primary" : "fallback",
         discovered_at: now.toISOString(), updated_at: now.toISOString(), reject_reason: ""
       });
     }
