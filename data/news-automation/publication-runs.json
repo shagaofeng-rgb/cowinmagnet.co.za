@@ -1,5 +1,15 @@
 [
   {
+    "id": "ingest_6bb3d1c830b712bf",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-08-14T13:23:47.720Z",
+    "finishedAt": "2026-08-14T13:23:50.689Z",
+    "result": "ingested",
+    "discovered": 3,
+    "candidates": 3
+  },
+  {
     "id": "run_3ab081e69c949070",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions",
