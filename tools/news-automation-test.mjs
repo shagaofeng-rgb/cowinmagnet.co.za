@@ -33,6 +33,27 @@ test("quality gate accepts independent sources from the configured seven-day fal
   assert.equal(result.passed, true, result.failures.join(" "));
 });
 
+test("quality gate distinguishes shared industrial vocabulary from duplicated prose", () => {
+  const sharedTerms = "South African mining material process equipment conveyor protection engineering selection ";
+  const firstBody = `<h2>First analysis</h2><p>${`${sharedTerms}teams map custody records before reviewing individual risk points. `.repeat(50)}</p>`;
+  const secondBody = `<h2>Second analysis</h2><p>${`${sharedTerms}operators measure burden depth and document maintenance access for each installation. `.repeat(50)}</p>`;
+  const base = {
+    sources: [
+      { id: "s1", url: "https://source-one.example/update", publishedAt: "2026-08-12T08:00:00.000Z" },
+      { id: "s2", url: "https://source-two.example/update", publishedAt: "2026-08-12T09:00:00.000Z" }
+    ],
+    products: [{ slug: "p1", truthCardStatus: "verified" }],
+    config: { minIndependentSources: 2, fallbackCandidateMaxAgeDays: 7 },
+    now: new Date("2026-08-13T02:35:00.000Z")
+  };
+  const draft = { title: "A Distinct Operational Review", content: secondBody, sourceIds: ["s1", "s2"], productSlugs: ["p1"], imageUrls: ["/assets/images/product.jpg"] };
+  const distinct = evaluateNewsDraft({ ...base, draft, recentArticles: [{ title: "Previous Mining Review", content: firstBody }] });
+  assert.equal(distinct.passed, true, distinct.failures.join(" "));
+  const duplicate = evaluateNewsDraft({ ...base, draft: { ...draft, content: firstBody }, recentArticles: [{ title: "Previous Mining Review", content: firstBody }] });
+  assert.equal(duplicate.passed, false);
+  assert.match(duplicate.failures.join(" "), /Similarity threshold/);
+});
+
 test("quality gate accepts a product truth card synchronized from the verified main site", () => {
   const result = evaluateNewsDraft({
     draft: { title: "A current process engineering update", content, sourceIds: ["a", "b"], productSlugs: ["main-site-product"], imageUrls: ["/assets/images/source-products/example.webp"] },

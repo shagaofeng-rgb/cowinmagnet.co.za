@@ -78,10 +78,14 @@ function candidateFingerprint(source) {
   return crypto.createHash("sha256").update(`${source.url}|${source.title}|${source.publishedAt}`).digest("hex");
 }
 
-function similarity(left, right) {
-  const tokens = (value) => new Set(String(value || "").toLowerCase().match(/[a-z0-9]{3,}/g) || []);
-  const a = tokens(left);
-  const b = tokens(right);
+function similarity(left, right, shingleSize = 1) {
+  const shingles = (value) => {
+    const tokens = String(value || "").toLowerCase().match(/[a-z0-9]{3,}/g) || [];
+    if (tokens.length < shingleSize) return new Set(tokens);
+    return new Set(tokens.slice(0, tokens.length - shingleSize + 1).map((_, index) => tokens.slice(index, index + shingleSize).join(" ")));
+  };
+  const a = shingles(left);
+  const b = shingles(right);
   if (!a.size || !b.size) return 0;
   let overlap = 0;
   for (const token of a) if (b.has(token)) overlap += 1;
@@ -98,8 +102,12 @@ export function evaluateNewsDraft({ draft = {}, sources = [], products = [], rec
   const relatedProducts = array(draft.productSlugs).map((slug) => truthBySlug.get(slug)).filter(Boolean);
   const title = String(draft.title || "").trim();
   const content = String(draft.content || "").trim();
-  const titleSimilarity = Math.max(0, ...array(recentArticles).map((article) => similarity(title, article.title)));
-  const bodySimilarity = Math.max(0, ...array(recentArticles).map((article) => similarity(content, article.content || article.summary)));
+  const titleMatches = array(recentArticles).map((article) => ({ article, score: similarity(title, article.title, 2) }));
+  const bodyMatches = array(recentArticles).map((article) => ({ article, score: similarity(content, article.content || article.summary, 5) }));
+  const strongestTitleMatch = titleMatches.sort((a, b) => b.score - a.score)[0];
+  const strongestBodyMatch = bodyMatches.sort((a, b) => b.score - a.score)[0];
+  const titleSimilarity = strongestTitleMatch?.score || 0;
+  const bodySimilarity = strongestBodyMatch?.score || 0;
 
   if (!title || !content) failures.push("A title and article body are required.");
   if (words(content) < 900 || words(content) > 1500) failures.push("Article body must contain 900 to 1,500 English words.");
@@ -128,7 +136,8 @@ export function evaluateNewsDraft({ draft = {}, sources = [], products = [], rec
       sourceCount: selectedSources.length,
       independentSourceCount: independentHosts.size,
       titleSimilarity: Number(titleSimilarity.toFixed(3)),
-      bodySimilarity: Number(bodySimilarity.toFixed(3))
+      bodySimilarity: Number(bodySimilarity.toFixed(3)),
+      strongestBodyMatch: strongestBodyMatch?.article?.slug || strongestBodyMatch?.article?.title || ""
     }
   };
 }
@@ -208,8 +217,59 @@ export async function reviewNewsDraft(input, actor) {
   });
 }
 
+function editorialAngle(sources) {
+  const text = sources.map((source) => `${source.title} ${source.publisher}`).join(" ").toLowerCase();
+  if (/illegal mining|criminal enterprise|zama zama|nkaneng incident|circumstances surrounding|mineral and petroleum resources/.test(text)) return "mining-governance";
+  if (/fuel price|energy|electricity|power supply/.test(text)) return "energy-cost";
+  if (/modernisation|automation|digital|technology/.test(text)) return "modernisation";
+  if (/recycling|waste|circular|recovery/.test(text)) return "recycling";
+  return "material-handling";
+}
+
+function articleTitle(sources) {
+  const angle = editorialAngle(sources);
+  if (angle === "mining-governance") return "Illegal Mining Risks and the Material-Control Questions South African Plants Should Review";
+  if (angle === "energy-cost") return "What Current Energy and Fuel Signals Mean for South African Material-Handling Decisions";
+  if (angle === "modernisation") return "How South African Mining Modernisation Changes Conveyor-Protection Planning";
+  if (angle === "recycling") return "What Current Recycling Developments Mean for Metal-Recovery Planning in South Africa";
+  return `What ${sources[0].title} Means for Material Handling Decisions`;
+}
+
+function illegalMiningArticleBody(sources, product, now, sourceList) {
+  return sanitizePublishedArticleHtml(`
+<h2>What the public update establishes</h2>
+<p>Recent public statements describe illegal mining as a criminal and economic risk to South Africa's formal mining sector. That is the verified news context for this article. The sources do not identify a COWIN customer, installation or equipment purchase, and they do not establish that magnetic separation alone can address illegal mining. Their practical value for plant teams is narrower: they highlight why traceability, controlled material movement and clearly assigned operating responsibility matter throughout a mineral-handling chain.</p>
+<p>For mine, contractor and processing teams, material security is not confined to a boundary fence. Unauthorised extraction or uncontrolled feed can affect what reaches stockpiles, transfer points and processing equipment. Each operation requires its own security, legal and operating controls. Equipment selection should support those controls without being presented as a substitute for law enforcement, access management, sampling, reconciliation or responsible procurement.</p>
+<h2>Where material-control questions enter the process</h2>
+<p>A useful review starts by mapping custody from the point where material is received or reclaimed to the point where it enters a crusher, screen, plant feed system or final product stream. Teams should identify who authorises each transfer, how unusual loads are isolated, where samples are taken and how discrepancies are recorded. This makes abnormal events visible before they are treated as routine production variation.</p>
+<p>The review should distinguish three different issues: unauthorised material, unwanted ferrous objects and normal process variability. A magnetic separator may help remove suitable ferrous contamination at a defined process position, but it cannot verify legal ownership, mineral origin or commercial grade. Metal detection, sampling, weighing, access control and documentary checks solve different parts of the control problem and should not be collapsed into one equipment claim.</p>
+<h2>Why tramp-metal risk still needs a separate assessment</h2>
+<p>Material from uncontrolled or poorly documented handling can contain tools, wire, fasteners, worn components or other ferrous objects. Similar contamination can also arise in fully authorised operations through maintenance and equipment wear. The source of the object matters for investigation, but separator selection depends on the physical duty: object size and shape, burden depth, conveyor speed, suspension height, material characteristics and the downstream machine that requires protection.</p>
+<p>Plant teams should therefore keep an event record rather than assuming every captured item has the same origin. Photographs, approximate dimensions, discovery position and operating conditions can help maintenance and security teams identify patterns. The record can also improve later equipment reviews by replacing general statements such as "heavy contamination" with observable information.</p>
+<h2>How a magnetic equipment review fits</h2>
+<p>${product.name} is one equipment family that may be considered for a conveyor-protection duty when its verified configuration matches the process. It is not a security system and it is not evidence that material is lawful or saleable. COWIN engineering would still need the actual conveyor, burden, contamination, installation and environmental data before confirming a project configuration.</p>
+<p>The cleaning arrangement must match the expected operating pattern. A self-cleaning system may be reviewed where captured ferrous material must be discharged without routine production stops and where a safe discharge route exists. A manual-cleaning arrangement serves a different duty. Permanent and electromagnetic systems also have different installation, power, control and maintenance considerations; those attributes must remain separated in the selected product record and quotation.</p>
+<h2>Information to collect before selecting equipment</h2>
+<ul><li>Conveyor width, belt speed, maximum burden depth and the proposed separator position.</li><li>Material type, particle-size range, moisture, temperature and bulk behaviour.</li><li>Observed ferrous objects, including approximate size, shape, frequency and where they were found.</li><li>The crusher, screen, mill or product stream that requires protection.</li><li>Available suspension height, structural support, discharge space and maintenance access.</li><li>Required cleaning method and the safe route for collected material.</li><li>Outdoor exposure, dust, corrosion, altitude and electrical supply where relevant.</li><li>The site's own custody, incident-reporting and isolation procedures for unusual material.</li></ul>
+<h2>Operational controls around the installation</h2>
+<p>An installation review should consider guarding, isolation, inspection access and ownership of collected material. The plant should define who may inspect the separator, who records recovered objects and where those objects are transferred. If an item may be relevant to a security or safety investigation, it should be handled under the site's approved procedure rather than discarded through an informal route.</p>
+<p>Nearby steelwork and the material trajectory should be checked before finalising the position. A dimensioned layout and clear site photographs are more useful than conveyor width alone. The discharge path must not create a new hazard, obstruct a walkway or return captured objects to the process. These are project-specific engineering questions, not conclusions that can be drawn from a national industry statement.</p>
+<h2>An illustrative decision path</h2>
+<p><strong>Illustrative scenario, not a customer case:</strong> a plant records irregular ferrous objects in feed from more than one handling route. Security staff review custody records while operations map the conveyor positions where contamination becomes visible. Maintenance measures the conveyor, burden and available height, then documents the downstream equipment at risk. The team separately evaluates access controls, sampling and a suitable tramp-metal removal configuration. This approach avoids claiming that one machine solves a broader illegal-mining problem.</p>
+<h2>Questions plant teams may ask</h2>
+<h3>Can a magnetic separator identify illegally mined material?</h3><p>No. It can remove suitable ferrous contamination when correctly selected and installed. It cannot determine legal origin, ownership or mineral grade.</p>
+<h3>Does this article describe a COWIN project in South Africa?</h3><p>No. It is an independent engineering interpretation of public information and does not claim a local customer, installation, office or stockholding.</p>
+<h3>Can equipment be selected from belt width alone?</h3><p>No. Burden depth, belt speed, suspension height, material, contamination, installation geometry, cleaning requirements and downstream risk must also be reviewed.</p>
+<h3>What should be recorded after ferrous material is captured?</h3><p>Follow the site's approved procedure. Useful operational details can include time, process position, approximate dimensions, photographs and the route or feed condition associated with the event.</p>
+<h2>Key takeaways</h2>
+<ul><li>Illegal-mining risk, material custody and tramp-metal removal are related operational concerns but not the same problem.</li><li>Magnetic equipment cannot establish ownership, legality or mineral grade.</li><li>Selection requires verified process and installation data rather than broad industry assumptions.</li><li>Captured-material records can support maintenance learning and the site's established security procedures.</li></ul>
+<h2>Sources and methodology</h2><p>This article is an original engineering analysis of current public-source metadata. Facts attributed to the source are separated from COWIN's process-selection commentary. It does not reproduce source articles, infer a purchase or provide legal conclusions.</p><ul>${sourceList}</ul>
+<p>Sources were accessed ${now.toLocaleDateString("en-ZA", { dateStyle: "long", timeZone: "UTC" })}. This is an independent editorial summary and not a statement by the source publishers.</p>`);
+}
+
 function articleBody(sources, product, now) {
   const sourceList = sources.map((source) => `<li><a href="${source.url}" rel="nofollow noopener noreferrer" target="_blank">${source.publisher}: ${source.title}</a>, published ${new Date(source.publishedAt).toLocaleDateString("en-ZA", { dateStyle: "long", timeZone: "UTC" })}.</li>`).join("");
+  if (editorialAngle(sources) === "mining-governance") return illegalMiningArticleBody(sources, product, now, sourceList);
   return sanitizePublishedArticleHtml(`
 <h2>What the latest updates indicate</h2>
 <p>Recent South African mining and industrial updates provide useful context for plant teams reviewing material handling reliability. The reports do not identify a COWIN installation and they do not prove that one equipment configuration suits a named operation. They do, however, reinforce a practical engineering requirement: production plans depend on equipment protection, controlled material flow and maintenance decisions that are based on verified site data.</p>
@@ -294,13 +354,20 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
     const preferred = unused.filter((candidate) => now - new Date(candidate.publishedAt) <= primaryWindow);
     const chosen = [...preferred, ...unused.filter((candidate) => !preferred.includes(candidate))].sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).filter((source, index, all) => !all.slice(0, index).some((item) => host(item.url) === host(source.url)));
     if (chosen.length < data.config.minIndependentSources) throw new Error("Fewer than two unused independent current sources were available.");
-    const sourceRecords = chosen.slice(0, 2).map((source) => ({ ...source, id: `source_${crypto.createHash("sha256").update(source.url).digest("hex").slice(0, 16)}`, status: "verified" }));
+    const groupedSources = new Map();
+    for (const source of chosen) {
+      const angle = editorialAngle([source]);
+      groupedSources.set(angle, [...(groupedSources.get(angle) || []), source]);
+    }
+    const coherentSources = [...groupedSources.values()].find((group) => new Set(group.map((source) => host(source.url))).size >= data.config.minIndependentSources);
+    const selectedSources = coherentSources || chosen;
+    const sourceRecords = selectedSources.slice(0, 2).map((source) => ({ ...source, id: `source_${crypto.createHash("sha256").update(source.url).digest("hex").slice(0, 16)}`, status: "verified" }));
     const product = data.products.find((item) => item.slug === "permanent-overband-magnetic-separator") || data.products[0];
-    const title = `What ${chosen[0].title} Means for Material Handling Decisions`;
+    const title = articleTitle(sourceRecords);
     const content = articleBody(sourceRecords, product, now);
     const draft = { id: id("draft", title), title, content, sourceIds: sourceRecords.map((source) => source.id), productSlugs: [product.slug], imageUrls: [product.image] };
     const qa = evaluateNewsDraft({ draft, sources: [...sourceRecords, ...data.sources], products: data.products, recentArticles: data.articles, config: data.config, now });
-    if (!qa.passed) throw new Error(`News quality gate failed: ${qa.failures.join(" ")}`);
+    if (!qa.passed) throw new Error(`News quality gate failed for "${title}" (${editorialAngle(sourceRecords)}): ${qa.failures.join(" ")} Metrics: ${JSON.stringify(qa.metrics)}`);
     const runId = id("run", trigger);
     const article = {
       slug: `${slugify(title)}-${now.toISOString().slice(0, 10)}`, title,
