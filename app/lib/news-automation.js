@@ -381,7 +381,19 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
       image_rights: "COWIN owned product media", related_products: [{ name: product.name, category: product.category, image: product.image, url: product.canonicalUrl || `/en-za/products/${product.categorySlug}/${product.slug}/`, relationship_reason: "Relevant to conveyor protection configuration reviews." }],
       editorial_method: "automated-source-based-quality-gate", publication_run_id: runId, automation_published_at: now.toISOString()
     };
-    const run = { id: runId, site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "published", articleSlug: article.slug, sourceUrls: article.source_urls, qa: qa.metrics, retryCount: 0 };
+    const run = {
+      id: runId,
+      site_id: data.config.siteId,
+      trigger,
+      startedAt: now.toISOString(),
+      finishedAt: new Date().toISOString(),
+      result: "pending_frontend_verification",
+      articleSlug: article.slug,
+      sourceUrls: article.source_urls,
+      qa: qa.metrics,
+      retryCount: 0,
+      delivery: { status: "pending", checkedAt: null, checks: [] }
+    };
     if (options.dryRun) return { result: "dry_run", article, run, qa };
     await Promise.all([
       writeDataJson(newsAutomationPaths.sources, [...sourceRecords, ...data.sources.filter((item) => !sourceRecords.some((source) => source.id === item.id))]),
@@ -391,6 +403,35 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
       writeDataJson("data/articles/articles.json", [article, ...data.articles])
     ]);
     return { result: "published", article, run, qa };
+  });
+}
+
+export async function recordNewsDeliveryCheck(input = {}) {
+  const runId = String(input.runId || "");
+  if (!runId) throw new Error("A publication run ID is required.");
+  const checkedAt = input.checkedAt || new Date().toISOString();
+  const passed = input.passed === true;
+  const checks = array(input.checks);
+  return withDataLock("news-automation-delivery-check", async () => {
+    const runs = array(await readDataJson(newsAutomationPaths.runs, []));
+    let matched = false;
+    const updated = runs.map((run) => {
+      if (run.id !== runId) return run;
+      matched = true;
+      return {
+        ...run,
+        result: passed ? "published_success" : "pending_frontend_verification",
+        delivery: {
+          status: passed ? "verified" : "retry_pending",
+          checkedAt,
+          checks
+        },
+        updatedAt: checkedAt
+      };
+    });
+    if (!matched) throw new Error("Publication run was not found.");
+    await writeDataJson(newsAutomationPaths.runs, updated);
+    return updated.find((run) => run.id === runId);
   });
 }
 
