@@ -316,24 +316,28 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
     const usedUrls = new Set(data.articles.filter((article) => article.article_type === "news").flatMap((article) => array(article.source_urls || article.source_url)));
     const existing = new Map(data.candidates.map((candidate) => [candidate.fingerprint || candidateFingerprint(candidate), candidate]));
     const candidates = [...data.candidates];
+    let added = 0;
     for (const source of discovered) {
       const fingerprint = candidateFingerprint(source);
       if (usedUrls.has(source.url) || existing.has(fingerprint)) continue;
       const ageHours = (now - new Date(source.publishedAt)) / 3600000;
       if (ageHours < 0 || ageHours > fallbackMaxAgeDays * 24) continue;
-      candidates.unshift({
+      const candidate = {
         ...source, id: `candidate_${fingerprint.slice(0, 16)}`, fingerprint, site_id: data.config.siteId,
         status: "candidate", score: Math.min(100, 55 + Number(source.score || 0) * 10 + (source.trustTier === "primary" ? 20 : 0)),
         freshness_tier: ageHours <= maxAgeHours ? "primary" : "fallback",
         discovered_at: now.toISOString(), updated_at: now.toISOString(), reject_reason: ""
-      });
+      };
+      candidates.unshift(candidate);
+      existing.set(fingerprint, candidate);
+      added += 1;
     }
-    const run = { id: id("ingest", trigger), site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "ingested", discovered: discovered.length, candidates: candidates.filter((item) => item.status === "candidate").length };
-    if (!options.dryRun) await Promise.all([
+    const run = { id: id("ingest", trigger), site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "ingested", discovered: discovered.length, added, candidates: candidates.filter((item) => item.status === "candidate").length };
+    if (!options.dryRun && added > 0) await Promise.all([
       writeDataJson(newsAutomationPaths.candidates, candidates.slice(0, 500)),
       writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200))
     ]);
-    return { result: "ingested", run, discovered: discovered.length, candidates: candidates.filter((item) => item.status === "candidate").length };
+    return { result: "ingested", run, discovered: discovered.length, added, candidates: candidates.filter((item) => item.status === "candidate").length };
   });
 }
 
