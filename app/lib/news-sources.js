@@ -61,6 +61,26 @@ export function parseMineralsCouncilReleases(html) {
   })).filter((item) => item.title && item.publishedAt);
 }
 
+function parseMiningWeeklyPublicPage(html) {
+  const entries = [];
+  const expression = /<a[^>]+href="([^"]*(?:article|project)[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
+  for (const match of String(html).matchAll(expression)) {
+    const url = new URL(decode(match[1]), "https://www.miningweekly.com").toString();
+    const title = decode(match[2].replace(/<[^>]+>/g, " "));
+    const dateMatch = url.match(/-(20\d{2})-(\d{2})-(\d{2})(?:$|[?#])/);
+    if (!title || !dateMatch) continue;
+    entries.push({
+      title,
+      url,
+      publishedAt: new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}T12:00:00.000Z`).toISOString(),
+      publisher: "Mining Weekly",
+      publisherType: "trade-media",
+      trustTier: "secondary"
+    });
+  }
+  return entries;
+}
+
 function relevance(item) {
   const text = item.title.toLowerCase();
   return ["mining", "mineral", "coal", "energy", "industrial", "recycling", "infrastructure", "modernisation"]
@@ -71,7 +91,8 @@ export async function discoverNewsSources({ fetchImpl = fetch, now = new Date(),
   const requests = await Promise.allSettled([
     fetchText("https://www.sanews.gov.za/rss.xml", fetchImpl).then(parseSaNewsRss),
     fetchText("https://www.gov.za/taxonomy/term/659/%2A/feed", fetchImpl).then(parseGovernmentMiningRss),
-    fetchText("https://www.mineralscouncil.org.za/industry-news/media-releases/2026", fetchImpl).then(parseMineralsCouncilReleases)
+    fetchText("https://www.mineralscouncil.org.za/industry-news/media-releases/2026", fetchImpl).then(parseMineralsCouncilReleases),
+    fetchText("https://www.miningweekly.com/", fetchImpl).then(parseMiningWeeklyPublicPage)
   ]);
   const cutoff = now.valueOf() - maxAgeDays * 86400000;
   const items = requests.flatMap((result) => result.status === "fulfilled" ? result.value : [])
