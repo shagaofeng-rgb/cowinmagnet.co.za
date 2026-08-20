@@ -357,7 +357,25 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
     const unused = data.candidates.filter((candidate) => candidate.site_id === data.config.siteId && candidate.status === "candidate" && !usedUrls.has(candidate.url) && now - new Date(candidate.publishedAt) <= fallbackWindow);
     const preferred = unused.filter((candidate) => now - new Date(candidate.publishedAt) <= primaryWindow);
     const chosen = [...preferred, ...unused.filter((candidate) => !preferred.includes(candidate))].sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).filter((source, index, all) => !all.slice(0, index).some((item) => host(item.url) === host(source.url)));
-    if (chosen.length < data.config.minIndependentSources) throw new Error("Fewer than two unused independent current sources were available.");
+    if (chosen.length < data.config.minIndependentSources) {
+      const reason = `Fewer than ${data.config.minIndependentSources} unused independent verified sources were available.`;
+      const run = {
+        id: id("run", trigger),
+        site_id: data.config.siteId,
+        trigger,
+        startedAt: now.toISOString(),
+        finishedAt: new Date().toISOString(),
+        result: "skipped_no_qualified_source",
+        reason,
+        availableCandidateCount: unused.length,
+        independentCandidateCount: chosen.length,
+        retryCount: 0
+      };
+      if (!options.dryRun) {
+        await writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200));
+      }
+      return { result: "skipped_no_qualified_source", reason, availableCandidateCount: unused.length, independentCandidateCount: chosen.length };
+    }
     const groupedSources = new Map();
     for (const source of chosen) {
       const angle = editorialAngle([source]);
@@ -425,6 +443,7 @@ export async function recordNewsDeliveryCheck(input = {}) {
       return {
         ...run,
         result: passed ? "published_success" : "pending_frontend_verification",
+        retryCount: passed ? Number(run.retryCount || 0) : Number(run.retryCount || 0) + 1,
         delivery: {
           status: passed ? "verified" : "retry_pending",
           checkedAt,
