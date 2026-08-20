@@ -61,6 +61,33 @@ export function parseMineralsCouncilReleases(html) {
   })).filter((item) => item.title && item.publishedAt);
 }
 
+export function parseMineralsCouncilEconomicReports(html) {
+  const body = String(html);
+  const entries = [];
+  const linkPattern = /<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+  for (const match of body.matchAll(linkPattern)) {
+    const title = decode(match[2].replace(/<[^>]+>/g, " "));
+    const href = decode(match[1]);
+    if (!title || !/mining|mineral|commodity|input cost|electricity|employment/i.test(title)) continue;
+    const start = Math.max(0, match.index - 700);
+    const end = Math.min(body.length, match.index + match[0].length + 700);
+    const context = decode(body.slice(start, end).replace(/<[^>]+>/g, " "));
+    const date = context.match(/(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(20\d{2})/i);
+    if (!date) continue;
+    const publishedAt = new Date(`${date[3]}-${String(new Date(`${date[2]} 1, ${date[3]}`).getMonth() + 1).padStart(2, "0")}-${String(date[1]).padStart(2, "0")}T12:00:00.000Z`);
+    if (Number.isNaN(publishedAt.valueOf())) continue;
+    entries.push({
+      title,
+      url: new URL(href, "https://www.mineralscouncil.org.za").toString(),
+      publishedAt: publishedAt.toISOString(),
+      publisher: "Minerals Council South Africa",
+      publisherType: "industry-association",
+      trustTier: "primary"
+    });
+  }
+  return entries;
+}
+
 function parseMiningWeeklyPublicPage(html) {
   const entries = [];
   const expression = /<a[^>]+href="([^"]*(?:article|project)[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi;
@@ -92,6 +119,7 @@ export async function discoverNewsSources({ fetchImpl = fetch, now = new Date(),
     fetchText("https://www.sanews.gov.za/rss.xml", fetchImpl).then(parseSaNewsRss),
     fetchText("https://www.gov.za/taxonomy/term/659/%2A/feed", fetchImpl).then(parseGovernmentMiningRss),
     fetchText("https://www.mineralscouncil.org.za/industry-news/media-releases/2026", fetchImpl).then(parseMineralsCouncilReleases),
+    fetchText("https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026", fetchImpl).then(parseMineralsCouncilEconomicReports),
     fetchText("https://www.miningweekly.com/", fetchImpl).then(parseMiningWeeklyPublicPage)
   ]);
   const cutoff = now.valueOf() - maxAgeDays * 86400000;
