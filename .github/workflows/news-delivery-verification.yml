@@ -23,16 +23,21 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: node ./tools/verify-news-delivery.mjs
-      - name: Record confirmed frontend delivery
-        if: success()
+      - id: verify
+        run: node ./tools/verify-news-delivery.mjs
+        continue-on-error: true
+      - name: Record frontend verification result
+        if: always()
         run: |
           if git diff --quiet -- data/news-automation; then
-            echo "No pending News delivery verification."
+            echo "No News delivery status changed."
             exit 0
           fi
           git config user.name "cowinmagnet-news-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/news-automation
-          git commit -m "Verify News frontend delivery"
+          git commit -m "Record News frontend delivery verification"
           git push
+      - name: Fail after recording a retryable verification error
+        if: steps.verify.outcome == 'failure'
+        run: exit 1
