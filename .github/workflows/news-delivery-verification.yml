@@ -1,0 +1,38 @@
+name: News frontend delivery verification
+
+on:
+  schedule:
+    - cron: "30 0,12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cowinmagnet-news-delivery-verification
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node ./tools/verify-news-delivery.mjs
+      - name: Record confirmed frontend delivery
+        if: success()
+        run: |
+          if git diff --quiet -- data/news-automation; then
+            echo "No pending News delivery verification."
+            exit 0
+          fi
+          git config user.name "cowinmagnet-news-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/news-automation
+          git commit -m "Verify News frontend delivery"
+          git push
