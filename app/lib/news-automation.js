@@ -389,7 +389,25 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
     const content = articleBody(sourceRecords, product, now);
     const draft = { id: id("draft", title), title, content, sourceIds: sourceRecords.map((source) => source.id), productSlugs: [product.slug], imageUrls: [product.image] };
     const qa = evaluateNewsDraft({ draft, sources: [...sourceRecords, ...data.sources], products: data.products, recentArticles: data.articles, config: data.config, now });
-    if (!qa.passed) throw new Error(`News quality gate failed for "${title}" (${editorialAngle(sourceRecords)}): ${qa.failures.join(" ")} Metrics: ${JSON.stringify(qa.metrics)}`);
+    if (!qa.passed) {
+      const reason = `News quality gate rejected "${title}" (${editorialAngle(sourceRecords)}): ${qa.failures.join(" ")}`;
+      const run = {
+        id: id("run", trigger),
+        site_id: data.config.siteId,
+        trigger,
+        startedAt: now.toISOString(),
+        finishedAt: new Date().toISOString(),
+        result: "skipped_quality_gate",
+        reason,
+        qa: qa.metrics,
+        sourceUrls: sourceRecords.map((source) => source.url),
+        retryCount: 0
+      };
+      if (!options.dryRun) {
+        await writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200));
+      }
+      return { result: "skipped_quality_gate", reason, qa, title };
+    }
     const runId = id("run", trigger);
     const article = {
       slug: `${slugify(title)}-${now.toISOString().slice(0, 10)}`, title,
