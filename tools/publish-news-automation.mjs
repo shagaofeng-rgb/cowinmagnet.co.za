@@ -6,4 +6,11 @@ const result = await runNewsAutomation("github-actions", {
   force: process.argv.includes("--force"),
   dryRun: process.argv.includes("--dry-run")
 });
-console.log(JSON.stringify({ result: result.result, title: result.article?.title, slug: result.article?.slug, qa: result.qa?.metrics, nextEligibleAt: result.nextEligibleAt }, null, 2));
+console.log(JSON.stringify({
+  result: result.result,
+  title: result.article?.title ?? result.title ?? null,
+  slug: result.article?.slug ?? null,
+  qa: result.qa?.metrics ?? result.qa ?? null,
+  reason: result.reason ?? null,
+  nextEligibleAt: result.nextEligibleAt ?? null
+}, null, 2));
