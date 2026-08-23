@@ -376,7 +376,16 @@
         journey.innerHTML = "<h2>访问路径</h2><p>正在读取访客的已过滤页面记录…</p>";
         try {
           const detail = await api(`/api/admin/analytics/visitors/${encodeURIComponent(button.dataset.visitorId)}`);
-          journey.innerHTML = `<div class="card-heading"><div><h2>访问路径：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.channel || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问</p></div><button class="text-button" data-close-journey>收起</button></div>${table(detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}`;
+          journey.innerHTML = `<div class="card-heading"><div><h2>访问路径：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.channel || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问</p></div><button class="text-button" data-close-journey>收起</button></div>
+            <div class="visitor-classification"><label>客户分类<select data-lead-status><option value="Anonymous">匿名访客</option><option value="Potential lead">潜在线索</option><option value="Lead">线索</option><option value="Customer">客户</option><option value="Excluded">排除</option></select></label><button class="button secondary" data-save-visitor>保存分类</button></div>
+            ${table(detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}`;
+          const statusField = qs("[data-lead-status]", journey);
+          if (statusField) statusField.value = detail.visitor?.leadStatus || "Anonymous";
+          qs("[data-save-visitor]", journey)?.addEventListener("click", async () => {
+            await api(`/api/admin/analytics/visitors/${encodeURIComponent(button.dataset.visitorId)}`, { method: "POST", body: JSON.stringify({ leadStatus: statusField?.value || "Anonymous" }) });
+            setStatus("访客分类已保存");
+            await load();
+          });
           qs("[data-close-journey]", journey)?.addEventListener("click", () => { journey.hidden = true; });
           journey.scrollIntoView({ behavior: "smooth", block: "nearest" });
         } catch (error) {
