@@ -683,7 +683,8 @@ export async function getAnalyticsVisitorJourney(visitorId) {
     db.query(
       `SELECT occurred_at AS time, event_type AS "eventType", page_path AS page,
         COALESCE(channel, 'Direct') AS channel, COALESCE(source, 'Direct') AS source,
-        referrer, utm_source AS "utmSource", utm_medium AS "utmMedium", utm_campaign AS "utmCampaign"
+        referrer, COALESCE(source, 'Direct') AS "utmSource",
+        COALESCE(medium, '') AS "utmMedium", COALESCE(campaign, '') AS "utmCampaign"
        FROM analytics_events
        WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)
        ORDER BY occurred_at DESC LIMIT 100`,
