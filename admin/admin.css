@@ -336,3 +336,20 @@ tr:hover td { background: rgba(128, 221, 215, .045); }
   .mini-bar-row { grid-template-columns: minmax(78px, 1fr) minmax(72px, 1.4fr) 32px; gap: 8px; }
   .metric strong, .metric-card strong { font-size: 30px; }
 }
+
+.visitor-classification {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 13px;
+  margin: 0 0 16px;
+  border: 1px solid #233a4c;
+  border-radius: 10px;
+  background: rgba(128, 221, 215, .045);
+}
+.visitor-classification label { display: grid; gap: 6px; min-width: 180px; color: #b9cad6; font-size: 12px; font-weight: 800; }
+@media (max-width: 480px) {
+  .visitor-classification { align-items: stretch; flex-direction: column; }
+  .visitor-classification .button { width: 100%; }
+}
