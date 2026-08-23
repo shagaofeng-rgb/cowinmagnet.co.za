@@ -599,6 +599,40 @@ export async function saveAnalyticsExclusionRule(input, actor = "admin") {
   return record;
 }
 
+
+export async function getAnalyticsVisitorJourney(visitorId) {
+  const db = getPool();
+  if (!db) return { storageMode: "unconfigured", visitor: null, items: [] };
+  await ensureAnalyticsSchema();
+  const normalizedId = clean(visitorId, 160);
+  if (!normalizedId) throw new Error("Visitor identifier is required.");
+  const [visitorResult, eventsResult] = await Promise.all([
+    db.query(
+      `SELECT visitor_id AS "visitorId", MIN(occurred_at) AS "firstSeenAt", MAX(occurred_at) AS "lastSeenAt",
+        COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv,
+        MAX(COALESCE(country, 'Unknown')) AS country, MAX(COALESCE(ip_masked, 'unknown')) AS ip,
+        MAX(COALESCE(channel, 'Direct')) AS channel, MAX(COALESCE(source, 'Direct')) AS source,
+        MAX(COALESCE(device, 'Desktop')) AS device, MAX(COALESCE(browser, 'Browser')) AS browser,
+        MAX(COALESCE(v.lead_status, 'Anonymous')) AS "leadStatus"
+       FROM analytics_events e
+       LEFT JOIN analytics_visitors v ON v.visitor_id = e.visitor_id
+       WHERE e.visitor_id = $1 AND NOT (e.is_bot OR e.is_internal OR e.is_test)
+       GROUP BY e.visitor_id`,
+      [normalizedId]
+    ),
+    db.query(
+      `SELECT occurred_at AS time, event_type AS "eventType", page_path AS page,
+        COALESCE(channel, 'Direct') AS channel, COALESCE(source, 'Direct') AS source,
+        referrer, utm_source AS "utmSource", utm_medium AS "utmMedium", utm_campaign AS "utmCampaign"
+       FROM analytics_events
+       WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)
+       ORDER BY occurred_at DESC LIMIT 100`,
+      [normalizedId]
+    )
+  ]);
+  return { storageMode: "postgresql", visitor: visitorResult.rows[0] || null, items: eventsResult.rows };
+}
+
 export async function analyticsHealth() {
   const db = getPool();
   if (!db) return { configured: false, mode: "unconfigured", message: "DATABASE_URL is not configured." };
