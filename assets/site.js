@@ -8,30 +8,72 @@
     return "Browser";
   }
 
-  function trackPageview() {
-    const key = "cowinmagnet_africa_client_id";
-    let clientId = localStorage.getItem(key);
-    if (!clientId) {
-      clientId = `C${Math.random().toString(16).slice(2, 8).toUpperCase()}`;
-      localStorage.setItem(key, clientId);
+  function storageId(key, prefix, persistent) {
+    const store = persistent ? window.localStorage : window.sessionStorage;
+    try {
+      let value = store.getItem(key);
+      if (!value) {
+        value = `${prefix}${crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(16).slice(2)}`;
+        store.setItem(key, value);
+      }
+      return value;
+    } catch {
+      return `${prefix}${Math.random().toString(16).slice(2)}`;
     }
+  }
+
+  function deviceType() {
+    if (window.matchMedia("(max-width: 760px)").matches) return "Mobile";
+    if (window.matchMedia("(max-width: 1024px)").matches) return "Tablet";
+    return "Desktop";
+  }
+
+  function queryAttribution() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      utmSource: params.get("utm_source") || "",
+      utmMedium: params.get("utm_medium") || "",
+      utmCampaign: params.get("utm_campaign") || "",
+      utmTerm: params.get("utm_term") || "",
+      utmContent: params.get("utm_content") || ""
+    };
+  }
+
+  function trackEvent(eventType, extra = {}) {
+    const payload = {
+      eventType,
+      clientId: storageId("cowinmagnet_africa_client_id", "C", true),
+      sessionId: storageId("cowinmagnet_africa_session_id", "S", false),
+      page: window.location.pathname,
+      referrer: document.referrer,
+      device: deviceType(),
+      browser: detectBrowser(),
+      language: document.documentElement.lang || document.documentElement.dataset.locale || "en-ZA",
+      ...queryAttribution(),
+      ...extra
+    };
     fetch("/api/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        eventType: "pageview",
-        clientId,
-        page: window.location.pathname,
-        referrer: document.referrer,
-        device: window.matchMedia("(max-width: 760px)").matches ? "Mobile" : "Desktop",
-        browser: detectBrowser(),
-        country: "",
-        language: document.documentElement.dataset.locale || "en-za",
-      }),
+      body: JSON.stringify(payload),
+      keepalive: true,
+      credentials: "same-origin"
     }).catch(() => {});
   }
 
+  function trackPageview() {
+    trackEvent("pageview");
+  }
+
+  window.cowinAnalyticsTrack = trackEvent;
   trackPageview();
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("a[href]");
+    if (!link) return;
+    const href = String(link.getAttribute("href") || "");
+    if (/wa\.me|whatsapp/i.test(href)) trackEvent("whatsapp_click", { linkTarget: href.slice(0, 500) });
+  });
 
   // Keep the public information architecture focused on the decisions a buyer
   // needs to make. Existing detail URLs stay available behind these groups.
