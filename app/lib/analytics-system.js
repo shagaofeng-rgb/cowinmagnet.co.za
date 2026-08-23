@@ -633,6 +633,21 @@ export async function getAnalyticsVisitorJourney(visitorId) {
   return { storageMode: "postgresql", visitor: visitorResult.rows[0] || null, items: eventsResult.rows };
 }
 
+
+export async function updateAnalyticsVisitor(visitorId, input = {}) {
+  const db = getPool();
+  if (!db) throw new Error("Analytics persistent storage is not configured.");
+  await ensureAnalyticsSchema();
+  const normalizedId = clean(visitorId, 160);
+  const allowed = new Set(["Anonymous", "Potential lead", "Lead", "Customer", "Excluded"]);
+  const leadStatus = clean(input.leadStatus, 40);
+  if (!normalizedId || !allowed.has(leadStatus)) throw new Error("A valid visitor category is required.");
+  const existing = await db.query("SELECT visitor_id FROM analytics_visitors WHERE visitor_id = $1", [normalizedId]);
+  if (!existing.rowCount) throw new Error("Visitor record was not found.");
+  await db.query("UPDATE analytics_visitors SET lead_status = $2, updated_at = NOW() WHERE visitor_id = $1", [normalizedId, leadStatus]);
+  return { visitorId: normalizedId, leadStatus };
+}
+
 export async function analyticsHealth() {
   const db = getPool();
   if (!db) return { configured: false, mode: "unconfigured", message: "DATABASE_URL is not configured." };
