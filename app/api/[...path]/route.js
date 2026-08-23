@@ -9,7 +9,7 @@ import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPu
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 import { newsAutomationStatus, queueNewsSource, reviewNewsDraft, runNewsAutomation } from "../../lib/news-automation.js";
-import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, getAnalyticsVisitorJourney, migrateLegacyAnalyticsEvents, recordAnalyticsEvent, saveAnalyticsExclusionRule } from "../../lib/analytics-system.js";
+import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, getAnalyticsVisitorJourney, migrateLegacyAnalyticsEvents, recordAnalyticsEvent, saveAnalyticsExclusionRule, updateAnalyticsVisitor } from "../../lib/analytics-system.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -1301,6 +1301,15 @@ async function handleAdmin(request, path) {
     try {
       const data = await getAnalyticsVisitorJourney(decodeURIComponent(analyticsVisitorMatch[1]));
       return response({ success: true, data, requestId: token(8) });
+    } catch (error) {
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
+    }
+  }
+  if (analyticsVisitorMatch && request.method === "POST") {
+    try {
+      const record = await updateAnalyticsVisitor(decodeURIComponent(analyticsVisitorMatch[1]), await bodyJson(request));
+      await audit(session.user, "Visitor classification updated", "AnalyticsVisitor", record.visitorId, record.leadStatus);
+      return response({ success: true, data: record, requestId: token(8) });
     } catch (error) {
       return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
     }
