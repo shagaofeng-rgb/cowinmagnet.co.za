@@ -13,7 +13,7 @@
     try {
       let value = store.getItem(key);
       if (!value) {
-        value = `${prefix}${crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(16).slice(2)}`;
+        value = `${prefix}${window.crypto?.randomUUID ? window.crypto.randomUUID() : Math.random().toString(16).slice(2)}`;
         store.setItem(key, value);
       }
       return value;
