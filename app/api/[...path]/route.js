@@ -9,7 +9,7 @@ import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPu
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 import { newsAutomationStatus, queueNewsSource, reviewNewsDraft, runNewsAutomation } from "../../lib/news-automation.js";
-import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, migrateLegacyAnalyticsEvents, recordAnalyticsEvent, saveAnalyticsExclusionRule } from "../../lib/analytics-system.js";
+import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, getAnalyticsVisitorJourney, migrateLegacyAnalyticsEvents, recordAnalyticsEvent, saveAnalyticsExclusionRule } from "../../lib/analytics-system.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -1296,6 +1296,15 @@ async function handleAdmin(request, path) {
   }
 
   if (path === "admin/analytics" && request.method === "GET") return response({ success: true, data: await analyticsSummary(request), requestId: token(8) });
+  const analyticsVisitorMatch = path.match(/^admin\/analytics\/visitors\/([^/]+)$/);
+  if (analyticsVisitorMatch && request.method === "GET") {
+    try {
+      const data = await getAnalyticsVisitorJourney(decodeURIComponent(analyticsVisitorMatch[1]));
+      return response({ success: true, data, requestId: token(8) });
+    } catch (error) {
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
+    }
+  }
   if (path === "admin/analytics/health" && request.method === "GET") return response({ success: true, data: await analyticsHealth(), requestId: token(8) });
   if (path === "admin/analytics/exclusions" && request.method === "GET") return response({ success: true, data: await getAnalyticsExclusionRules(), requestId: token(8) });
   if (path === "admin/analytics/exclusions" && request.method === "POST") {
