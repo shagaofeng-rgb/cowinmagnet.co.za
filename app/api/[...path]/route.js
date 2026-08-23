@@ -9,6 +9,7 @@ import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPu
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 import { newsAutomationStatus, queueNewsSource, reviewNewsDraft, runNewsAutomation } from "../../lib/news-automation.js";
+import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, migrateLegacyAnalyticsEvents, recordAnalyticsEvent, saveAnalyticsExclusionRule } from "../../lib/analytics-system.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -583,45 +584,32 @@ async function audit(user, action, object, objectId, summary) {
   await writeJson("data/cms/audit-logs.json", logs.slice(-500));
 }
 
-async function analyticsSummary() {
-  const events = await readJson("data/cms/analytics-events.json");
-  const enquiries = await readJson("data/cms/enquiries.json");
-  const pageviews = events.filter((event) => event.eventType === "pageview");
-  const visitors = new Set(pageviews.map((event) => event.clientId));
-
-  function topBy(key, label, valueLabel, limit = 10) {
-    const counts = new Map();
-    for (const item of pageviews) counts.set(item[key] || "Unknown", (counts.get(item[key] || "Unknown") || 0) + 1);
-    return [...counts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, limit)
-      .map(([name, count]) => ({ [label]: name, [valueLabel]: count }));
+async function analyticsSummary(request) {
+  const legacyEvents = await readJson("data/cms/analytics-events.json");
+  try {
+    await migrateLegacyAnalyticsEvents(Array.isArray(legacyEvents) ? legacyEvents : []);
+    return await getAnalyticsReport(request?.url || "https://cowinmagnet.co.za/api/admin/analytics?range=7d");
+  } catch (error) {
+    return {
+      pv: 0,
+      uv: 0,
+      sessions: 0,
+      enquiries: 0,
+      whatsappClicks: 0,
+      excluded: 0,
+      conversionRate: 0,
+      countries: [],
+      pages: [],
+      sources: [],
+      channels: [],
+      deviceBrowsers: [],
+      timeline: [],
+      visitors: { items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 },
+      lastSync: "",
+      storageMode: "unconfigured",
+      storageError: error?.message || String(error)
+    };
   }
-
-  const deviceBrowserCounts = new Map();
-  for (const item of pageviews) {
-    const key = `${item.device || "Desktop"}|||${item.browser || "Browser"}`;
-    deviceBrowserCounts.set(key, (deviceBrowserCounts.get(key) || 0) + 1);
-  }
-
-  return {
-    pv: pageviews.length,
-    uv: visitors.size,
-    events: events.length,
-    enquiries: enquiries.length,
-    countries: topBy("country", "name", "count"),
-    pages: topBy("page", "page", "views", 20),
-    sources: topBy("source", "source", "views"),
-    deviceBrowsers: [...deviceBrowserCounts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 20)
-      .map(([key, views]) => {
-        const [device, browser] = key.split("|||");
-        return { device, browser, views };
-      }),
-    visitors: pageviews.sort((a, b) => String(b.time).localeCompare(String(a.time))).slice(0, 200),
-    lastSync: new Date().toISOString().replace("T", " ").slice(0, 19)
-  };
 }
 
 function productUrl(product) {
@@ -1239,32 +1227,23 @@ async function handleEnquiries(request) {
 }
 
 async function handleTrack(request) {
-  const body = await bodyJson(request);
-  const headerStore = await headers();
-  const events = await readJson("data/cms/analytics-events.json");
-  const clientId = body.clientId ? String(body.clientId) : `C${token(4)}`;
-  const referrer = headerStore.get("referer") || String(body.referrer || "");
-  const source = sourceFromReferrer(referrer);
-  const record = {
-    id: token(10),
-    eventType: body.eventType ? String(body.eventType) : "pageview",
-    time: new Date().toISOString(),
-    clientId,
-    country: headerStore.get("x-vercel-ip-country") || (body.country && body.country !== "Local Preview" ? String(body.country) : "Unknown"),
-    device: body.device ? String(body.device) : "Desktop",
-    browser: body.browser ? String(body.browser) : "Browser",
-    source,
-    sourcePlatform: source === "Direct" ? "Direct entry" : "External",
-    sourceDetail: referrer || "No referrer or UTM",
-    page: body.page ? String(body.page) : "/",
-    ip: anonymizeIp(headerStore.get("x-forwarded-for")?.split(",")[0]),
-    tag: events.some((event) => event.clientId === clientId) ? "Returning" : "New",
-    visitDay: new Date().toISOString().slice(0, 10).replaceAll("-", "/"),
-    userAgent: headerStore.get("user-agent") || ""
-  };
-  events.push(record);
-  await writeJson("data/cms/analytics-events.json", events.slice(-5000));
-  return response({ success: true, data: { id: record.id, clientId }, requestId: token(8) });
+  if (process.env.ANALYTICS_COLLECTION_ENABLED === "false") {
+    return response({ success: true, data: { accepted: false, reason: "collection_disabled" }, requestId: token(8) });
+  }
+  try {
+    const result = await recordAnalyticsEvent({
+      requestHeaders: await headers(),
+      body: await bodyJson(request)
+    });
+    return response({ success: true, data: result, requestId: token(8) });
+  } catch (error) {
+    const unavailable = error?.code === "ANALYTICS_STORAGE_UNAVAILABLE";
+    return response({
+      success: false,
+      error: unavailable ? "Analytics storage is not configured." : (error?.message || "Analytics event was rejected."),
+      requestId: token(8)
+    }, unavailable ? 503 : 400);
+  }
 }
 
 async function handleAdmin(request, path) {
@@ -1282,7 +1261,7 @@ async function handleAdmin(request, path) {
       readJson("data/downloads/downloads.json"),
       readJson("data/cms/enquiries.json"),
       readJson("data/cms/audit-logs.json"),
-      analyticsSummary()
+      analyticsSummary(request)
     ]);
     return response({
       success: true,
@@ -1316,7 +1295,23 @@ async function handleAdmin(request, path) {
     });
   }
 
-  if (path === "admin/analytics" && request.method === "GET") return response({ success: true, data: await analyticsSummary(), requestId: token(8) });
+  if (path === "admin/analytics" && request.method === "GET") return response({ success: true, data: await analyticsSummary(request), requestId: token(8) });
+  if (path === "admin/analytics/health" && request.method === "GET") return response({ success: true, data: await analyticsHealth(), requestId: token(8) });
+  if (path === "admin/analytics/exclusions" && request.method === "GET") return response({ success: true, data: await getAnalyticsExclusionRules(), requestId: token(8) });
+  if (path === "admin/analytics/exclusions" && request.method === "POST") {
+    try {
+      const rule = await saveAnalyticsExclusionRule(await bodyJson(request), session.user);
+      await audit(session.user, "Analytics exclusion rule updated", "AnalyticsRule", rule.ruleKey, rule.label);
+      return response({ success: true, data: rule, requestId: token(8) });
+    } catch (error) {
+      return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
+    }
+  }
+  if (path === "admin/analytics/export" && request.method === "GET") {
+    const report = await analyticsSummary(request);
+    const rows = report.visitors?.items || [];
+    return csvResponse("analytics-visitors.csv", rows);
+  }
   if (path === "admin/seo" && request.method === "GET") return response({ success: true, data: await seoSummary(), requestId: token(8) });
   if (path === "admin/google-seo" && request.method === "GET") return response({ success: true, data: await googleSeoState(), requestId: token(8) });
   if (path === "admin/google-seo/sync" && request.method === "POST") {
