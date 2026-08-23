@@ -162,7 +162,7 @@
 
   function shortVisitorId(value) {
     const text = String(value || "");
-    return text.length > 14 ? ${text.slice(0, 7)}…${text.slice(-5)} : text || "-";
+    return text.length > 14 ? `${text.slice(0, 7)}…${text.slice(-5)}` : text || "-";
   }
 
   function statusBadge(value, tone = "neutral") {
