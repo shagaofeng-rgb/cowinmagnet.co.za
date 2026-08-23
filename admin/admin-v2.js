@@ -4,7 +4,8 @@
     user: null,
     view: "dashboard",
     page: {},
-    pageSize: 20
+    pageSize: 20,
+    analyticsFilters: {}
   };
 
   const label = {
@@ -170,15 +171,19 @@
   }
 
   function analyticsControls(key, options = {}) {
-    const includeExcluded = options.includeExcluded ? "checked" : "";
+    const current = state.analyticsFilters[key] || { range: "today" };
+    const selected = (value) => String(current.range || "today") === value ? "selected" : "";
+    const sourceSelected = (value) => String(current.channel || "") === value ? "selected" : "";
+    const deviceSelected = (value) => String(current.device || "") === value ? "selected" : "";
+    const includeExcluded = options.includeExcluded || current.includeExcluded === "1" ? "checked" : "";
     return `<div class="analytics-toolbar" data-analytics-toolbar="${key}">
-      <label>日期范围<select data-range><option value="today">今天</option><option value="yesterday">昨天</option><option value="7d">近 7 天</option><option value="30d">近 30 天</option><option value="month">本月</option><option value="custom">自定义</option></select></label>
-      <label>开始日期<input type="date" data-from></label>
-      <label>结束日期<input type="date" data-to></label>
-      <label>国家<input data-country placeholder="例如 ZA"></label>
-      <label>渠道<select data-channel><option value="">全部渠道</option><option value="Direct">Direct</option><option value="Organic Search">Organic Search</option><option value="Referral">Referral</option><option value="Social">Social</option><option value="Campaign">Campaign</option></select></label>
-      <label>设备<select data-device><option value="">全部设备</option><option value="Desktop">Desktop</option><option value="Mobile">Mobile</option><option value="Tablet">Tablet</option></select></label>
-      <label>搜索<input data-visitor-q placeholder="访问路径 / 来源"></label>
+      <label>日期范围<select data-range><option value="today" ${selected("today")}>今天</option><option value="yesterday" ${selected("yesterday")}>昨天</option><option value="7d" ${selected("7d")}>近 7 天</option><option value="30d" ${selected("30d")}>近 30 天</option><option value="month" ${selected("month")}>本月</option><option value="custom" ${selected("custom")}>自定义</option></select></label>
+      <label>开始日期<input type="date" data-from value="${esc(current.from || "")}"></label>
+      <label>结束日期<input type="date" data-to value="${esc(current.to || "")}"></label>
+      <label>国家<input data-country placeholder="例如 ZA" value="${esc(current.country || "")}"></label>
+      <label>渠道<select data-channel><option value="" ${sourceSelected("")}>全部渠道</option><option value="Direct" ${sourceSelected("Direct")}>Direct</option><option value="Organic Search" ${sourceSelected("Organic Search")}>Organic Search</option><option value="Referral" ${sourceSelected("Referral")}>Referral</option><option value="Social" ${sourceSelected("Social")}>Social</option><option value="Campaign" ${sourceSelected("Campaign")}>Campaign</option></select></label>
+      <label>设备<select data-device><option value="" ${deviceSelected("")}>全部设备</option><option value="Desktop" ${deviceSelected("Desktop")}>Desktop</option><option value="Mobile" ${deviceSelected("Mobile")}>Mobile</option><option value="Tablet" ${deviceSelected("Tablet")}>Tablet</option></select></label>
+      <label>搜索<input data-visitor-q placeholder="访问路径 / 来源" value="${esc(current.q || "")}"></label>
       <label class="check-control"><input type="checkbox" data-include-excluded ${includeExcluded}> 同时查看已排除流量</label>
       <div class="analytics-toolbar-actions"><button class="button primary" data-analytics-apply>应用筛选</button><button class="button secondary" data-analytics-reset>重置</button></div>
     </div>`;
@@ -204,6 +209,7 @@
       const root = qs(`[data-analytics-toolbar="${key}"]`, panel);
       qsa("input,select", root).forEach((node) => { if (node.type === "checkbox") node.checked = false; else node.value = ""; });
       qs("[data-range]", root).value = "today";
+      state.analyticsFilters[key] = { range: "today" };
       state.page[key] = 1;
       load();
     });
@@ -322,6 +328,7 @@
     panel.innerHTML = `${analyticsControls(key)}<section class="section-card">${label.loading}</section>`;
     const load = async () => {
       const params = analyticsParams(key);
+      state.analyticsFilters[key] = Object.fromEntries(params.entries());
       const [data, health, exclusions] = await Promise.all([
         api(`/api/admin/analytics?${params.toString()}`),
         api("/api/admin/analytics/health"),
@@ -353,6 +360,7 @@
     panel.innerHTML = `${analyticsControls(key)}<section class="section-card">${label.loading}</section>`;
     const load = async () => {
       const params = analyticsParams(key);
+      state.analyticsFilters[key] = Object.fromEntries(params.entries());
       const data = await api(`/api/admin/analytics?${params.toString()}`);
       const exportUrl = `/api/admin/analytics/export?${params.toString()}`;
       panel.innerHTML = [
