@@ -1223,6 +1223,28 @@ async function handleEnquiries(request) {
     throw new Error("Inquiry could not be verified after storage");
   }
   await audit("public-form", "Enquiry Created", "Enquiry", id, `New website inquiry saved from ${record.sourcePage}`);
+  // A successful enquiry is a genuine conversion. Record it separately from page views,
+  // but never let analytics availability change the outcome of the customer submission.
+  try {
+    await recordAnalyticsEvent({
+      requestHeaders: request.headers,
+      body: {
+        eventType: "quote_submit",
+        clientId: clean(body.analyticsClientId, 140) || `lead-${hash(email).slice(0, 24)}`,
+        sessionId: clean(body.analyticsSessionId, 140),
+        page: record.sourcePage || "/en-za/request-a-quote/",
+        referrer: clean(body.referrer, 700),
+        language: record.preferredLanguage || "en-za",
+        metadata: {
+          enquiryId: id,
+          industry: record.industry,
+          country: record.country
+        }
+      }
+    });
+  } catch (analyticsError) {
+    operationalLog("enquiry_analytics_not_recorded", { enquiryId: id, reason: analyticsError?.message || String(analyticsError) });
+  }
   return response({ success: true, data: record, requestId: token(8) });
 }
 
@@ -1285,7 +1307,7 @@ async function handleAdmin(request, path) {
         languages: ["en-za", "af-za", "zu-za", "xh-za", "st-za", "tn-za"],
         topPages: analytics.pages,
         topSources: analytics.sources,
-        recentVisitors: analytics.visitors.slice(0, 8),
+        recentVisitors: (analytics.visitors?.items || []).slice(0, 8),
         recentEnquiries: enquiries.slice(-5),
         recentLogs: logs.slice(-8),
         lastSync: analytics.lastSync,
