@@ -166,6 +166,66 @@ async function ensureAnalyticsSchema() {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
 
+      -- Upgrade legacy analytics tables in place. CREATE TABLE IF NOT EXISTS does
+      -- not add columns to an older production table, so add every required
+      -- reporting field before creating indexes or reading real visitor data.
+      ALTER TABLE analytics_events
+        ADD COLUMN IF NOT EXISTS occurred_at TIMESTAMPTZ,
+        ADD COLUMN IF NOT EXISTS visitor_id TEXT,
+        ADD COLUMN IF NOT EXISTS session_id TEXT,
+        ADD COLUMN IF NOT EXISTS event_type TEXT,
+        ADD COLUMN IF NOT EXISTS page_path TEXT,
+        ADD COLUMN IF NOT EXISTS referrer TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS referrer_host TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS channel TEXT DEFAULT 'Direct',
+        ADD COLUMN IF NOT EXISTS source TEXT DEFAULT 'Direct',
+        ADD COLUMN IF NOT EXISTS medium TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS campaign TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS campaign_content TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS campaign_term TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS country TEXT DEFAULT 'Unknown',
+        ADD COLUMN IF NOT EXISTS language TEXT DEFAULT 'en-za',
+        ADD COLUMN IF NOT EXISTS device TEXT DEFAULT 'Desktop',
+        ADD COLUMN IF NOT EXISTS browser TEXT DEFAULT 'Browser',
+        ADD COLUMN IF NOT EXISTS ip_hash TEXT,
+        ADD COLUMN IF NOT EXISTS ip_masked TEXT DEFAULT 'unknown',
+        ADD COLUMN IF NOT EXISTS user_agent TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS is_bot BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS is_internal BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS is_test BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS exclusion_reason TEXT DEFAULT '',
+        ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}'::jsonb,
+        ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
+      UPDATE analytics_events
+      SET occurred_at = COALESCE(occurred_at, created_at, NOW()),
+          visitor_id = COALESCE(NULLIF(visitor_id, ''), 'legacy-' || id::text),
+          event_type = COALESCE(NULLIF(event_type, ''), 'pageview'),
+          page_path = COALESCE(NULLIF(page_path, ''), '/'),
+          country = COALESCE(NULLIF(country, ''), 'Unknown'),
+          language = COALESCE(NULLIF(language, ''), 'en-za'),
+          device = COALESCE(NULLIF(device, ''), 'Desktop'),
+          browser = COALESCE(NULLIF(browser, ''), 'Browser'),
+          channel = COALESCE(NULLIF(channel, ''), 'Direct'),
+          source = COALESCE(NULLIF(source, ''), 'Direct'),
+          referrer = COALESCE(referrer, ''),
+          referrer_host = COALESCE(referrer_host, ''),
+          medium = COALESCE(medium, ''),
+          campaign = COALESCE(campaign, ''),
+          campaign_content = COALESCE(campaign_content, ''),
+          campaign_term = COALESCE(campaign_term, ''),
+          ip_masked = COALESCE(NULLIF(ip_masked, ''), 'unknown'),
+          user_agent = COALESCE(user_agent, ''),
+          is_bot = COALESCE(is_bot, FALSE),
+          is_internal = COALESCE(is_internal, FALSE),
+          is_test = COALESCE(is_test, FALSE),
+          exclusion_reason = COALESCE(exclusion_reason, ''),
+          metadata = COALESCE(metadata, '{}'::jsonb)
+      WHERE occurred_at IS NULL
+         OR visitor_id IS NULL OR visitor_id = ''
+         OR event_type IS NULL OR event_type = ''
+         OR page_path IS NULL OR page_path = '';
+
       CREATE INDEX IF NOT EXISTS analytics_events_time_idx ON analytics_events (occurred_at DESC);
       CREATE INDEX IF NOT EXISTS analytics_events_visitor_idx ON analytics_events (visitor_id, occurred_at DESC);
       CREATE INDEX IF NOT EXISTS analytics_events_filters_idx ON analytics_events (is_bot, is_internal, is_test, country, channel, occurred_at DESC);
