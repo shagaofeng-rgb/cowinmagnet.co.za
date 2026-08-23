@@ -504,6 +504,11 @@
     delete payload.fileUpload;
     payload.sourcePage = window.location.href;
     payload.language = document.documentElement.dataset.locale || "en-za";
+    // Reuse the anonymous analytics identifiers so a successful enquiry is
+    // attributed to the actual visit without sending contact details to analytics.
+    payload.analyticsClientId = storageId("cowinmagnet_africa_client_id", "C", true);
+    payload.analyticsSessionId = storageId("cowinmagnet_africa_session_id", "S", false);
+    payload.referrer = document.referrer;
     const duplicateKey = `${payload.email}|${payload.company}|${payload.productRequired}`;
     if (quoteForm.dataset.submitting === "true") return;
     quoteForm.dataset.submitting = "true";
