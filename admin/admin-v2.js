@@ -166,12 +166,12 @@
   }
 
   function statusBadge(value, tone = "neutral") {
-    return \`<span class="status-badge ${tone}">${esc(value || "-")}</span>\`;
+    return `<span class="status-badge ${tone}">${esc(value || "-")}</span>`;
   }
 
   function analyticsControls(key, options = {}) {
     const includeExcluded = options.includeExcluded ? "checked" : "";
-    return \`<div class="analytics-toolbar" data-analytics-toolbar="${key}">
+    return `<div class="analytics-toolbar" data-analytics-toolbar="${key}">
       <label>日期范围<select data-range><option value="today">今天</option><option value="yesterday">昨天</option><option value="7d">近 7 天</option><option value="30d">近 30 天</option><option value="month">本月</option><option value="custom">自定义</option></select></label>
       <label>开始日期<input type="date" data-from></label>
       <label>结束日期<input type="date" data-to></label>
@@ -181,11 +181,11 @@
       <label>搜索<input data-visitor-q placeholder="访问路径 / 来源"></label>
       <label class="check-control"><input type="checkbox" data-include-excluded ${includeExcluded}> 同时查看已排除流量</label>
       <div class="analytics-toolbar-actions"><button class="button primary" data-analytics-apply>应用筛选</button><button class="button secondary" data-analytics-reset>重置</button></div>
-    </div>\`;
+    </div>`;
   }
 
   function analyticsParams(key) {
-    const root = qs(\`[data-analytics-toolbar="${key}"]\`);
+    const root = qs(`[data-analytics-toolbar="${key}"]`);
     const params = new URLSearchParams();
     params.set("range", root?.querySelector("[data-range]")?.value || "today");
     params.set("page", state.page[key] || 1);
@@ -201,7 +201,7 @@
   function bindAnalyticsControls(panel, key, load) {
     qs("[data-analytics-apply]", panel)?.addEventListener("click", () => { state.page[key] = 1; load(); });
     qs("[data-analytics-reset]", panel)?.addEventListener("click", () => {
-      const root = qs(\`[data-analytics-toolbar="${key}"]\`, panel);
+      const root = qs(`[data-analytics-toolbar="${key}"]`, panel);
       qsa("input,select", root).forEach((node) => { if (node.type === "checkbox") node.checked = false; else node.value = ""; });
       qs("[data-range]", root).value = "today";
       state.page[key] = 1;
@@ -211,30 +211,30 @@
 
   function miniBars(items) {
     const max = Math.max(1, ...items.map((item) => Number(item.pv || item.count || 0)));
-    return \`<div class="mini-bars">${items.map((item) => {
+    return `<div class="mini-bars">${items.map((item) => {
       const value = Number(item.pv || item.count || 0);
       const width = Math.max(3, Math.round((value / max) * 100));
-      return \`<div class="mini-bar-row"><span title="${esc(item.bucket || item.name || item.source || item.page)}">${esc(item.bucket || item.name || item.source || item.page)}</span><i><b style="width:${width}%"></b></i><strong>${formatNumber(value)}</strong></div>\`;
-    }).join("") || '<p class="empty-copy">暂无符合条件的真实访问。</p>'}</div>\`;
+      return `<div class="mini-bar-row"><span title="${esc(item.bucket || item.name || item.source || item.page)}">${esc(item.bucket || item.name || item.source || item.page)}</span><i><b style="width:${width}%"></b></i><strong>${formatNumber(value)}</strong></div>`;
+    }).join("") || '<p class="empty-copy">暂无符合条件的真实访问。</p>'}</div>`;
   }
 
   function dataHealth(health) {
     const ready = health?.configured && health?.mode === "postgresql";
-    const message = ready ? \`PostgreSQL 已连接，最近事件：${formatTime(health.latestEventAt)}。\` : "持久化统计未连接，网站不会伪造访问数据；请在生产环境配置 DATABASE_URL 后启用。";
-    return \`<div class="data-health ${ready ? "ready" : "warning"}"><div><strong>${ready ? "真实数据采集已启用" : "数据采集待连接"}</strong><p>${esc(message)}</p></div><span>${ready ? "LIVE" : "ACTION REQUIRED"}</span></div>\`;
+    const message = ready ? `PostgreSQL 已连接，最近事件：${formatTime(health.latestEventAt)}。` : "持久化统计未连接，网站不会伪造访问数据；请在生产环境配置 DATABASE_URL 后启用。";
+    return `<div class="data-health ${ready ? "ready" : "warning"}"><div><strong>${ready ? "真实数据采集已启用" : "数据采集待连接"}</strong><p>${esc(message)}</p></div><span>${ready ? "LIVE" : "ACTION REQUIRED"}</span></div>`;
   }
 
   function visitorTable(report, allowJourney) {
     const items = report?.visitors?.items || [];
     if (!items.length) return '<p class="empty-copy">当前筛选下没有真实访客记录。系统已自动排除机器人、Collects、测试与本机流量。</p>';
-    return \`<div class="table-wrap visitor-table"><table><thead><tr><th>最后访问</th><th>访客</th><th>地区 / IP</th><th>来源</th><th>设备</th><th>回访</th><th>最后页面</th><th>客户状态</th>${allowJourney ? "<th>路径</th>" : ""}</tr></thead><tbody>${items.map((item) => \`<tr>
+    return `<div class="table-wrap visitor-table"><table><thead><tr><th>最后访问</th><th>访客</th><th>地区 / IP</th><th>来源</th><th>设备</th><th>回访</th><th>最后页面</th><th>客户状态</th>${allowJourney ? "<th>路径</th>" : ""}</tr></thead><tbody>${items.map((item) => `<tr>
       <td>${formatTime(item.lastSeenAt)}</td><td><code>${esc(shortVisitorId(item.visitorId))}</code><small>PV ${formatNumber(item.pv)}</small></td>
       <td>${esc(item.country || "Unknown")}<small>${esc(item.ip || "masked")}</small></td>
       <td>${esc(item.channel || "Direct")}<small>${esc(item.source || "-")}</small></td>
       <td>${esc(item.device || "-")}<small>${esc(item.browser || "-")}</small></td>
       <td>${formatNumber(item.visitCount || 1)} 次</td><td class="page-path">${esc(item.lastPage || "-")}</td>
       <td>${statusBadge(item.leadStatus, item.leadStatus === "Lead" ? "success" : "neutral")}</td>
-      ${allowJourney ? \`<td><button class="text-button" data-visitor-id="${esc(item.visitorId)}">查看路径</button></td>\` : ""}</tr>\`).join("")}</tbody></table></div>\`;
+      ${allowJourney ? `<td><button class="text-button" data-visitor-id="${esc(item.visitorId)}">查看路径</button></td>` : ""}</tr>`).join("")}</tbody></table></div>`;
   }
 
   async function dashboard() {
@@ -252,14 +252,14 @@
         { label: "今日 PV", value: formatNumber(report.pv), note: "已过滤无效流量" },
         { label: "今日 UV", value: formatNumber(report.uv), note: "独立访客" },
         { label: "有效会话", value: formatNumber(report.sessions), note: "按访客会话归并" },
-        { label: "询盘提交", value: formatNumber(report.enquiries || site.unreadEnquiries), note: \`转化率 ${report.conversionRate || 0}%\` },
+        { label: "询盘提交", value: formatNumber(report.enquiries || site.unreadEnquiries), note: `转化率 ${report.conversionRate || 0}%` },
         { label: "WhatsApp 点击", value: formatNumber(report.whatsappClicks), note: "高意向动作" },
         { label: "已排除", value: formatNumber(report.excluded), note: "测试 / 机器人 / Collects" }
       ]),
-      \`<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><div><h2>今日流量趋势</h2><p>以 Africa/Johannesburg 时区统计，数据按实时事件汇总。</p></div><a class="text-link" href="?view=analytics">查看完整分析</a></div>${miniBars(report.timeline || [])}</section>
-      <section class="section-card"><div class="card-heading"><div><h2>流量来源</h2><p>识别直接、自然搜索、引荐、社交和活动渠道。</p></div></div>${miniBars(report.channels || [])}</section></div>\`,
-      \`<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><div><h2>最近真实访客</h2><p>仅展示未被排除的访问记录，IP 已做隐私脱敏。</p></div><a class="text-link" href="?view=visitors">访客档案</a></div>${visitorTable(report, false)}</section>
-      <section class="section-card"><h2>同步与运行状态</h2>${table(sync.sources || [], [{ label: "数据源", value: "name" }, { label: "状态", value: "status" }, { label: "最近同步", value: "lastSync" }])}</section></div>\`
+      `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><div><h2>今日流量趋势</h2><p>以 Africa/Johannesburg 时区统计，数据按实时事件汇总。</p></div><a class="text-link" href="?view=analytics">查看完整分析</a></div>${miniBars(report.timeline || [])}</section>
+      <section class="section-card"><div class="card-heading"><div><h2>流量来源</h2><p>识别直接、自然搜索、引荐、社交和活动渠道。</p></div></div>${miniBars(report.channels || [])}</section></div>`,
+      `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><div><h2>最近真实访客</h2><p>仅展示未被排除的访问记录，IP 已做隐私脱敏。</p></div><a class="text-link" href="?view=visitors">访客档案</a></div>${visitorTable(report, false)}</section>
+      <section class="section-card"><h2>同步与运行状态</h2>${table(sync.sources || [], [{ label: "数据源", value: "name" }, { label: "状态", value: "status" }, { label: "最近同步", value: "lastSync" }])}</section></div>`
     ].join("");
   }
 
@@ -319,11 +319,11 @@
   async function analytics() {
     const key = "analytics";
     const panel = qs("[data-panel='analytics']");
-    panel.innerHTML = \`${analyticsControls(key)}<section class="section-card">${label.loading}</section>\`;
+    panel.innerHTML = `${analyticsControls(key)}<section class="section-card">${label.loading}</section>`;
     const load = async () => {
       const params = analyticsParams(key);
       const [data, health, exclusions] = await Promise.all([
-        api(\`/api/admin/analytics?${params.toString()}\`),
+        api(`/api/admin/analytics?${params.toString()}`),
         api("/api/admin/analytics/health"),
         api("/api/admin/analytics/exclusions")
       ]);
@@ -334,13 +334,13 @@
           { label: "PV", value: formatNumber(data.pv), note: "当前日期与筛选条件" },
           { label: "UV", value: formatNumber(data.uv), note: "独立访客" },
           { label: "会话", value: formatNumber(data.sessions), note: "访问会话" },
-          { label: "询盘", value: formatNumber(data.enquiries), note: \`转化率 ${data.conversionRate || 0}%\` },
+          { label: "询盘", value: formatNumber(data.enquiries), note: `转化率 ${data.conversionRate || 0}%` },
           { label: "WhatsApp", value: formatNumber(data.whatsappClicks), note: "点击事件" },
           { label: "排除流量", value: formatNumber(data.excluded), note: "仅在勾选时计入明细" }
         ]),
-        \`<div class="dashboard-grid"><section class="section-card span-2"><h2>访问趋势</h2>${miniBars(data.timeline || [])}</section><section class="section-card"><h2>国家 / 地区</h2>${miniBars(data.countries || [])}</section></div>\`,
-        \`<div class="dashboard-grid"><section class="section-card"><h2>来源渠道</h2>${miniBars(data.channels || [])}</section><section class="section-card"><h2>热门页面</h2>${miniBars(data.pages || [])}</section><section class="section-card"><h2>设备与浏览器</h2>${table(data.deviceBrowsers || [], [{ label: "设备", value: "device" }, { label: "浏览器", value: "browser" }, { label: "访问", value: "views" }])}</section></div>\`,
-        \`<section class="section-card"><div class="card-heading"><div><h2>排除规则</h2><p>已启用 ${(exclusions.items || []).filter((item) => item.enabled).length} 条规则。机器人、测试、本机和 Collects 流量默认不进入业务指标。</p></div><a class="text-link" href="?view=visitors">检查访客</a></div>${table(exclusions.items || [], [{ label: "规则", value: "label" }, { label: "类型", value: "ruleType" }, { label: "匹配", value: "pattern" }, { label: "状态", value: (item) => item.enabled ? "启用" : "停用" }])}</section>\`
+        `<div class="dashboard-grid"><section class="section-card span-2"><h2>访问趋势</h2>${miniBars(data.timeline || [])}</section><section class="section-card"><h2>国家 / 地区</h2>${miniBars(data.countries || [])}</section></div>`,
+        `<div class="dashboard-grid"><section class="section-card"><h2>来源渠道</h2>${miniBars(data.channels || [])}</section><section class="section-card"><h2>热门页面</h2>${miniBars(data.pages || [])}</section><section class="section-card"><h2>设备与浏览器</h2>${table(data.deviceBrowsers || [], [{ label: "设备", value: "device" }, { label: "浏览器", value: "browser" }, { label: "访问", value: "views" }])}</section></div>`,
+        `<section class="section-card"><div class="card-heading"><div><h2>排除规则</h2><p>已启用 ${(exclusions.items || []).filter((item) => item.enabled).length} 条规则。机器人、测试、本机和 Collects 流量默认不进入业务指标。</p></div><a class="text-link" href="?view=visitors">检查访客</a></div>${table(exclusions.items || [], [{ label: "规则", value: "label" }, { label: "类型", value: "ruleType" }, { label: "匹配", value: "pattern" }, { label: "状态", value: (item) => item.enabled ? "启用" : "停用" }])}</section>`
       ].join("");
       bindAnalyticsControls(panel, key, load);
     };
@@ -350,14 +350,14 @@
   async function visitors() {
     const key = "visitors";
     const panel = qs("[data-panel='visitors']");
-    panel.innerHTML = \`${analyticsControls(key)}<section class="section-card">${label.loading}</section>\`;
+    panel.innerHTML = `${analyticsControls(key)}<section class="section-card">${label.loading}</section>`;
     const load = async () => {
       const params = analyticsParams(key);
-      const data = await api(\`/api/admin/analytics?${params.toString()}\`);
-      const exportUrl = \`/api/admin/analytics/export?${params.toString()}\`;
+      const data = await api(`/api/admin/analytics?${params.toString()}`);
+      const exportUrl = `/api/admin/analytics/export?${params.toString()}`;
       panel.innerHTML = [
         analyticsControls(key, { includeExcluded: params.get("includeExcluded") === "1" }),
-        \`<section class="section-card"><div class="card-heading"><div><h2>访客列表</h2><p>显示来源、国家、首次/最近访问、回访次数和最后访问页面。每页 ${data.visitors?.pageSize || 20} 条。</p></div><a class="button secondary" href="${exportUrl}">导出 CSV</a></div>${visitorTable(data, true)}${pager(data.visitors || {}, key)}</section>\`,
+        `<section class="section-card"><div class="card-heading"><div><h2>访客列表</h2><p>显示来源、国家、首次/最近访问、回访次数和最后访问页面。每页 ${data.visitors?.pageSize || 20} 条。</p></div><a class="button secondary" href="${exportUrl}">导出 CSV</a></div>${visitorTable(data, true)}${pager(data.visitors || {}, key)}</section>`,
         '<section class="section-card visitor-journey" data-journey hidden></section>'
       ].join("");
       bindAnalyticsControls(panel, key, load);
@@ -367,12 +367,12 @@
         journey.hidden = false;
         journey.innerHTML = "<h2>访问路径</h2><p>正在读取访客的已过滤页面记录…</p>";
         try {
-          const detail = await api(\`/api/admin/analytics/visitors/${encodeURIComponent(button.dataset.visitorId)}\`);
-          journey.innerHTML = \`<div class="card-heading"><div><h2>访问路径：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.channel || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问</p></div><button class="text-button" data-close-journey>收起</button></div>${table(detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}\`;
+          const detail = await api(`/api/admin/analytics/visitors/${encodeURIComponent(button.dataset.visitorId)}`);
+          journey.innerHTML = `<div class="card-heading"><div><h2>访问路径：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.channel || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问</p></div><button class="text-button" data-close-journey>收起</button></div>${table(detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}`;
           qs("[data-close-journey]", journey)?.addEventListener("click", () => { journey.hidden = true; });
           journey.scrollIntoView({ behavior: "smooth", block: "nearest" });
         } catch (error) {
-          journey.innerHTML = \`<h2>访问路径</h2><p class="error-copy">${esc(error.message)}</p>\`;
+          journey.innerHTML = `<h2>访问路径</h2><p class="error-copy">${esc(error.message)}</p>`;
         }
       }));
     };
