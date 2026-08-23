@@ -1336,8 +1336,34 @@ async function handleAdmin(request, path) {
       return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
     }
   }
-  if (path === "admin/analytics/health" && request.method === "GET") return response({ success: true, data: await analyticsHealth(), requestId: token(8) });
-  if (path === "admin/analytics/exclusions" && request.method === "GET") return response({ success: true, data: await getAnalyticsExclusionRules(), requestId: token(8) });
+  if (path === "admin/analytics/health" && request.method === "GET") {
+    try {
+      return response({ success: true, data: await analyticsHealth(), requestId: token(8) });
+    } catch (error) {
+      operationalLog("analytics_health_degraded", { reason: error?.message || String(error) });
+      return response({
+        success: true,
+        data: {
+          configured: Boolean(process.env.DATABASE_URL),
+          mode: "degraded",
+          message: "Analytics storage is applying a safe compatibility update. Refresh shortly for live results."
+        },
+        requestId: token(8)
+      });
+    }
+  }
+  if (path === "admin/analytics/exclusions" && request.method === "GET") {
+    try {
+      return response({ success: true, data: await getAnalyticsExclusionRules(), requestId: token(8) });
+    } catch (error) {
+      operationalLog("analytics_exclusions_degraded", { reason: error?.message || String(error) });
+      return response({
+        success: true,
+        data: { storageMode: "degraded", items: [], message: "Exclusion rules are temporarily unavailable while analytics storage updates." },
+        requestId: token(8)
+      });
+    }
+  }
   if (path === "admin/analytics/exclusions" && request.method === "POST") {
     try {
       const rule = await saveAnalyticsExclusionRule(await bodyJson(request), session.user);
