@@ -1,5 +1,27 @@
 [
   {
+    "id": "run_018d4c0a6ac2333f",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-08-24T01:57:55.046Z",
+    "finishedAt": "2026-08-24T01:57:55.575Z",
+    "result": "skipped_quality_gate",
+    "reason": "News quality gate rejected \"What Media statement - Minerals Council South Africa’s Annual Review Highlights Mining Sector Progress on Safety, Investment and Sustainability at its 136th AGM Means for Material Handling Decisions\" (material-handling): Similarity threshold against the last 180 days of published content was exceeded.",
+    "qa": {
+      "wordCount": 1101,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.03,
+      "bodySimilarity": 0.874,
+      "strongestBodyMatch": "what-recent-south-african-industry-updates-mean-for-conveyor-protection-2026-08-11"
+    },
+    "sourceUrls": [
+      "https://www.mineralscouncil.org.za/component/jdownloads/?task=download.send&id=2729&catid=146&m=0&Itemid=935",
+      "https://www.sanews.gov.za/south-africa/enhancing-collaboration-support-infrastructure-projects"
+    ],
+    "retryCount": 0
+  },
+  {
     "id": "ingest_35dafbe22e7867a4",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",
