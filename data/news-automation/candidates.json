@@ -1,5 +1,24 @@
 [
   {
+    "title": "Enhancing collaboration to support infrastructure projects",
+    "url": "https://www.sanews.gov.za/south-africa/enhancing-collaboration-support-infrastructure-projects",
+    "publishedAt": "2026-08-23T15:30:19.000Z",
+    "publisher": "South African Government News Agency",
+    "publisherType": "government",
+    "trustTier": "primary",
+    "score": 85,
+    "fetchedAt": "2026-08-24T01:50:02.539Z",
+    "rightsNote": "Headline and publication metadata used for original engineering analysis only.",
+    "id": "candidate_5def06c756e9ba88",
+    "fingerprint": "5def06c756e9ba88ca2032085ec06ce2be5393c21ad8d1499a818631224d1ddf",
+    "site_id": "cowinmagnet-za",
+    "status": "candidate",
+    "freshness_tier": "primary",
+    "discovered_at": "2026-08-24T01:50:02.539Z",
+    "updated_at": "2026-08-24T01:50:02.539Z",
+    "reject_reason": ""
+  },
+  {
     "title": "Suspect linked to syndicate nabbed over mineral theft",
     "url": "https://www.sanews.gov.za/south-africa/suspect-linked-syndicate-nabbed-over-mineral-theft",
     "publishedAt": "2026-08-21T09:19:11.000Z",
