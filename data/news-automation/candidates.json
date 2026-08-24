@@ -1,5 +1,24 @@
 [
   {
+    "title": "NERSA registers 124 renewable energy facilities",
+    "url": "https://www.sanews.gov.za/south-africa/nersa-registers-124-renewable-energy-facilities",
+    "publishedAt": "2026-08-24T09:16:08.000Z",
+    "publisher": "South African Government News Agency",
+    "publisherType": "government",
+    "trustTier": "primary",
+    "score": 85,
+    "fetchedAt": "2026-08-24T13:05:10.570Z",
+    "rightsNote": "Headline and publication metadata used for original engineering analysis only.",
+    "id": "candidate_68254deb2fa84551",
+    "fingerprint": "68254deb2fa84551d6d367ebf70760d68b5c6770a9923a5431f0e76143af6702",
+    "site_id": "cowinmagnet-za",
+    "status": "candidate",
+    "freshness_tier": "primary",
+    "discovered_at": "2026-08-24T13:05:10.570Z",
+    "updated_at": "2026-08-24T13:05:10.570Z",
+    "reject_reason": ""
+  },
+  {
     "title": "Enhancing collaboration to support infrastructure projects",
     "url": "https://www.sanews.gov.za/south-africa/enhancing-collaboration-support-infrastructure-projects",
     "publishedAt": "2026-08-23T15:30:19.000Z",
