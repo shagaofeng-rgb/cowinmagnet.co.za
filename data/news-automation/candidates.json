@@ -1,5 +1,24 @@
 [
   {
+    "title": "Government to accelerate investment in tourism infrastructure",
+    "url": "https://www.sanews.gov.za/south-africa/government-accelerate-investment-tourism-infrastructure",
+    "publishedAt": "2026-08-26T08:07:42.000Z",
+    "publisher": "South African Government News Agency",
+    "publisherType": "government",
+    "trustTier": "primary",
+    "score": 85,
+    "fetchedAt": "2026-08-26T13:07:23.792Z",
+    "rightsNote": "Headline and publication metadata used for original engineering analysis only.",
+    "id": "candidate_a56e5338ffe716ce",
+    "fingerprint": "a56e5338ffe716ce69694a8a93c234a1522e7a80120da32c6ed8e837f85fd52d",
+    "site_id": "cowinmagnet-za",
+    "status": "candidate",
+    "freshness_tier": "primary",
+    "discovered_at": "2026-08-26T13:07:23.792Z",
+    "updated_at": "2026-08-26T13:07:23.792Z",
+    "reject_reason": ""
+  },
+  {
     "title": "ISA commits R131 million to support local government infrastructure",
     "url": "https://www.sanews.gov.za/south-africa/isa-commits-r131-million-support-local-government-infrastructure",
     "publishedAt": "2026-08-25T10:21:07.000Z",
