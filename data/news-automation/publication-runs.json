@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-08-31T11:19:57.046Z",
     "finishedAt": "2026-08-31T11:19:57.082Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31",
     "sourceUrls": [
       "https://sanews.gov.za/south-africa/niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-08-31T11:20:52.643Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-08-31T11:20:52.643Z"
   },
   {
     "id": "ingest_464e3df635fb8ebf",
