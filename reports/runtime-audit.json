@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T07:09:14.798Z",
+  "generatedAt": "2026-08-31T11:52:48.761Z",
   "scope": "repository configuration and production database metadata only",
   "services": [
     {
@@ -21,10 +21,10 @@
     },
     {
       "name": "News quality-gate run",
-      "trigger": "Vercel Cron",
-      "frequency": "every 2 days",
-      "route": "/api/cron/news-publish",
-      "status": "configured but disabled"
+      "trigger": "GitHub Actions schedule",
+      "frequency": "daily trigger with a 48-hour publication gate",
+      "route": ".github/workflows/news-autopublish.yml",
+      "status": "configured"
     }
   ],
   "crons": [
@@ -35,86 +35,32 @@
     {
       "path": "/api/cron/gsc-inspection",
       "schedule": "30 2 */3 * *"
-    },
-    {
-      "path": "/api/cron/news-publish",
-      "schedule": "0 8 */2 * *"
     }
   ],
   "data": {
     "products": {
-      "total": 88,
-      "verifiedTruthCards": 0,
-      "pendingEngineeringReview": 88
+      "total": 87,
+      "verifiedTruthCards": 87,
+      "pendingEngineeringReview": 0
     },
     "articles": {
-      "total": 5,
-      "published": 5,
-      "news": 0,
+      "total": 9,
+      "published": 9,
+      "news": 4,
       "blog": 0
     },
     "newsAutomation": {
-      "enabledInRepository": false,
-      "mode": "preproduction",
-      "requiredPreproductionApprovals": 6
+      "enabledInRepository": true,
+      "mode": "production",
+      "requiredPreproductionApprovals": 0
     }
   },
   "database": {
-    "checked": true,
-    "status": "connected",
-    "table": "africa_json_documents",
-    "documentCountSample": 10,
-    "contentSnapshots": {
-      "data/articles/articles.json": {
-        "recordCount": 23,
-        "updatedAt": "2026-08-08T06:44:37.439Z"
-      }
-    },
-    "newestDocuments": [
-      {
-        "path": "data/articles/articles.json",
-        "updatedAt": "2026-08-08T06:44:37.439Z"
-      },
-      {
-        "path": "data/cms/analytics-events.json",
-        "updatedAt": "2026-08-08T05:31:56.099Z"
-      },
-      {
-        "path": "data/seo/google-seo-jobs.json",
-        "updatedAt": "2026-08-08T02:01:24.847Z"
-      },
-      {
-        "path": "data/seo/google-search-console.json",
-        "updatedAt": "2026-08-08T02:01:24.835Z"
-      },
-      {
-        "path": "data/seo/sitemap-state.json",
-        "updatedAt": "2026-08-08T02:01:24.555Z"
-      },
-      {
-        "path": "data/seo/sitemap-runs.json",
-        "updatedAt": "2026-08-08T02:01:24.548Z"
-      },
-      {
-        "path": "data/seo/sitemap-manifest.json",
-        "updatedAt": "2026-08-08T02:01:24.528Z"
-      },
-      {
-        "path": "data/seo/gsc-url-inspection.json",
-        "updatedAt": "2026-08-07T02:35:08.187Z"
-      },
-      {
-        "path": "data/cms/audit-logs.json",
-        "updatedAt": "2026-08-02T13:32:41.273Z"
-      },
-      {
-        "path": "data/cms/enquiries.json",
-        "updatedAt": "2026-07-07T11:55:53.185Z"
-      }
-    ]
+    "checked": false,
+    "status": "DATABASE_URL unavailable"
   },
   "limitations": [
     "This report does not claim operating-system process, Vercel runtime log, CDN, or Search Console status without their respective credentials or console access.",
-    "Production News publishing remains intentionally blocked until six reviewed drafts and verified product truth cards exist."
+    "News publication is enabled and remains subject to the configured source, quality, duplication and delivery gates."
   ]
 }

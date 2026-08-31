@@ -1,11 +1,5 @@
 [
   {
-    "source": "/en-za/products/industry-application-equipment/",
-    "destination": "/en-za/products/",
-    "permanent": true,
-    "reason": "Retired category landing page"
-  },
-  {
     "source": "/en-za/products/magnetic-separation-equipment/high-frequency-screen/",
     "destination": "/en-za/products/industry-application-equipment/high-frequency-screen/",
     "permanent": true,
@@ -226,5 +220,11 @@
     "destination": "/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/",
     "permanent": true,
     "reason": "Product classification route synchronized from the main-site catalogue"
+  },
+  {
+    "source": "/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separation/",
+    "destination": "/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/",
+    "permanent": true,
+    "reason": "Duplicate supplier product URL consolidated to one canonical product record"
   }
 ]

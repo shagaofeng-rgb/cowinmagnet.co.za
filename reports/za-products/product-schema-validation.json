@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-09T05:14:43.828Z",
+  "generatedAt": "2026-08-31T11:52:33.671Z",
   "scope": "/en-za/products/** only",
-  "productCount": 88,
-  "productPagesFound": 88,
-  "productSchemaPresent": 88,
-  "breadcrumbPresent": 88,
+  "productCount": 87,
+  "productPagesFound": 87,
+  "productSchemaPresent": 87,
+  "breadcrumbPresent": 87,
   "items": [
     {
       "url": "/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
@@ -312,14 +312,6 @@
     },
     {
       "url": "/en-za/products/magnetic-separation-equipment/dcx-wet-fully-automatic-magnetic-separator/",
-      "expectedProduct": true,
-      "expectedBreadcrumbList": true,
-      "currentPageFound": true,
-      "currentContainsProduct": true,
-      "currentContainsBreadcrumb": true
-    },
-    {
-      "url": "/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separation/",
       "expectedProduct": true,
       "expectedBreadcrumbList": true,
       "currentPageFound": true,

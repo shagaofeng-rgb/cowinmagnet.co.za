@@ -1,0 +1,195 @@
+{
+  "generatedAt": "2026-08-31T11:33:25.838Z",
+  "origin": "https://cowinmagnet.co.za",
+  "passed": true,
+  "checks": [
+    {
+      "name": "admin products require authentication",
+      "path": "/api/admin/products",
+      "expected": [
+        401
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/admin/products/",
+      "redirected": true,
+      "status": 401,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":false,\"error\":\"Unauthorized\",\"requestId\":\"XfKp_ahFMUk\"}"
+    },
+    {
+      "name": "admin session requires authentication",
+      "path": "/api/session",
+      "expected": [
+        401
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/session/",
+      "redirected": true,
+      "status": 401,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":false,\"error\":\"Unauthorized\",\"requestId\":\"9Ix3eStF9rM\"}"
+    },
+    {
+      "name": "invalid login is rejected without a cookie",
+      "path": "/api/login",
+      "method": "POST",
+      "body": {
+        "email": "codex-audit-invalid@example.invalid",
+        "password": "codex-audit-invalid"
+      },
+      "expected": [
+        401
+      ],
+      "noSetCookie": true,
+      "finalUrl": "https://cowinmagnet.co.za/api/login/",
+      "redirected": true,
+      "status": 401,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":false,\"error\":\"Invalid username or password\",\"requestId\":\"GhrWlo5wN7I\"}"
+    },
+    {
+      "name": "empty enquiry is rejected without persistence",
+      "path": "/api/enquiries",
+      "method": "POST",
+      "body": {},
+      "expected": [
+        400
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/enquiries/",
+      "redirected": true,
+      "status": 400,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":false,\"error\":\"Name and email are required\",\"requestId\":\"WJ5P8mdseMs\"}"
+    },
+    {
+      "name": "Google SEO cron requires authorization",
+      "path": "/api/cron/google-seo",
+      "expected": [
+        401
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/cron/google-seo/",
+      "redirected": true,
+      "status": 401,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":false,\"error\":\"Unauthorized cron request\",\"requestId\":\"m3O_5TT92wo\"}"
+    },
+    {
+      "name": "GSC inspection cron requires authorization",
+      "path": "/api/cron/gsc-inspection",
+      "expected": [
+        401
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/cron/gsc-inspection/",
+      "redirected": true,
+      "status": 401,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":false,\"error\":\"Unauthorized cron request\",\"requestId\":\"5bKWgYepA1o\"}"
+    },
+    {
+      "name": "News cron requires authorization",
+      "path": "/api/cron/news-publish",
+      "expected": [
+        401
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/cron/news-publish/",
+      "redirected": true,
+      "status": 401,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":false,\"error\":\"Unauthorized cron request\",\"requestId\":\"6bT5bvlVzqE\"}"
+    },
+    {
+      "name": "public News API is available",
+      "path": "/api/news?page=1&pageSize=1",
+      "expected": [
+        200
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/news/?page=1&pageSize=1",
+      "redirected": true,
+      "status": 200,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":true,\"data\":{\"items\":[{\"slug\":\"niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31\",\"title\":\"NIU takes down wanted and dangerous underground illegal mining kingpin: Material-Control and Conveyor-Protection Questions\",\"summary\":\"A source-based review of material-control signals and the distinct role of correctly selected magnetic separation equipment.\",\"excerpt\":\"A source-based review of material-control signals and the distinct role of correctly selected magnetic separation equipment.\",\"content\":\"<h2>What the recorded sources say</h2>\\n<p>The current source set consists of South African Government News Agency: “NIU takes down wanted and dangerous underground illegal mining kingpin”; Minerals Council South Africa: “South Africa’s Mining future takes centre stage at Modernisation Day”. These public updates provide context for South African industry and project planning. They do not identify a COWIN customer, purchase, local sto"
+    },
+    {
+      "name": "public Blog API is available",
+      "path": "/api/blog?page=1&pageSize=1",
+      "expected": [
+        200
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/api/blog/?page=1&pageSize=1",
+      "redirected": true,
+      "status": 200,
+      "robots": "noindex, nofollow",
+      "cacheControl": "no-store",
+      "contentType": "application/json",
+      "failures": [],
+      "responsePreview": "{\"success\":true,\"data\":{\"items\":[{\"id\":\"BLOG-20260706-conveyor-belt-magnetic-separators-south-african-mines\",\"date\":\"2026-07-06\",\"slug\":\"conveyor-belt-magnetic-separators-south-african-mines\",\"tags\":[\"conveyor belt magnetic separator South Africa\",\"magnetic separator South Africa\",\"overband magnetic separator\",\"tramp metal removal\",\"magnetic separator for mining\"],\"title\":\"Conveyor Belt Magnetic Separators for South African Mines\",\"status\":\"published\",\"content\":\"<p>A conveyor belt magnetic separator is used above or near a conveyor to remove ferrous tramp metal before it damages crushers, screens, transfer chutes, mills or downstream process equipment. For South African mines, the main buying question is not simply which magnet is strongest. The real question is which separator can reach the tramp iron through the actual material burden, fit the conveyor layout, discharge metal safely and operate reliably in the mine environment.</p>\\n<p>This guide is written for mining plants, quarry "
+    },
+    {
+      "name": "repository data is private",
+      "path": "/data/products/products.json",
+      "expected": [
+        404
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/data/products/products.json",
+      "redirected": false,
+      "status": 404,
+      "robots": "noindex, nofollow",
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "contentType": "text/plain;charset=UTF-8",
+      "failures": [],
+      "responsePreview": "Not found"
+    },
+    {
+      "name": "repository tools are private",
+      "path": "/tools/runtime-audit.mjs",
+      "expected": [
+        404
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/tools/runtime-audit.mjs",
+      "redirected": false,
+      "status": 404,
+      "robots": "noindex, nofollow",
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "contentType": "text/plain;charset=UTF-8",
+      "failures": [],
+      "responsePreview": "Not found"
+    },
+    {
+      "name": "Git metadata is private",
+      "path": "/.git/config",
+      "expected": [
+        404
+      ],
+      "finalUrl": "https://cowinmagnet.co.za/.git/config/",
+      "redirected": true,
+      "status": 404,
+      "robots": "noindex, nofollow",
+      "cacheControl": "public, max-age=0, must-revalidate",
+      "contentType": "text/plain;charset=UTF-8",
+      "failures": [],
+      "responsePreview": "Not found"
+    }
+  ]
+}

@@ -7,6 +7,9 @@ const productsUrl = `${sourceBase}/en/products`;
 const sourceDir = join(root, "data", "source-sync");
 const imageDir = join(root, "assets", "images", "source-products");
 const categoryDir = join(root, "data", "categories");
+const canonicalProductAliases = new Map([
+  ["dcz-type-dry-fully-automatic-magnetic-separation", "dcz-type-dry-fully-automatic-magnetic-separator"]
+]);
 
 function decode(value = "") {
   return String(value)
@@ -163,7 +166,7 @@ async function main() {
   await mkdir(imageDir, { recursive: true });
   const listingHtml = await fetchText(productsUrl);
   const { categories, productCategoryByPath } = categoriesFromListing(listingHtml);
-  const paths = productPaths(listingHtml);
+  const paths = productPaths(listingHtml).filter((path) => !canonicalProductAliases.has(path.split("/").filter(Boolean).at(-1)));
   if (!paths.length || !categories.length) throw new Error("The main-site product directory did not return verifiable products and categories.");
   const records = [];
   const failures = [];
@@ -232,6 +235,7 @@ async function main() {
     const normalized = [];
     const seenSources = new Set();
     for (const redirect of redirects) {
+      if (redirect.source === "/en-za/products/industry-application-equipment/") continue;
       const sourceSlug = redirect.source.split("/").filter(Boolean).at(-1);
       const destinationSlug = redirect.destination.split("/").filter(Boolean).at(-1);
       const canonical = canonicalBySlug.get(sourceSlug) || canonicalBySlug.get(destinationSlug);
@@ -250,11 +254,19 @@ async function main() {
       });
       seenSources.add(legacySource);
     }
+    for (const [legacySlug, canonicalSlug] of canonicalProductAliases) {
+      const canonical = canonicalBySlug.get(canonicalSlug);
+      if (!canonical) throw new Error(`Canonical product is missing for alias ${legacySlug}`);
+      const source = `/en-za/products/magnetic-separation-equipment/${legacySlug}/`;
+      if (seenSources.has(source)) continue;
+      normalized.push({ source, destination: canonical, permanent: true, reason: "Duplicate supplier product URL consolidated to one canonical product record" });
+      seenSources.add(source);
+    }
     await writeFile(redirectPath, JSON.stringify(normalized, null, 2) + "\n");
   } catch (error) {
     throw new Error(`Unable to normalize legacy product redirects: ${error.message}`);
   }
-  await writeFile(join(sourceDir, "main-site-products-sync-report.json"), JSON.stringify({ generatedAt: new Date().toISOString(), source: productsUrl, productCount: records.length, categoryCount: categories.length, failures }, null, 2));
+  await writeFile(join(sourceDir, "main-site-products-sync-report.json"), JSON.stringify({ generatedAt: new Date().toISOString(), source: productsUrl, sourceProductPathCount: productPaths(listingHtml).length, productCount: records.length, canonicalAliasCount: canonicalProductAliases.size, categoryCount: categories.length, failures }, null, 2));
   if (failures.length) throw new Error(`${failures.length} product records were not synced. Product data was not generated for those records.`);
   console.log(`Synced ${records.length} verified product pages and ${categories.length} categories from ${productsUrl}`);
 }

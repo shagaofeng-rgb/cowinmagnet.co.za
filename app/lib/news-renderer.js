@@ -72,6 +72,16 @@ function articleUrl(item) {
   return `/en-za/news/${item.slug}/`;
 }
 
+function articleMetaDescription(item, articles) {
+  const explicit = item.seo_description || item.seoDescription;
+  if (explicit) return explicit;
+  const base = item.excerpt || item.summary || "";
+  const duplicate = articles.filter((article) => (article.excerpt || article.summary || "") === base).length > 1;
+  if (!duplicate) return base;
+  const combined = `${item.title}. ${base}`.replace(/\s+/g, " ").trim();
+  return combined.length <= 160 ? combined : `${combined.slice(0, 157).replace(/\s+\S*$/, "")}...`;
+}
+
 function productCard(item) {
   return `<a class="card product-card" href="${item.url || `/en-za/products/${item.categorySlug}/${item.slug}/`}">
     <img src="${escapeHtml(item.image || "/assets/images/hero-mining-conveyor-magnet.webp")}" alt="${escapeHtml(item.name)}">
@@ -152,7 +162,7 @@ export async function renderNewsArticle(slug) {
   </section>`;
   return pageShell({
     title: item.seo_title || item.seoTitle || `${item.title} | Cowinmagnet News`,
-    description: item.seo_description || item.seoDescription || item.excerpt || item.summary || "",
+    description: articleMetaDescription(item, articles),
     canonical,
     body,
     image: item.cover_image_url,

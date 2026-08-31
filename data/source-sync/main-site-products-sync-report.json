@@ -1,7 +1,9 @@
 {
   "generatedAt": "2026-08-09T04:28:21.570Z",
   "source": "https://www.cowinmagnet.com/en/products",
-  "productCount": 88,
+  "sourceProductPathCount": 88,
+  "productCount": 87,
+  "canonicalAliasCount": 1,
   "categoryCount": 5,
   "failures": []
 }

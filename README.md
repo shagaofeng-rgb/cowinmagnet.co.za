@@ -101,14 +101,15 @@ The generated production pages use `index,follow`, production canonical URLs, an
 
 The images in `assets/images` are AI-generated illustrative website assets. They should not be described as verified customer projects, real local installations, local stock, local offices, or factory photos.
 
-- `hero-mining-conveyor-magnet.png`
-- `product-permanent-overband-magnet.png`
-- `product-electromagnetic-separator.png`
-- `application-quarry-aggregate.png`
-- `application-recycling-separation.png`
-- `application-port-bulk-handling.png`
+- `hero-mining-conveyor-magnet.webp`
+- `product-permanent-overband-magnet.webp`
+- `product-electromagnetic-separator.webp`
+- `application-quarry-aggregate.webp`
+- `application-recycling-separation.webp`
+- `application-port-bulk-handling.webp`
 
-## Not Yet Done
+## Runtime Notes
 
-- No production database, storage bucket, email service, analytics, Search Console, or production admin account has been configured.
-- No global-site production data has been modified.
+- Production content storage and analytics use the Vercel-configured database when available; repository JSON remains the release snapshot and recovery source.
+- Search Console integration, admin authentication and scheduled jobs depend on their corresponding Vercel environment variables.
+- Global-site source content is synchronized through the dedicated product-sync tooling; production changes should continue through reviewed repository changes and deployment.

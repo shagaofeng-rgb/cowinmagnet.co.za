@@ -1,6 +1,6 @@
 import legacyProductRedirects from "./data/seo/legacy-product-redirects.json" with { type: "json" };
 
-const productRouteLocales = ["af-za", "xh-za", "zu-za"];
+const productRouteLocales = ["af-za", "xh-za", "zu-za", "st-za", "tn-za"];
 const nextRedirects = legacyProductRedirects.map(({ source, destination, permanent }) => ({ source, destination, permanent }));
 const localeProductRedirects = productRouteLocales.flatMap((locale) =>
   nextRedirects.map((redirect) => ({
@@ -41,6 +41,15 @@ const nextConfig = {
   },
   async headers() {
     return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" }
+        ]
+      },
       {
         source: "/admin/:path*",
         headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]

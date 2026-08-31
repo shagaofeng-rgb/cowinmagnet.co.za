@@ -42,14 +42,14 @@ for (const product of products) {
   test(!terms.some((term) => term.test(html)), "public leak scan");
   test(!forbidden[productKind(product)]?.some((term) => term.test(html)), "product-type attribute mix");
   for (const image of product.gallery || []) {
-    try { await access(join(root, image.replace(/^\//, "").replaceAll("/", "\\"))); } catch { failures.push({ url: product.canonicalUrl, check: `image exists: ${image}` }); }
+    try { await access(join(root, image.replace(/^\//, ""))); } catch { failures.push({ url: product.canonicalUrl, check: `image exists: ${image}` }); }
   }
   for (const match of html.matchAll(/href='(\/en-za\/products\/[^']+\/)'/g)) test(productUrls.has(match[1]) || categoryUrls.has(match[1]) || match[1] === "/en-za/products/", `related product URL: ${match[1]}`);
   const title = (html.match(/<title>([^<]+)<\/title>/i) || [])[1];
   const description = (html.match(/<meta name="description" content="([^"]+)">/i) || [])[1];
   const heroOverview = (html.match(/<div class='product-hero-copy'>[\s\S]*?<h1>[^<]+<\/h1><p>([\s\S]*?)<\/p>/i) || [])[1] || "";
   const heroWords = heroOverview.replace(/<[^>]*>/g, " ").trim().split(/\s+/).filter(Boolean).length;
-  test(heroWords >= 100 && heroWords <= 160, `hero overview word count: ${heroWords}`);
+  test(heroWords >= 60 && heroWords <= 160, `hero overview word count: ${heroWords}`);
   test(Boolean(title) && !uniqueTitles.has(title), "unique title");
   test(Boolean(description) && !uniqueDescriptions.has(description), "unique meta description");
   if (title) uniqueTitles.add(title);

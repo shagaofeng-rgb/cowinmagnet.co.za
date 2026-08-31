@@ -721,7 +721,19 @@ foreach($r in $regions) {
   WritePage "$base/markets/south-africa/$($r.slug)/" "Magnetic Separator Support for $($r.name) | Cowinmagnet South Africa" "Regional magnetic separation equipment support for $($r.name), South Africa." "Magnetic Separator Support for $($r.name)" $body
 }
 
-$supportCards = @("Product Selection Guide","Installation Guide","Maintenance Guide","Electrical Specification Guide","High-Temperature Configuration","Outdoor Installation","Dust Protection","Coastal Corrosion Protection","Spare Parts Support","After-Sales Process") | ForEach-Object { [pscustomobject]@{slug=Slug $_; name=$_; description="Guidance topic for magnetic separator project review."; image="/assets/images/product-permanent-overband-magnet.webp"} }
+$supportDescriptions = @{
+  "Product Selection Guide" = "Guidance for matching magnetic separators to material, throughput, contamination and installation conditions."
+  "Installation Guide" = "Guidance for structure, clearance, access, guarding and commissioning inputs."
+  "Maintenance Guide" = "Guidance for inspection access, isolation, wear checks and service records."
+  "Electrical Specification Guide" = "Guidance for controls, protection, power supply and site operating conditions."
+  "High-Temperature Configuration" = "Guidance for material temperature, component protection and project review."
+  "Outdoor Installation" = "Guidance for weather exposure, drainage, corrosion, structure and maintenance access."
+  "Dust Protection" = "Guidance for enclosures, access, cleaning and site-specific dust conditions."
+  "Coastal Corrosion Protection" = "Guidance for equipment finishes, materials, fasteners and inspection planning."
+  "Spare Parts Support" = "Guidance for model identification, service duty and replacement records."
+  "After-Sales Process" = "Guidance for documentation, commissioning records, troubleshooting and spare-parts coordination."
+}
+$supportCards = @("Product Selection Guide","Installation Guide","Maintenance Guide","Electrical Specification Guide","High-Temperature Configuration","Outdoor Installation","Dust Protection","Coastal Corrosion Protection","Spare Parts Support","After-Sales Process") | ForEach-Object { [pscustomobject]@{slug=Slug $_; name=$_; description=$supportDescriptions[$_]; image="/assets/images/product-permanent-overband-magnet.webp"} }
 WritePage "$base/technical-support/" "Technical Support | Cowinmagnet South Africa" "Selection, installation, maintenance, electrical and environmental guidance for magnetic separation equipment." "Technical Support" ((PageHero "<a href='$base/'>Home</a> / Technical Support" "Support" "Technical Support and Selection Guidance" "Use these resources to prepare accurate product selection data.") + "<section class='section'>$(CardGrid $supportCards "$base/technical-support" "Guide")</section>")
 foreach($guide in $supportCards) {
   $guideBody = (PageHero "<a href='$base/'>Home</a> / <a href='$base/technical-support/'>Technical Support</a> / $($guide.name)" "Guide" $guide.name $guide.description) + "<section class='section layout'><article class='panel'><h2>Engineering review scope</h2><p>This guide helps prepare product selection information for African mining, conveyor and industrial sites. It does not replace project-specific confirmation.</p><h2>Data to confirm</h2><ul class='check-list'><li>Material type and maximum lump size</li><li>Conveyor belt width, speed and burden depth</li><li>Suspension height and installation position</li><li>Dust, humidity, temperature, altitude and corrosion conditions</li><li>Voltage, frequency and number of phases</li></ul><h2>Next step</h2><p>Send the confirmed data through the request form so the equipment family and configuration can be reviewed.</p></article><aside class='panel'><h3>Related action</h3><a class='button primary' href='$base/request-a-quote/'>Request a Quote</a><a class='button secondary' href='$base/products/'>View Products</a></aside></section>"
@@ -864,6 +876,5 @@ if ($isProduction) {
 }
 
 Write-Host "Generated static multipage site under $root"
-
 
 

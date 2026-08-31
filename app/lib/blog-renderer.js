@@ -4,8 +4,20 @@ import { sanitizePublishedArticleHtml } from "./news-system.js";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.APP_URL || "https://cowinmagnet.co.za").replace(/\/$/, "");
 
+const legacyMedia = new Map([
+  ["/assets/images/source-products/permanent-overband-magnetic-separator.jpg", "/assets/images/source-products/permanent-overband-magnetic-separator-01.jpg"],
+  ["/assets/images/source-products/suspended-permanent-magnetic-separator.webp", "/assets/images/source-products/suspended-permanent-magnetic-separator-01.webp"],
+  ["/assets/images/source-products/suspended-electromagnetic-conveyor-belt-separator.webp", "/assets/images/source-products/suspended-electromagnetic-conveyor-belt-separator-01.webp"]
+]);
+
+function normalizeLegacyMedia(value = "") {
+  let normalized = String(value || "");
+  for (const [source, destination] of legacyMedia) normalized = normalized.replaceAll(source, destination);
+  return normalized;
+}
+
 function safeArticleContent(value) {
-  return sanitizePublishedArticleHtml(value);
+  return normalizeLegacyMedia(sanitizePublishedArticleHtml(value));
 }
 
 function blogArticles(items) {
@@ -15,8 +27,9 @@ function blogArticles(items) {
 }
 
 function absoluteImage(value) {
-  if (/^https?:\/\//i.test(String(value || ""))) return String(value);
-  return `${siteUrl}${value || ""}`;
+  const normalized = normalizeLegacyMedia(value);
+  if (/^https?:\/\//i.test(normalized)) return normalized;
+  return `${siteUrl}${normalized}`;
 }
 
 function pageShell({ title, description, canonical, body, schema = [], image = "" }) {
@@ -75,7 +88,7 @@ function articleUrl(item) {
 
 function productCard(product) {
   return `<a class="card product-card" href="${product.url}">
-    <img src="${escapeHtml(product.image || "/assets/images/hero-mining-conveyor-magnet.webp")}" alt="${escapeHtml(product.name)}">
+    <img src="${escapeHtml(normalizeLegacyMedia(product.image || "/assets/images/hero-mining-conveyor-magnet.webp"))}" alt="${escapeHtml(product.name)}">
     <p class="eyebrow">${escapeHtml(product.category || "Related Product")}</p>
     <h3>${escapeHtml(product.name)}</h3>
     <p>${escapeHtml(product.relationship_reason || "Relevant Cowin Magnet product for this application.")}</p>
@@ -95,7 +108,7 @@ export async function renderBlogList() {
     <form class="filter-panel"><label>Search blog<input data-site-search type="search" placeholder="overband, crusher, conveyor, coal"></label></form>
     <div class="grid">${articles
       .map((item) => `<a class="card news-card" href="${articleUrl(item)}">
-        <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
+        <img src="${escapeHtml(normalizeLegacyMedia(item.cover_image_url))}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
         <p class="eyebrow">${escapeHtml((item.published_at || item.date || "").slice(0, 10))} - ${escapeHtml(item.category || "Selection Guide")}</p>
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.excerpt || item.summary || "")}</p>
@@ -107,7 +120,7 @@ export async function renderBlogList() {
     title: "Blog | Cowinmagnet South Africa",
     description: "Practical magnetic separator selection guides for African mining, quarrying, cement, coal and recycling buyers.",
     canonical: "/en-za/blog/",
-    image: articles[0]?.cover_image_url,
+    image: normalizeLegacyMedia(articles[0]?.cover_image_url),
     body,
     schema: [
       { "@type": "Organization", name: "Cowinmagnet", url: "https://www.cowinmagnet.com" },
@@ -131,7 +144,7 @@ export async function renderBlogArticle(slug) {
   <section class="section layout">
     <article class="panel article-prose">
       <p><strong>Published:</strong> ${escapeHtml((item.published_at || item.date || "").slice(0, 10))} - <strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))} - <strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</p>
-      <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
+      <img src="${escapeHtml(normalizeLegacyMedia(item.cover_image_url))}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
       ${safeArticleContent(item.content)}
     </article>
     <aside class="panel">
@@ -144,7 +157,7 @@ export async function renderBlogArticle(slug) {
     title: item.seo_title || item.seoTitle || item.title,
     description: item.seo_description || item.seoDescription || item.excerpt || item.summary || "",
     canonical,
-    image: item.cover_image_url,
+    image: normalizeLegacyMedia(item.cover_image_url),
     body,
     schema: [
       { "@type": "Organization", name: "Cowinmagnet", url: "https://www.cowinmagnet.com" },
@@ -189,5 +202,4 @@ export async function renderBlogFeed() {
   </channel>
 </rss>`;
 }
-
 

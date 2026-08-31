@@ -1,0 +1,118 @@
+{
+  "generatedAt": "2026-08-31T11:30:11.365Z",
+  "origin": "https://cowinmagnet.co.za",
+  "sitemapCount": 4,
+  "pageCount": 179,
+  "imageCount": 104,
+  "summary": {
+    "sitemapFailures": 0,
+    "pageFailures": 1,
+    "imageFailures": 3,
+    "duplicateTitleGroups": 1,
+    "duplicateDescriptionGroups": 3
+  },
+  "sitemapResponses": [
+    {
+      "url": "https://cowinmagnet.co.za/sitemaps/pages-1.xml",
+      "status": 200,
+      "error": null
+    },
+    {
+      "url": "https://cowinmagnet.co.za/sitemaps/products-1.xml",
+      "status": 200,
+      "error": null
+    },
+    {
+      "url": "https://cowinmagnet.co.za/sitemaps/categories-1.xml",
+      "status": 200,
+      "error": null
+    },
+    {
+      "url": "https://cowinmagnet.co.za/sitemaps/posts-1.xml",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "pageFailures": [
+    {
+      "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/",
+      "status": 308,
+      "title": "",
+      "description": "",
+      "canonical": "",
+      "h1": "",
+      "htmlLang": "",
+      "imageCount": 0,
+      "imageSources": [],
+      "failures": [
+        "status:308",
+        "title-count:0",
+        "description:0",
+        "canonical-count:0",
+        "h1-count:0",
+        "lang:missing"
+      ],
+      "error": null
+    }
+  ],
+  "imageFailures": [
+    {
+      "url": "https://cowinmagnet.co.za/assets/images/source-products/permanent-overband-magnetic-separator.jpg",
+      "status": 404,
+      "contentType": "text/plain;charset=UTF-8",
+      "error": null
+    },
+    {
+      "url": "https://cowinmagnet.co.za/assets/images/source-products/suspended-permanent-magnetic-separator.webp",
+      "status": 404,
+      "contentType": "text/plain;charset=UTF-8",
+      "error": null
+    },
+    {
+      "url": "https://cowinmagnet.co.za/assets/images/source-products/suspended-electromagnetic-conveyor-belt-separator.webp",
+      "status": 404,
+      "contentType": "text/plain;charset=UTF-8",
+      "error": null
+    }
+  ],
+  "duplicateTitles": [
+    {
+      "value": "DCZ Type Dry Fully Automatic Magnetic Separator | COWIN MAGNET South Africa",
+      "urls": [
+        "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separation/",
+        "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/"
+      ]
+    }
+  ],
+  "duplicateDescriptions": [
+    {
+      "value": "Guidance topic for magnetic separator project review. for magnetic separator project review in South Africa and Africa.",
+      "urls": [
+        "https://cowinmagnet.co.za/en-za/technical-support/after-sales-process/",
+        "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/",
+        "https://cowinmagnet.co.za/en-za/technical-support/dust-protection/",
+        "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/",
+        "https://cowinmagnet.co.za/en-za/technical-support/high-temperature-configuration/",
+        "https://cowinmagnet.co.za/en-za/technical-support/installation-guide/",
+        "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/",
+        "https://cowinmagnet.co.za/en-za/technical-support/outdoor-installation/",
+        "https://cowinmagnet.co.za/en-za/technical-support/product-selection-guide/",
+        "https://cowinmagnet.co.za/en-za/technical-support/spare-parts-support/"
+      ]
+    },
+    {
+      "value": "DCZ Type Dry Fully Automatic Magnetic Separator for South African and African projects. DCZ Type Dry Fully Automatic Magnetic Separator is presented as a magn.",
+      "urls": [
+        "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separation/",
+        "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/"
+      ]
+    },
+    {
+      "value": "Current industry signals are translated into practical selection questions for mines and bulk-material operations.",
+      "urls": [
+        "https://cowinmagnet.co.za/en-za/news/illegal-mining-risks-and-the-material-control-questions-south-african-plants-should-review-2026-08-14/",
+        "https://cowinmagnet.co.za/en-za/news/what-recent-south-african-industry-updates-mean-for-conveyor-protection-2026-08-11/"
+      ]
+    }
+  ]
+}

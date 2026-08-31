@@ -40,7 +40,10 @@ const privateRootFiles = new Set([
 ]);
 
 function withVersionedStylesheet(html) {
-  return html.replace(/((?:\.\.\/|\/)?assets\/site\.css)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`);
+  let output = html.replace(/((?:\.\.\/|\/)?assets\/site\.css)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`);
+  if (!/class=["'][^"']*skip-link/i.test(output)) output = output.replace(/<body([^>]*)>/i, `<body$1><a class="skip-link" href="#main-content">Skip to main content</a>`);
+  if (!/<main\b[^>]*\bid=/i.test(output)) output = output.replace(/<main\b/i, '<main id="main-content"');
+  return output;
 }
 
 function safePath(parts) {

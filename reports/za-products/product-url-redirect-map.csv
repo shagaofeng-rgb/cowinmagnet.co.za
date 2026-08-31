@@ -1,5 +1,4 @@
 "oldUrl","newUrl","permanent","reason"
-"/en-za/products/industry-application-equipment/","/en-za/products/","301","Retired category landing page"
 "/en-za/products/magnetic-separation-equipment/high-frequency-screen/","/en-za/products/industry-application-equipment/high-frequency-screen/","301","Product classification route synchronized from the main-site catalogue"
 "/en-za/products/suspended-and-self-unloading-iron-removers/kgla-series-rectifier-control-box/","/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/","301","Product classification route synchronized from the main-site catalogue"
 "/en-za/products/suspended-and-self-unloading-iron-removers/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box/","/en-za/products/industry-application-equipment/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box/","301","Product classification route synchronized from the main-site catalogue"
@@ -37,3 +36,4 @@
 "/en-za/products/wet-drum-magnetic-separator/","/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/","301","Product classification route synchronized from the main-site catalogue"
 "/en-za/products/eddy-current-separator/","/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/","301","Product classification route synchronized from the main-site catalogue"
 "/en-za/products/magnetic-head-pulley/","/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/","301","Product classification route synchronized from the main-site catalogue"
+"/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separation/","/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/","301","Duplicate supplier product URL consolidated to one canonical product record"

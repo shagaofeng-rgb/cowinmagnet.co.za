@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-08-31T11:47:48.293Z",
+  "origin": "http://127.0.0.1:3100",
+  "sitemapCount": 4,
+  "pageCount": 177,
+  "imageCount": 99,
+  "summary": {
+    "sitemapFailures": 0,
+    "pageFailures": 0,
+    "imageFailures": 0,
+    "duplicateTitleGroups": 0,
+    "duplicateDescriptionGroups": 0
+  },
+  "sitemapResponses": [
+    {
+      "url": "http://127.0.0.1:3100/sitemaps/pages-1.xml",
+      "status": 200,
+      "error": null
+    },
+    {
+      "url": "http://127.0.0.1:3100/sitemaps/products-1.xml",
+      "status": 200,
+      "error": null
+    },
+    {
+      "url": "http://127.0.0.1:3100/sitemaps/categories-1.xml",
+      "status": 200,
+      "error": null
+    },
+    {
+      "url": "http://127.0.0.1:3100/sitemaps/posts-1.xml",
+      "status": 200,
+      "error": null
+    }
+  ],
+  "pageFailures": [],
+  "imageFailures": [],
+  "duplicateTitles": [],
+  "duplicateDescriptions": []
+}

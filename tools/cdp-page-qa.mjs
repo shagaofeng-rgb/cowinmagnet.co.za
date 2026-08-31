@@ -39,6 +39,11 @@ await command("Runtime.enable");
 await command("Emulation.setDeviceMetricsOverride", { width: Number(width), height: Number(height), screenWidth: Number(width), screenHeight: Number(height), deviceScaleFactor: 1, mobile: Number(width) <= 760 });
 await command("Page.navigate", { url });
 await new Promise((resolve) => setTimeout(resolve, 1800));
+await command("Runtime.evaluate", {
+  expression: `Promise.all([...document.images].map((image) => image.loading === 'lazy' || image.complete ? true : new Promise((resolve) => { image.addEventListener('load', resolve, { once: true }); image.addEventListener('error', resolve, { once: true }); })))`,
+  awaitPromise: true,
+  returnByValue: true
+});
 const evaluation = await command("Runtime.evaluate", {
   expression: `JSON.stringify({
     title: document.title,
@@ -58,4 +63,4 @@ const inspection = JSON.parse(evaluation.result.value);
 const screenshot = await command("Page.captureScreenshot", { format: "png", captureBeyondViewport: captureMode !== "viewport", fromSurface: true });
 await writeFile(screenshotPath, Buffer.from(screenshot.data, "base64"));
 socket.close();
-console.log(JSON.stringify({ ...inspection, horizontalOverflow: inspection.documentWidth > inspection.viewport.width + 1, runtimeErrors: errors }, null, 2));
+console.log(JSON.stringify({ ...inspection, horizontalOverflow: Math.max(inspection.documentWidth, inspection.bodyWidth) > inspection.viewport.width + 1, runtimeErrors: errors }, null, 2));

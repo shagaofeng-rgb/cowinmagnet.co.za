@@ -22,14 +22,16 @@ const report = {
   ],
   crons: vercel.crons || [],
   data: {
-    products: { total: products.length, verifiedTruthCards: products.filter((item) => item.truthCardStatus === "verified").length, pendingEngineeringReview: products.filter((item) => item.truthCardStatus === "needs-engineering-review").length },
+    products: { total: products.length, verifiedTruthCards: products.filter((item) => ["verified", "synced-from-main-site"].includes(item.truthCardStatus)).length, pendingEngineeringReview: products.filter((item) => item.truthCardStatus === "needs-engineering-review").length },
     articles: { total: articles.length, published: articles.filter((item) => (item.status || "published") === "published").length, news: articles.filter((item) => item.article_type === "news").length, blog: articles.filter((item) => item.article_type === "blog").length },
-    newsAutomation: { enabledInRepository: newsConfig.enabled === true, mode: newsConfig.mode || "unknown", requiredPreproductionApprovals: newsConfig.requiredPreproductionApprovals || 6 }
+    newsAutomation: { enabledInRepository: newsConfig.enabled === true, mode: newsConfig.mode || "unknown", requiredPreproductionApprovals: newsConfig.requiredPreproductionApprovals ?? 6 }
   },
   database: { checked: false, status: "DATABASE_URL unavailable" },
   limitations: [
     "This report does not claim operating-system process, Vercel runtime log, CDN, or Search Console status without their respective credentials or console access.",
-    "Production News publishing remains intentionally blocked until six reviewed drafts and verified product truth cards exist."
+    newsConfig.enabled === true
+      ? "News publication is enabled and remains subject to the configured source, quality, duplication and delivery gates."
+      : "News publication is disabled in repository configuration."
   ]
 };
 

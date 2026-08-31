@@ -1,0 +1,242 @@
+{
+  "generatedAt": "2026-08-31T11:51:27.835Z",
+  "origin": "http://127.0.0.1:3100",
+  "scope": "Headless Chrome mobile lab snapshot; transfer sizes may reflect local or browser cache and are not field Core Web Vitals.",
+  "pages": [
+    {
+      "path": "/en-za/",
+      "finalUrl": "http://127.0.0.1:3100/en-za/",
+      "statusHint": 200,
+      "domContentLoadedMs": 95,
+      "loadMs": 96,
+      "documentTransferBytes": 23318,
+      "resourceCount": 7,
+      "resourceTransferBytes": 979702,
+      "byType": {
+        "link": {
+          "count": 2,
+          "transferBytes": 138632
+        },
+        "img": {
+          "count": 4,
+          "transferBytes": 809015
+        },
+        "script": {
+          "count": 1,
+          "transferBytes": 32055
+        }
+      },
+      "largestResources": [
+        {
+          "name": "http://127.0.0.1:3100/assets/images/application/coal-wash-plant-wet-magnetic-separation.webp",
+          "type": "img",
+          "transferBytes": 386538
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/application/recycling-eddy-current-metal-recovery.webp",
+          "type": "img",
+          "transferBytes": 262802
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/application/mining-conveyor-tramp-iron-protection.webp",
+          "type": "img",
+          "transferBytes": 142070
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/site.css?v=20260809-layout-r2",
+          "type": "link",
+          "transferBytes": 72834
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/hero-mining-conveyor-magnet-lcp.webp",
+          "type": "link",
+          "transferBytes": 65798
+        }
+      ]
+    },
+    {
+      "path": "/en-za/products/",
+      "finalUrl": "http://127.0.0.1:3100/en-za/products/",
+      "statusHint": 200,
+      "domContentLoadedMs": 60,
+      "loadMs": 61,
+      "documentTransferBytes": 184491,
+      "resourceCount": 7,
+      "resourceTransferBytes": 582078,
+      "byType": {
+        "link": {
+          "count": 1,
+          "transferBytes": 72834
+        },
+        "img": {
+          "count": 5,
+          "transferBytes": 477189
+        },
+        "script": {
+          "count": 1,
+          "transferBytes": 32055
+        }
+      },
+      "largestResources": [
+        {
+          "name": "http://127.0.0.1:3100/assets/images/source-products/rcyd-type-permanent-magnet-self-dumping-iron-remover-01.jpg",
+          "type": "img",
+          "transferBytes": 156756
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/source-products/rcdb-type-self-cooling-plate-electromagnetic-iron-remover-01.jpg",
+          "type": "img",
+          "transferBytes": 127476
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/source-products/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover-01.jpg",
+          "type": "img",
+          "transferBytes": 101013
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/source-products/rcyb-type-permanent-magnet-manual-iron-remover-01.jpg",
+          "type": "img",
+          "transferBytes": 74339
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/site.css?v=20260809-layout-r2",
+          "type": "link",
+          "transferBytes": 72834
+        }
+      ]
+    },
+    {
+      "path": "/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+      "finalUrl": "http://127.0.0.1:3100/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+      "statusHint": 200,
+      "domContentLoadedMs": 46,
+      "loadMs": 58,
+      "documentTransferBytes": 32588,
+      "resourceCount": 4,
+      "resourceTransferBytes": 134910,
+      "byType": {
+        "link": {
+          "count": 1,
+          "transferBytes": 72834
+        },
+        "img": {
+          "count": 2,
+          "transferBytes": 30021
+        },
+        "script": {
+          "count": 1,
+          "transferBytes": 32055
+        }
+      },
+      "largestResources": [
+        {
+          "name": "http://127.0.0.1:3100/assets/site.css?v=20260809-layout-r2",
+          "type": "link",
+          "transferBytes": 72834
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/site.js",
+          "type": "script",
+          "transferBytes": 32055
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/cowinmagnet-logo.png",
+          "type": "img",
+          "transferBytes": 17605
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/source-products/suspended-permanent-magnetic-separator-01.webp",
+          "type": "img",
+          "transferBytes": 12416
+        }
+      ]
+    },
+    {
+      "path": "/en-za/news/",
+      "finalUrl": "http://127.0.0.1:3100/en-za/news/",
+      "statusHint": 200,
+      "domContentLoadedMs": 58,
+      "loadMs": 59,
+      "documentTransferBytes": 7496,
+      "resourceCount": 4,
+      "resourceTransferBytes": 259938,
+      "byType": {
+        "link": {
+          "count": 1,
+          "transferBytes": 72834
+        },
+        "img": {
+          "count": 2,
+          "transferBytes": 155049
+        },
+        "script": {
+          "count": 1,
+          "transferBytes": 32055
+        }
+      },
+      "largestResources": [
+        {
+          "name": "http://127.0.0.1:3100/assets/images/source-products/permanent-overband-magnetic-separator-01.jpg",
+          "type": "img",
+          "transferBytes": 137444
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/site.css?v=20260809-layout-r2",
+          "type": "link",
+          "transferBytes": 72834
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/site.js",
+          "type": "script",
+          "transferBytes": 32055
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/cowinmagnet-logo.png",
+          "type": "img",
+          "transferBytes": 17605
+        }
+      ]
+    },
+    {
+      "path": "/en-za/request-a-quote/",
+      "finalUrl": "http://127.0.0.1:3100/en-za/request-a-quote/",
+      "statusHint": 200,
+      "domContentLoadedMs": 50,
+      "loadMs": 52,
+      "documentTransferBytes": 15105,
+      "resourceCount": 3,
+      "resourceTransferBytes": 122494,
+      "byType": {
+        "link": {
+          "count": 1,
+          "transferBytes": 72834
+        },
+        "img": {
+          "count": 1,
+          "transferBytes": 17605
+        },
+        "script": {
+          "count": 1,
+          "transferBytes": 32055
+        }
+      },
+      "largestResources": [
+        {
+          "name": "http://127.0.0.1:3100/assets/site.css?v=20260809-layout-r2",
+          "type": "link",
+          "transferBytes": 72834
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/site.js",
+          "type": "script",
+          "transferBytes": 32055
+        },
+        {
+          "name": "http://127.0.0.1:3100/assets/images/cowinmagnet-logo.png",
+          "type": "img",
+          "transferBytes": 17605
+        }
+      ]
+    }
+  ]
+}

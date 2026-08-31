@@ -4,8 +4,8 @@ import { Client } from "pg";
 
 const documentPath = "data/articles/articles.json";
 const replacements = new Map([
-  ["suspension-height-magnetic-separator-performance-africa", "/assets/images/source-products/suspended-permanent-magnetic-separator.webp"],
-  ["magnetic-separator-selection-coal-conveyor-systems-africa", "/assets/images/source-products/permanent-overband-magnetic-separator.jpg"],
+  ["suspension-height-magnetic-separator-performance-africa", "/assets/images/source-products/suspended-permanent-magnetic-separator-01.webp"],
+  ["magnetic-separator-selection-coal-conveyor-systems-africa", "/assets/images/source-products/permanent-overband-magnetic-separator-01.jpg"],
   ["webhook-blog-publishing-verification-2026-08-06-1126", "/assets/images/hero-mining-conveyor-magnet.webp"],
   ["webhook-blog-publishing-verification-2026-08-06-1120", "/assets/images/hero-mining-conveyor-magnet.webp"]
 ]);

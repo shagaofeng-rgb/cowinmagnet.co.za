@@ -1,0 +1,445 @@
+{
+  "generatedAt": "2026-08-31T11:53:23.660Z",
+  "passed": true,
+  "productCount": 87,
+  "categoryCount": 5,
+  "sourceChecks": [
+    {
+      "slug": "suspended-permanent-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/suspended-permanent-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "suspended-electromagnetic-conveyor-belt-separator",
+      "url": "https://www.cowinmagnet.com/en/products/suspended-electromagnetic-conveyor-belt-separator",
+      "status": 200
+    },
+    {
+      "slug": "round-electromagnetic-lifting-magnet",
+      "url": "https://www.cowinmagnet.com/en/products/round-electromagnetic-lifting-magnet",
+      "status": 200
+    },
+    {
+      "slug": "permanent-overband-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/permanent-overband-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "rcyd-type-permanent-magnet-self-dumping-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcyd-type-permanent-magnet-self-dumping-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcyb-type-permanent-magnet-manual-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcyb-type-permanent-magnet-manual-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcdb-type-self-cooling-plate-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcdb-type-self-cooling-plate-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "belt-high-gradient-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/belt-high-gradient-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "disc-magnetic-separator-for-tailing",
+      "url": "https://www.cowinmagnet.com/en/products/disc-magnetic-separator-for-tailing",
+      "status": 200
+    },
+    {
+      "slug": "dry-drum-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/dry-drum-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "wet-drum-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/wet-drum-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "cbz-type-rotary-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/cbz-type-rotary-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "cgb-type-rotary-semi-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/cgb-type-rotary-semi-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "cqz-type-fully-automatic-online-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/cqz-type-fully-automatic-online-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "ctn-wet-full-countercurrent-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/ctn-wet-full-countercurrent-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "cts-type-wet-co-current-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/cts-type-wet-co-current-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "cxj-drum-type-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/cxj-drum-type-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "dcz-type-dry-fully-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/dcz-type-dry-fully-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "gls-type-integral-channel-metal-separator",
+      "url": "https://www.cowinmagnet.com/en/products/gls-type-integral-channel-metal-separator",
+      "status": 200
+    },
+    {
+      "slug": "cgt-type-super-strong-full-magnetic-drum",
+      "url": "https://www.cowinmagnet.com/en/products/cgt-type-super-strong-full-magnetic-drum",
+      "status": 200
+    },
+    {
+      "slug": "ctz-type-midfield-strong-semi-magnetic-drum",
+      "url": "https://www.cowinmagnet.com/en/products/ctz-type-midfield-strong-semi-magnetic-drum",
+      "status": 200
+    },
+    {
+      "slug": "rcda-type-air-cooled-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcda-type-air-cooled-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcde-type-oil-cooled-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcde-type-oil-cooled-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcps-self-dumping-disc-type-permanent-magnet-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcps-self-dumping-disc-type-permanent-magnet-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rct-type-fully-magnetic-drum",
+      "url": "https://www.cowinmagnet.com/en/products/rct-type-fully-magnetic-drum",
+      "status": 200
+    },
+    {
+      "slug": "rcya-type-inclined-pipeline-permanent-magnet-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcya-type-inclined-pipeline-permanent-magnet-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcydii-type-permanent-magnet-self-dumping-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcydii-type-permanent-magnet-self-dumping-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcye-type-permanent-magnet-self-dumping-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcye-type-permanent-magnet-self-dumping-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcyf-type-vertical-pipeline-permanent-magnet-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcyf-type-vertical-pipeline-permanent-magnet-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcyp-type-permanent-magnet-manual-self-dumping-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rcyz-type-vertical-pipeline-permanent-magnet-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "cqz-type-fully-automatic-online-magnetic-separation",
+      "url": "https://www.cowinmagnet.com/en/products/cqz-type-fully-automatic-online-magnetic-separation",
+      "status": 200
+    },
+    {
+      "slug": "ctb-wet-semi-countercurrent-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/ctb-wet-semi-countercurrent-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "dcx-wet-fully-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/dcx-wet-fully-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "gtc-wet-plate-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/gtc-wet-plate-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "hjlh-wet-vertical-ring-high-gradient-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/hjlh-wet-vertical-ring-high-gradient-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "hjpc-wet-disc-magnetic-separation",
+      "url": "https://www.cowinmagnet.com/en/products/hjpc-wet-disc-magnetic-separation",
+      "status": 200
+    },
+    {
+      "slug": "clt-type-magnetic-desliming-tank",
+      "url": "https://www.cowinmagnet.com/en/products/clt-type-magnetic-desliming-tank",
+      "status": 200
+    },
+    {
+      "slug": "ctb-type-semi-countercurrent-wet-selection-machine",
+      "url": "https://www.cowinmagnet.com/en/products/ctb-type-semi-countercurrent-wet-selection-machine",
+      "status": 200
+    },
+    {
+      "slug": "ctdg-type-permanent-magnet-bulk-dry-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/ctdg-type-permanent-magnet-bulk-dry-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "ctn-type-full-countercurrent-wet-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/ctn-type-full-countercurrent-wet-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "cts-type-downstream-wet-pre-selection-machine",
+      "url": "https://www.cowinmagnet.com/en/products/cts-type-downstream-wet-pre-selection-machine",
+      "status": 200
+    },
+    {
+      "slug": "ctzs-type-upward-suction-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/ctzs-type-upward-suction-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "hcg-type-dry-pre-selection-machine",
+      "url": "https://www.cowinmagnet.com/en/products/hcg-type-dry-pre-selection-machine",
+      "status": 200
+    },
+    {
+      "slug": "hjlh-type-vertical-ring-high-gradient-magnetic-separation",
+      "url": "https://www.cowinmagnet.com/en/products/hjlh-type-vertical-ring-high-gradient-magnetic-separation",
+      "status": 200
+    },
+    {
+      "slug": "ljk-type-magnetic-ore-special-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/ljk-type-magnetic-ore-special-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "nct-type-concentrated-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/nct-type-concentrated-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "wbc-semi-magnetic-tailings-recovery-machine",
+      "url": "https://www.cowinmagnet.com/en/products/wbc-semi-magnetic-tailings-recovery-machine",
+      "status": 200
+    },
+    {
+      "slug": "ctn-type-specialized-magnetic-separator-for-coal-washing",
+      "url": "https://www.cowinmagnet.com/en/products/ctn-type-specialized-magnetic-separator-for-coal-washing",
+      "status": 200
+    },
+    {
+      "slug": "hmdn-coal-washing-special-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/hmdn-coal-washing-special-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "dls-type-window-metal-detector",
+      "url": "https://www.cowinmagnet.com/en/products/dls-type-window-metal-detector",
+      "status": 200
+    },
+    {
+      "slug": "gjt-type-window-metal-detector",
+      "url": "https://www.cowinmagnet.com/en/products/gjt-type-window-metal-detector",
+      "status": 200
+    },
+    {
+      "slug": "hecp-eddy-current-metal-sorting-machine",
+      "url": "https://www.cowinmagnet.com/en/products/hecp-eddy-current-metal-sorting-machine",
+      "status": 200
+    },
+    {
+      "slug": "hecs-type-eddy-current-metal-sorting-machine",
+      "url": "https://www.cowinmagnet.com/en/products/hecs-type-eddy-current-metal-sorting-machine",
+      "status": 200
+    },
+    {
+      "slug": "drum-magnet",
+      "url": "https://www.cowinmagnet.com/en/products/drum-magnet",
+      "status": 200
+    },
+    {
+      "slug": "eccentric-eddy-current-separator",
+      "url": "https://www.cowinmagnet.com/en/products/eccentric-eddy-current-separator",
+      "status": 200
+    },
+    {
+      "slug": "electromagnet-separator",
+      "url": "https://www.cowinmagnet.com/en/products/electromagnet-separator",
+      "status": 200
+    },
+    {
+      "slug": "magnetic-head-pulley",
+      "url": "https://www.cowinmagnet.com/en/products/magnetic-head-pulley",
+      "status": 200
+    },
+    {
+      "slug": "stainless-steel-separation-conveyor",
+      "url": "https://www.cowinmagnet.com/en/products/stainless-steel-separation-conveyor",
+      "status": 200
+    },
+    {
+      "slug": "cbs-drawer-type-magnetic-filter",
+      "url": "https://www.cowinmagnet.com/en/products/cbs-drawer-type-magnetic-filter",
+      "status": 200
+    },
+    {
+      "slug": "clc-type-wet-slot-magnetic-filter",
+      "url": "https://www.cowinmagnet.com/en/products/clc-type-wet-slot-magnetic-filter",
+      "status": 200
+    },
+    {
+      "slug": "ctq-type-roller-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/ctq-type-roller-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "cyg-wet-pipeline-magnetic-filter",
+      "url": "https://www.cowinmagnet.com/en/products/cyg-wet-pipeline-magnetic-filter",
+      "status": 200
+    },
+    {
+      "slug": "rcyz-type-pipeline-magnetic-filter",
+      "url": "https://www.cowinmagnet.com/en/products/rcyz-type-pipeline-magnetic-filter",
+      "status": 200
+    },
+    {
+      "slug": "clc-type-slot-magnetic-filter",
+      "url": "https://www.cowinmagnet.com/en/products/clc-type-slot-magnetic-filter",
+      "status": 200
+    },
+    {
+      "slug": "dhd-type-roller-type-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/dhd-type-roller-type-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "dhj-type-strong-roller-automatic-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/dhj-type-strong-roller-automatic-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "qcg-wet-roller-magnetic-separator",
+      "url": "https://www.cowinmagnet.com/en/products/qcg-wet-roller-magnetic-separator",
+      "status": 200
+    },
+    {
+      "slug": "drawer-magnet",
+      "url": "https://www.cowinmagnet.com/en/products/drawer-magnet",
+      "status": 200
+    },
+    {
+      "slug": "hump-magnet",
+      "url": "https://www.cowinmagnet.com/en/products/hump-magnet",
+      "status": 200
+    },
+    {
+      "slug": "magnetic-grid",
+      "url": "https://www.cowinmagnet.com/en/products/magnetic-grid",
+      "status": 200
+    },
+    {
+      "slug": "magnetic-rod",
+      "url": "https://www.cowinmagnet.com/en/products/magnetic-rod",
+      "status": 200
+    },
+    {
+      "slug": "magnetic-trap",
+      "url": "https://www.cowinmagnet.com/en/products/magnetic-trap",
+      "status": 200
+    },
+    {
+      "slug": "rotary-pipe-magnet",
+      "url": "https://www.cowinmagnet.com/en/products/rotary-pipe-magnet",
+      "status": 200
+    },
+    {
+      "slug": "permanent-filter-bar-magnetic-neodymium-rod",
+      "url": "https://www.cowinmagnet.com/en/products/permanent-filter-bar-magnetic-neodymium-rod",
+      "status": 200
+    },
+    {
+      "slug": "high-frequency-screen",
+      "url": "https://www.cowinmagnet.com/en/products/high-frequency-screen",
+      "status": 200
+    },
+    {
+      "slug": "kgla-series-rectifier-control-box",
+      "url": "https://www.cowinmagnet.com/en/products/kgla-series-rectifier-control-box",
+      "status": 200
+    },
+    {
+      "slug": "kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box",
+      "url": "https://www.cowinmagnet.com/en/products/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box",
+      "status": 200
+    },
+    {
+      "slug": "qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box",
+      "url": "https://www.cowinmagnet.com/en/products/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box",
+      "status": 200
+    },
+    {
+      "slug": "rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rbcdd-explosion-proof-electromagnetic-self-dumping-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rbcdd-explosion-proof-electromagnetic-self-dumping-iron-remover",
+      "status": 200
+    },
+    {
+      "slug": "rbcyd-explosion-proof-permanent-magnet-self-dumping-iron-remover",
+      "url": "https://www.cowinmagnet.com/en/products/rbcyd-explosion-proof-permanent-magnet-self-dumping-iron-remover",
+      "status": 200
+    }
+  ],
+  "semanticDuplicates": [],
+  "failures": []
+}
