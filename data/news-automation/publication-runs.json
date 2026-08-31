@@ -1,5 +1,67 @@
 [
   {
+    "id": "run_380d9378a316dbe0",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-08-31T11:19:57.046Z",
+    "finishedAt": "2026-08-31T11:19:57.082Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31",
+    "sourceUrls": [
+      "https://sanews.gov.za/south-africa/niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin",
+      "https://mineralscouncil.org.za/component/jdownloads/send/146-2026/2764-media-statement-south-africas-mining-future-takes-centre-stage-at-modernisation-day"
+    ],
+    "qa": {
+      "wordCount": 1088,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.08,
+      "bodySimilarity": 0.017,
+      "strongestBodyMatch": "what-recent-south-african-industry-updates-mean-for-conveyor-protection-2026-08-11"
+    },
+    "pairKey": "g3:e8743b027bde2bec5596",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:e8743b027bde2bec5596",
+        "coherent": false,
+        "variant": 0,
+        "title": "NIU takes down wanted and dangerous underground illegal mining kingpin: Material-Control and Conveyor-Protection Questions",
+        "sourceUrls": [
+          "https://sanews.gov.za/south-africa/niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin",
+          "https://mineralscouncil.org.za/component/jdownloads/send/146-2026/2764-media-statement-south-africas-mining-future-takes-centre-stage-at-modernisation-day"
+        ],
+        "qa": {
+          "wordCount": 1088,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.08,
+          "bodySimilarity": 0.017,
+          "strongestBodyMatch": "what-recent-south-african-industry-updates-mean-for-conveyor-protection-2026-08-11"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_464e3df635fb8ebf",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-08-31T11:19:46.330Z",
+    "finishedAt": "2026-08-31T11:19:56.874Z",
+    "result": "ingested",
+    "discovered": 3,
+    "added": 1,
+    "candidates": 16,
+    "poolChanged": true
+  },
+  {
     "id": "run_5acefc50a18e9456",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions",
