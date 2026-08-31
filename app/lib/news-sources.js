@@ -1,4 +1,39 @@
 const USER_AGENT = "Cowinmagnet-NewsResearch/1.0 (+https://cowinmagnet.co.za/en-za/news/)";
+const TRACKING_QUERY_KEYS = new Set(["fbclid", "gclid", "mc_cid", "mc_eid", "itemid", "m"]);
+
+export function canonicalizeNewsSourceUrl(value) {
+  try {
+    const url = new URL(String(value || "").trim());
+    url.hash = "";
+    url.hostname = url.hostname.toLowerCase().replace(/^www\./, "");
+    for (const key of [...url.searchParams.keys()]) {
+      if (key.toLowerCase().startsWith("utm_") || TRACKING_QUERY_KEYS.has(key.toLowerCase())) url.searchParams.delete(key);
+    }
+    url.searchParams.sort();
+    url.pathname = url.pathname.replace(/\/{2,}/g, "/").replace(/\/$/, "") || "/";
+    return url.toString();
+  } catch {
+    return "";
+  }
+}
+
+function normalizedTitle(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/^media statement\s*[-–:]\s*/, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+export function newsSourceIdentity(source = {}) {
+  const canonicalUrl = canonicalizeNewsSourceUrl(source.url);
+  let hostname = "";
+  try { hostname = new URL(canonicalUrl).hostname; } catch {}
+  const date = new Date(source.publishedAt);
+  const day = Number.isNaN(date.valueOf()) ? "" : date.toISOString().slice(0, 10);
+  const title = normalizedTitle(source.title);
+  return title && day ? `${hostname}|${title}|${day}` : canonicalUrl;
+}
 
 function decode(value) {
   return String(value || "")
@@ -125,8 +160,20 @@ export async function discoverNewsSources({ fetchImpl = fetch, now = new Date(),
   const cutoff = now.valueOf() - maxAgeDays * 86400000;
   const items = requests.flatMap((result) => result.status === "fulfilled" ? result.value : [])
     .filter((item) => new Date(item.publishedAt).valueOf() >= cutoff && new Date(item.publishedAt) <= now)
-    .map((item) => ({ ...item, score: relevance(item), fetchedAt: now.toISOString(), rightsNote: "Headline and publication metadata used for original engineering analysis only." }))
+    .map((item) => ({
+      ...item,
+      url: canonicalizeNewsSourceUrl(item.url),
+      score: relevance(item),
+      fetchedAt: now.toISOString(),
+      rightsNote: "Headline and publication metadata used for original engineering analysis only."
+    }))
     .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score || new Date(b.publishedAt) - new Date(a.publishedAt));
-  return [...new Map(items.map((item) => [item.url, item])).values()];
+  const deduplicated = new Map();
+  for (const item of items) {
+    const key = newsSourceIdentity(item);
+    const existing = deduplicated.get(key);
+    if (!existing || Number(item.score || 0) > Number(existing.score || 0)) deduplicated.set(key, item);
+  }
+  return [...deduplicated.values()];
 }

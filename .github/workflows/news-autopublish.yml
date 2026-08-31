@@ -1,21 +1,30 @@
-name: News candidate discovery
+name: News autopublish pipeline
 
 on:
   schedule:
     - cron: "0 0,12 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/news-autopublish.yml"
+      - "app/lib/news-automation.js"
+      - "app/lib/news-article-generator.js"
+      - "app/lib/news-sources.js"
+      - "tools/publish-news-automation.mjs"
+      - "tools/verify-news-delivery.mjs"
 
 permissions:
   contents: write
 
 concurrency:
-  group: cowinmagnet-news-discovery
+  group: cowinmagnet-news-autopublish
   cancel-in-progress: false
 
 jobs:
-  discover:
+  publish-and-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -25,15 +34,58 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run news:ingest
-      - name: Commit new verified candidates only
+      - name: Discover and normalize candidates
+        run: npm run news:ingest
+      - id: publish
+        name: Generate and quality-check the due article
+        run: npm run news:publish -- --strict
+        continue-on-error: true
+      - name: Test the News system
+        if: steps.publish.outputs.published == 'true'
+        run: npm run test:news
+      - name: Build the production site before publication
+        if: steps.publish.outputs.published == 'true'
+        run: npm run build
+      - name: Commit candidate and publication state
+        run: |
+          if git diff --quiet -- data/articles/articles.json data/news-automation; then
+            echo "No News data changed."
+            exit 0
+          fi
+          git config user.name "cowinmagnet-news-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/articles/articles.json data/news-automation
+          if [ "${{ steps.publish.outputs.published }}" = "true" ]; then
+            git commit -m "Publish News: ${{ steps.publish.outputs.slug }}"
+          else
+            git commit -m "Record News automation state"
+          fi
+          git pull --rebase origin main
+          git push
+      - name: Check publication health
+        if: steps.publish.outcome == 'success'
+        run: npm run news:health -- --strict
+      - id: delivery
+        name: Wait for the article on list, detail, sitemap and RSS
+        if: steps.publish.outputs.published == 'true'
+        run: node ./tools/verify-news-delivery.mjs --slug=${{ steps.publish.outputs.slug }} --wait-seconds=900 --interval-seconds=20 --record
+        continue-on-error: true
+      - name: Commit frontend delivery result
+        if: steps.publish.outputs.published == 'true' && always()
         run: |
           if git diff --quiet -- data/news-automation; then
-            echo "No new eligible News candidates."
+            echo "No News delivery state changed."
             exit 0
           fi
           git config user.name "cowinmagnet-news-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/news-automation
-          git commit -m "Store verified News candidates"
+          git commit -m "Verify News frontend delivery: ${{ steps.publish.outputs.slug }}"
+          git pull --rebase origin main
           git push
+      - name: Fail on a blocked publication
+        if: steps.publish.outcome == 'failure'
+        run: exit 1
+      - name: Fail on an unverified frontend delivery
+        if: steps.delivery.outcome == 'failure'
+        run: exit 1

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseGovernmentMiningRss, parseMineralsCouncilReleases, parseSaNewsRss } from "../app/lib/news-sources.js";
+import { canonicalizeNewsSourceUrl, newsSourceIdentity, parseGovernmentMiningRss, parseMineralsCouncilReleases, parseSaNewsRss } from "../app/lib/news-sources.js";
 
 test("parses SAnews RSS metadata", () => {
   const rows = parseSaNewsRss(`<rss><channel><item><title>Mining update</title><link>https://www.sanews.gov.za/update</link><pubDate>Mon, 10 Aug 2026 08:00:00 GMT</pubDate></item></channel></rss>`);
@@ -18,4 +18,14 @@ test("parses Minerals Council release metadata", () => {
   const rows = parseMineralsCouncilReleases(`<ul><li><time>August 10, 2026</time><a href="/release.pdf">Mining modernisation update</a></li></ul>`);
   assert.equal(rows[0].publisher, "Minerals Council South Africa");
   assert.equal(rows[0].url, "https://www.mineralscouncil.org.za/release.pdf");
+});
+
+test("canonicalizes tracking variants and creates one stable source identity", () => {
+  const tracked = "https://www.Example.com/news/update/?utm_source=email&Itemid=935#section";
+  const clean = "https://example.com/news/update";
+  assert.equal(canonicalizeNewsSourceUrl(tracked), clean);
+  assert.equal(
+    newsSourceIdentity({ title: "Media statement - Mining update", publishedAt: "2026-08-30T08:00:00Z", url: tracked }),
+    newsSourceIdentity({ title: "Mining update", publishedAt: "2026-08-30T18:00:00Z", url: clean })
+  );
 });

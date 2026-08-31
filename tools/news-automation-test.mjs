@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { evaluateNewsDraft } from "../app/lib/news-automation.js";
+import { evaluateNewsDraft, normalizeNewsCandidates, rankNewsCandidates } from "../app/lib/news-automation.js";
+import { buildNewsArticleDraft } from "../app/lib/news-article-generator.js";
 
 const product = { slug: "suspended-permanent-magnetic-separator", truthCardStatus: "verified" };
 const sources = [
@@ -69,4 +70,46 @@ test("quality gate blocks a draft without independent sources", () => {
   });
   assert.equal(result.passed, false);
   assert.match(result.failures.join("\n"), /independent/);
+});
+
+test("candidate normalization collapses source URL variants by publisher, title and day", () => {
+  const candidates = normalizeNewsCandidates([
+    { id: "first", site_id: "cowinmagnet-za", status: "candidate", title: "Media statement - Mining update", publishedAt: "2026-08-30T08:00:00Z", url: "https://www.example.com/release?Itemid=935&utm_source=email" },
+    { id: "second", site_id: "cowinmagnet-za", status: "candidate", title: "Mining update", publishedAt: "2026-08-30T15:00:00Z", url: "https://example.com/release" }
+  ]);
+  assert.equal(candidates.length, 1);
+  assert.equal(candidates[0].url, "https://example.com/release");
+});
+
+test("candidate ranking prioritises fresh sources before older high-score fallbacks", () => {
+  const now = new Date("2026-08-31T12:00:00Z");
+  const ranked = rankNewsCandidates({
+    candidates: [
+      { id: "old", site_id: "cowinmagnet-za", status: "candidate", title: "Older mining investment", publishedAt: "2026-08-01T12:00:00Z", url: "https://old.example/report", score: 100 },
+      { id: "fresh", site_id: "cowinmagnet-za", status: "candidate", title: "Fresh infrastructure update", publishedAt: "2026-08-30T12:00:00Z", url: "https://fresh.example/update", score: 60 }
+    ],
+    articles: [],
+    config: { siteId: "cowinmagnet-za", candidateMaxAgeHours: 168, fallbackCandidateMaxAgeDays: 45 },
+    now
+  });
+  assert.deepEqual(ranked.map((candidate) => candidate.id), ["fresh", "old"]);
+});
+
+test("source-specific generator creates a publishable 900 to 1,500 word draft", () => {
+  const currentSources = [
+    { id: "s1", url: "https://gov.example/infrastructure", publisher: "Government Publisher", title: "New infrastructure investment programme", publishedAt: "2026-08-30T08:00:00Z" },
+    { id: "s2", url: "https://industry.example/project", publisher: "Industry Council", title: "Mining capital project outlook", publishedAt: "2026-08-29T08:00:00Z" }
+  ];
+  const currentProduct = { slug: "p1", name: "Permanent Overband Magnetic Separator", truthCardStatus: "verified", image: "/assets/images/product.jpg" };
+  const generated = buildNewsArticleDraft({ sources: currentSources, product: currentProduct, now: new Date("2026-08-31T12:00:00Z"), variant: 0 });
+  const result = evaluateNewsDraft({
+    draft: { ...generated, sourceIds: ["s1", "s2"], productSlugs: ["p1"], imageUrls: [currentProduct.image] },
+    sources: currentSources,
+    products: [currentProduct],
+    recentArticles: [{ title: "Previous conveyor protection article", content: `<p>${"Older generic conveyor protection guidance for plant teams. ".repeat(180)}</p>` }],
+    config: { minIndependentSources: 2, fallbackCandidateMaxAgeDays: 45 },
+    now: new Date("2026-08-31T12:00:00Z")
+  });
+  assert.equal(result.passed, true, result.failures.join(" "));
+  assert.ok(result.metrics.wordCount >= 900 && result.metrics.wordCount <= 1500);
 });

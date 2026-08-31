@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "siteId": "cowinmagnet-za",
   "siteUrl": "https://cowinmagnet.co.za",
   "locale": "en-ZA",
@@ -13,9 +13,13 @@
   },
   "requiredPreproductionApprovals": 0,
   "publishIntervalHours": 48,
-  "candidateMaxAgeHours": 720,
-  "fallbackCandidateMaxAgeDays": 90,
+  "candidateMaxAgeHours": 168,
+  "fallbackCandidateMaxAgeDays": 45,
   "minIndependentSources": 2,
   "maxRetries": 2,
-  "updatedAt": "2026-08-20T07:06:58.151Z"
+  "maxAttemptsPerRun": 6,
+  "maxDraftVariantsPerPair": 3,
+  "retryBackoffHours": 24,
+  "publicationSlaHours": 60,
+  "updatedAt": "2026-08-31T11:00:00.000Z"
 }

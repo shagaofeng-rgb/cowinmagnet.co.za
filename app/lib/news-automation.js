@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { readDataJson, sanitizePublishedArticleHtml, withDataLock, writeDataJson } from "./news-system.js";
-import { discoverNewsSources } from "./news-sources.js";
+import { buildNewsArticleDraft, classifyNewsAngle } from "./news-article-generator.js";
+import { canonicalizeNewsSourceUrl, discoverNewsSources, newsSourceIdentity } from "./news-sources.js";
 
 const BASE_PATH = "data/news-automation";
 const DAY = 24 * 60 * 60 * 1000;
@@ -19,7 +20,7 @@ export const newsAutomationPaths = {
 };
 
 export const defaultNewsAutomationConfig = {
-  version: 2,
+  version: 3,
   siteId: "cowinmagnet-za",
   siteUrl: "https://cowinmagnet.co.za",
   locale: "en-ZA",
@@ -33,10 +34,14 @@ export const defaultNewsAutomationConfig = {
   },
   requiredPreproductionApprovals: 0,
   publishIntervalHours: 48,
-  candidateMaxAgeHours: 72,
-  fallbackCandidateMaxAgeDays: 7,
+  candidateMaxAgeHours: 168,
+  fallbackCandidateMaxAgeDays: 45,
   minIndependentSources: 2,
   maxRetries: 2,
+  maxAttemptsPerRun: 6,
+  maxDraftVariantsPerPair: 3,
+  retryBackoffHours: 24,
+  publicationSlaHours: 60,
   updatedAt: "2026-08-08T00:00:00.000Z"
 };
 
@@ -74,8 +79,8 @@ function isRecent(value, maxDays, now = new Date()) {
   return !Number.isNaN(date.valueOf()) && date <= now && now - date <= maxDays * DAY;
 }
 
-function candidateFingerprint(source) {
-  return crypto.createHash("sha256").update(`${source.url}|${source.title}|${source.publishedAt}`).digest("hex");
+export function candidateFingerprint(source) {
+  return crypto.createHash("sha256").update(newsSourceIdentity(source)).digest("hex");
 }
 
 function similarity(left, right, shingleSize = 1) {
@@ -189,7 +194,7 @@ export async function newsAutomationStatus() {
 
 export async function queueNewsSource(input, actor) {
   const source = {
-    id: id("source", input.url), url: String(input.url || "").trim(), publisher: String(input.publisher || "").trim(),
+    id: id("source", input.url), url: canonicalizeNewsSourceUrl(input.url), publisher: String(input.publisher || "").trim(),
     publisherType: String(input.publisherType || "").trim(), publishedAt: String(input.publishedAt || "").trim(),
     fetchedAt: new Date().toISOString(), rightsNote: String(input.rightsNote || "").trim(),
     trustTier: String(input.trustTier || "").trim(), status: "discovery", createdBy: actor
@@ -197,7 +202,7 @@ export async function queueNewsSource(input, actor) {
   if (!validUrl(source.url) || !source.publisher || !source.publishedAt) throw new Error("A valid source URL, publisher and publication date are required.");
   return withDataLock("news-automation-source-queue", async () => {
     const sources = array(await readDataJson(newsAutomationPaths.sources, []));
-    const existing = sources.find((item) => item.url === source.url);
+    const existing = sources.find((item) => newsSourceIdentity(item) === newsSourceIdentity(source));
     if (existing) return existing;
     await writeDataJson(newsAutomationPaths.sources, [source, ...sources]);
     return source;
@@ -306,6 +311,108 @@ function slugify(value) {
   return String(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 90);
 }
 
+function candidatePreference(candidate) {
+  if (candidate.status === "used") return 4;
+  if (candidate.status === "candidate") return 3;
+  if (candidate.status === "retry_wait") return 2;
+  return 1;
+}
+
+export function normalizeNewsCandidates(candidates = []) {
+  const normalized = new Map();
+  for (const input of array(candidates)) {
+    const url = canonicalizeNewsSourceUrl(input.url);
+    if (!url) continue;
+    const candidate = { ...input, url };
+    const fingerprint = candidateFingerprint(candidate);
+    candidate.fingerprint = fingerprint;
+    candidate.id = candidate.id || `candidate_${fingerprint.slice(0, 16)}`;
+    const existing = normalized.get(fingerprint);
+    if (!existing) {
+      normalized.set(fingerprint, candidate);
+      continue;
+    }
+    const candidateWins = candidatePreference(candidate) > candidatePreference(existing) ||
+      (candidatePreference(candidate) === candidatePreference(existing) && new Date(candidate.updated_at || candidate.discovered_at || 0) > new Date(existing.updated_at || existing.discovered_at || 0));
+    const winner = candidateWins ? candidate : existing;
+    const loser = candidateWins ? existing : candidate;
+    normalized.set(fingerprint, {
+      ...loser,
+      ...winner,
+      duplicate_urls: [...new Set([...(array(existing.duplicate_urls)), ...(array(candidate.duplicate_urls)), existing.url, candidate.url])]
+    });
+  }
+  return [...normalized.values()];
+}
+
+function candidateIsAvailable(candidate, now) {
+  if (candidate.status === "candidate") return true;
+  if (candidate.status !== "retry_wait") return false;
+  const retryAfter = new Date(candidate.retry_after || 0);
+  return Number.isNaN(retryAfter.valueOf()) || retryAfter <= now;
+}
+
+export function rankNewsCandidates({ candidates = [], articles = [], config = defaultNewsAutomationConfig, now = new Date() } = {}) {
+  const primaryWindow = Number(config.candidateMaxAgeHours || 72) * 3600000;
+  const fallbackWindow = Number(config.fallbackCandidateMaxAgeDays || 7) * DAY;
+  const usedUrls = new Set(array(articles).flatMap((article) => {
+    const urls = array(article.source_urls);
+    return urls.length ? urls : [article.source_url].filter(Boolean);
+  }).map(canonicalizeNewsSourceUrl));
+  return normalizeNewsCandidates(candidates)
+    .filter((candidate) => candidate.site_id === config.siteId && candidateIsAvailable(candidate, now))
+    .filter((candidate) => !usedUrls.has(canonicalizeNewsSourceUrl(candidate.url)))
+    .filter((candidate) => {
+      const publishedAt = new Date(candidate.publishedAt);
+      return !Number.isNaN(publishedAt.valueOf()) && publishedAt <= now && now - publishedAt <= fallbackWindow;
+    })
+    .sort((left, right) => {
+      const leftAge = now - new Date(left.publishedAt);
+      const rightAge = now - new Date(right.publishedAt);
+      const leftPrimary = leftAge <= primaryWindow ? 1 : 0;
+      const rightPrimary = rightAge <= primaryWindow ? 1 : 0;
+      return rightPrimary - leftPrimary ||
+        new Date(right.publishedAt) - new Date(left.publishedAt) ||
+        Number(right.score || 0) - Number(left.score || 0);
+    });
+}
+
+function pairKey(sources, generatorVersion = 3) {
+  const identities = sources.map(newsSourceIdentity).sort();
+  return `g${generatorVersion}:${crypto.createHash("sha256").update(identities.join("|")).digest("hex").slice(0, 20)}`;
+}
+
+function buildCandidatePairs(candidates, runs, config) {
+  const generatorVersion = 3;
+  const failures = new Map();
+  for (const run of array(runs)) {
+    if (run.result !== "skipped_quality_gate" || Number(run.generatorVersion || 0) !== generatorVersion || !run.pairKey) continue;
+    failures.set(run.pairKey, (failures.get(run.pairKey) || 0) + 1);
+  }
+  const pairs = [];
+  const seen = new Set();
+  const addPairs = (rows, coherent) => {
+    for (let left = 0; left < rows.length; left += 1) {
+      for (let right = left + 1; right < rows.length; right += 1) {
+        const pair = [rows[left], rows[right]];
+        if (host(pair[0].url) === host(pair[1].url)) continue;
+        const key = pairKey(pair, generatorVersion);
+        if (seen.has(key) || (failures.get(key) || 0) >= Number(config.maxRetries || 2)) continue;
+        seen.add(key);
+        pairs.push({ sources: pair, pairKey: key, coherent });
+      }
+    }
+  };
+  const byAngle = new Map();
+  for (const candidate of candidates) {
+    const angle = classifyNewsAngle([candidate]);
+    byAngle.set(angle, [...(byAngle.get(angle) || []), candidate]);
+  }
+  for (const group of byAngle.values()) addPairs(group, true);
+  addPairs(candidates.slice(0, 16), false);
+  return pairs.sort((left, right) => Number(right.coherent) - Number(left.coherent)).slice(0, Number(config.maxAttemptsPerRun || 6));
+}
+
 export async function runNewsIngest(trigger = "cron", options = {}) {
   return withDataLock("news-automation-ingest", async () => {
     const now = options.now ? new Date(options.now) : new Date();
@@ -313,13 +420,17 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
     const maxAgeHours = Number(data.config.candidateMaxAgeHours || 72);
     const fallbackMaxAgeDays = Number(data.config.fallbackCandidateMaxAgeDays || 7);
     const discovered = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: fallbackMaxAgeDays });
-    const usedUrls = new Set(data.articles.filter((article) => article.article_type === "news").flatMap((article) => array(article.source_urls || article.source_url)));
-    const existing = new Map(data.candidates.map((candidate) => [candidate.fingerprint || candidateFingerprint(candidate), candidate]));
-    const candidates = [...data.candidates];
+    const usedUrls = new Set(data.articles.filter((article) => article.article_type === "news").flatMap((article) => {
+      const urls = array(article.source_urls);
+      return urls.length ? urls : [article.source_url].filter(Boolean);
+    }).map(canonicalizeNewsSourceUrl));
+    const before = normalizeNewsCandidates(data.candidates);
+    const existing = new Map(before.map((candidate) => [candidateFingerprint(candidate), candidate]));
+    const candidates = [...before];
     let added = 0;
     for (const source of discovered) {
       const fingerprint = candidateFingerprint(source);
-      if (usedUrls.has(source.url) || existing.has(fingerprint)) continue;
+      if (usedUrls.has(canonicalizeNewsSourceUrl(source.url)) || existing.has(fingerprint)) continue;
       const ageHours = (now - new Date(source.publishedAt)) / 3600000;
       if (ageHours < 0 || ageHours > fallbackMaxAgeDays * 24) continue;
       const candidate = {
@@ -332,12 +443,14 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
       existing.set(fingerprint, candidate);
       added += 1;
     }
-    const run = { id: id("ingest", trigger), site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "ingested", discovered: discovered.length, added, candidates: candidates.filter((item) => item.status === "candidate").length };
-    if (!options.dryRun && added > 0) await Promise.all([
-      writeDataJson(newsAutomationPaths.candidates, candidates.slice(0, 500)),
-      writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200))
-    ]);
-    return { result: "ingested", run, discovered: discovered.length, added, candidates: candidates.filter((item) => item.status === "candidate").length };
+    const normalized = normalizeNewsCandidates(candidates).slice(0, 500);
+    const poolChanged = JSON.stringify(normalized) !== JSON.stringify(data.candidates);
+    const run = { id: id("ingest", trigger), site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "ingested", discovered: discovered.length, added, candidates: normalized.filter((item) => candidateIsAvailable(item, now)).length, poolChanged };
+    if (!options.dryRun && poolChanged) {
+      await writeDataJson(newsAutomationPaths.candidates, normalized);
+      if (added > 0) await writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200));
+    }
+    return { result: "ingested", run, discovered: discovered.length, added, candidates: run.candidates, poolChanged };
   });
 }
 
@@ -351,13 +464,10 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
     const lastPublished = data.articles.filter((article) => article.status === "published" && article.article_type === "news").sort((a, b) => new Date(b.published_at) - new Date(a.published_at))[0];
     const interval = Number(data.config.publishIntervalHours || 48) * 3600000;
     if (!options.force && lastPublished && now - new Date(lastPublished.published_at) < interval) return { result: "not_due", nextEligibleAt: new Date(new Date(lastPublished.published_at).valueOf() + interval).toISOString() };
-    const usedUrls = new Set(data.articles.flatMap((article) => array(article.source_urls || article.source_url)));
-    const primaryWindow = Number(data.config.candidateMaxAgeHours || 72) * 3600000;
-    const fallbackWindow = Number(data.config.fallbackCandidateMaxAgeDays || 7) * DAY;
-    const unused = data.candidates.filter((candidate) => candidate.site_id === data.config.siteId && candidate.status === "candidate" && !usedUrls.has(candidate.url) && now - new Date(candidate.publishedAt) <= fallbackWindow);
-    const preferred = unused.filter((candidate) => now - new Date(candidate.publishedAt) <= primaryWindow);
-    const chosen = [...preferred, ...unused.filter((candidate) => !preferred.includes(candidate))].sort((a, b) => Number(b.score || 0) - Number(a.score || 0)).filter((source, index, all) => !all.slice(0, index).some((item) => host(item.url) === host(source.url)));
-    if (chosen.length < data.config.minIndependentSources) {
+    const ranked = rankNewsCandidates({ candidates: data.candidates, articles: data.articles, config: data.config, now });
+    const independentHosts = new Set(ranked.map((candidate) => host(candidate.url)).filter(Boolean));
+    const pairs = buildCandidatePairs(ranked, data.runs, data.config);
+    if (ranked.length < data.config.minIndependentSources || independentHosts.size < data.config.minIndependentSources || !pairs.length) {
       const reason = `Fewer than ${data.config.minIndependentSources} unused independent verified sources were available.`;
       const run = {
         id: id("run", trigger),
@@ -367,59 +477,94 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
         finishedAt: new Date().toISOString(),
         result: "skipped_no_qualified_source",
         reason,
-        availableCandidateCount: unused.length,
-        independentCandidateCount: chosen.length,
+        availableCandidateCount: ranked.length,
+        independentCandidateCount: independentHosts.size,
+        generatorVersion: 3,
         retryCount: 0
       };
       if (!options.dryRun) {
         await writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200));
       }
-      return { result: "skipped_no_qualified_source", reason, availableCandidateCount: unused.length, independentCandidateCount: chosen.length };
+      return { result: "skipped_no_qualified_source", reason, availableCandidateCount: ranked.length, independentCandidateCount: independentHosts.size };
     }
-    const groupedSources = new Map();
-    for (const source of chosen) {
-      const angle = editorialAngle([source]);
-      groupedSources.set(angle, [...(groupedSources.get(angle) || []), source]);
-    }
-    const coherentSources = [...groupedSources.values()].find((group) => new Set(group.map((source) => host(source.url))).size >= data.config.minIndependentSources);
-    const selectedSources = coherentSources || chosen;
-    const sourceRecords = selectedSources.slice(0, 2).map((source) => ({ ...source, id: `source_${crypto.createHash("sha256").update(source.url).digest("hex").slice(0, 16)}`, status: "verified" }));
     const product = data.products.find((item) => item.slug === "permanent-overband-magnetic-separator") || data.products[0];
-    const title = articleTitle(sourceRecords);
-    const content = articleBody(sourceRecords, product, now);
-    const draft = { id: id("draft", title), title, content, sourceIds: sourceRecords.map((source) => source.id), productSlugs: [product.slug], imageUrls: [product.image] };
-    const qa = evaluateNewsDraft({ draft, sources: [...sourceRecords, ...data.sources], products: data.products, recentArticles: data.articles, config: data.config, now });
-    if (!qa.passed) {
-      const reason = `News quality gate rejected "${title}" (${editorialAngle(sourceRecords)}): ${qa.failures.join(" ")}`;
-      const run = {
-        id: id("run", trigger),
-        site_id: data.config.siteId,
-        trigger,
-        startedAt: now.toISOString(),
-        finishedAt: new Date().toISOString(),
-        result: "skipped_quality_gate",
-        reason,
-        qa: qa.metrics,
-        sourceUrls: sourceRecords.map((source) => source.url),
-        retryCount: 0
-      };
-      if (!options.dryRun) {
-        await writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200));
+    if (!product) throw new Error("No verified COWIN product record is available for News publication.");
+    const recentArticles = data.articles.filter((article) => article.status === "published" && new Date(article.published_at || article.date || 0) >= new Date(now.valueOf() - 180 * DAY));
+    const attempts = [];
+    let accepted = null;
+    for (const pair of pairs) {
+      const sourceRecords = pair.sources.map((source) => ({
+        ...source,
+        url: canonicalizeNewsSourceUrl(source.url),
+        id: `source_${crypto.createHash("sha256").update(newsSourceIdentity(source)).digest("hex").slice(0, 16)}`,
+        status: "verified"
+      }));
+      for (let variant = 0; variant < Number(data.config.maxDraftVariantsPerPair || 3); variant += 1) {
+        const generated = buildNewsArticleDraft({ sources: sourceRecords, product, now, variant });
+        const draft = {
+          id: id("draft", `${generated.title}:${variant}`),
+          title: generated.title,
+          content: generated.content,
+          sourceIds: sourceRecords.map((source) => source.id),
+          productSlugs: [product.slug],
+          imageUrls: [product.image],
+          angle: generated.angle,
+          generatorVersion: 3,
+          variant
+        };
+        const qa = evaluateNewsDraft({ draft, sources: [...sourceRecords, ...data.sources], products: data.products, recentArticles, config: data.config, now });
+        attempts.push({ pairKey: pair.pairKey, coherent: pair.coherent, variant, title: generated.title, sourceUrls: sourceRecords.map((source) => source.url), qa: qa.metrics, failures: qa.failures });
+        if (qa.passed) {
+          accepted = { pair, sourceRecords, generated, draft, qa };
+          break;
+        }
       }
-      return { result: "skipped_quality_gate", reason, qa, title };
+      if (accepted) break;
     }
+
+    if (!accepted) {
+      const attemptedIds = new Set(pairs.flatMap((pair) => pair.sources.map((source) => source.id)));
+      const backoff = Number(data.config.retryBackoffHours || 24) * 3600000;
+      const updatedCandidates = normalizeNewsCandidates(data.candidates).map((candidate) => {
+        if (!attemptedIds.has(candidate.id) || candidate.status === "used") return candidate;
+        const retryCount = Number(candidate.retry_count || 0) + 1;
+        return {
+          ...candidate,
+          status: retryCount >= Number(data.config.maxRetries || 2) ? "rejected" : "retry_wait",
+          retry_count: retryCount,
+          retry_after: new Date(now.valueOf() + backoff).toISOString(),
+          reject_reason: "All generated variants failed the News quality gate.",
+          updated_at: now.toISOString()
+        };
+      });
+      const best = attempts.sort((left, right) => Number(left.qa?.bodySimilarity || 1) - Number(right.qa?.bodySimilarity || 1))[0];
+      const reason = best ? `News quality gate rejected all ${attempts.length} attempted drafts; lowest body similarity was ${best.qa.bodySimilarity}.` : "News quality gate rejected all attempted drafts.";
+      const run = {
+        id: id("run", trigger), site_id: data.config.siteId, trigger,
+        startedAt: now.toISOString(), finishedAt: new Date().toISOString(),
+        result: "skipped_quality_gate", reason, qa: best?.qa || null,
+        sourceUrls: best?.sourceUrls || [], pairKey: best?.pairKey || null,
+        generatorVersion: 3, retryCount: 0, attempts
+      };
+      if (!options.dryRun) await Promise.all([
+        writeDataJson(newsAutomationPaths.candidates, updatedCandidates),
+        writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200))
+      ]);
+      return { result: "skipped_quality_gate", reason, qa: best?.qa || null, attempts };
+    }
+
+    const { pair, sourceRecords, generated, draft, qa } = accepted;
     const runId = id("run", trigger);
     const article = {
-      slug: `${slugify(title)}-${now.toISOString().slice(0, 10)}`, title,
-      summary: "A source-based engineering review of current South African industry signals and the operating data needed for conveyor protection decisions.",
-      excerpt: "Current industry signals are translated into practical selection questions for mines and bulk-material operations.",
-      content, status: "published", article_type: "news", category: "Mining & Mineral Processing",
+      slug: `${slugify(generated.title)}-${now.toISOString().slice(0, 10)}`, title: generated.title,
+      summary: generated.summary, excerpt: generated.excerpt,
+      content: generated.content, status: "published", article_type: "news", category: "Mining & Mineral Processing",
       published_at: now.toISOString(), updated_at: now.toISOString(), author_name: "Cowin Magnet South Africa Editorial Team",
       source_url: sourceRecords[0].url, source_urls: sourceRecords.map((source) => source.url), source_title: sourceRecords[0].title,
       source_publisher: sourceRecords[0].publisher, source_published_at: sourceRecords[0].publishedAt, source_fetched_at: now.toISOString(),
       cover_image_url: product.image, cover_image_alt: `${product.name} for conveyor protection review`, cover_image_caption: "COWIN product image; final configuration is project-specific.",
       image_rights: "COWIN owned product media", related_products: [{ name: product.name, category: product.category, image: product.image, url: product.canonicalUrl || `/en-za/products/${product.categorySlug}/${product.slug}/`, relationship_reason: "Relevant to conveyor protection configuration reviews." }],
-      editorial_method: "automated-source-based-quality-gate", publication_run_id: runId, automation_published_at: now.toISOString()
+      editorial_method: "automated-source-based-quality-gate-v3", publication_run_id: runId, automation_published_at: now.toISOString(), generator_version: 3
     };
     const run = {
       id: runId,
@@ -431,13 +576,16 @@ export async function runNewsAutomation(trigger = "cron", options = {}) {
       articleSlug: article.slug,
       sourceUrls: article.source_urls,
       qa: qa.metrics,
+      pairKey: pair.pairKey,
+      generatorVersion: 3,
+      attempts,
       retryCount: 0,
       delivery: { status: "pending", checkedAt: null, checks: [] }
     };
     if (options.dryRun) return { result: "dry_run", article, run, qa };
     await Promise.all([
       writeDataJson(newsAutomationPaths.sources, [...sourceRecords, ...data.sources.filter((item) => !sourceRecords.some((source) => source.id === item.id))]),
-      writeDataJson(newsAutomationPaths.candidates, data.candidates.map((candidate) => sourceRecords.some((source) => source.url === candidate.url) ? { ...candidate, status: "used", used_at: now.toISOString(), article_slug: article.slug } : candidate)),
+      writeDataJson(newsAutomationPaths.candidates, normalizeNewsCandidates(data.candidates).map((candidate) => sourceRecords.some((source) => newsSourceIdentity(source) === newsSourceIdentity(candidate)) ? { ...candidate, status: "used", used_at: now.toISOString(), article_slug: article.slug, retry_count: 0, retry_after: null, reject_reason: "" } : candidate)),
       writeDataJson(newsAutomationPaths.drafts, [{ ...draft, status: "published", qa }, ...data.drafts]),
       writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200)),
       writeDataJson("data/articles/articles.json", [article, ...data.articles])

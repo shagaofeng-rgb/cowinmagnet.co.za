@@ -23,6 +23,7 @@
     "remediate:en-za-home-images": "node ./tools/remediate-en-za-home-images.mjs",
     "news:publish": "node ./tools/publish-news-automation.mjs",
     "news:ingest": "node ./tools/ingest-news-candidates.mjs",
+    "news:health": "node ./tools/check-news-health.mjs",
     "test:news": "node --test ./tools/news-automation-test.mjs ./tools/news-sources-test.mjs ./tools/article-render-safety-test.mjs ./tools/blog-publication-test.mjs",
     "generate:static": "powershell -NoProfile -ExecutionPolicy Bypass -File ./tools/generate-static-site.ps1"
   },
