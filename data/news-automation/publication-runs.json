@@ -1,5 +1,111 @@
 [
   {
+    "id": "run_a55bad03ac644363",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-04T09:10:52.595Z",
+    "finishedAt": "2026-09-04T09:10:52.630Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "new-phase-r60bn-capex-programme-announced-by-impala-platinum-material-handling-decisions-f-2026-09-04",
+    "sourceUrls": [
+      "https://miningweekly.com/article/new-phase-r60bn-capex-programme-announced-by-impala-platinum-2026-09-03",
+      "https://mineralscouncil.org.za/component/jdownloads/send/146-2026/2777-media-statement-government-business-partnership-launches-phase-3-to-unlock-growth-jobs-and-confidence"
+    ],
+    "qa": {
+      "wordCount": 1053,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.1,
+      "bodySimilarity": 0.306,
+      "strongestBodyMatch": "niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31"
+    },
+    "pairKey": "g3:13f6b6be63bcac6bcb2a",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:13f6b6be63bcac6bcb2a",
+        "coherent": true,
+        "variant": 0,
+        "title": "New-phase R60bn capex programme announced by Impala Platinum: Material-Handling Decisions for Conveyor Protection",
+        "sourceUrls": [
+          "https://miningweekly.com/article/new-phase-r60bn-capex-programme-announced-by-impala-platinum-2026-09-03",
+          "https://mineralscouncil.org.za/component/jdownloads/send/146-2026/2777-media-statement-government-business-partnership-launches-phase-3-to-unlock-growth-jobs-and-confidence"
+        ],
+        "qa": {
+          "wordCount": 1053,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.1,
+          "bodySimilarity": 0.306,
+          "strongestBodyMatch": "niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_aae1ffc5a4e51478",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-04T09:10:47.549Z",
+    "finishedAt": "2026-09-04T09:10:52.458Z",
+    "result": "ingested",
+    "discovered": 46,
+    "added": 34,
+    "candidates": 59,
+    "poolChanged": true,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 1
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 7
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 72
+      }
+    ]
+  },
+  {
     "id": "ingest_b574597520a8baee",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",
