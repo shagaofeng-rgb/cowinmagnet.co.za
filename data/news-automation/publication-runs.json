@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-04T09:10:52.595Z",
     "finishedAt": "2026-09-04T09:10:52.630Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "new-phase-r60bn-capex-programme-announced-by-impala-platinum-material-handling-decisions-f-2026-09-04",
     "sourceUrls": [
       "https://miningweekly.com/article/new-phase-r60bn-capex-programme-announced-by-impala-platinum-2026-09-03",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-04T09:13:49.470Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-04T09:13:49.470Z"
   },
   {
     "id": "ingest_aae1ffc5a4e51478",
