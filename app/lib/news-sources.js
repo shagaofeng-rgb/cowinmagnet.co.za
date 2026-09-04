@@ -39,6 +39,9 @@ function decode(value) {
   return String(value || "")
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)))
+    .replace(/&nbsp;/g, " ")
     .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
 }
 
@@ -51,16 +54,23 @@ function isoDate(value) {
   return Number.isNaN(date.valueOf()) ? "" : date.toISOString();
 }
 
-async function fetchText(url, fetchImpl) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 15000);
-  try {
-    const response = await fetchImpl(url, { headers: { "user-agent": USER_AGENT, accept: "application/rss+xml,text/html" }, signal: controller.signal });
-    if (!response.ok) throw new Error(`${response.status} ${url}`);
-    return response.text();
-  } finally {
-    clearTimeout(timer);
+async function fetchText(url, fetchImpl, attempts = 2) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await fetchImpl(url, { headers: { "user-agent": USER_AGENT, accept: "application/rss+xml,text/html" }, signal: controller.signal });
+      if (!response.ok) throw new Error(`${response.status} ${url}`);
+      return await response.text();
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) await new Promise((resolve) => setTimeout(resolve, attempt * 250));
+    } finally {
+      clearTimeout(timer);
+    }
   }
+  throw lastError;
 }
 
 export function parseSaNewsRss(xml) {
@@ -74,13 +84,50 @@ export function parseSaNewsRss(xml) {
   })).filter((item) => item.title && item.url && item.publishedAt);
 }
 
+function rssDescription(block) {
+  return decode(tag(block, "description").replace(/<[^>]+>/g, " "));
+}
+
+export function parseStatsSaRss(xml) {
+  return [...String(xml).matchAll(/<item>([\s\S]*?)<\/item>/gi)].map((match) => ({
+    title: tag(match[1], "title"),
+    url: tag(match[1], "link"),
+    publishedAt: isoDate(tag(match[1], "pubDate")),
+    description: rssDescription(match[1])
+  })).filter((item) => item.title && item.url && item.publishedAt && /mining|mineral|manufacturing|industrial|electricity|economic wrap-up/i.test(`${item.title} ${item.description}`))
+    .map(({ description, ...item }) => ({
+      ...item,
+      publisher: "Statistics South Africa",
+      publisherType: "government-statistics",
+      trustTier: "primary",
+      topicContext: /mining|mineral/i.test(`${item.title} ${description}`) ? "South African mining minerals statistics" : "South African industrial energy statistics"
+    }));
+}
+
+export function parseEskomRss(xml) {
+  return [...String(xml).matchAll(/<item>([\s\S]*?)<\/item>/gi)].map((match) => ({
+    title: tag(match[1], "title"),
+    url: tag(match[1], "link"),
+    publishedAt: isoDate(tag(match[1], "pubDate")),
+    description: rssDescription(match[1])
+  })).filter((item) => item.title && item.url && item.publishedAt && /energy|electricity|coal|generation|grid|industrial|smelter|mining/i.test(`${item.title} ${item.description}`))
+    .map(({ description, ...item }) => ({
+      ...item,
+      publisher: "Eskom",
+      publisherType: "state-owned-utility",
+      trustTier: "primary",
+      topicContext: "South African energy electricity power supply industrial operations"
+    }));
+}
+
 export function parseGovernmentMiningRss(xml) {
   return [...String(xml).matchAll(/<item>([\s\S]*?)<\/item>/gi)].map((match) => {
     const description = tag(match[1], "description");
     const embeddedDate = description.match(/datetime="([^"]+)"/i)?.[1] || description.match(/(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s*(\d{1,2}\/\d{1,2}\/\d{4})/i)?.[1];
     return {
       title: tag(match[1], "title"), url: tag(match[1], "link"), publishedAt: isoDate(embeddedDate),
-      publisher: "Government of South Africa", publisherType: "government", trustTier: "primary"
+      publisher: "Government of South Africa", publisherType: "government", trustTier: "primary",
+      topicContext: "South African mining minerals energy"
     };
   }).filter((item) => item.title && item.url && item.publishedAt);
 }
@@ -92,7 +139,8 @@ export function parseMineralsCouncilReleases(html) {
     publishedAt: isoDate(decode(match[1])),
     publisher: "Minerals Council South Africa",
     publisherType: "industry-association",
-    trustTier: "primary"
+    trustTier: "primary",
+    topicContext: "South African mining minerals industry"
   })).filter((item) => item.title && item.publishedAt);
 }
 
@@ -117,7 +165,8 @@ export function parseMineralsCouncilEconomicReports(html) {
       publishedAt: publishedAt.toISOString(),
       publisher: "Minerals Council South Africa",
       publisherType: "industry-association",
-      trustTier: "primary"
+      trustTier: "primary",
+      topicContext: "South African mining minerals economics"
     });
   }
   return entries;
@@ -137,28 +186,47 @@ function parseMiningWeeklyPublicPage(html) {
       publishedAt: new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}T12:00:00.000Z`).toISOString(),
       publisher: "Mining Weekly",
       publisherType: "trade-media",
-      trustTier: "secondary"
+      trustTier: "secondary",
+      topicContext: "African mining minerals industry"
     });
   }
   return entries;
 }
 
 function relevance(item) {
-  const text = item.title.toLowerCase();
-  return ["mining", "mineral", "coal", "energy", "industrial", "recycling", "infrastructure", "modernisation"]
-    .reduce((score, word) => score + (text.includes(word) ? 1 : 0), 0);
+  const text = `${item.title || ""} ${item.topicContext || ""}`.toLowerCase();
+  return [
+    /\bmin(?:e|es|ing)\b/, /\bminerals?\b/, /\b(?:iron\s+)?ore\b/, /\bcoal\b/,
+    /\bchrome\b/, /\bferrochrome\b/, /\bmanganese\b/, /\bplatinum\b/, /\bgold\b/,
+    /\btailings?\b/, /\bsmelters?\b/, /\bquarr(?:y|ies)\b/, /\bbeneficiation\b/,
+    /\b(?:material|bulk) handling\b/, /\bconveyors?\b/, /\bcrushers?\b/,
+    /\benergy\b/, /\bindustr(?:y|ial)\b/, /\brecycl(?:e|ing)\b/,
+    /\binfrastructure\b/, /\bmodernisation\b/
+  ].reduce((score, pattern) => score + (pattern.test(text) ? 1 : 0), 0);
 }
 
-export async function discoverNewsSources({ fetchImpl = fetch, now = new Date(), maxAgeDays = 90 } = {}) {
-  const requests = await Promise.allSettled([
-    fetchText("https://www.sanews.gov.za/rss.xml", fetchImpl).then(parseSaNewsRss),
-    fetchText("https://www.gov.za/taxonomy/term/659/%2A/feed", fetchImpl).then(parseGovernmentMiningRss),
-    fetchText("https://www.mineralscouncil.org.za/industry-news/media-releases/2026", fetchImpl).then(parseMineralsCouncilReleases),
-    fetchText("https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026", fetchImpl).then(parseMineralsCouncilEconomicReports),
-    fetchText("https://www.miningweekly.com/", fetchImpl).then(parseMiningWeeklyPublicPage)
-  ]);
+export async function discoverNewsSources({ fetchImpl = fetch, now = new Date(), maxAgeDays = 90, includeDiagnostics = false } = {}) {
+  const definitions = [
+    { id: "sanews-rss", url: "https://www.sanews.gov.za/rss.xml", parse: parseSaNewsRss },
+    { id: "government-mining-rss", url: "https://www.gov.za/taxonomy/term/659/%2A/feed", parse: parseGovernmentMiningRss },
+    { id: "statistics-sa-rss", url: "https://www.statssa.gov.za/?feed=rss2", parse: parseStatsSaRss },
+    { id: "eskom-rss", url: "https://www.eskom.co.za/feed/", parse: parseEskomRss },
+    { id: "minerals-council-releases", url: "https://www.mineralscouncil.org.za/industry-news/media-releases/2026", parse: parseMineralsCouncilReleases },
+    { id: "minerals-council-economics", url: "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026", parse: parseMineralsCouncilEconomicReports },
+    { id: "mining-weekly", url: "https://www.miningweekly.com/", parse: parseMiningWeeklyPublicPage }
+  ];
+  const requests = await Promise.all(definitions.map(async (definition) => {
+    try {
+      const rows = definition.parse(await fetchText(definition.url, fetchImpl));
+      return { ...definition, status: "fulfilled", rows };
+    } catch (error) {
+      const causeCode = error instanceof Error && error.cause && typeof error.cause === "object" && "code" in error.cause ? String(error.cause.code) : "";
+      const message = error instanceof Error ? error.message : String(error);
+      return { ...definition, status: "rejected", rows: [], error: causeCode ? `${message} (${causeCode})` : message };
+    }
+  }));
   const cutoff = now.valueOf() - maxAgeDays * 86400000;
-  const items = requests.flatMap((result) => result.status === "fulfilled" ? result.value : [])
+  const items = requests.flatMap((result) => result.rows)
     .filter((item) => new Date(item.publishedAt).valueOf() >= cutoff && new Date(item.publishedAt) <= now)
     .map((item) => ({
       ...item,
@@ -175,5 +243,16 @@ export async function discoverNewsSources({ fetchImpl = fetch, now = new Date(),
     const existing = deduplicated.get(key);
     if (!existing || Number(item.score || 0) > Number(existing.score || 0)) deduplicated.set(key, item);
   }
-  return [...deduplicated.values()];
+  const discovered = [...deduplicated.values()];
+  if (!includeDiagnostics) return discovered;
+  return {
+    items: discovered,
+    diagnostics: requests.map(({ id, url, status, rows, error }) => ({
+      id,
+      url,
+      status,
+      itemCount: rows.length,
+      ...(error ? { error } : {})
+    }))
+  };
 }

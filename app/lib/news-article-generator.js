@@ -30,7 +30,7 @@ function seededNumber(value) {
 }
 
 export function classifyNewsAngle(sources = []) {
-  const text = sources.map((source) => `${source.title || ""} ${source.publisher || ""}`).join(" ").toLowerCase();
+  const text = sources.map((source) => `${source.title || ""} ${source.publisher || ""} ${source.topicContext || ""}`).join(" ").toLowerCase();
   if (/illegal mining|zama zama|criminal enterprise|mineral theft|syndicate|nkaneng|custody|vandalism/.test(text)) return "material-security";
   if (/loan|funding|investment|infrastructure|industrial development|capital project|project finance/.test(text)) return "infrastructure-investment";
   if (/fuel price|energy|electricity|power supply|renewable|nersa/.test(text)) return "energy-cost";

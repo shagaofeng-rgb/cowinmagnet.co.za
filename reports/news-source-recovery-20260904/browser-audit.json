@@ -1,0 +1,554 @@
+{
+  "checkedAt": "2026-09-04T09:06:03.698Z",
+  "base": "http://127.0.0.1:3100",
+  "pages": 21,
+  "failures": 0,
+  "results": [
+    {
+      "name": "home",
+      "path": "/en-za/",
+      "viewport": "mobile",
+      "status": 200,
+      "title": "Magnetic Separator South Africa | Mining and Conveyor Magnets",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 4201,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "products",
+      "path": "/en-za/products/",
+      "viewport": "mobile",
+      "status": 200,
+      "title": "Products | COWIN MAGNET South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 10706,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "product",
+      "path": "/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+      "viewport": "mobile",
+      "status": 200,
+      "title": "RCDD Self-Cooling Electromagnetic Iron Remover | COWIN MAGNET South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 8156,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "industry",
+      "path": "/en-za/industries/mining/",
+      "viewport": "mobile",
+      "status": 200,
+      "title": "Mining Magnetic Separator Applications | Cowinmagnet",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 3609,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "news",
+      "path": "/en-za/news/",
+      "viewport": "mobile",
+      "status": 200,
+      "title": "News | Cowinmagnet South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 1649,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "contact",
+      "path": "/en-za/contact/",
+      "viewport": "mobile",
+      "status": 200,
+      "title": "Contact Cowinmagnet South Africa | Magnetic Separator Support",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 674,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "legacy-language",
+      "path": "/af-za/",
+      "viewport": "mobile",
+      "status": 200,
+      "title": "Magnetic Separator South Africa | Mining and Conveyor Magnets",
+      "language": "af-za",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 4106,
+      "noindex": true,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "home",
+      "path": "/en-za/",
+      "viewport": "tablet",
+      "status": 200,
+      "title": "Magnetic Separator South Africa | Mining and Conveyor Magnets",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 4201,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "products",
+      "path": "/en-za/products/",
+      "viewport": "tablet",
+      "status": 200,
+      "title": "Products | COWIN MAGNET South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 10706,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "product",
+      "path": "/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+      "viewport": "tablet",
+      "status": 200,
+      "title": "RCDD Self-Cooling Electromagnetic Iron Remover | COWIN MAGNET South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 8156,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "industry",
+      "path": "/en-za/industries/mining/",
+      "viewport": "tablet",
+      "status": 200,
+      "title": "Mining Magnetic Separator Applications | Cowinmagnet",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 3609,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "news",
+      "path": "/en-za/news/",
+      "viewport": "tablet",
+      "status": 200,
+      "title": "News | Cowinmagnet South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 1649,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "contact",
+      "path": "/en-za/contact/",
+      "viewport": "tablet",
+      "status": 200,
+      "title": "Contact Cowinmagnet South Africa | Magnetic Separator Support",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 674,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "legacy-language",
+      "path": "/af-za/",
+      "viewport": "tablet",
+      "status": 200,
+      "title": "Magnetic Separator South Africa | Mining and Conveyor Magnets",
+      "language": "af-za",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 4106,
+      "noindex": true,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "home",
+      "path": "/en-za/",
+      "viewport": "desktop",
+      "status": 200,
+      "title": "Magnetic Separator South Africa | Mining and Conveyor Magnets",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 4441,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "products",
+      "path": "/en-za/products/",
+      "viewport": "desktop",
+      "status": 200,
+      "title": "Products | COWIN MAGNET South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 10946,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "product",
+      "path": "/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+      "viewport": "desktop",
+      "status": 200,
+      "title": "RCDD Self-Cooling Electromagnetic Iron Remover | COWIN MAGNET South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 8619,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "industry",
+      "path": "/en-za/industries/mining/",
+      "viewport": "desktop",
+      "status": 200,
+      "title": "Mining Magnetic Separator Applications | Cowinmagnet",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 3849,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "news",
+      "path": "/en-za/news/",
+      "viewport": "desktop",
+      "status": 200,
+      "title": "News | Cowinmagnet South Africa",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 1888,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "contact",
+      "path": "/en-za/contact/",
+      "viewport": "desktop",
+      "status": 200,
+      "title": "Contact Cowinmagnet South Africa | Magnetic Separator Support",
+      "language": "en-ZA",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 915,
+      "noindex": false,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "legacy-language",
+      "path": "/af-za/",
+      "viewport": "desktop",
+      "status": 200,
+      "title": "Magnetic Separator South Africa | Mining and Conveyor Magnets",
+      "language": "af-za",
+      "h1Count": 1,
+      "horizontalOverflow": 0,
+      "brokenImages": [],
+      "missingAltImages": [],
+      "mainExists": true,
+      "metaNoindex": false,
+      "bodyTextLength": 4347,
+      "noindex": true,
+      "failedResponses": [
+        {
+          "status": 503,
+          "url": "http://127.0.0.1:3100/api/track"
+        }
+      ],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+      ],
+      "pageErrors": []
+    }
+  ]
+}

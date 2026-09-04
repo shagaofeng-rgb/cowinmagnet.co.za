@@ -419,7 +419,8 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
     const data = await loadAutomationData();
     const maxAgeHours = Number(data.config.candidateMaxAgeHours || 72);
     const fallbackMaxAgeDays = Number(data.config.fallbackCandidateMaxAgeDays || 7);
-    const discovered = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: fallbackMaxAgeDays });
+    const discovery = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: fallbackMaxAgeDays, includeDiagnostics: true });
+    const discovered = discovery.items;
     const usedUrls = new Set(data.articles.filter((article) => article.article_type === "news").flatMap((article) => {
       const urls = array(article.source_urls);
       return urls.length ? urls : [article.source_url].filter(Boolean);
@@ -445,10 +446,11 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
     }
     const normalized = normalizeNewsCandidates(candidates).slice(0, 500);
     const poolChanged = JSON.stringify(normalized) !== JSON.stringify(data.candidates);
-    const run = { id: id("ingest", trigger), site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "ingested", discovered: discovered.length, added, candidates: normalized.filter((item) => candidateIsAvailable(item, now)).length, poolChanged };
-    if (!options.dryRun && poolChanged) {
-      await writeDataJson(newsAutomationPaths.candidates, normalized);
-      if (added > 0) await writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200));
+    const run = { id: id("ingest", trigger), site_id: data.config.siteId, trigger, startedAt: now.toISOString(), finishedAt: new Date().toISOString(), result: "ingested", discovered: discovered.length, added, candidates: normalized.filter((item) => candidateIsAvailable(item, now)).length, poolChanged, sourceHealth: discovery.diagnostics };
+    if (!options.dryRun) {
+      const writes = [writeDataJson(newsAutomationPaths.runs, [run, ...data.runs].slice(0, 200))];
+      if (poolChanged) writes.push(writeDataJson(newsAutomationPaths.candidates, normalized));
+      await Promise.all(writes);
     }
     return { result: "ingested", run, discovered: discovered.length, added, candidates: run.candidates, poolChanged };
   });
