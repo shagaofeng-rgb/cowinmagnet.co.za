@@ -1,5 +1,18 @@
 [
   {
+    "id": "run_4e9b64a8b24b3b9e",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-04T04:17:51.571Z",
+    "finishedAt": "2026-09-04T04:17:51.579Z",
+    "result": "skipped_no_qualified_source",
+    "reason": "Fewer than 2 unused independent verified sources were available.",
+    "availableCandidateCount": 12,
+    "independentCandidateCount": 1,
+    "generatorVersion": 3,
+    "retryCount": 0
+  },
+  {
     "id": "run_c366b939aa59a0cd",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions",
