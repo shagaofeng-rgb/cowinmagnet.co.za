@@ -35,7 +35,17 @@
 
 ## Release and production verification
 
-Pending GitHub push, automatic publication, Vercel deployment and four-entry-point delivery verification.
+- Recovery commit: `46c9b8913c45beca3614dff26cf52fe6896e8ec5`.
+- GitHub Actions run 50 completed successfully. Discovery, generation, quality checks, News tests, production build, health check and delivery verification all passed.
+- Automatic article commit: `14368bc563b99c46da62307225681c4443fd00bc`.
+- Published article: `New-phase R60bn capex programme announced by Impala Platinum: Material-Handling Decisions for Conveyor Protection`.
+- Published at: `2026-09-04T09:10:52.595Z`.
+- Production QA: 1,053 words, two sources on two independent hosts, title similarity 0.1, body similarity 0.306, zero quality-gate failures.
+- Only the verified local COWIN product image is used as cover media.
+- Vercel article deployment: `dpl_CRRgXZEiLHpKbiYf6EHLhjR4hoeo`, READY and assigned to `cowinmagnet.co.za` and `www.cowinmagnet.co.za`.
+- Delivery verification commit: `1e44f45299e01f01641564239c9aaa442f915ae5`.
+- News list, article detail, News sitemap and RSS feed all returned HTTP 200 and contained the new slug.
+- Production runtime errors for the article deployment: zero.
 
 ## Rollback
 
