@@ -1,5 +1,113 @@
 [
   {
+    "id": "run_0421a112b5365d16",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-06T15:22:26.640Z",
+    "finishedAt": "2026-09-06T15:22:26.708Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06",
+    "sourceUrls": [
+      "https://eskom.co.za/eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-2020-67-79-and-diesel-expenditure-declines-by-r4-84-billion-or-81-64-to-deliver-energy-security",
+      "https://statssa.gov.za/?p=19874"
+    ],
+    "qa": {
+      "wordCount": 1084,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0,
+      "bodySimilarity": 0.481,
+      "strongestBodyMatch": "new-phase-r60bn-capex-programme-announced-by-impala-platinum-material-handling-decisions-f-2026-09-04"
+    },
+    "pairKey": "g3:2113d7775fd8254f76d3",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:2113d7775fd8254f76d3",
+        "coherent": true,
+        "variant": 0,
+        "title": "Eskom fully meets 2026 winter demand: EAF remains at its highest level since…: Energy, Reliability and Separator Selection Decisions",
+        "sourceUrls": [
+          "https://eskom.co.za/eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-2020-67-79-and-diesel-expenditure-declines-by-r4-84-billion-or-81-64-to-deliver-energy-security",
+          "https://statssa.gov.za/?p=19874"
+        ],
+        "qa": {
+          "wordCount": 1084,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0,
+          "bodySimilarity": 0.481,
+          "strongestBodyMatch": "new-phase-r60bn-capex-programme-announced-by-impala-platinum-material-handling-decisions-f-2026-09-04"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_c478b9628afa8295",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-06T15:22:21.189Z",
+    "finishedAt": "2026-09-06T15:22:26.451Z",
+    "result": "ingested",
+    "discovered": 61,
+    "added": 0,
+    "candidates": 91,
+    "poolChanged": false,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 1
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 6
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "rejected",
+        "itemCount": 0,
+        "error": "415 https://www.mineralscouncil.org.za/industry-news/media-releases/2026"
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "rejected",
+        "itemCount": 0,
+        "error": "415 https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026"
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 66
+      }
+    ]
+  },
+  {
     "id": "ingest_b69e1f5c71e80ae4",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",

@@ -53,11 +53,15 @@
     "id": "candidate_fcc02850f21defab",
     "fingerprint": "fcc02850f21defabf41cbf22e31b6c29fc5f8d2a8313ed12446ef273274bc7bc",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-05T04:11:58.561Z",
     "updated_at": "2026-09-05T04:11:58.561Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-06T15:22:26.640Z",
+    "article_slug": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Engen Thorntree ZZ Convenience Centre supports Siqobile Primary School with 100 pairs of school shoes",
@@ -1501,11 +1505,15 @@
     "id": "candidate_eb2782d80385ad23",
     "fingerprint": "eb2782d80385ad23b724a6484a62fe9ea7204f514ac757686989104af03a723c",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-04T09:00:58.806Z",
     "updated_at": "2026-09-04T09:00:58.806Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-06T15:22:26.640Z",
+    "article_slug": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Minister Gwede Mantashe announces adjustment of fuel prices effective from 5 August 2026",
