@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-06T15:22:26.640Z",
     "finishedAt": "2026-09-06T15:22:26.708Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06",
     "sourceUrls": [
       "https://eskom.co.za/eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-2020-67-79-and-diesel-expenditure-declines-by-r4-84-billion-or-81-64-to-deliver-energy-security",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-06T15:23:01.215Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-06T15:23:01.215Z"
   },
   {
     "id": "ingest_c478b9628afa8295",
