@@ -690,7 +690,9 @@ async function runGoogleUrlInspection() {
   const urls = [...new Set((manifest.entries || []).map((item) => item.url || item.loc).filter(Boolean))];
   if (!urls.length) throw new Error("Sitemap manifest contains no inspectable URLs");
   const priorState = await readDataJson("data/seo/gsc-url-inspection-state.json", {});
-  const batchSize = Math.min(24, Math.max(1, Number(process.env.GSC_INSPECTION_BATCH_SIZE || 12)));
+  // A daily 24-URL batch covers the current sitemap within about eight days while
+  // remaining well below Search Console's per-property inspection quota.
+  const batchSize = Math.min(24, Math.max(1, Number(process.env.GSC_INSPECTION_BATCH_SIZE || 24)));
   const start = Number(priorState.nextOffset || 0) % urls.length;
   const batch = Array.from({ length: Math.min(batchSize, urls.length) }, (_, index) => urls[(start + index) % urls.length]);
   const batchReport = await inspectGoogleUrls(batch, { concurrency: 3 });
@@ -1015,17 +1017,32 @@ function validCronRequest(request) {
 
 async function handleCronGoogleSeo(request) {
   if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request", requestId: token(8) }, 401);
-  const sitemap = await runSitemapAudit({ trigger: "three-day-cron", submit: true });
+  const startedAt = Date.now();
+  let sitemap;
   try {
+    sitemap = await runSitemapAudit({ trigger: "daily-google-seo-cron", submit: true });
     const googleSeo = await syncGoogleSeo("cron");
+    operationalLog("google_seo_cron_completed", {
+      durationMs: Date.now() - startedAt,
+      sitemapSubmitted: Boolean(sitemap.run.searchConsole?.submitted),
+      sitemapStatus: sitemap.run.searchConsole?.status || 0,
+      clicks: googleSeo.data.summary.clicks,
+      impressions: googleSeo.data.summary.impressions
+    });
     return response({ success: true, data: { sitemap: sitemap.run, googleSeo }, requestId: token(8) });
   } catch (error) {
-    return response({
-      success: true,
-      data: { sitemap: sitemap.run, googleSeo: null },
-      warning: `Sitemap completed; Google SEO analytics sync failed: ${error?.message || error}`,
-      requestId: token(8)
+    operationalLog("google_seo_cron_failed", {
+      durationMs: Date.now() - startedAt,
+      phase: sitemap ? "search-console-sync" : "sitemap-submission",
+      sitemapSubmitted: Boolean(sitemap?.run.searchConsole?.submitted),
+      reason: error?.message || String(error)
     });
+    return response({
+      success: false,
+      data: { sitemap: sitemap?.run || null, googleSeo: null },
+      error: "Google SEO cron failed",
+      requestId: token(8)
+    }, 500);
   }
 }
 

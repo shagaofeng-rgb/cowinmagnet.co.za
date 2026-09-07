@@ -16,8 +16,8 @@ const report = {
   scope: "repository configuration and production database metadata only",
   services: [
     { name: "Next.js application", trigger: "Vercel deployment", status: "verified by production build" },
-    { name: "Google SEO sitemap submission", trigger: "Vercel Cron", frequency: "every 3 days", route: "/api/cron/google-seo" },
-    { name: "Google Search Console inspection", trigger: "Vercel Cron", frequency: "every 3 days", route: "/api/cron/gsc-inspection" },
+    { name: "Google SEO sitemap submission", trigger: "Vercel Cron", frequency: "daily", route: "/api/cron/google-seo/" },
+    { name: "Google Search Console inspection", trigger: "Vercel Cron", frequency: "daily", route: "/api/cron/gsc-inspection/" },
     { name: "News quality-gate run", trigger: "GitHub Actions schedule", frequency: "daily trigger with a 48-hour publication gate", route: ".github/workflows/news-autopublish.yml", status: newsConfig.enabled ? "configured" : "configured but disabled" }
   ],
   crons: vercel.crons || [],

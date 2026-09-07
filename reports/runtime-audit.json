@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T11:52:48.761Z",
+  "generatedAt": "2026-09-07T06:16:58.326Z",
   "scope": "repository configuration and production database metadata only",
   "services": [
     {
@@ -10,14 +10,14 @@
     {
       "name": "Google SEO sitemap submission",
       "trigger": "Vercel Cron",
-      "frequency": "every 3 days",
-      "route": "/api/cron/google-seo"
+      "frequency": "daily",
+      "route": "/api/cron/google-seo/"
     },
     {
       "name": "Google Search Console inspection",
       "trigger": "Vercel Cron",
-      "frequency": "every 3 days",
-      "route": "/api/cron/gsc-inspection"
+      "frequency": "daily",
+      "route": "/api/cron/gsc-inspection/"
     },
     {
       "name": "News quality-gate run",
@@ -29,12 +29,12 @@
   ],
   "crons": [
     {
-      "path": "/api/cron/google-seo",
-      "schedule": "0 2 */3 * *"
+      "path": "/api/cron/google-seo/",
+      "schedule": "0 2 * * *"
     },
     {
-      "path": "/api/cron/gsc-inspection",
-      "schedule": "30 2 */3 * *"
+      "path": "/api/cron/gsc-inspection/",
+      "schedule": "20 2 * * *"
     }
   ],
   "data": {
@@ -44,9 +44,9 @@
       "pendingEngineeringReview": 0
     },
     "articles": {
-      "total": 9,
-      "published": 9,
-      "news": 4,
+      "total": 10,
+      "published": 10,
+      "news": 5,
       "blog": 0
     },
     "newsAutomation": {

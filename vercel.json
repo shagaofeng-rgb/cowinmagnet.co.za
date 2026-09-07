@@ -35,12 +35,12 @@
   ],
   "crons": [
     {
-      "path": "/api/cron/google-seo",
-      "schedule": "0 2 */3 * *"
+      "path": "/api/cron/google-seo/",
+      "schedule": "0 2 * * *"
     },
     {
-      "path": "/api/cron/gsc-inspection",
-      "schedule": "30 2 */3 * *"
+      "path": "/api/cron/gsc-inspection/",
+      "schedule": "20 2 * * *"
     }
   ]
 }
