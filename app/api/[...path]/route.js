@@ -174,42 +174,100 @@ function slugifyAdmin(value) {
     .replace(/(^-|-$)/g, "");
 }
 
+const ADMIN_TIMEZONE = "Africa/Johannesburg";
+
 function listParams(request) {
   const url = new URL(request.url);
   const page = Math.max(1, Number(url.searchParams.get("page") || 1));
-  const pageSize = Math.min(100, Math.max(10, Number(url.searchParams.get("pageSize") || url.searchParams.get("limit") || 20)));
+  const pageSize = Math.min(100, Math.max(20, Number(url.searchParams.get("pageSize") || url.searchParams.get("limit") || 20)));
   const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
   const status = String(url.searchParams.get("status") || "").trim().toLowerCase();
   const sort = String(url.searchParams.get("sort") || "updatedAt");
   const dir = String(url.searchParams.get("dir") || "desc").toLowerCase() === "asc" ? "asc" : "desc";
-  return { page, pageSize, q, status, sort, dir };
+  const range = ["all", "today", "week", "month", "custom"].includes(String(url.searchParams.get("range") || "all")) ? String(url.searchParams.get("range") || "all") : "all";
+  const from = String(url.searchParams.get("from") || "").trim();
+  const to = String(url.searchParams.get("to") || "").trim();
+  const timeField = String(url.searchParams.get("timeField") || "").trim();
+  return { page, pageSize, q, status, sort, dir, range, from, to, timeField };
 }
 
-function paginate(items, request, options = {}) {
+function parseRangeBoundary(value, endOfDay = false) {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const suffix = endOfDay ? "T23:59:59.999" : "T00:00:00.000";
+  const date = new Date(`${value}${suffix}+02:00`);
+  return Number.isNaN(date.getTime()) ? null : date.getTime();
+}
+
+function rangeBounds(params) {
+  if (params.range === "all") return null;
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat("en-CA", { timeZone: ADMIN_TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" });
+  const parts = Object.fromEntries(formatter.formatToParts(now).filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+  const southAfricaToday = `${parts.year}-${parts.month}-${parts.day}`;
+  if (params.range === "custom") {
+    const from = parseRangeBoundary(params.from);
+    const to = parseRangeBoundary(params.to, true);
+    return from !== null && to !== null && from <= to ? { from, to } : null;
+  }
+  const start = new Date(`${southAfricaToday}T00:00:00.000+02:00`);
+  if (params.range === "today") return { from: start.getTime(), to: now.getTime() };
+  if (params.range === "week") {
+    const mondayOffset = (start.getUTCDay() + 6) % 7;
+    start.setUTCDate(start.getUTCDate() - mondayOffset);
+    return { from: start.getTime(), to: now.getTime() };
+  }
+  if (params.range === "month") {
+    start.setUTCDate(1);
+    return { from: start.getTime(), to: now.getTime() };
+  }
+  return null;
+}
+
+function itemTimestamp(item, fields) {
+  for (const field of fields) {
+    const value = item?.[field];
+    const timestamp = Date.parse(value || "");
+    if (!Number.isNaN(timestamp)) return timestamp;
+  }
+  return null;
+}
+
+function filterList(items, request, options = {}) {
   const params = listParams(request);
   const searchFields = options.searchFields || [];
   const statusField = options.statusField || "status";
+  const dateFields = options.dateFields || ["updatedAt", "createdAt", "submissionTime", "publishedAt", "time"];
+  const selectedDateFields = params.timeField && dateFields.includes(params.timeField) ? [params.timeField] : dateFields;
+  const bounds = rangeBounds(params);
   let rows = Array.isArray(items) ? [...items] : [];
   if (!options.includeDeleted) rows = rows.filter((item) => !item.deletedAt);
-  if (params.q) {
-    rows = rows.filter((item) => searchFields.some((field) => String(item?.[field] || "").toLowerCase().includes(params.q)));
-  }
-  if (params.status) {
-    rows = rows.filter((item) => String(item?.[statusField] || "").toLowerCase() === params.status);
-  }
+  if (params.q) rows = rows.filter((item) => searchFields.some((field) => String(item?.[field] || "").toLowerCase().includes(params.q)));
+  if (params.status) rows = rows.filter((item) => String(item?.[statusField] || "").toLowerCase() === params.status);
+  if (bounds) rows = rows.filter((item) => {
+    const timestamp = itemTimestamp(item, selectedDateFields);
+    return timestamp !== null && timestamp >= bounds.from && timestamp <= bounds.to;
+  });
   rows.sort((a, b) => {
-    const av = String(a?.[params.sort] ?? a?.updatedAt ?? a?.createdAt ?? "");
-    const bv = String(b?.[params.sort] ?? b?.updatedAt ?? b?.createdAt ?? "");
+    const av = String(a?.[params.sort] ?? a?.updatedAt ?? a?.createdAt ?? a?.submissionTime ?? a?.publishedAt ?? a?.time ?? "");
+    const bv = String(b?.[params.sort] ?? b?.updatedAt ?? b?.createdAt ?? b?.submissionTime ?? b?.publishedAt ?? b?.time ?? "");
     return params.dir === "asc" ? av.localeCompare(bv) : bv.localeCompare(av);
   });
+  return { rows, params, dateFields: selectedDateFields };
+}
+
+function paginate(items, request, options = {}) {
+  const { rows, params, dateFields } = filterList(items, request, options);
   const total = rows.length;
-  const start = (params.page - 1) * params.pageSize;
+  const totalPages = Math.max(1, Math.ceil(total / params.pageSize));
+  const page = Math.min(params.page, totalPages);
+  const start = (page - 1) * params.pageSize;
   return {
     items: rows.slice(start, start + params.pageSize),
-    page: params.page,
+    page,
     pageSize: params.pageSize,
     total,
-    totalPages: Math.max(1, Math.ceil(total / params.pageSize))
+    totalPages,
+    filters: { range: params.range, from: params.from, to: params.to, timeField: params.timeField, dateFields }
   };
 }
 
@@ -1226,6 +1284,8 @@ async function handleEnquiries(request) {
     product,
     industry: clean(body.industry, 180),
     sourcePage: clean(body.sourcePage, 500),
+    analyticsVisitorId: clean(body.analyticsClientId, 140),
+    analyticsSessionId: clean(body.analyticsSessionId, 140),
     payload,
     status: "New",
     assignedUser: "",
@@ -1338,7 +1398,23 @@ async function handleAdmin(request, path) {
   const analyticsVisitorMatch = path.match(/^admin\/analytics\/visitors\/([^/]+)$/);
   if (analyticsVisitorMatch && request.method === "GET") {
     try {
-      const data = await getAnalyticsVisitorJourney(decodeURIComponent(analyticsVisitorMatch[1]));
+      const visitorId = decodeURIComponent(analyticsVisitorMatch[1]);
+      const data = await getAnalyticsVisitorJourney(visitorId, request.url);
+      const enquiries = await readJson("data/cms/enquiries.json");
+      data.enquiries = (Array.isArray(enquiries) ? enquiries : [])
+        .filter((item) => item.analyticsVisitorId === visitorId)
+        .map((item) => ({
+          id: item.id,
+          name: item.name,
+          company: item.company,
+          email: item.email,
+          country: item.country,
+          product: item.product,
+          industry: item.industry,
+          status: item.status,
+          submissionTime: item.submissionTime,
+          sourcePage: item.sourcePage
+        }));
       return response({ success: true, data, requestId: token(8) });
     } catch (error) {
       return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
@@ -1450,11 +1526,11 @@ async function handleAdmin(request, path) {
   }
   if (path === "admin/links" && request.method === "GET") return response({ success: true, data: await linksSummary(), requestId: token(8) });
   if (path === "admin/products" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/products/products.json"), request, { searchFields: ["name", "slug", "category", "categorySlug", "seoTitle", "shortDescription"], statusField: "productStatus", includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
-  if (path === "admin/products/export" && request.method === "GET") return csvResponse("products.csv", await readJson("data/products/products.json"));
+  if (path === "admin/products/export" && request.method === "GET") return csvResponse("products.csv", filterList(await readJson("data/products/products.json"), request, { searchFields: ["name", "slug", "category", "categorySlug", "seoTitle", "shortDescription"], statusField: "productStatus" }).rows);
   if (path === "admin/categories" && ["GET", "PUT", "POST"].includes(request.method)) return adminCategories(request, session);
   const categoryAction = path.match(/^admin\/categories\/([^/]+)\/(delete|restore|enable|disable)$/);
   if (categoryAction && ["POST", "PUT"].includes(request.method)) return adminCategoryAction(request, session, decodeURIComponent(categoryAction[1]), categoryAction[2]);
-  if (path === "admin/categories/export" && request.method === "GET") return csvResponse("categories.csv", await readJson("data/categories/categories.json"));
+  if (path === "admin/categories/export" && request.method === "GET") return csvResponse("categories.csv", filterList(await readJson("data/categories/categories.json"), request, { searchFields: ["name", "title", "slug", "description"] }).rows);
 
   const productMatch = path.match(/^admin\/products\/([^/]+)$/);
   if (productMatch && request.method === "PUT") {
@@ -1478,7 +1554,7 @@ async function handleAdmin(request, path) {
   if (path === "admin/enquiries" && request.method === "GET") return adminEnquiriesList(request);
   if (path === "admin/enquiries/export" && request.method === "GET") {
     await audit(session.user, "Enquiries Exported", "Enquiry", "csv", "Admin exported enquiry list");
-    return csvResponse("enquiries.csv", await readJson("data/cms/enquiries.json"));
+    return csvResponse("enquiries.csv", filterList(await readJson("data/cms/enquiries.json"), request, { searchFields: ["id", "name", "company", "email", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true, dateFields: ["submissionTime", "updatedAt", "createdAt"] }).rows);
   }
 
   if (path === "admin/news" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
@@ -1605,7 +1681,7 @@ async function handleAdmin(request, path) {
     }
   }
   if (path === "admin/audit-logs" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/cms/audit-logs.json"), request, { searchFields: ["user", "action", "object", "objectId", "summary"], includeDeleted: true }), requestId: token(8) });
-  if (path === "admin/audit-logs/export" && request.method === "GET") return csvResponse("audit-logs.csv", await readJson("data/cms/audit-logs.json"));
+  if (path === "admin/audit-logs/export" && request.method === "GET") return csvResponse("audit-logs.csv", filterList(await readJson("data/cms/audit-logs.json"), request, { searchFields: ["user", "action", "object", "objectId", "summary"], includeDeleted: true, dateFields: ["time"] }).rows);
   if (path === "admin/content" && request.method === "GET") {
     const [categories, industries, solutions, markets, articles, downloads] = await Promise.all([
       readJson("data/categories/categories.json"),

@@ -370,22 +370,23 @@ function trackingFlags({ requestHeaders, pagePath, referrer, userAgent, attribut
 }
 
 function rangeClause(input, values) {
-  const range = clean(input.get("range") || "7d", 16);
-  const add = (value) => { values.push(value); return `$${values.length}`; };
-  if (range === "today") return { clause: `e.occurred_at >= date_trunc('day', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
-  if (range === "yesterday") return { clause: `e.occurred_at >= (date_trunc('day', NOW() AT TIME ZONE '${TIMEZONE}') - INTERVAL '1 day') AT TIME ZONE '${TIMEZONE}' AND e.occurred_at < date_trunc('day', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
-  if (range === "30d") return { clause: "e.occurred_at >= NOW() - INTERVAL '30 days'", range };
+  const range = clean(input.get("range") || "today", 16);
+  const add = (value) => { values.push(value); return `${values.length}`; };
+  const todayStart = `date_trunc('day', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`;
+  if (range === "all") return { clause: "TRUE", range };
+  if (range === "today") return { clause: `e.occurred_at >= ${todayStart}`, range };
+  if (range === "week") return { clause: `e.occurred_at >= date_trunc('week', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
   if (range === "month") return { clause: `e.occurred_at >= date_trunc('month', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
   if (range === "custom") {
     const from = clean(input.get("from"), 40);
     const to = clean(input.get("to"), 40);
-    if (from && to && !Number.isNaN(Date.parse(from)) && !Number.isNaN(Date.parse(to))) {
-      const start = add(new Date(from).toISOString());
-      const end = add(new Date(to).toISOString());
-      return { clause: `e.occurred_at >= ${start}::timestamptz AND e.occurred_at < ${end}::timestamptz`, range };
+    if (/^\d{4}-\d{2}-\d{2}$/.test(from) && /^\d{4}-\d{2}-\d{2}$/.test(to)) {
+      const start = add(`${from}T00:00:00`);
+      const end = add(`${to}T23:59:59.999`);
+      return { clause: `e.occurred_at >= ${start}::timestamp AT TIME ZONE '${TIMEZONE}' AND e.occurred_at <= ${end}::timestamp AT TIME ZONE '${TIMEZONE}'`, range };
     }
   }
-  return { clause: "e.occurred_at >= NOW() - INTERVAL '7 days'", range: "7d" };
+  return { clause: `e.occurred_at >= ${todayStart}`, range: "today" };
 }
 
 function filterSql(searchParams, values) {
@@ -402,6 +403,8 @@ function filterSql(searchParams, values) {
   const visitorType = clean(searchParams.get("visitorType"), 20);
   if (visitorType === "new") where.push("COALESCE(v.visit_count, 1) <= 1");
   if (visitorType === "returning") where.push("COALESCE(v.visit_count, 1) > 1");
+  const leadStatus = clean(searchParams.get("leadStatus"), 40);
+  if (leadStatus) where.push(`COALESCE(v.lead_status, 'Anonymous') = ${add(leadStatus)}`);
   const q = clean(searchParams.get("q"), 180);
   if (q) where.push(`(e.visitor_id ILIKE ${add(`%${q}%`)} OR e.ip_masked ILIKE ${add(`%${q}%`)} OR e.page_path ILIKE ${add(`%${q}%`)})`);
   return { where: where.join(" AND "), range: range.range };
@@ -660,40 +663,62 @@ export async function saveAnalyticsExclusionRule(input, actor = "admin") {
 }
 
 
-export async function getAnalyticsVisitorJourney(visitorId) {
+export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
   const db = getPool();
-  if (!db) return { storageMode: "unconfigured", visitor: null, items: [] };
+  if (!db) return { storageMode: "unconfigured", visitor: null, items: [], sessions: [], events: { items: [], page: 1, pageSize: 50, total: 0, totalPages: 1 } };
   await ensureAnalyticsSchema();
   const normalizedId = clean(visitorId, 160);
   if (!normalizedId) throw new Error("Visitor identifier is required.");
-  const [visitorResult, eventsResult] = await Promise.all([
+  const url = requestUrl ? new URL(requestUrl, "https://cowinmagnet.co.za") : new URL("https://cowinmagnet.co.za/api/admin/analytics");
+  const page = Math.max(1, Math.min(100000, Number(url.searchParams.get("eventPage") || 1)));
+  const pageSize = Math.max(20, Math.min(100, Number(url.searchParams.get("eventPageSize") || 50)));
+  const offset = (page - 1) * pageSize;
+  const [visitorResult, totalResult, sessionsResult, eventsResult] = await Promise.all([
     db.query(
       `SELECT visitor_id AS "visitorId", MIN(occurred_at) AS "firstSeenAt", MAX(occurred_at) AS "lastSeenAt",
-        COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv,
+        COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv, COUNT(DISTINCT session_id)::int AS "sessionCount",
         MAX(COALESCE(country, 'Unknown')) AS country, MAX(COALESCE(ip_masked, 'unknown')) AS ip,
         MAX(COALESCE(channel, 'Direct')) AS channel, MAX(COALESCE(source, 'Direct')) AS source,
         MAX(COALESCE(device, 'Desktop')) AS device, MAX(COALESCE(browser, 'Browser')) AS browser,
         MAX(COALESCE(v.lead_status, 'Anonymous')) AS "leadStatus"
-       FROM analytics_events e
-       LEFT JOIN analytics_visitors v ON v.visitor_id = e.visitor_id
+       FROM analytics_events e LEFT JOIN analytics_visitors v ON v.visitor_id = e.visitor_id
        WHERE e.visitor_id = $1 AND NOT (e.is_bot OR e.is_internal OR e.is_test)
        GROUP BY e.visitor_id`,
       [normalizedId]
     ),
+    db.query(`SELECT COUNT(*)::int AS total FROM analytics_events WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)`, [normalizedId]),
     db.query(
-      `SELECT occurred_at AS time, event_type AS "eventType", page_path AS page,
-        COALESCE(channel, 'Direct') AS channel, COALESCE(source, 'Direct') AS source,
-        referrer, COALESCE(source, 'Direct') AS "utmSource",
-        COALESCE(medium, '') AS "utmMedium", COALESCE(campaign, '') AS "utmCampaign"
+      `SELECT session_id AS "sessionId", MIN(occurred_at) AS "startedAt", MAX(occurred_at) AS "endedAt",
+        COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv,
+        (array_agg(page_path ORDER BY occurred_at ASC))[1] AS "entryPage",
+        (array_agg(page_path ORDER BY occurred_at DESC))[1] AS "exitPage",
+        (array_agg(COALESCE(channel, 'Direct') ORDER BY occurred_at ASC))[1] AS channel,
+        (array_agg(COALESCE(source, 'Direct') ORDER BY occurred_at ASC))[1] AS source
        FROM analytics_events
        WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)
-       ORDER BY occurred_at DESC LIMIT 100`,
+       GROUP BY session_id ORDER BY MIN(occurred_at) DESC LIMIT 100`,
       [normalizedId]
+    ),
+    db.query(
+      `SELECT occurred_at AS time, session_id AS "sessionId", event_type AS "eventType", page_path AS page,
+        COALESCE(channel, 'Direct') AS channel, COALESCE(source, 'Direct') AS source, referrer,
+        COALESCE(source, 'Direct') AS "utmSource", COALESCE(medium, '') AS "utmMedium",
+        COALESCE(campaign, '') AS "utmCampaign"
+       FROM analytics_events
+       WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)
+       ORDER BY occurred_at DESC LIMIT $2 OFFSET $3`,
+      [normalizedId, pageSize, offset]
     )
   ]);
-  return { storageMode: "postgresql", visitor: visitorResult.rows[0] || null, items: eventsResult.rows };
+  const total = Number(totalResult.rows[0]?.total || 0);
+  return {
+    storageMode: "postgresql",
+    visitor: visitorResult.rows[0] || null,
+    items: eventsResult.rows,
+    sessions: sessionsResult.rows,
+    events: { items: eventsResult.rows, page, pageSize, total, totalPages: Math.max(1, Math.ceil(total / pageSize)) }
+  };
 }
-
 
 export async function updateAnalyticsVisitor(visitorId, input = {}) {
   const db = getPool();

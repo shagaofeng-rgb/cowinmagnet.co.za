@@ -103,12 +103,16 @@
     return `<div class="metric-grid">${items.map((item) => `<article class="metric-card"><span>${esc(item.label)}</span><strong>${esc(item.value)}</strong><small>${esc(item.note || "")}</small></article>`).join("")}</div>`;
   }
 
-  function toolbar(key, filters = "") {
-    return `<div class="toolbar compact" data-toolbar="${key}">
+  function toolbar(key, filters = "", options = {}) {
+    const range = options.range || "all";
+    return `<div class="toolbar compact data-toolbar" data-toolbar="${key}">
       <input data-q placeholder="关键词 / 名称 / URL">
       ${filters}
+      <select data-range aria-label="时间范围"><option value="all" ${range === "all" ? "selected" : ""}>全部时间</option><option value="today" ${range === "today" ? "selected" : ""}>今天</option><option value="week" ${range === "week" ? "selected" : ""}>本周</option><option value="month" ${range === "month" ? "selected" : ""}>本月</option><option value="custom" ${range === "custom" ? "selected" : ""}>自定义</option></select>
+      <input type="date" data-from aria-label="开始日期">
+      <input type="date" data-to aria-label="结束日期">
       <select data-page-size aria-label="每页显示数量"><option value="20">20 / 页</option><option value="50">50 / 页</option><option value="100">100 / 页</option></select>
-      <button class="button secondary" data-search>${label.search}</button>
+      <button class="button primary" data-search>${label.search}</button>
       <button class="button secondary" data-reset>${label.reset}</button>
     </div>`;
   }
@@ -118,8 +122,11 @@
     const params = new URLSearchParams();
     params.set("page", state.page[key] || 1);
     params.set("pageSize", bar?.querySelector("[data-page-size]")?.value || state.pageSize);
-    if (bar?.querySelector("[data-q]")?.value) params.set("q", bar.querySelector("[data-q]").value.trim());
-    if (bar?.querySelector("[data-status]")?.value) params.set("status", bar.querySelector("[data-status]").value);
+    params.set("range", bar?.querySelector("[data-range]")?.value || "all");
+    [["q", "[data-q]"], ["status", "[data-status]"], ["from", "[data-from]"], ["to", "[data-to]"]].forEach(([name, selector]) => {
+      const value = bar?.querySelector(selector)?.value?.trim();
+      if (value) params.set(name, value);
+    });
     return params.toString();
   }
 
@@ -128,6 +135,11 @@
     qs("[data-page-size]", panel)?.addEventListener("change", (event) => { state.pageSize = Number(event.target.value) || 20; state.page[key] = 1; load(); });
     qs("[data-reset]", panel)?.addEventListener("click", () => {
       qsa("input,select", qs(`[data-toolbar="${key}"]`, panel)).forEach((node) => { node.value = ""; });
+      const toolbarNode = qs(`[data-toolbar="${key}"]`, panel);
+      if (toolbarNode) {
+        qs("[data-range]", toolbarNode).value = "all";
+        qs("[data-page-size]", toolbarNode).value = "20";
+      }
       state.page[key] = 1;
       load();
     });
@@ -138,12 +150,18 @@
       state.page[key] = Number(button.dataset.page);
       load();
     }));
+    qs("[data-page-jump-go]", panel)?.addEventListener("click", () => {
+      const input = qs("[data-page-jump]", panel);
+      const pages = Number(input?.max || 1);
+      state.page[key] = Math.max(1, Math.min(pages, Number(input?.value || 1)));
+      load();
+    });
   }
 
   function pager(data, key) {
     const page = data.page || 1;
     const pages = data.pages || data.totalPages || 1;
-    return `<div class="pager"><button class="button secondary" data-page="${Math.max(1, page - 1)}" ${page <= 1 ? "disabled" : ""}>\u4e0a\u4e00\u9875</button><span>${page} / ${pages} · ${data.total || 0}</span><button class="button secondary" data-page="${Math.min(pages, page + 1)}" ${page >= pages ? "disabled" : ""}>\u4e0b\u4e00\u9875</button></div>`;
+    return `<div class="pager"><button class="button secondary" data-page="${Math.max(1, page - 1)}" ${page <= 1 ? "disabled" : ""}>上一页</button><span>第 ${page} / ${pages} 页 · 共 ${data.total || 0} 条</span><label class="page-jump">跳至 <input type="number" data-page-jump min="1" max="${pages}" value="${page}" aria-label="跳转页码"> 页</label><button class="button secondary" data-page-jump-go>跳转</button><button class="button secondary" data-page="${Math.min(pages, page + 1)}" ${page >= pages ? "disabled" : ""}>下一页</button></div>`;
   }
 
   function table(rows, fields, empty = "\u6682\u65e0\u6570\u636e") {
@@ -177,13 +195,14 @@
     const deviceSelected = (value) => String(current.device || "") === value ? "selected" : "";
     const includeExcluded = options.includeExcluded || current.includeExcluded === "1" ? "checked" : "";
     return `<div class="analytics-toolbar" data-analytics-toolbar="${key}">
-      <label>日期范围<select data-range><option value="today" ${selected("today")}>今天</option><option value="yesterday" ${selected("yesterday")}>昨天</option><option value="7d" ${selected("7d")}>近 7 天</option><option value="30d" ${selected("30d")}>近 30 天</option><option value="month" ${selected("month")}>本月</option><option value="custom" ${selected("custom")}>自定义</option></select></label>
+      <label>日期范围<select data-range><option value="all" ${selected("all")}>全部时间</option><option value="today" ${selected("today")}>今天</option><option value="week" ${selected("week")}>本周</option><option value="month" ${selected("month")}>本月</option><option value="custom" ${selected("custom")}>自定义</option></select></label>
       <label>开始日期<input type="date" data-from value="${esc(current.from || "")}"></label>
       <label>结束日期<input type="date" data-to value="${esc(current.to || "")}"></label>
       <label>国家<input data-country placeholder="例如 ZA" value="${esc(current.country || "")}"></label>
       <label>渠道<select data-channel><option value="" ${sourceSelected("")}>全部渠道</option><option value="Direct" ${sourceSelected("Direct")}>Direct</option><option value="Organic Search" ${sourceSelected("Organic Search")}>Organic Search</option><option value="Referral" ${sourceSelected("Referral")}>Referral</option><option value="Social" ${sourceSelected("Social")}>Social</option><option value="Campaign" ${sourceSelected("Campaign")}>Campaign</option></select></label>
       <label>设备<select data-device><option value="" ${deviceSelected("")}>全部设备</option><option value="Desktop" ${deviceSelected("Desktop")}>Desktop</option><option value="Mobile" ${deviceSelected("Mobile")}>Mobile</option><option value="Tablet" ${deviceSelected("Tablet")}>Tablet</option></select></label>
       <label>搜索<input data-visitor-q placeholder="访问路径 / 来源" value="${esc(current.q || "")}"></label>
+      <label>每页<select data-page-size><option value="20">20 条</option><option value="50">50 条</option><option value="100">100 条</option></select></label>
       <label class="check-control"><input type="checkbox" data-include-excluded ${includeExcluded}> 同时查看已排除流量</label>
       <div class="analytics-toolbar-actions"><button class="button primary" data-analytics-apply>应用筛选</button><button class="button secondary" data-analytics-reset>重置</button></div>
     </div>`;
@@ -192,7 +211,7 @@
   function analyticsParams(key) {
     const root = qs(`[data-analytics-toolbar="${key}"]`);
     const params = new URLSearchParams();
-    params.set("range", root?.querySelector("[data-range]")?.value || "today");
+    params.set("range", root?.querySelector("[data-range]")?.value || "all");
     params.set("page", state.page[key] || 1);
     params.set("pageSize", root?.querySelector("[data-page-size]")?.value || state.pageSize || 20);
     [["from", "[data-from]"], ["to", "[data-to]"], ["country", "[data-country]"], ["channel", "[data-channel]"], ["device", "[data-device]"], ["q", "[data-visitor-q]"]].forEach(([name, selector]) => {
@@ -208,8 +227,8 @@
     qs("[data-analytics-reset]", panel)?.addEventListener("click", () => {
       const root = qs(`[data-analytics-toolbar="${key}"]`, panel);
       qsa("input,select", root).forEach((node) => { if (node.type === "checkbox") node.checked = false; else node.value = ""; });
-      qs("[data-range]", root).value = "today";
-      state.analyticsFilters[key] = { range: "today" };
+      qs("[data-range]", root).value = "all";
+      state.analyticsFilters[key] = { range: "all" };
       state.page[key] = 1;
       load();
     });
@@ -274,7 +293,10 @@
     const panel = qs("[data-panel='categories']");
     panel.innerHTML = card("\u4ea7\u54c1\u5206\u7c7b", `${toolbar(key, `<select data-status><option value="">\u5168\u90e8\u72b6\u6001</option><option value="active">Active</option><option value="disabled">Disabled</option></select>`)}<div class="actions"><a class="button secondary" href="/api/admin/categories/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div>`);
     const load = async () => {
-      const data = await api(`/api/admin/categories?${query(key)}`);
+      const queryString = query(key);
+      const data = await api(`/api/admin/categories?${queryString}`);
+      const exportLink = qs("a[href^='/api/admin/categories/export']", panel);
+      if (exportLink) exportLink.href = `/api/admin/categories/export?${queryString}`;
       qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u540d\u79f0", value: (row) => row.name || row.title }, { label: "Slug", value: "slug" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u6392\u5e8f", value: "sortOrder" }, { label: "\u66f4\u65b0", value: "updatedAt" }]) + pager(data, key);
       bindPager(panel, key, load);
     };
@@ -287,7 +309,10 @@
     const panel = qs("[data-panel='products']");
     panel.innerHTML = card("\u4ea7\u54c1\u5217\u8868", `${toolbar(key)}<div class="actions"><a class="button secondary" href="/api/admin/products/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div>`);
     const load = async () => {
-      const data = await api(`/api/admin/products?${query(key)}`);
+      const queryString = query(key);
+      const data = await api(`/api/admin/products?${queryString}`);
+      const exportLink = qs("a[href^='/api/admin/products/export']", panel);
+      if (exportLink) exportLink.href = `/api/admin/products/export?${queryString}`;
       qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u4ea7\u54c1", value: (row) => row.name || row.title }, { label: "\u5206\u7c7b", value: (row) => row.category || row.categoryName || row.categorySlug }, { label: "Slug", value: "slug" }, { label: "SEO Title", value: "seoTitle" }, { label: "\u56fe\u7247", value: (row) => row.image || row.featuredImage }]) + pager(data, key);
       bindPager(panel, key, load);
     };
@@ -300,7 +325,10 @@
     const panel = qs("[data-panel='news']");
     panel.innerHTML = card("\u65b0\u95fb\u5185\u5bb9", `${toolbar(key, `<select data-status><option value="">\u5168\u90e8</option><option value="published">Published</option><option value="draft">Draft</option></select>`)}<div class="actions"><a class="button secondary" href="/api/admin/news/export">${label.exportCsv}</a></div><div data-automation>${label.loading}</div><div data-list>${label.loading}</div>`);
     const load = async () => {
-      const [data, automation] = await Promise.all([api(`/api/admin/news?${query(key)}`), api("/api/admin/news-automation")]);
+      const queryString = query(key);
+      const [data, automation] = await Promise.all([api(`/api/admin/news?${queryString}`), api("/api/admin/news-automation")]);
+      const exportLink = qs("a[href^='/api/admin/news/export']", panel);
+      if (exportLink) exportLink.href = `/api/admin/news/export?${queryString}`;
       qs("[data-automation]", panel).innerHTML = `<p><strong>News QA gate:</strong> ${automation.productionReady ? "Ready" : "Blocked"}. Preproduction approvals: ${automation.approvedPreproduction}/${automation.requiredPreproductionApprovals}. ${esc((automation.blockers || []).join(" "))}</p>`;
       qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u6807\u9898", value: "title" }, { label: "\u5206\u7c7b", value: "category" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u65e5\u671f", value: (row) => row.date || row.publishedAt }, { label: "Slug", value: "slug" }]) + pager(data, key);
       bindPager(panel, key, load);
@@ -312,10 +340,13 @@
   async function forms() {
     const key = "forms";
     const panel = qs("[data-panel='forms']");
-    panel.innerHTML = card("\u5ba2\u6237\u8868\u5355", `${toolbar(key, `<select data-status><option value="">\u5168\u90e8</option><option value="New">New</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option></select>`)}<div class="actions"><a class="button secondary" href="/api/admin/enquiries/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div>`);
+    panel.innerHTML = card("\u5ba2\u6237\u8868\u5355", `${toolbar(key, `<select data-status><option value="">\u5168\u90e8</option><option value="New">New</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option></select>`)}<div class="actions"><a class="button secondary" data-export-enquiries href="/api/admin/enquiries/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div>`);
     const load = async () => {
-      const data = await api(`/api/admin/enquiries?${query(key)}`);
-      qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u65f6\u95f4", value: "createdAt" }, { label: "\u59d3\u540d", value: "name" }, { label: "\u90ae\u7bb1", value: "email" }, { label: "\u4ea7\u54c1", value: "product" }, { label: "\u72b6\u6001", value: "status" }]) + pager(data, key);
+      const queryString = query(key);
+      const data = await api(`/api/admin/enquiries?${queryString}`);
+      const exportLink = qs("[data-export-enquiries]", panel);
+      if (exportLink) exportLink.href = `/api/admin/enquiries/export?${queryString}`;
+      qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u63d0\u4ea4\u65f6\u95f4", value: (row) => formatTime(row.submissionTime || row.createdAt) }, { label: "\u59d3\u540d", value: "name" }, { label: "\u90ae\u7bb1", value: "email" }, { label: "\u4ea7\u54c1", value: "product" }, { label: "\u72b6\u6001", value: "status" }]) + pager(data, key);
       bindPager(panel, key, load);
     };
     bindToolbar(panel, key, load);
@@ -376,9 +407,14 @@
         journey.innerHTML = "<h2>访问路径</h2><p>正在读取访客的已过滤页面记录…</p>";
         try {
           const detail = await api(`/api/admin/analytics/visitors/${encodeURIComponent(button.dataset.visitorId)}`);
-          journey.innerHTML = `<div class="card-heading"><div><h2>访问路径：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.channel || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问</p></div><button class="text-button" data-close-journey>收起</button></div>
+          const sessions = detail.sessions || [];
+          const linkedEnquiries = detail.enquiries || [];
+          journey.innerHTML = `<div class="card-heading"><div><h2>访客详情：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.channel || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问 · ${formatNumber(detail.visitor?.sessionCount || sessions.length)} 个会话</p></div><button class="text-button" data-close-journey>收起</button></div>
+            <div class="journey-summary"><div><span>首次访问</span><strong>${formatTime(detail.visitor?.firstSeenAt)}</strong></div><div><span>最近访问</span><strong>${formatTime(detail.visitor?.lastSeenAt)}</strong></div><div><span>设备</span><strong>${esc(detail.visitor?.device || "-")} / ${esc(detail.visitor?.browser || "-")}</strong></div><div><span>脱敏 IP</span><strong>${esc(detail.visitor?.ip || "-")}</strong></div></div>
             <div class="visitor-classification"><label>客户分类<select data-lead-status><option value="Anonymous">匿名访客</option><option value="Potential lead">潜在线索</option><option value="Lead">线索</option><option value="Customer">客户</option><option value="Excluded">排除</option></select></label><button class="button secondary" data-save-visitor>保存分类</button></div>
-            ${table(detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}`;
+            <h3>访问会话</h3>${table(sessions, [{ label: "开始", value: (item) => formatTime(item.startedAt) }, { label: "入口页面", value: "entryPage" }, { label: "退出页面", value: "exitPage" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "页面浏览", value: "pv" }], "暂无有效会话")}
+            <h3>已关联客户表单</h3>${table(linkedEnquiries, [{ label: "提交时间", value: (item) => formatTime(item.submissionTime) }, { label: "客户", value: (item) => [item.name, item.company].filter(Boolean).join(" / ") || "-" }, { label: "产品", value: "product" }, { label: "状态", value: "status" }, { label: "来源页面", value: "sourcePage" }], "该访客尚未提交表单")}
+            <h3>访问明细</h3>${table(detail.events?.items || detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "会话", value: (item) => shortVisitorId(item.sessionId) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}`;
           const statusField = qs("[data-lead-status]", journey);
           if (statusField) statusField.value = detail.visitor?.leadStatus || "Anonymous";
           qs("[data-save-visitor]", journey)?.addEventListener("click", async () => {
@@ -412,7 +448,10 @@
     const panel = qs("[data-panel='media']");
     panel.innerHTML = card("\u5a92\u4f53\u8d44\u4ea7", `${toolbar(key)}<form class="form-row" data-media-form><input name="title" placeholder="\u6807\u9898"><input name="url" placeholder="URL"><input name="alt" placeholder="Alt text"><button class="button primary">${label.save}</button></form><div class="actions"><a class="button secondary" href="/api/admin/media/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div>`);
     const load = async () => {
-      const data = await api(`/api/admin/media?${query(key)}`);
+      const queryString = query(key);
+      const data = await api(`/api/admin/media?${queryString}`);
+      const exportLink = qs("a[href^='/api/admin/media/export']", panel);
+      if (exportLink) exportLink.href = `/api/admin/media/export?${queryString}`;
       qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u6807\u9898", value: (row) => row.title || row.filename }, { label: "URL", value: "url" }, { label: "Alt", value: "alt" }, { label: "\u66f4\u65b0", value: "updatedAt" }]) + pager(data, key);
       bindPager(panel, key, load);
     };
@@ -455,7 +494,10 @@
     const panel = qs("[data-panel='logs']");
     panel.innerHTML = card("\u64cd\u4f5c\u65e5\u5fd7", `${toolbar(key)}<div class="actions"><a class="button secondary" href="/api/admin/audit-logs/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div>`);
     const load = async () => {
-      const data = await api(`/api/admin/audit-logs?${query(key)}`);
+      const queryString = query(key);
+      const data = await api(`/api/admin/audit-logs?${queryString}`);
+      const exportLink = qs("a[href^='/api/admin/audit-logs/export']", panel);
+      if (exportLink) exportLink.href = `/api/admin/audit-logs/export?${queryString}`;
       qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u65f6\u95f4", value: "time" }, { label: "\u7528\u6237", value: "user" }, { label: "\u64cd\u4f5c", value: "action" }, { label: "\u5bf9\u8c61", value: "object" }, { label: "\u6458\u8981", value: "summary" }]) + pager(data, key);
       bindPager(panel, key, load);
     };
