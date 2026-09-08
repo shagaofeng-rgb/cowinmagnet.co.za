@@ -1,5 +1,112 @@
 [
   {
+    "id": "run_140aa0a625faddc0",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-08T16:32:10.531Z",
+    "finishedAt": "2026-09-08T16:32:11.003Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08",
+    "sourceUrls": [
+      "https://miningweekly.com/article/china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-customs-clearance-2026-09-08",
+      "https://sanews.gov.za/south-africa/call-sadc-use-own-resources-build-industrial-revolution"
+    ],
+    "qa": {
+      "wordCount": 1077,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.217,
+      "bodySimilarity": 0.415,
+      "strongestBodyMatch": "niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31"
+    },
+    "pairKey": "g3:825ea8f60daf3763922c",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:825ea8f60daf3763922c",
+        "coherent": true,
+        "variant": 0,
+        "title": "China August iron-ore imports beat expectations as typhoons delay July…: Material-Handling Decisions for Conveyor Protection",
+        "sourceUrls": [
+          "https://miningweekly.com/article/china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-customs-clearance-2026-09-08",
+          "https://sanews.gov.za/south-africa/call-sadc-use-own-resources-build-industrial-revolution"
+        ],
+        "qa": {
+          "wordCount": 1077,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.217,
+          "bodySimilarity": 0.415,
+          "strongestBodyMatch": "niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_293a8a15b1ca1f39",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-08T16:31:49.072Z",
+    "finishedAt": "2026-09-08T16:32:10.363Z",
+    "result": "ingested",
+    "discovered": 67,
+    "added": 26,
+    "candidates": 135,
+    "poolChanged": true,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "rejected",
+        "itemCount": 0,
+        "error": "fetch failed (UND_ERR_CONNECT_TIMEOUT)"
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 1
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 6
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 72
+      }
+    ]
+  },
+  {
     "id": "ingest_ffb75234ebaaf351",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",
