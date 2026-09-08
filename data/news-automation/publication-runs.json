@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-08T16:32:10.531Z",
     "finishedAt": "2026-09-08T16:32:11.003Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08",
     "sourceUrls": [
       "https://miningweekly.com/article/china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-customs-clearance-2026-09-08",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-08T16:33:03.828Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-08T16:33:03.828Z"
   },
   {
     "id": "ingest_293a8a15b1ca1f39",
