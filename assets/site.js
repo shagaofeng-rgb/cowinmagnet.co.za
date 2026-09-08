@@ -342,6 +342,43 @@
     }
   });
 
+  document.querySelectorAll("[data-editorial-filter]").forEach((filter) => {
+    const collection = document.getElementById(filter.dataset.editorialCollection || "");
+    const cards = collection ? [...collection.querySelectorAll("[data-editorial-card]")] : [];
+    if (!collection || !cards.length) return;
+    const collectionId = filter.dataset.editorialCollection || "";
+    const empty = document.querySelector(`[data-editorial-empty="${collectionId}"]`);
+    const summary = document.querySelector(`[data-editorial-summary="${collectionId}"]`);
+    const articleLabel = collectionId === "blog-list" ? "guide" : "news article";
+    const resetPaginationUrl = () => {
+      const state = pageCollectionStates.get(collection);
+      if (!state) return;
+      const url = new URL(window.location.href);
+      url.searchParams.delete(state.param);
+      window.history.replaceState({}, "", url);
+    };
+    const applyEditorialFilters = () => {
+      const query = String(filter.querySelector('[name="q"]')?.value || "").trim().toLowerCase();
+      const category = String(filter.querySelector('[name="category"]')?.value || "");
+      let visible = 0;
+      cards.forEach((card) => {
+        const matchesQuery = !query || card.textContent.toLowerCase().includes(query);
+        const matchesCategory = !category || card.dataset.editorialCategory === category;
+        const matches = matchesQuery && matchesCategory;
+        card.dataset.filterHidden = matches ? "" : "true";
+        if (matches) visible += 1;
+      });
+      empty?.toggleAttribute("hidden", visible > 0);
+      if (summary) summary.textContent = visible ? `${visible} ${articleLabel}${visible === 1 ? "" : "s"}` : `No matching ${articleLabel}s`;
+      refreshPageCollection(collection, { page: 1 });
+      resetPaginationUrl();
+    };
+    filter.addEventListener("input", applyEditorialFilters);
+    filter.addEventListener("change", applyEditorialFilters);
+    filter.addEventListener("reset", () => window.setTimeout(applyEditorialFilters, 0));
+    filter.addEventListener("submit", (event) => event.preventDefault());
+  });
+
   const languageSelect = document.querySelector("[data-language-select]");
   if (languageSelect) {
     const currentLocale = document.documentElement.dataset.locale || "en-za";

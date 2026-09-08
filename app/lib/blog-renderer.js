@@ -86,6 +86,13 @@ function articleUrl(item) {
   return `/en-za/blog/${item.slug}/`;
 }
 
+function categoryOptions(items, fallback) {
+  return [...new Set(items.map((item) => String(item.category || fallback).trim()).filter(Boolean))]
+    .sort((left, right) => left.localeCompare(right))
+    .map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
+    .join("");
+}
+
 function productCard(product) {
   return `<a class="card product-card" href="${product.url}">
     <img src="${escapeHtml(normalizeLegacyMedia(product.image || "/assets/images/hero-mining-conveyor-magnet.webp"))}" alt="${escapeHtml(product.name)}">
@@ -98,16 +105,25 @@ function productCard(product) {
 
 export async function renderBlogList() {
   const articles = blogArticles(await readDataJson("data/articles/articles.json", []));
-  const body = `<section class="page-hero">
+  const body = `<section class="page-hero blog-list-hero">
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / Blog</nav>
     <p class="eyebrow">Blog</p>
     <h1>Cowinmagnet South Africa Blog</h1>
     <p>SEO guides for African mining, quarrying, cement, coal, recycling and conveyor tramp metal removal buyers.</p>
   </section>
-  <section class="section">
-    <form class="filter-panel"><label>Search blog<input data-site-search type="search" placeholder="overband, crusher, conveyor, coal"></label></form>
-    <div class="grid" data-page-collection data-page-size="12" data-page-param="blogPage">${articles
-      .map((item) => `<a class="card news-card" href="${articleUrl(item)}">
+  <section class="section editorial-index-section">
+    <div class="editorial-index-intro">
+      <p class="editorial-index-kicker">Selection guides</p>
+      <p class="editorial-index-summary" data-editorial-summary="blog-list" aria-live="polite">${articles.length} guide${articles.length === 1 ? "" : "s"}</p>
+    </div>
+    <form class="filter-panel editorial-filter" data-editorial-filter data-editorial-collection="blog-list">
+      <label>Search guides<input name="q" type="search" autocomplete="off" placeholder="overband, crusher, conveyor, coal"></label>
+      <label>Guide type<select name="category"><option value="">All guide types</option>${categoryOptions(articles, "Selection Guide")}</select></label>
+      <button class="button secondary editorial-filter-reset" type="reset">Clear filters</button>
+    </form>
+    <p class="editorial-filter-empty" data-editorial-empty="blog-list" hidden aria-live="polite">No guides match those filters. Clear the filters to view all guides.</p>
+    <div id="blog-list" class="grid editorial-grid" data-page-collection data-page-size="12" data-page-param="blogPage">${articles
+      .map((item) => `<a class="card news-card editorial-card" data-editorial-card data-editorial-category="${escapeHtml(item.category || "Selection Guide")}" href="${articleUrl(item)}">
         <img src="${escapeHtml(normalizeLegacyMedia(item.cover_image_url))}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
         <p class="eyebrow">${escapeHtml((item.published_at || item.date || "").slice(0, 10))} - ${escapeHtml(item.category || "Selection Guide")}</p>
         <h3>${escapeHtml(item.title)}</h3>
@@ -135,19 +151,19 @@ export async function renderBlogArticle(slug) {
   if (!item) return null;
   const canonical = articleUrl(item);
   const products = item.related_products || [];
-  const body = `<section class="page-hero">
-    <nav class="breadcrumbs"><a href="/en-za/">Home</a> / <a href="/en-za/blog/">Blog</a> / ${escapeHtml(item.title)}</nav>
+  const body = `<section class="page-hero editorial-article-hero blog-article-hero">
+    <nav class="breadcrumbs"><a href="/en-za/">Home</a> / <a href="/en-za/blog/">Blog</a> / <span aria-current="page">Guide</span></nav>
     <p class="eyebrow">${escapeHtml(item.category || "Selection Guide")}</p>
     <h1>${escapeHtml(item.title)}</h1>
     <p>${escapeHtml(item.excerpt || item.summary || "")}</p>
   </section>
-  <section class="section layout">
-    <article class="panel article-prose">
+  <section class="section layout editorial-article-layout">
+    <article class="panel article-prose editorial-article-body">
       <p><strong>Published:</strong> ${escapeHtml((item.published_at || item.date || "").slice(0, 10))} - <strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))} - <strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</p>
       <img src="${escapeHtml(normalizeLegacyMedia(item.cover_image_url))}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
       ${safeArticleContent(item.content)}
     </article>
-    <aside class="panel">
+    <aside class="panel editorial-article-aside">
       <h2>Related Products</h2>
       <div class="grid compact">${products.map(productCard).join("")}</div>
       <a class="button primary" href="/en-za/request-a-quote/">Request Selection Advice</a>

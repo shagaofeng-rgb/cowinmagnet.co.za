@@ -82,6 +82,13 @@ function articleMetaDescription(item, articles) {
   return combined.length <= 160 ? combined : `${combined.slice(0, 157).replace(/\s+\S*$/, "")}...`;
 }
 
+function categoryOptions(items, fallback) {
+  return [...new Set(items.map((item) => String(item.category || fallback).trim()).filter(Boolean))]
+    .sort((left, right) => left.localeCompare(right))
+    .map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
+    .join("");
+}
+
 function productCard(item) {
   return `<a class="card product-card" href="${item.url || `/en-za/products/${item.categorySlug}/${item.slug}/`}">
     <img src="${escapeHtml(item.image || "/assets/images/hero-mining-conveyor-magnet.webp")}" alt="${escapeHtml(item.name)}">
@@ -100,14 +107,20 @@ export async function renderNewsList() {
     <h1>Cowinmagnet South Africa News</h1>
     <p>Recent industry news, source-based analysis and magnetic separation equipment perspectives for African mining, quarrying, cement, coal and recycling buyers.</p>
   </section>
-  <section class="section">
-    <form class="filter-panel">
-      <label>Search news<input data-site-search type="search" placeholder="mining, conveyor, recycling, cement"></label>
-      <label>Category<select><option>All</option><option>Mining</option><option>Coal Handling</option><option>Cement and Aggregates</option><option>Recycling</option></select></label>
+  <section class="section editorial-index-section">
+    <div class="editorial-index-intro">
+      <p class="editorial-index-kicker">Industry updates</p>
+      <p class="editorial-index-summary" data-editorial-summary="news-list" aria-live="polite">${articles.length} news article${articles.length === 1 ? "" : "s"}</p>
+    </div>
+    <form class="filter-panel editorial-filter" data-editorial-filter data-editorial-collection="news-list">
+      <label>Search news<input name="q" type="search" autocomplete="off" placeholder="mining, conveyor, recycling, cement"></label>
+      <label>Category<select name="category"><option value="">All categories</option>${categoryOptions(articles, "News")}</select></label>
       <a class="button secondary" href="/en-za/news/feed.xml">RSS Feed</a>
+      <button class="button secondary editorial-filter-reset" type="reset">Clear filters</button>
     </form>
-    <div class="grid" data-page-collection data-page-size="12" data-page-param="newsPage">${articles
-      .map((item) => `<a class="card news-card" href="${articleUrl(item)}">
+    <p class="editorial-filter-empty" data-editorial-empty="news-list" hidden aria-live="polite">No news articles match those filters. Clear the filters to view all updates.</p>
+    <div id="news-list" class="grid editorial-grid" data-page-collection data-page-size="12" data-page-param="newsPage">${articles
+      .map((item) => `<a class="card news-card editorial-card" data-editorial-card data-editorial-category="${escapeHtml(item.category || "News")}" href="${articleUrl(item)}">
         <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
         <p class="eyebrow">${escapeHtml((articleDate(item) || "").slice(0, 10))} · ${escapeHtml(item.category || "News")}</p>
         <h3>${escapeHtml(item.title)}</h3>
@@ -135,8 +148,8 @@ export async function renderNewsArticle(slug) {
   if (!item) return null;
   const canonical = articleUrl(item);
   const sourceDate = item.source_published_at ? new Date(item.source_published_at).toISOString() : "";
-  const body = `<section class="page-hero news-article-hero">
-    <nav class="breadcrumbs"><a href="/en-za/">Home</a> / <a href="/en-za/news/">News</a> / ${escapeHtml(item.title)}</nav>
+  const body = `<section class="page-hero news-article-hero editorial-article-hero">
+    <nav class="breadcrumbs"><a href="/en-za/">Home</a> / <a href="/en-za/news/">News</a> / <span aria-current="page">Article</span></nav>
     <p class="eyebrow">${escapeHtml(item.category || "News")}</p>
     <h1>${escapeHtml(item.title)}</h1>
     <p>${escapeHtml(item.excerpt || item.summary || "")}</p>

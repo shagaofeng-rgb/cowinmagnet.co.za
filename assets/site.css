@@ -802,15 +802,40 @@ body { max-width: 100%; overflow-x: hidden; background: var(--paper); color: var
 .news-list-hero { padding-block: clamp(48px, 5vw, 72px); }
 .news-list-hero h1 { max-width: 15ch; }
 .news-list-hero > p:last-child { max-width: 60ch; }
+.blog-list-hero h1 { max-width: 15ch; }
+
+/* Editorial indexes: focused filters and stable card density without changing the global site shell. */
+.editorial-index-section { background: linear-gradient(180deg, #f6f8f6 0, var(--paper) 240px); }
+.section > .editorial-index-intro, .section > .editorial-filter, .section > .editorial-filter-empty, .section > .editorial-grid { width: min(100%, var(--content-width)); margin-inline: auto; }
+.editorial-index-intro { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.editorial-index-kicker { margin: 0; color: var(--green-dark); font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.editorial-index-summary { margin: 0; color: var(--muted); font-size: 14px; font-weight: 700; }
+.editorial-filter { grid-template-columns: minmax(0, 1.5fr) minmax(190px, .8fr) auto auto; align-items: end; margin-bottom: 14px; }
+.editorial-filter .button { min-width: 132px; }
+.editorial-filter-reset { border: 0; background: transparent; color: var(--green-dark); }
+.editorial-filter-reset:hover { background: #e6efe7; }
+.editorial-filter-empty { margin-top: 0; margin-bottom: 20px; padding: 14px 16px; border: 1px solid #e2c98a; border-radius: 8px; background: #fff8e8; color: #5c4919; }
+.editorial-grid { gap: 22px; }
+.editorial-card { grid-template-rows: auto auto auto 1fr auto; min-height: 100%; padding: 16px; overflow: hidden; }
+.editorial-card img { aspect-ratio: 16 / 9; background: #edf3ef; }
+.editorial-card .eyebrow { margin: 2px 0 0; color: var(--green-dark); font-size: 11px; line-height: 1.4; letter-spacing: .035em; }
+.editorial-card h3 { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; font-size: 21px; line-height: 1.23; }
+.editorial-card > p:not(.eyebrow) { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; color: var(--muted); line-height: 1.58; }
+.editorial-card .tag { justify-self: start; margin-top: 2px; }
 
 @media (max-width: 760px) {
   .news-list-hero { padding-block: 40px; }
+  .editorial-index-intro { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .editorial-filter { grid-template-columns: 1fr; }
+  .editorial-filter .button { width: 100%; }
 }
 
 /* Editorial details use a calm reading measure instead of the generic panel layout. */
 .news-article-hero { padding-block: clamp(42px, 5vw, 68px); }
-.news-article-hero h1 { max-width: 980px; font-size: clamp(36px, 4.4vw, 62px); line-height: 1.08; }
-.news-article-hero > p:last-child { max-width: 760px; font-size: 18px; line-height: 1.65; }
+.editorial-article-hero { padding-block: clamp(38px, 4.5vw, 62px); }
+.editorial-article-hero .eyebrow { display: inline-flex; margin: 0 0 12px; padding: 5px 9px; border: 1px solid rgba(242, 208, 122, .42); border-radius: 999px; color: #f2d07a; font-size: 11px; letter-spacing: .04em; }
+.editorial-article-hero h1, .news-article-hero h1 { max-width: 22ch; font-size: clamp(35px, 4vw, 56px); line-height: 1.1; }
+.editorial-article-hero > p:last-child, .news-article-hero > p:last-child { max-width: 760px; font-size: 18px; line-height: 1.65; }
 .news-article-shell { width: min(100%, 920px); margin-inline: auto; padding: clamp(38px, 6vw, 82px) 24px clamp(60px, 8vw, 108px); }
 .news-article-body { color: #263d31; }
 .news-article-body > p:first-child { display: flex; flex-wrap: wrap; gap: 7px 18px; margin: 0 0 26px; padding-bottom: 18px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; }
@@ -823,6 +848,21 @@ body { max-width: 100%; overflow-x: hidden; background: var(--paper); color: var
 .news-source-panel h2 { margin-top: 0; font-size: 25px; }
 .news-source-panel .check-list { grid-template-columns: 1fr; }
 .news-source-panel > p:last-child { margin-bottom: 0; color: var(--muted); font-size: 13px; }
+
+/* Blog guides share the same reading rhythm while keeping the related-equipment action in view. */
+.editorial-article-layout { grid-template-columns: minmax(0, 1fr) minmax(260px, 330px); align-items: start; }
+.editorial-article-body { padding: clamp(22px, 3vw, 36px); color: #263d31; }
+.editorial-article-body > p:first-child { display: flex; flex-wrap: wrap; gap: 7px 14px; margin: 0 0 24px; padding-bottom: 18px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+.editorial-article-body > img:first-of-type { display: block; width: 100%; max-height: 500px; margin: 0 0 32px; object-fit: cover; }
+.editorial-article-aside { position: sticky; top: 102px; display: grid; gap: 16px; }
+.editorial-article-aside h2 { margin: 0; font-size: 23px; }
+.editorial-article-aside .grid { grid-template-columns: 1fr; gap: 12px; }
+.editorial-article-aside .card { grid-template-columns: 78px minmax(0, 1fr); gap: 10px 12px; padding: 12px; }
+.editorial-article-aside .card img { grid-row: span 3; aspect-ratio: 1; align-self: start; object-fit: contain; background: #f4f7f5; }
+.editorial-article-aside .card .eyebrow { margin: 0; font-size: 10px; }
+.editorial-article-aside .card h3 { font-size: 15px; }
+.editorial-article-aside .card > p, .editorial-article-aside .card .button { display: none; }
+.editorial-article-aside > .button { width: 100%; }
 
 /* Industry details use unframed sections and a useful engineering sidebar. */
 .industry-detail-hero h1 { max-width: 900px; }
@@ -850,9 +890,11 @@ body { max-width: 100%; overflow-x: hidden; background: var(--paper); color: var
 @media (max-width: 760px) {
   .page-hero { min-width: 0; }
   .page-hero h1, .page-hero p, .breadcrumbs { max-width: 100%; overflow-wrap: anywhere; word-break: normal; }
-  .news-article-hero h1 { max-width: 100%; font-size: clamp(32px, 9vw, 44px); }
+  .editorial-article-hero h1, .news-article-hero h1 { max-width: 100%; font-size: clamp(32px, 9vw, 44px); }
   .news-article-shell { padding-inline: 16px; }
   .news-article-body .ai-summary { padding: 20px; }
+  .editorial-article-layout { grid-template-columns: 1fr; }
+  .editorial-article-aside { position: static; }
   .industry-detail-content .check-list, .industry-related-section .grid { grid-template-columns: 1fr; }
   .industry-detail-aside { grid-template-columns: 1fr; }
 }
