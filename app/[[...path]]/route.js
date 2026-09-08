@@ -10,7 +10,7 @@ const root = /*turbopackIgnore: true*/ process.cwd();
 // Static HTML pages are generated as files, so their stylesheet URL needs a
 // deployment version. This prevents a cached legacy stylesheet from rendering
 // the current page structure as unstyled content after a release.
-const siteAssetVersion = "20260809-layout-r2";
+const siteAssetVersion = "20260908-content-capacity";
 const privateRouteRoots = new Set([
   ".audit-backups",
   ".git",

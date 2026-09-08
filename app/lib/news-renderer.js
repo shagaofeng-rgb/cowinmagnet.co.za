@@ -106,7 +106,7 @@ export async function renderNewsList() {
       <label>Category<select><option>All</option><option>Mining</option><option>Coal Handling</option><option>Cement and Aggregates</option><option>Recycling</option></select></label>
       <a class="button secondary" href="/en-za/news/feed.xml">RSS Feed</a>
     </form>
-    <div class="grid">${articles
+    <div class="grid" data-page-collection data-page-size="12" data-page-param="newsPage">${articles
       .map((item) => `<a class="card news-card" href="${articleUrl(item)}">
         <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
         <p class="eyebrow">${escapeHtml((articleDate(item) || "").slice(0, 10))} · ${escapeHtml(item.category || "News")}</p>

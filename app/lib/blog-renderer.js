@@ -106,7 +106,7 @@ export async function renderBlogList() {
   </section>
   <section class="section">
     <form class="filter-panel"><label>Search blog<input data-site-search type="search" placeholder="overband, crusher, conveyor, coal"></label></form>
-    <div class="grid">${articles
+    <div class="grid" data-page-collection data-page-size="12" data-page-param="blogPage">${articles
       .map((item) => `<a class="card news-card" href="${articleUrl(item)}">
         <img src="${escapeHtml(normalizeLegacyMedia(item.cover_image_url))}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
         <p class="eyebrow">${escapeHtml((item.published_at || item.date || "").slice(0, 10))} - ${escapeHtml(item.category || "Selection Guide")}</p>
@@ -202,4 +202,3 @@ export async function renderBlogFeed() {
   </channel>
 </rss>`;
 }
-

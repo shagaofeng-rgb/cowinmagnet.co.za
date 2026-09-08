@@ -257,6 +257,83 @@
     });
   });
 
+  const pageCollectionStates = new WeakMap();
+
+  function pageNumbers(current, total) {
+    const start = Math.max(1, Math.min(current - 2, total - 4));
+    const end = Math.min(total, start + 4);
+    return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+  }
+
+  function refreshPageCollection(collection, { page, updateUrl = false, moveFocus = false } = {}) {
+    if (!collection) return;
+    const state = pageCollectionStates.get(collection);
+    if (!state) return;
+    const cards = [...collection.children].filter((item) => item.nodeType === 1);
+    const visibleCards = cards.filter((card) => card.dataset.filterHidden !== "true");
+    const totalPages = Math.max(1, Math.ceil(visibleCards.length / state.pageSize));
+    const requested = Number.isFinite(page) ? page : state.page;
+    state.page = Math.min(totalPages, Math.max(1, requested));
+
+    cards.forEach((card) => {
+      const index = visibleCards.indexOf(card);
+      card.hidden = index < 0 || index < (state.page - 1) * state.pageSize || index >= state.page * state.pageSize;
+    });
+
+    state.status.textContent = visibleCards.length
+      ? `Showing ${(state.page - 1) * state.pageSize + 1}–${Math.min(state.page * state.pageSize, visibleCards.length)} of ${visibleCards.length}`
+      : "No matching results";
+    state.controls.replaceChildren();
+    if (totalPages > 1) {
+      const addButton = (label, target, disabled = false, current = false) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = label;
+        button.disabled = disabled;
+        if (current) button.setAttribute("aria-current", "page");
+        button.addEventListener("click", () => refreshPageCollection(collection, { page: target, updateUrl: true, moveFocus: true }));
+        state.controls.append(button);
+      };
+      addButton("First", 1, state.page === 1);
+      addButton("Previous", state.page - 1, state.page === 1);
+      pageNumbers(state.page, totalPages).forEach((number) => addButton(String(number), number, false, number === state.page));
+      addButton("Next", state.page + 1, state.page === totalPages);
+      addButton("Last", totalPages, state.page === totalPages);
+    }
+    state.pagination.hidden = totalPages <= 1;
+
+    if (updateUrl) {
+      const url = new URL(window.location.href);
+      if (state.page === 1) url.searchParams.delete(state.param);
+      else url.searchParams.set(state.param, String(state.page));
+      window.history.pushState({}, "", url);
+    }
+    if (moveFocus) {
+      collection.scrollIntoView({ behavior: "smooth", block: "start" });
+      state.status.focus({ preventScroll: true });
+    }
+  }
+
+  function initPageCollection(collection) {
+    if (pageCollectionStates.has(collection)) return;
+    const pageSize = Math.max(1, Number(collection.dataset.pageSize) || 12);
+    const param = collection.dataset.pageParam || "page";
+    const pagination = document.createElement("nav");
+    pagination.className = "content-pagination";
+    pagination.setAttribute("aria-label", "Content pagination");
+    const status = document.createElement("p");
+    status.className = "content-page-status";
+    status.tabIndex = -1;
+    const controls = document.createElement("div");
+    controls.className = "content-page-controls";
+    pagination.append(status, controls);
+    collection.after(pagination);
+    pageCollectionStates.set(collection, { page: Math.max(1, Number(new URLSearchParams(window.location.search).get(param)) || 1), pageSize, param, pagination, status, controls });
+    refreshPageCollection(collection);
+  }
+
+  document.querySelectorAll("[data-page-collection]").forEach(initPageCollection);
+
   const searchInput = document.querySelector("[data-site-search]");
   searchInput?.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && searchInput.value.trim()) {
@@ -293,6 +370,10 @@
           const localizedUrl = item.url.replace("/en-za/", `/${locale}/`);
           return `<a class="card" href="${localizedUrl}"><p class="eyebrow">${item.type}</p><h3>${item.title}</h3><p>${item.summary}</p></a>`;
         }).join("");
+        searchResults.setAttribute("data-page-collection", "");
+        searchResults.dataset.pageSize = "12";
+        searchResults.dataset.pageParam = "searchPage";
+        initPageCollection(searchResults);
         empty?.toggleAttribute("hidden", results.length > 0);
       })
       .catch(() => {
@@ -326,9 +407,55 @@
     });
   });
 
+  const productTabs = [...document.querySelectorAll("[data-product-tab]")];
+  if (productTabs.length) {
+    const productPanels = productTabs
+      .map((tab) => document.getElementById(tab.getAttribute("aria-controls") || ""))
+      .filter(Boolean);
+    const activateProductPanel = (id, { focus = false, updateHash = false } = {}) => {
+      const panel = document.getElementById(id);
+      if (!panel || !productPanels.includes(panel)) return;
+      productTabs.forEach((tab) => {
+        const active = tab.getAttribute("aria-controls") === id;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      productPanels.forEach((item) => item.toggleAttribute("hidden", item !== panel));
+      if (updateHash) window.history.pushState({}, "", `#${id}`);
+      if (focus) {
+        panel.querySelector("h2, input, textarea, select, button")?.focus({ preventScroll: true });
+        panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+    const targetFromHash = decodeURIComponent(window.location.hash.slice(1));
+    activateProductPanel(productPanels.some((panel) => panel.id === targetFromHash) ? targetFromHash : productPanels[0]?.id);
+    productTabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateProductPanel(tab.getAttribute("aria-controls"), { focus: true, updateHash: true }));
+      tab.addEventListener("keydown", (event) => {
+        const keys = ["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Home", "End"];
+        if (!keys.includes(event.key)) return;
+        event.preventDefault();
+        const direction = event.key === "Home" ? 0 : event.key === "End" ? productTabs.length - 1 : (index + (event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1) + productTabs.length) % productTabs.length;
+        productTabs[direction].focus();
+        activateProductPanel(productTabs[direction].getAttribute("aria-controls"), { updateHash: true });
+      });
+    });
+    document.querySelectorAll("[data-product-tab-link]").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const id = decodeURIComponent(String(link.getAttribute("href") || "").replace(/^.*#/, ""));
+        if (!id) return;
+        event.preventDefault();
+        activateProductPanel(id, { focus: true, updateHash: true });
+      });
+    });
+    window.addEventListener("hashchange", () => activateProductPanel(decodeURIComponent(window.location.hash.slice(1))));
+  }
+
   const productFilter = document.querySelector("[data-product-filter]");
   if (productFilter) {
-    const cards = document.querySelectorAll("[data-product-card]");
+    const catalogue = productFilter.closest("[data-product-catalogue]");
+    const cards = catalogue?.querySelectorAll("[data-product-card]") || [];
+    const collection = catalogue?.querySelector("[data-page-collection]");
     const applyProductFilters = () => {
       const form = new FormData(productFilter);
       const text = String(form.get("q") || "").toLowerCase();
@@ -345,14 +472,13 @@
         const okCategory = !category || card.dataset.category === category;
         const okApplication = !application || card.dataset.application?.includes(application);
         const ok = okText && okType && okCleaning && okCategory && okApplication;
-        card.toggleAttribute("hidden", !ok);
+        card.dataset.filterHidden = ok ? "" : "true";
         if (ok) visible += 1;
       });
-      document.querySelector("[data-product-empty]")?.toggleAttribute("hidden", visible > 0);
-      const count = document.querySelector("[data-product-match-count]");
+      catalogue?.querySelector("[data-product-empty]")?.toggleAttribute("hidden", visible > 0);
+      const count = catalogue?.querySelector("[data-product-match-count]");
       if (count) count.textContent = String(visible);
-      const catalogue = document.querySelector(".full-product-catalogue");
-      if (catalogue && (text || type || cleaning || category || application)) catalogue.open = true;
+      refreshPageCollection(collection, { page: 1 });
     };
     productFilter.addEventListener("input", applyProductFilters);
     productFilter.addEventListener("change", applyProductFilters);
