@@ -1,5 +1,25 @@
 [
   {
+    "title": "GDP declines by 0,2% in Q2: 2026",
+    "url": "https://statssa.gov.za/?p=19893",
+    "publishedAt": "2026-09-08T09:02:22.000Z",
+    "publisher": "Statistics South Africa",
+    "publisherType": "government-statistics",
+    "trustTier": "primary",
+    "topicContext": "South African mining minerals statistics",
+    "score": 95,
+    "fetchedAt": "2026-09-09T04:25:26.450Z",
+    "rightsNote": "Headline and publication metadata used for original engineering analysis only.",
+    "id": "candidate_4836dc34000e2f85",
+    "fingerprint": "4836dc34000e2f85cc066180b18d4687c27559307fa101f66a85c480a1e7289f",
+    "site_id": "cowinmagnet-za",
+    "status": "candidate",
+    "freshness_tier": "primary",
+    "discovered_at": "2026-09-09T04:25:26.450Z",
+    "updated_at": "2026-09-09T04:25:26.450Z",
+    "reject_reason": ""
+  },
+  {
     "title": "Harmony reports loss-of-life incident at Moab Khotsong mine",
     "url": "https://miningweekly.com/article/harmony-reports-loss-of-life-incident-at-moab-khotsong-mine-2026-09-07",
     "publishedAt": "2026-09-07T12:00:00.000Z",

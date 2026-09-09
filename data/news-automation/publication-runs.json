@@ -1,5 +1,61 @@
 [
   {
+    "id": "ingest_8f6563c2709bb9ed",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-09T04:25:26.450Z",
+    "finishedAt": "2026-09-09T04:25:35.578Z",
+    "result": "ingested",
+    "discovered": 71,
+    "added": 1,
+    "candidates": 134,
+    "poolChanged": true,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 2
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 6
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 72
+      }
+    ]
+  },
+  {
     "id": "run_140aa0a625faddc0",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions",
