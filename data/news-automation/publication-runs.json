@@ -1,5 +1,111 @@
 [
   {
+    "id": "run_f0f34c82f0d3102e",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-11T04:22:16.745Z",
+    "finishedAt": "2026-09-11T04:22:16.825Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "hydrogen-investment-hits-130bn-plus-mark-on-energy-security-resilience-bulk-material-proje-2026-09-11",
+    "sourceUrls": [
+      "https://miningweekly.com/article/hydrogen-investment-hits-130bn-plus-mark-on-energy-security-resilience-rise-2026-09-10",
+      "https://sanews.gov.za/south-africa/ndb-and-south-africa-sign-us405m-loan-agreements-infrastructure-projects"
+    ],
+    "qa": {
+      "wordCount": 1097,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.077,
+      "bodySimilarity": 0.427,
+      "strongestBodyMatch": "china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08"
+    },
+    "pairKey": "g3:cfd490f147398b602dc0",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:cfd490f147398b602dc0",
+        "coherent": true,
+        "variant": 0,
+        "title": "Hydrogen investment hits $130bn-plus mark on energy security, resilience…: Bulk-Material Project Checks for South African Plants",
+        "sourceUrls": [
+          "https://miningweekly.com/article/hydrogen-investment-hits-130bn-plus-mark-on-energy-security-resilience-rise-2026-09-10",
+          "https://sanews.gov.za/south-africa/ndb-and-south-africa-sign-us405m-loan-agreements-infrastructure-projects"
+        ],
+        "qa": {
+          "wordCount": 1097,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.077,
+          "bodySimilarity": 0.427,
+          "strongestBodyMatch": "china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_206549de8a2ea2c9",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-11T04:22:12.854Z",
+    "finishedAt": "2026-09-11T04:22:16.565Z",
+    "result": "ingested",
+    "discovered": 56,
+    "added": 0,
+    "candidates": 184,
+    "poolChanged": false,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 2
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 5
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 72
+      }
+    ]
+  },
+  {
     "id": "ingest_e10bbeb736db596c",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",
