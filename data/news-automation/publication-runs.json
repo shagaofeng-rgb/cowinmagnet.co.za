@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-11T04:22:16.745Z",
     "finishedAt": "2026-09-11T04:22:16.825Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "hydrogen-investment-hits-130bn-plus-mark-on-energy-security-resilience-bulk-material-proje-2026-09-11",
     "sourceUrls": [
       "https://miningweekly.com/article/hydrogen-investment-hits-130bn-plus-mark-on-energy-security-resilience-rise-2026-09-10",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-11T04:22:49.557Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-11T04:22:49.557Z"
   },
   {
     "id": "ingest_206549de8a2ea2c9",
