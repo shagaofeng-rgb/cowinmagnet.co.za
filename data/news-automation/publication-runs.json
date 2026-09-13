@@ -1,5 +1,132 @@
 [
   {
+    "id": "run_c9c4f7b1378335a9",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-13T04:34:23.667Z",
+    "finishedAt": "2026-09-13T04:34:23.783Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "sa-urged-to-unlock-battery-mineral-value-material-handling-decisions-for-conveyor-protecti-2026-09-13",
+    "sourceUrls": [
+      "https://sanews.gov.za/south-africa/sa-urged-unlock-battery-mineral-value",
+      "https://miningweekly.com/article/pan-african-completes-soweto-gold-tailings-retreatment-project-study-2026-09-11"
+    ],
+    "qa": {
+      "wordCount": 1044,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.278,
+      "bodySimilarity": 0.708,
+      "strongestBodyMatch": "new-phase-r60bn-capex-programme-announced-by-impala-platinum-material-handling-decisions-f-2026-09-04"
+    },
+    "pairKey": "g3:06b919cbfb4390832c53",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:06b919cbfb4390832c53",
+        "coherent": true,
+        "variant": 0,
+        "title": "SA urged to unlock battery mineral value: Material-Handling Decisions for Conveyor Protection",
+        "sourceUrls": [
+          "https://sanews.gov.za/south-africa/sa-urged-unlock-battery-mineral-value",
+          "https://miningweekly.com/article/pan-african-completes-soweto-gold-tailings-retreatment-project-study-2026-09-11"
+        ],
+        "qa": {
+          "wordCount": 1053,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.278,
+          "bodySimilarity": 0.765,
+          "strongestBodyMatch": "china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08"
+        },
+        "failures": [
+          "Similarity threshold against the last 180 days of published content was exceeded."
+        ]
+      },
+      {
+        "pairKey": "g3:06b919cbfb4390832c53",
+        "coherent": true,
+        "variant": 1,
+        "title": "SA urged to unlock battery mineral value: Material-Handling Decisions for Conveyor Protection",
+        "sourceUrls": [
+          "https://sanews.gov.za/south-africa/sa-urged-unlock-battery-mineral-value",
+          "https://miningweekly.com/article/pan-african-completes-soweto-gold-tailings-retreatment-project-study-2026-09-11"
+        ],
+        "qa": {
+          "wordCount": 1044,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.278,
+          "bodySimilarity": 0.708,
+          "strongestBodyMatch": "new-phase-r60bn-capex-programme-announced-by-impala-platinum-material-handling-decisions-f-2026-09-04"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_45aabe621e7cb532",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-13T04:34:17.522Z",
+    "finishedAt": "2026-09-13T04:34:23.507Z",
+    "result": "ingested",
+    "discovered": 70,
+    "added": 0,
+    "candidates": 219,
+    "poolChanged": false,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 2
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 6
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 67
+      }
+    ]
+  },
+  {
     "id": "ingest_c2a72c0f6af5e188",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",

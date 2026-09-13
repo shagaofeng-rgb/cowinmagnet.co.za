@@ -12,11 +12,15 @@
     "id": "candidate_6c9fab029148b949",
     "fingerprint": "6c9fab029148b9493903643936afb7d2d3d9c57ac578c23e14f3fab939e392b9",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-12T15:26:31.051Z",
     "updated_at": "2026-09-12T15:26:31.051Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-13T04:34:23.667Z",
+    "article_slug": "sa-urged-to-unlock-battery-mineral-value-material-handling-decisions-for-conveyor-protecti-2026-09-13",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Vanadium Resources receives A$1m commitments to advance South African smelter",
@@ -52,11 +56,15 @@
     "id": "candidate_54e9870de13b2643",
     "fingerprint": "54e9870de13b26438e33eeff8d681772ea6b174a2098f534342fb7599abd7beb",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-12T15:26:31.051Z",
     "updated_at": "2026-09-12T15:26:31.051Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-13T04:34:23.667Z",
+    "article_slug": "sa-urged-to-unlock-battery-mineral-value-material-handling-decisions-for-conveyor-protecti-2026-09-13",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Eskom raises EAF to 67.78%, cuts diesel costs by R4.8 billion year-on-year and reduces year-to-date particulate emissions by 67% in 5 months",
