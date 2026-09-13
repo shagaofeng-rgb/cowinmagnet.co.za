@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-13T04:34:23.667Z",
     "finishedAt": "2026-09-13T04:34:23.783Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "sa-urged-to-unlock-battery-mineral-value-material-handling-decisions-for-conveyor-protecti-2026-09-13",
     "sourceUrls": [
       "https://sanews.gov.za/south-africa/sa-urged-unlock-battery-mineral-value",
@@ -65,10 +65,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-13T04:35:16.350Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-13T04:35:16.350Z"
   },
   {
     "id": "ingest_45aabe621e7cb532",
