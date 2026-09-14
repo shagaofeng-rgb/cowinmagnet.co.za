@@ -763,7 +763,22 @@ $quoteFields = @("Name*|name|text","Company*|company|text","Country*|country|tex
 $inputs = ($quoteFields | ForEach-Object { $f=$_.Split("|"); $req=if($f[0].EndsWith("*")){" required"}else{""}; $label=$f[0].Replace("*",""); "<label>$label<input name='$($f[1])' type='$($f[2])'$req></label>" }) -join ""
 $quoteBody = (PageHero "<a href='$base/'>Home</a> / Request a Quote" "Quote" "Request a Magnetic Separator Quote" "Send project data for product selection support.") + "<section class='section'><form class='quote-form panel' data-quote-form>$inputs<label class='full'>Project Description<textarea name='projectDescription' rows='5'></textarea></label><label class='full'>File Upload<input name='fileUpload' type='file' accept='.pdf,.jpg,.jpeg,.png,.doc,.docx'></label><button class='button primary full' type='submit'>Submit Inquiry</button><output class='form-status full' data-form-status></output></form></section>"
 WritePage "$base/request-a-quote/" "Request a Quote | Cowinmagnet South Africa" "Submit magnetic separator project details including country, product, industry, material, conveyor data and operating conditions." "Request a Magnetic Separator Quote" $quoteBody
-WritePage "$base/contact/" "Contact Cowinmagnet South Africa | Magnetic Separator Support" "Contact Cowinmagnet for magnetic separation equipment selection, export coordination and African project support." "Contact Cowinmagnet" ((PageHero "<a href='$base/'>Home</a> / Contact" "Contact" "Contact Cowinmagnet" "Send product selection and project questions.") + "<section class='section layout'><article class='panel'><h2>Contact form</h2><form class='quote-form' data-quote-form><label>Name<input name='name' required></label><label>Company<input name='company' required></label><label>Email<input name='email' type='email' required></label><label>WhatsApp<input name='whatsapp' required></label><label class='full'>Message<textarea name='productRequired' required></textarea></label><button class='button primary full'>Send Inquiry</button><output class='form-status full' data-form-status></output></form></article><aside class='panel'><h3>Contact details</h3><p>Quzhou Qiying Import & Export Co., Ltd.</p><p>davidsha@cowinmagnet.com</p><p>WhatsApp: +86 156 6513 5205</p><p>Global website: www.cowinmagnet.com</p><p>Business hours: China business hours, export communication support for African inquiries.</p></aside></section>")
+$companyLocation = @'
+<section class="section" id="company-location" aria-labelledby="company-location-title">
+  <div class="panel">
+    <p class="eyebrow">Find us</p>
+    <h2 id="company-location-title">Company location</h2>
+    <p>Quzhou Qiying Import &amp; Export Co., Ltd.</p>
+    <p>View our company location on Google Maps or get directions before your visit.</p>
+    <iframe title="Google Maps: Cowinmagnet company location" src="https://maps.google.com/maps?q=28.965204,118.839750&amp;z=16&amp;output=embed&amp;hl=en" width="100%" height="360" style="display:block;max-width:100%;border:0;border-radius:12px;margin:20px 0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <a class="button primary" href="https://maps.app.goo.gl/P1YyVHoCdGBd9ef37" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+      <a class="button" href="https://www.google.com/maps/dir/?api=1&amp;destination=28.965204%2C118.839750" target="_blank" rel="noopener noreferrer">Get directions</a>
+    </div>
+  </div>
+</section>
+'@
+WritePage "$base/contact/" "Contact Cowinmagnet South Africa | Magnetic Separator Support" "Contact Cowinmagnet for magnetic separation equipment selection, export coordination and African project support." "Contact Cowinmagnet" ((PageHero "<a href='$base/'>Home</a> / Contact" "Contact" "Contact Cowinmagnet" "Send product selection and project questions.") + "<section class='section layout'><article class='panel'><h2>Contact form</h2><form class='quote-form' data-quote-form><label>Name<input name='name' required></label><label>Company<input name='company' required></label><label>Email<input name='email' type='email' required></label><label>WhatsApp<input name='whatsapp' required></label><label class='full'>Message<textarea name='productRequired' required></textarea></label><button class='button primary full'>Send Inquiry</button><output class='form-status full' data-form-status></output></form></article><aside class='panel'><h3>Contact details</h3><p>Quzhou Qiying Import & Export Co., Ltd.</p><p>davidsha@cowinmagnet.com</p><p>WhatsApp: +86 156 6513 5205</p><p>Global website: www.cowinmagnet.com</p><p><a href='#company-location'>View company location and map</a></p><p>Business hours: China business hours, export communication support for African inquiries.</p></aside></section>" + $companyLocation)
 WritePage "$base/search/" "Search | Cowinmagnet South Africa" "Search products, industries, solutions, markets, news and downloads." "Search Website" ((PageHero "<a href='$base/'>Home</a> / Search" "Search" "Search Website" "Search products, industries, solutions, markets, news and downloads.") + "<section class='section'><form class='filter-panel'><label>Search<input data-site-search type='search' placeholder='Type a keyword and press Enter'></label></form><div class='grid' data-search-results></div><div class='panel' data-search-empty><strong>Search no results state</strong><p>If no result matches, try product family, material, industry or country keywords.</p></div></section>")
 
 function LegalPageContent($legal) {
@@ -876,5 +891,3 @@ if ($isProduction) {
 }
 
 Write-Host "Generated static multipage site under $root"
-
-
