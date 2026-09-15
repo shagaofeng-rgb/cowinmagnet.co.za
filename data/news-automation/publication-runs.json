@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-15T04:41:03.321Z",
     "finishedAt": "2026-09-15T04:41:03.432Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "guinea-discussing-alumina-energy-investments-with-glencore-after-bauxite-bulk-material-pro-2026-09-15",
     "sourceUrls": [
       "https://miningweekly.com/article/guinea-discussing-alumina-energy-investments-with-glencore-after-bauxite-deal-minister-says-2026-09-14",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-15T04:41:56.206Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-15T04:41:56.206Z"
   },
   {
     "id": "ingest_2415dd31d1eb426e",
