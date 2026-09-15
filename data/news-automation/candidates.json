@@ -473,11 +473,15 @@
     "id": "candidate_2519fb164e10efe6",
     "fingerprint": "2519fb164e10efe626c9269e817d1a63c9ee417b795a13c2f1a452ca87d35b25",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-14T18:01:28.531Z",
     "updated_at": "2026-09-14T18:01:28.531Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-15T04:41:03.321Z",
+    "article_slug": "guinea-discussing-alumina-energy-investments-with-glencore-after-bauxite-bulk-material-pro-2026-09-15",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Forrestania inks ore purchasing, master services agreement with contractor MEGA",
@@ -4999,11 +5003,15 @@
     "id": "candidate_a56e5338ffe716ce",
     "fingerprint": "10534e43ebdadb0b99967ffcaf6b939eec550b977e3bd3424af3e93ce8796039",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-08-26T13:07:23.792Z",
     "updated_at": "2026-08-26T13:07:23.792Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-15T04:41:03.321Z",
+    "article_slug": "guinea-discussing-alumina-energy-investments-with-glencore-after-bauxite-bulk-material-pro-2026-09-15",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "ISA commits R131 million to support local government infrastructure",
