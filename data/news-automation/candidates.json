@@ -12,11 +12,15 @@
     "id": "candidate_45fe9ec3f77902fd",
     "fingerprint": "45fe9ec3f77902fdec0f44667d0dcdd8374595ff6c4fcafa0f34dc1bcbdf0244",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-16T16:41:46.356Z",
     "updated_at": "2026-09-16T16:41:46.356Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-17T04:41:19.017Z",
+    "article_slug": "wc-assesses-flood-damage-to-critical-klawer-water-infrastructure-bulk-material-project-che-2026-09-17",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "South Africa’s green hydrogen advances being afforded twin momentum",
@@ -352,11 +356,15 @@
     "id": "candidate_8ce2bd112829c39d",
     "fingerprint": "8ce2bd112829c39dde0af77b9abb929b07ba4dce4e4fc424ce192cb68fe0b121",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-16T16:41:46.356Z",
     "updated_at": "2026-09-16T16:41:46.356Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-17T04:41:19.017Z",
+    "article_slug": "wc-assesses-flood-damage-to-critical-klawer-water-infrastructure-bulk-material-project-che-2026-09-17",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Premier American Uranium sells non-core Colorado assets to DISA, gains DISA as shareholder",
