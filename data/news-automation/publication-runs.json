@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-17T04:41:19.017Z",
     "finishedAt": "2026-09-17T04:41:19.141Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "wc-assesses-flood-damage-to-critical-klawer-water-infrastructure-bulk-material-project-che-2026-09-17",
     "sourceUrls": [
       "https://sanews.gov.za/south-africa/wc-assesses-flood-damage-critical-klawer-water-infrastructure",
@@ -65,10 +65,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-17T04:42:11.708Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-17T04:42:11.708Z"
   },
   {
     "id": "ingest_ffd981307fc116a8",
