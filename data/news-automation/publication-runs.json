@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-19T15:47:54.695Z",
     "finishedAt": "2026-09-19T15:47:54.836Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19",
     "sourceUrls": [
       "https://eskom.co.za/eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-outperform-target-and-load-reduction-declines-to-just-3-4-of-customers",
@@ -65,10 +65,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-19T15:48:27.744Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-19T15:48:27.744Z"
   },
   {
     "id": "ingest_d53d4ddcaa8529a2",
