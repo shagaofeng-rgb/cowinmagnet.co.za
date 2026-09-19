@@ -21,6 +21,15 @@ const writableDataRoot = join(tmpdir(), "cowinmagnet-africa-data");
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "info@cowinmagnet.com").trim().toLowerCase();
 const adminUser = process.env.ADMIN_USER || adminEmail;
+const adminLoginAliases = [...new Set([
+  adminEmail,
+  adminUser,
+  ...String(process.env.ADMIN_LOGIN_ALIASES || "").split(","),
+  // The established main-site administrator remains a valid identity for the
+  // Africa property while both sites use the same managed administrator.
+  "davidsha@cowinmagnet.com",
+  "info@cowinmagnet.com"
+].map((value) => String(value || "").trim().toLowerCase()).filter(Boolean))];
 const enquiryNotificationRecipient = (process.env.INQUIRY_NOTIFICATION_TO || "info@cowinmagnet.com").trim().toLowerCase();
 
 const { Pool } = pg;
@@ -297,7 +306,7 @@ function passwordVariants(password) {
 }
 function verifyAdminCredentials(identifier, password) {
   const normalized = String(identifier || "").trim().toLowerCase();
-  const validIdentity = normalized === adminEmail || normalized === String(adminUser).trim().toLowerCase();
+  const validIdentity = adminLoginAliases.includes(normalized);
   if (!validIdentity || !password || !isAdminAuthConfigured()) return false;
 
   const variants = passwordVariants(password);
