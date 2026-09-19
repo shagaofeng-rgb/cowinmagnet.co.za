@@ -769,6 +769,7 @@ $companyLocation = @'
     <p class="eyebrow">Find us</p>
     <h2 id="company-location-title">Company location</h2>
     <p>Quzhou Qiying Import &amp; Export Co., Ltd.</p>
+    <address style="font-style:normal">Kecheng District, Quzhou, Zhejiang, China<br>Google Maps Plus Code: XR8Q+3VQ</address>
     <p>View our company location on Google Maps or get directions before your visit.</p>
     <iframe title="Google Maps: Cowinmagnet company location" src="https://www.google.com/maps/embed?origin=mfe&amp;pb=!1m3!2m1!1s28.965204,118.839750!6i16!3m1!1sen!5m1!1sen" width="100%" height="360" style="display:block;max-width:100%;border:0;border-radius:12px;margin:20px 0" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     <div style="display:flex;flex-wrap:wrap;gap:12px">
