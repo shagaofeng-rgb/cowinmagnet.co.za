@@ -384,6 +384,8 @@ function rangeClause(input, values) {
   const todayStart = `date_trunc('day', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`;
   if (range === "all") return { clause: "TRUE", range };
   if (range === "today") return { clause: `e.occurred_at >= ${todayStart}`, range };
+  if (range === "7d") return { clause: `e.occurred_at >= ${todayStart} - INTERVAL '6 days'`, range };
+  if (range === "15d") return { clause: `e.occurred_at >= ${todayStart} - INTERVAL '14 days'`, range };
   if (range === "week") return { clause: `e.occurred_at >= date_trunc('week', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
   if (range === "month") return { clause: `e.occurred_at >= date_trunc('month', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
   if (range === "custom") {
@@ -694,6 +696,10 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
         COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv, COUNT(DISTINCT session_id)::int AS "sessionCount",
         MAX(COALESCE(country, 'Unknown')) AS country, MAX(COALESCE(ip_masked, 'unknown')) AS ip,
         MAX(COALESCE(channel, 'Direct')) AS channel, MAX(COALESCE(source, 'Direct')) AS source,
+        (array_agg(COALESCE(channel, 'Direct') ORDER BY occurred_at ASC))[1] AS "firstChannel",
+        (array_agg(COALESCE(source, 'Direct') ORDER BY occurred_at ASC))[1] AS "firstSource",
+        (array_agg(COALESCE(channel, 'Direct') ORDER BY occurred_at DESC))[1] AS "lastChannel",
+        (array_agg(COALESCE(source, 'Direct') ORDER BY occurred_at DESC))[1] AS "lastSource",
         MAX(COALESCE(device, 'Desktop')) AS device, MAX(COALESCE(browser, 'Browser')) AS browser,
         MAX(COALESCE(v.lead_status, 'Anonymous')) AS "leadStatus"
        FROM analytics_events e LEFT JOIN analytics_visitors v ON v.visitor_id = e.visitor_id
@@ -706,6 +712,7 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
     db.query(
       `SELECT session_id AS "sessionId", MIN(occurred_at) AS "startedAt", MAX(occurred_at) AS "endedAt",
         COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv,
+        LEAST(1800, GREATEST(0, EXTRACT(EPOCH FROM MAX(occurred_at) - MIN(occurred_at))))::int AS "estimatedDurationSeconds",
         (array_agg(page_path ORDER BY occurred_at ASC))[1] AS "entryPage",
         (array_agg(page_path ORDER BY occurred_at DESC))[1] AS "exitPage",
         (array_agg(COALESCE(channel, 'Direct') ORDER BY occurred_at ASC))[1] AS channel,
@@ -716,12 +723,19 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
       [normalizedId]
     ),
     db.query(
-      `SELECT occurred_at AS time, session_id AS "sessionId", event_type AS "eventType", page_path AS page,
-        COALESCE(channel, 'Direct') AS channel, COALESCE(source, 'Direct') AS source, referrer,
-        COALESCE(source, 'Direct') AS "utmSource", COALESCE(medium, '') AS "utmMedium",
-        COALESCE(campaign, '') AS "utmCampaign"
-       FROM analytics_events
-       WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test) AND COALESCE(metadata->>'legacy', 'false') <> 'true'
+      `WITH journey_events AS (
+         SELECT occurred_at, session_id, event_type, page_path, channel, source, medium, campaign, referrer,
+           LEAD(occurred_at) OVER (PARTITION BY session_id ORDER BY occurred_at ASC) AS next_occurred_at
+         FROM analytics_events
+         WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test) AND COALESCE(metadata->>'legacy', 'false') <> 'true'
+       )
+       SELECT occurred_at AS time, session_id AS "sessionId", event_type AS "eventType", page_path AS page,
+         COALESCE(channel, 'Direct') AS channel, COALESCE(source, 'Direct') AS source, referrer,
+         COALESCE(source, 'Direct') AS "utmSource", COALESCE(medium, '') AS "utmMedium",
+         COALESCE(campaign, '') AS "utmCampaign",
+         CASE WHEN next_occurred_at IS NOT NULL AND next_occurred_at - occurred_at <= INTERVAL '30 minutes'
+              THEN EXTRACT(EPOCH FROM next_occurred_at - occurred_at)::int ELSE 0 END AS "estimatedDwellSeconds"
+       FROM journey_events
        ORDER BY occurred_at DESC LIMIT $2 OFFSET $3`,
       [normalizedId, pageSize, offset]
     )

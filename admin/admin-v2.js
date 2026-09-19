@@ -5,7 +5,8 @@
     view: "dashboard",
     page: {},
     pageSize: 20,
-    analyticsFilters: {}
+    analyticsFilters: {},
+    openVisitorId: ""
   };
 
   const label = {
@@ -98,7 +99,7 @@
     return `<div class="toolbar compact data-toolbar" data-toolbar="${key}">
       <input data-q placeholder="关键词 / 名称 / URL">
       ${filters}
-      <select data-range aria-label="时间范围"><option value="all" ${range === "all" ? "selected" : ""}>全部时间</option><option value="today" ${range === "today" ? "selected" : ""}>今天</option><option value="week" ${range === "week" ? "selected" : ""}>本周</option><option value="month" ${range === "month" ? "selected" : ""}>本月</option><option value="custom" ${range === "custom" ? "selected" : ""}>自定义</option></select>
+      <select data-range aria-label="时间范围"><option value="all" ${range === "all" ? "selected" : ""}>全部时间</option><option value="today" ${range === "today" ? "selected" : ""}>今天</option><option value="7d" ${range === "7d" ? "selected" : ""}>近 7 天</option><option value="15d" ${range === "15d" ? "selected" : ""}>近 15 天</option><option value="week" ${range === "week" ? "selected" : ""}>本周</option><option value="month" ${range === "month" ? "selected" : ""}>本月</option><option value="custom" ${range === "custom" ? "selected" : ""}>自定义</option></select>
       <input type="date" data-from aria-label="开始日期">
       <input type="date" data-to aria-label="结束日期">
       <select data-page-size aria-label="每页显示数量"><option value="20">20 / 页</option><option value="50">50 / 页</option><option value="100">100 / 页</option></select>
@@ -116,6 +117,10 @@
     [["q", "[data-q]"], ["status", "[data-status]"], ["from", "[data-from]"], ["to", "[data-to]"]].forEach(([name, selector]) => {
       const value = bar?.querySelector(selector)?.value?.trim();
       if (value) params.set(name, value);
+    });
+    qsa("[data-query]", bar).forEach((node) => {
+      const value = node.value?.trim();
+      if (value && node.dataset.query) params.set(node.dataset.query, value);
     });
     return params.toString();
   }
@@ -156,7 +161,7 @@
 
   function table(rows, fields, empty = "\u6682\u65e0\u6570\u636e") {
     if (!rows?.length) return `<p>${empty}</p>`;
-    return `<div class="table-wrap"><table><thead><tr>${fields.map((field) => `<th>${esc(field.label)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${fields.map((field) => `<td>${esc(typeof field.value === "function" ? field.value(row) : row[field.value])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+    return `<div class="table-wrap"><table><thead><tr>${fields.map((field) => `<th>${esc(field.label)}</th>`).join("")}</tr></thead><tbody>${rows.map((row) => `<tr>${fields.map((field) => `<td>${field.html ? field.html(row) : esc(typeof field.value === "function" ? field.value(row) : row[field.value])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
   }
 
   function formatNumber(value) {
@@ -169,6 +174,14 @@
     return Number.isNaN(date.valueOf()) ? String(value) : new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "short", hour12: false }).format(date);
   }
 
+  function formatDuration(seconds) {
+    const total = Math.max(0, Number(seconds || 0));
+    if (!total) return "-";
+    const minutes = Math.floor(total / 60);
+    const remainder = total % 60;
+    return minutes ? `${minutes} 分 ${remainder} 秒` : `${remainder} 秒`;
+  }
+
   function shortVisitorId(value) {
     const text = String(value || "");
     return text.length > 14 ? `${text.slice(0, 7)}…${text.slice(-5)}` : text || "-";
@@ -179,19 +192,19 @@
   }
 
   function analyticsControls(key, options = {}) {
-    const current = state.analyticsFilters[key] || { range: "today" };
-    const selected = (value) => String(current.range || "today") === value ? "selected" : "";
+    const current = state.analyticsFilters[key] || { range: options.defaultRange || "today" };
+    const selected = (value) => String(current.range || options.defaultRange || "today") === value ? "selected" : "";
     const sourceSelected = (value) => String(current.channel || "") === value ? "selected" : "";
     const deviceSelected = (value) => String(current.device || "") === value ? "selected" : "";
     return `<div class="analytics-toolbar" data-analytics-toolbar="${key}">
-      <label>日期范围<select data-range><option value="all" ${selected("all")}>全部时间</option><option value="today" ${selected("today")}>今天</option><option value="week" ${selected("week")}>本周</option><option value="month" ${selected("month")}>本月</option><option value="custom" ${selected("custom")}>自定义</option></select></label>
+      <label>日期范围<select data-range><option value="all" ${selected("all")}>全部时间</option><option value="today" ${selected("today")}>今天</option><option value="7d" ${selected("7d")}>近 7 天</option><option value="15d" ${selected("15d")}>近 15 天</option><option value="week" ${selected("week")}>本周</option><option value="month" ${selected("month")}>本月</option><option value="custom" ${selected("custom")}>自定义</option></select></label>
       <label>开始日期<input type="date" data-from value="${esc(current.from || "")}"></label>
       <label>结束日期<input type="date" data-to value="${esc(current.to || "")}"></label>
       <label>国家<input data-country placeholder="例如 ZA" value="${esc(current.country || "")}"></label>
       <label>渠道<select data-channel><option value="" ${sourceSelected("")}>全部渠道</option><option value="Direct" ${sourceSelected("Direct")}>Direct</option><option value="Organic Search" ${sourceSelected("Organic Search")}>Organic Search</option><option value="Referral" ${sourceSelected("Referral")}>Referral</option><option value="Social" ${sourceSelected("Social")}>Social</option><option value="Campaign" ${sourceSelected("Campaign")}>Campaign</option></select></label>
       <label>设备<select data-device><option value="" ${deviceSelected("")}>全部设备</option><option value="Desktop" ${deviceSelected("Desktop")}>Desktop</option><option value="Mobile" ${deviceSelected("Mobile")}>Mobile</option><option value="Tablet" ${deviceSelected("Tablet")}>Tablet</option></select></label>
       <label>搜索<input data-visitor-q placeholder="访问路径 / 来源" value="${esc(current.q || "")}"></label>
-      <label>每页<select data-page-size><option value="20">20 条</option><option value="50">50 条</option><option value="100">100 条</option></select></label>
+      <label>每页<select data-page-size><option value="20" ${(current.pageSize || state.pageSize) === "20" || Number(current.pageSize || state.pageSize) === 20 ? "selected" : ""}>20 条</option><option value="50" ${Number(current.pageSize || state.pageSize) === 50 ? "selected" : ""}>50 条</option><option value="100" ${Number(current.pageSize || state.pageSize) === 100 ? "selected" : ""}>100 条</option></select></label>
       <div class="analytics-toolbar-actions"><button class="button primary" data-analytics-apply>应用筛选</button><button class="button secondary" data-analytics-reset>重置</button></div>
     </div>`;
   }
@@ -253,24 +266,36 @@
 
   async function dashboard() {
     const panel = qs("[data-panel='dashboard']");
-    panel.innerHTML = card(label.loading, "");
-    const [site, report] = await Promise.all([
-      api("/api/admin/dashboard"),
-      api("/api/admin/analytics?range=today&pageSize=8")
-    ]);
-    panel.innerHTML = [
+    const key = "dashboard";
+    if (!state.analyticsFilters[key]) state.analyticsFilters[key] = { range: "today", pageSize: 20 };
+    panel.innerHTML = `${analyticsControls(key, { defaultRange: "today" })}<div data-dashboard-results><section class="section-card">${label.loading}</section></div>`;
+    const load = async () => {
+      const params = analyticsParams(key);
+      params.set("includeVisitors", "1");
+      params.set("pageSize", "8");
+      state.analyticsFilters[key] = Object.fromEntries(params.entries());
+      const results = qs("[data-dashboard-results]", panel);
+      results.innerHTML = '<section class="section-card"><p class="empty-copy">正在更新当前筛选数据…</p></section>';
+      const [site, report] = await Promise.all([
+        api(`/api/admin/dashboard?${params.toString()}`),
+        api(`/api/admin/analytics?${params.toString()}`)
+      ]);
+      results.innerHTML = [
       metrics([
-        { label: "今日 PV", value: formatNumber(report.pv), note: "页面浏览" },
-        { label: "今日 UV", value: formatNumber(report.uv), note: "独立访客" },
+        { label: "PV", value: formatNumber(report.pv), note: "当前筛选条件" },
+        { label: "UV", value: formatNumber(report.uv), note: "独立访客" },
         { label: "有效会话", value: formatNumber(report.sessions), note: "按访客会话归并" },
         { label: "询盘提交", value: formatNumber(report.enquiries || site.unreadEnquiries), note: `转化率 ${report.conversionRate || 0}%` },
         { label: "WhatsApp 点击", value: formatNumber(report.whatsappClicks), note: "高意向动作" }
       ]),
-      `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><h2>今日访问趋势</h2><a class="text-link" href="?view=analytics">查看分析</a></div>${lineChart(report.timeline || [])}</section>
+      `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><h2>访问趋势</h2><a class="text-link" href="?view=analytics">查看分析</a></div>${lineChart(report.timeline || [])}</section>
       <section class="section-card"><h2>来源渠道</h2>${miniBars(report.channels || [])}</section></div>`,
       `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><h2>最近访客</h2><a class="text-link" href="?view=visitors">查看足迹</a></div>${visitorTable(report, false)}</section>
       <section class="section-card"><h2>来源平台</h2>${miniBars((report.sources || []).map((item) => ({ name: item.source, count: item.pv })))}</section></div>`
-    ].join("");
+      ].join("");
+    };
+    bindAnalyticsControls(panel, key, load);
+    await load();
   }
 
   async function categories() {
@@ -324,30 +349,64 @@
   async function forms() {
     const key = "forms";
     const panel = qs("[data-panel='forms']");
-    panel.innerHTML = card("\u5ba2\u6237\u8868\u5355", `${toolbar(key, `<select data-status><option value="">\u5168\u90e8</option><option value="New">New</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option></select>`)}<div class="actions"><a class="button secondary" data-export-enquiries href="/api/admin/enquiries/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div>`);
+    panel.innerHTML = card("\u5ba2\u6237\u8868\u5355", `${toolbar(key, `<select data-status><option value="">\u5168\u90e8\u72b6\u6001</option><option value="New">New</option><option value="In Progress">In Progress</option><option value="Closed">Closed</option></select><input data-query="country" placeholder="\u56fd\u5bb6 / \u5730\u533a"><input data-query="product" placeholder="\u4ea7\u54c1\u5173\u952e\u8bcd"><input data-query="source" placeholder="\u6765\u6e90 / \u843d\u5730\u9875">`)}<div class="actions"><a class="button secondary" data-export-enquiries href="/api/admin/enquiries/export">${label.exportCsv}</a></div><div data-list>${label.loading}</div><section class="section-card enquiry-detail" data-enquiry-detail hidden></section>`);
     const load = async () => {
       const queryString = query(key);
       const data = await api(`/api/admin/enquiries?${queryString}`);
       const exportLink = qs("[data-export-enquiries]", panel);
       if (exportLink) exportLink.href = `/api/admin/enquiries/export?${queryString}`;
-      qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u63d0\u4ea4\u65f6\u95f4", value: (row) => formatTime(row.submissionTime || row.createdAt) }, { label: "\u59d3\u540d", value: "name" }, { label: "\u90ae\u7bb1", value: "email" }, { label: "\u4ea7\u54c1", value: "product" }, { label: "\u72b6\u6001", value: "status" }]) + pager(data, key);
+      qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u63d0\u4ea4\u65f6\u95f4", value: (row) => formatTime(row.submissionTime || row.createdAt) }, { label: "\u5ba2\u6237", value: (row) => [row.name, row.company].filter(Boolean).join(" / ") || "-" }, { label: "\u90ae\u7bb1", value: "email" }, { label: "\u4ea7\u54c1", value: "product" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u64cd\u4f5c", html: (row) => `<button class="text-button" data-enquiry-id="${esc(row.id)}">\u67e5\u770b\u8be6\u60c5</button>` }]) + pager(data, key);
       bindPager(panel, key, load);
+      qsa("[data-enquiry-id]", panel).forEach((button) => button.addEventListener("click", () => openEnquiryDetail(panel, button.dataset.enquiryId)));
     };
     bindToolbar(panel, key, load);
     await load();
   }
 
+  function detailGrid(items) {
+    return `<div class="detail-grid">${items.map(([label, value]) => `<div><span>${esc(label)}</span><strong>${esc(value || "-")}</strong></div>`).join("")}</div>`;
+  }
+
+  async function openEnquiryDetail(panel, enquiryId) {
+    const detail = qs("[data-enquiry-detail]", panel);
+    if (!detail) return;
+    detail.hidden = false;
+    detail.innerHTML = `<div class="card-heading"><div><h2>询盘详情</h2><p>正在读取客户资料与关联访问记录…</p></div><button class="text-button" data-close-enquiry>收起</button></div>`;
+    try {
+      const data = await api(`/api/admin/enquiries/${encodeURIComponent(enquiryId)}`);
+      const enquiry = data.enquiry || {};
+      const visitor = data.visitor?.visitor;
+      const payload = Object.entries(enquiry.payload || {}).filter(([key]) => !["website", "analyticsClientId", "analyticsSessionId"].includes(key));
+      const notes = enquiry.internalNotes || [];
+      detail.innerHTML = `<div class="card-heading"><div><h2>${esc(enquiry.name || "客户询盘")}</h2><p>${esc(enquiry.id || "")} · ${formatTime(enquiry.submissionTime)}</p></div><button class="text-button" data-close-enquiry>收起</button></div>
+        <h3>客户与询盘</h3>${detailGrid([["公司", enquiry.company], ["邮箱", enquiry.email], ["电话 / WhatsApp", enquiry.phone || enquiry.whatsapp], ["国家 / 地区", enquiry.country || enquiry.region], ["意向产品", enquiry.product], ["行业", enquiry.industry], ["处理状态", enquiry.status], ["提交页面", enquiry.sourcePage]])}
+        <h3>来源归因</h3>${visitor ? detailGrid([["首次来源", `${visitor.firstChannel || "Direct"} / ${visitor.firstSource || "Direct"}`], ["最近来源", `${visitor.lastChannel || visitor.channel || "Direct"} / ${visitor.lastSource || visitor.source || "Direct"}`], ["首次访问", formatTime(visitor.firstSeenAt)], ["最近访问", formatTime(visitor.lastSeenAt)], ["访客编号", shortVisitorId(visitor.visitorId)]]) : '<p class="empty-copy">该历史询盘没有可关联的访客访问记录。</p>'}
+        ${visitor ? `<div class="actions"><button class="button secondary" data-open-enquiry-visitor="${esc(visitor.visitorId)}">查看完整浏览路径</button></div>` : ""}
+        <h3>客户填写内容</h3>${payload.length ? detailGrid(payload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)])) : '<p class="empty-copy">没有额外填写字段。</p>'}
+        <h3>跟进记录</h3>${notes.length ? table(notes, [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "操作人", value: "user" }, { label: "记录", value: "note" }]) : '<p class="empty-copy">暂无跟进记录。</p>'}`;
+      qs("[data-close-enquiry]", detail)?.addEventListener("click", () => { detail.hidden = true; });
+      qs("[data-open-enquiry-visitor]", detail)?.addEventListener("click", (event) => {
+        state.openVisitorId = event.currentTarget.dataset.openEnquiryVisitor || "";
+        activate("visitors");
+      });
+      detail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (error) {
+      detail.innerHTML = `<h2>询盘详情</h2><p class="error-copy">${esc(error.message)}</p>`;
+    }
+  }
+
   async function analytics() {
     const key = "analytics";
     const panel = qs("[data-panel='analytics']");
-    panel.innerHTML = `${analyticsControls(key)}<section class="section-card">${label.loading}</section>`;
+    panel.innerHTML = `${analyticsControls(key)}<div data-analytics-results><section class="section-card">${label.loading}</section></div>`;
     const load = async () => {
       const params = analyticsParams(key);
       state.analyticsFilters[key] = Object.fromEntries(params.entries());
       params.set("includeVisitors", "0");
+      const results = qs("[data-analytics-results]", panel);
+      results.innerHTML = '<section class="section-card"><p class="empty-copy">正在更新当前筛选数据…</p></section>';
       const data = await api(`/api/admin/analytics?${params.toString()}`);
-      panel.innerHTML = [
-        analyticsControls(key),
+      results.innerHTML = [
         metrics([
           { label: "PV", value: formatNumber(data.pv), note: "当前日期与筛选条件" },
           { label: "UV", value: formatNumber(data.uv), note: "独立访客" },
@@ -359,56 +418,62 @@
         `<div class="dashboard-grid"><section class="section-card"><h2>来源渠道</h2>${miniBars(data.channels || [])}</section><section class="section-card"><h2>来源平台</h2>${miniBars((data.sources || []).map((item) => ({ name: item.source, count: item.pv })))}</section><section class="section-card"><h2>热门页面</h2>${miniBars(data.pages || [])}</section></div>`,
         `<section class="section-card"><h2>设备与浏览器</h2>${table(data.deviceBrowsers || [], [{ label: "设备", value: "device" }, { label: "浏览器", value: "browser" }, { label: "访问", value: "views" }])}</section>`
       ].join("");
-      bindAnalyticsControls(panel, key, load);
     };
+    bindAnalyticsControls(panel, key, load);
     await load();
+  }
+
+  async function openVisitorJourney(panel, visitorId, refreshList) {
+    const journey = qs("[data-journey]", panel);
+    if (!journey || !visitorId) return;
+    journey.hidden = false;
+    journey.innerHTML = "<h2>访问路径</h2><p>正在读取访客的浏览记录…</p>";
+    try {
+      const detail = await api(`/api/admin/analytics/visitors/${encodeURIComponent(visitorId)}`);
+      const sessions = detail.sessions || [];
+      const linkedEnquiries = detail.enquiries || [];
+      journey.innerHTML = `<div class="card-heading"><div><h2>访客详情：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.firstChannel || detail.visitor?.channel || "Direct")} / ${esc(detail.visitor?.firstSource || detail.visitor?.source || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问 · ${formatNumber(detail.visitor?.sessionCount || sessions.length)} 个会话</p></div><button class="text-button" data-close-journey>收起</button></div>
+        <div class="journey-summary"><div><span>首次访问</span><strong>${formatTime(detail.visitor?.firstSeenAt)}</strong></div><div><span>最近访问</span><strong>${formatTime(detail.visitor?.lastSeenAt)}</strong></div><div><span>设备</span><strong>${esc(detail.visitor?.device || "-")} / ${esc(detail.visitor?.browser || "-")}</strong></div><div><span>脱敏 IP</span><strong>${esc(detail.visitor?.ip || "-")}</strong></div></div>
+        <div class="visitor-classification"><label>客户分类<select data-lead-status><option value="Anonymous">匿名访客</option><option value="Potential lead">潜在线索</option><option value="Lead">线索</option><option value="Customer">客户</option></select></label><button class="button secondary" data-save-visitor>保存分类</button></div>
+        <h3>访问会话</h3>${table(sessions, [{ label: "开始", value: (item) => formatTime(item.startedAt) }, { label: "结束", value: (item) => formatTime(item.endedAt) }, { label: "预计时长", value: (item) => formatDuration(item.estimatedDurationSeconds) }, { label: "入口页面", value: "entryPage" }, { label: "退出页面", value: "exitPage" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "页面浏览", value: "pv" }], "暂无有效会话")}
+        <h3>已关联客户表单</h3>${table(linkedEnquiries, [{ label: "提交时间", value: (item) => formatTime(item.submissionTime) }, { label: "客户", value: (item) => [item.name, item.company].filter(Boolean).join(" / ") || "-" }, { label: "产品", value: "product" }, { label: "状态", value: "status" }, { label: "来源页面", value: "sourcePage" }], "该访客尚未提交表单")}
+        <h3>浏览明细</h3><p class="data-note">“预计停留”按同一会话的下一次行为计算，超过 30 分钟或无后续行为时不计入，避免虚构停留时长。</p>${table(detail.events?.items || detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "会话", value: (item) => shortVisitorId(item.sessionId) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "预计停留", value: (item) => formatDuration(item.estimatedDwellSeconds) }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}`;
+      const statusField = qs("[data-lead-status]", journey);
+      if (statusField) statusField.value = detail.visitor?.leadStatus || "Anonymous";
+      qs("[data-save-visitor]", journey)?.addEventListener("click", async () => {
+        await api(`/api/admin/analytics/visitors/${encodeURIComponent(visitorId)}`, { method: "POST", body: JSON.stringify({ leadStatus: statusField?.value || "Anonymous" }) });
+        setStatus("访客分类已保存");
+        await refreshList();
+      });
+      qs("[data-close-journey]", journey)?.addEventListener("click", () => { journey.hidden = true; });
+      journey.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (error) {
+      journey.innerHTML = `<h2>访问路径</h2><p class="error-copy">${esc(error.message)}</p>`;
+    }
   }
 
   async function visitors() {
     const key = "visitors";
     const panel = qs("[data-panel='visitors']");
-    panel.innerHTML = `${analyticsControls(key)}<section class="section-card">${label.loading}</section>`;
+    panel.innerHTML = `${analyticsControls(key)}<div data-visitors-results><section class="section-card">${label.loading}</section></div><section class="section-card visitor-journey" data-journey hidden></section>`;
     const load = async () => {
       const params = analyticsParams(key);
       state.analyticsFilters[key] = Object.fromEntries(params.entries());
       params.set("scope", "visitors");
+      const results = qs("[data-visitors-results]", panel);
+      results.innerHTML = '<section class="section-card"><p class="empty-copy">正在更新当前筛选数据…</p></section>';
       const data = await api(`/api/admin/analytics?${params.toString()}`);
       const exportUrl = `/api/admin/analytics/export?${params.toString()}`;
-      panel.innerHTML = [
-        analyticsControls(key),
-        `<section class="section-card"><div class="card-heading"><div><h2>访客列表</h2><p>每页 ${data.visitors?.pageSize || 20} 条</p></div><a class="button secondary" href="${exportUrl}">导出 CSV</a></div>${visitorTable(data, true)}${pager(data.visitors || {}, key)}</section>`,
-        '<section class="section-card visitor-journey" data-journey hidden></section>'
-      ].join("");
-      bindAnalyticsControls(panel, key, load);
+      results.innerHTML = `<section class="section-card"><div class="card-heading"><div><h2>访客列表</h2><p>每页 ${data.visitors?.pageSize || 20} 条</p></div><a class="button secondary" href="${exportUrl}">导出 CSV</a></div>${visitorTable(data, true)}${pager(data.visitors || {}, key)}</section>`;
       bindPager(panel, key, load);
-      qsa("[data-visitor-id]", panel).forEach((button) => button.addEventListener("click", async () => {
-        const journey = qs("[data-journey]", panel);
-        journey.hidden = false;
-        journey.innerHTML = "<h2>访问路径</h2><p>正在读取访客的已过滤页面记录…</p>";
-        try {
-          const detail = await api(`/api/admin/analytics/visitors/${encodeURIComponent(button.dataset.visitorId)}`);
-          const sessions = detail.sessions || [];
-          const linkedEnquiries = detail.enquiries || [];
-          journey.innerHTML = `<div class="card-heading"><div><h2>访客详情：${esc(shortVisitorId(detail.visitor?.visitorId))}</h2><p>${esc(detail.visitor?.country || "Unknown")} · ${esc(detail.visitor?.channel || "Direct")} · ${formatNumber(detail.visitor?.pv)} 次页面访问 · ${formatNumber(detail.visitor?.sessionCount || sessions.length)} 个会话</p></div><button class="text-button" data-close-journey>收起</button></div>
-            <div class="journey-summary"><div><span>首次访问</span><strong>${formatTime(detail.visitor?.firstSeenAt)}</strong></div><div><span>最近访问</span><strong>${formatTime(detail.visitor?.lastSeenAt)}</strong></div><div><span>设备</span><strong>${esc(detail.visitor?.device || "-")} / ${esc(detail.visitor?.browser || "-")}</strong></div><div><span>脱敏 IP</span><strong>${esc(detail.visitor?.ip || "-")}</strong></div></div>
-            <div class="visitor-classification"><label>客户分类<select data-lead-status><option value="Anonymous">匿名访客</option><option value="Potential lead">潜在线索</option><option value="Lead">线索</option><option value="Customer">客户</option></select></label><button class="button secondary" data-save-visitor>保存分类</button></div>
-            <h3>访问会话</h3>${table(sessions, [{ label: "开始", value: (item) => formatTime(item.startedAt) }, { label: "入口页面", value: "entryPage" }, { label: "退出页面", value: "exitPage" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "页面浏览", value: "pv" }], "暂无有效会话")}
-            <h3>已关联客户表单</h3>${table(linkedEnquiries, [{ label: "提交时间", value: (item) => formatTime(item.submissionTime) }, { label: "客户", value: (item) => [item.name, item.company].filter(Boolean).join(" / ") || "-" }, { label: "产品", value: "product" }, { label: "状态", value: "status" }, { label: "来源页面", value: "sourcePage" }], "该访客尚未提交表单")}
-            <h3>访问明细</h3>${table(detail.events?.items || detail.items || [], [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "会话", value: (item) => shortVisitorId(item.sessionId) }, { label: "行为", value: "eventType" }, { label: "页面", value: "page" }, { label: "来源", value: (item) => item.source || item.channel }, { label: "UTM", value: (item) => [item.utmSource, item.utmMedium, item.utmCampaign].filter(Boolean).join(" / ") || "-" }])}`;
-          const statusField = qs("[data-lead-status]", journey);
-          if (statusField) statusField.value = detail.visitor?.leadStatus || "Anonymous";
-          qs("[data-save-visitor]", journey)?.addEventListener("click", async () => {
-            await api(`/api/admin/analytics/visitors/${encodeURIComponent(button.dataset.visitorId)}`, { method: "POST", body: JSON.stringify({ leadStatus: statusField?.value || "Anonymous" }) });
-            setStatus("访客分类已保存");
-            await load();
-          });
-          qs("[data-close-journey]", journey)?.addEventListener("click", () => { journey.hidden = true; });
-          journey.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        } catch (error) {
-          journey.innerHTML = `<h2>访问路径</h2><p class="error-copy">${esc(error.message)}</p>`;
-        }
-      }));
+      qsa("[data-visitor-id]", results).forEach((button) => button.addEventListener("click", () => openVisitorJourney(panel, button.dataset.visitorId, load)));
+      if (state.openVisitorId) {
+        const visitorId = state.openVisitorId;
+        state.openVisitorId = "";
+        await openVisitorJourney(panel, visitorId, load);
+      }
     };
+    bindAnalyticsControls(panel, key, load);
     await load();
   }
 

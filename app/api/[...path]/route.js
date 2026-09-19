@@ -194,7 +194,7 @@ function listParams(request) {
   const status = String(url.searchParams.get("status") || "").trim().toLowerCase();
   const sort = String(url.searchParams.get("sort") || "updatedAt");
   const dir = String(url.searchParams.get("dir") || "desc").toLowerCase() === "asc" ? "asc" : "desc";
-  const range = ["all", "today", "week", "month", "custom"].includes(String(url.searchParams.get("range") || "all")) ? String(url.searchParams.get("range") || "all") : "all";
+  const range = ["all", "today", "7d", "15d", "week", "month", "custom"].includes(String(url.searchParams.get("range") || "all")) ? String(url.searchParams.get("range") || "all") : "all";
   const from = String(url.searchParams.get("from") || "").trim();
   const to = String(url.searchParams.get("to") || "").trim();
   const timeField = String(url.searchParams.get("timeField") || "").trim();
@@ -221,6 +221,14 @@ function rangeBounds(params) {
   }
   const start = new Date(`${southAfricaToday}T00:00:00.000+02:00`);
   if (params.range === "today") return { from: start.getTime(), to: now.getTime() };
+  if (params.range === "7d") {
+    start.setUTCDate(start.getUTCDate() - 6);
+    return { from: start.getTime(), to: now.getTime() };
+  }
+  if (params.range === "15d") {
+    start.setUTCDate(start.getUTCDate() - 14);
+    return { from: start.getTime(), to: now.getTime() };
+  }
   if (params.range === "week") {
     const mondayOffset = (start.getUTCDay() + 6) % 7;
     start.setUTCDate(start.getUTCDate() - mondayOffset);
@@ -936,9 +944,28 @@ async function adminEnquiriesList(request) {
   let rows = items;
   const country = String(url.searchParams.get("country") || "").toLowerCase();
   const product = String(url.searchParams.get("product") || "").toLowerCase();
+  const source = String(url.searchParams.get("source") || "").toLowerCase();
   if (country) rows = rows.filter((item) => String(item.country || item.region || "").toLowerCase().includes(country));
   if (product) rows = rows.filter((item) => String(item.product || item.productRequired || "").toLowerCase().includes(product));
+  if (source) rows = rows.filter((item) => `${item.sourcePage || ""} ${item.utm?.source || ""} ${item.utm?.medium || ""}`.toLowerCase().includes(source));
   return response({ success: true, data: paginate(rows, request, { searchFields: ["id", "name", "company", "email", "phone", "whatsapp", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true }), requestId: token(8) });
+}
+
+async function adminEnquiryDetail(id) {
+  const items = await readJson("data/cms/enquiries.json");
+  const enquiry = (Array.isArray(items) ? items : []).find((item) => item.id === id);
+  if (!enquiry) return null;
+  let visitor = null;
+  if (enquiry.analyticsVisitorId) {
+    try {
+      visitor = await getAnalyticsVisitorJourney(enquiry.analyticsVisitorId);
+    } catch (error) {
+      // A saved customer enquiry remains available even if historic analytics
+      // storage is temporarily unavailable.
+      visitor = { unavailable: true };
+    }
+  }
+  return { enquiry, visitor };
 }
 
 async function adminUsers(request, session) {
@@ -1669,6 +1696,12 @@ async function handleAdmin(request, path) {
   }
 
   const enquiryMatch = path.match(/^admin\/enquiries\/([^/]+)$/);
+  if (enquiryMatch && request.method === "GET") {
+    const id = decodeURIComponent(enquiryMatch[1]);
+    const data = await adminEnquiryDetail(id);
+    if (!data) return response({ success: false, error: "Inquiry was not found", requestId: token(8) }, 404);
+    return response({ success: true, data, requestId: token(8) });
+  }
   if (enquiryMatch && request.method === "PUT") {
     const id = decodeURIComponent(enquiryMatch[1]);
     const body = await bodyJson(request);
