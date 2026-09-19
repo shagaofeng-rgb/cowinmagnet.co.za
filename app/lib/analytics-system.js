@@ -698,7 +698,7 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
   const offset = (page - 1) * pageSize;
   const [visitorResult, totalResult, sessionsResult, eventsResult] = await Promise.all([
     db.query(
-      `SELECT visitor_id AS "visitorId", MIN(occurred_at) AS "firstSeenAt", MAX(occurred_at) AS "lastSeenAt",
+      `SELECT e.visitor_id AS "visitorId", MIN(occurred_at) AS "firstSeenAt", MAX(occurred_at) AS "lastSeenAt",
         COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv, COUNT(DISTINCT session_id)::int AS "sessionCount",
         MAX(COALESCE(country, 'Unknown')) AS country, MAX(COALESCE(ip_masked, 'unknown')) AS ip,
         MAX(COALESCE(channel, 'Direct')) AS channel, MAX(COALESCE(source, 'Direct')) AS source,
