@@ -10,7 +10,7 @@ const root = /*turbopackIgnore: true*/ process.cwd();
 // Static HTML pages are generated as files, so their stylesheet URL needs a
 // deployment version. This prevents a cached legacy stylesheet from rendering
 // the current page structure as unstyled content after a release.
-const siteAssetVersion = "20260908-content-capacity";
+const siteAssetVersion = "20260919-info-mailbox";
 const privateRouteRoots = new Set([
   ".audit-backups",
   ".git",
@@ -40,7 +40,9 @@ const privateRootFiles = new Set([
 ]);
 
 function withVersionedStylesheet(html) {
-  let output = html.replace(/((?:\.\.\/|\/)?assets\/site\.css)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`);
+  let output = html
+    .replace(/((?:\.\.\/|\/)?assets\/site\.css)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`)
+    .replace(/((?:\.\.\/|\/)?assets\/site\.js)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`);
   if (!/class=["'][^"']*skip-link/i.test(output)) output = output.replace(/<body([^>]*)>/i, `<body$1><a class="skip-link" href="#main-content">Skip to main content</a>`);
   if (!/<main\b[^>]*\bid=/i.test(output)) output = output.replace(/<main\b/i, '<main id="main-content"');
   return output;
