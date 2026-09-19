@@ -411,7 +411,13 @@ function filterSql(searchParams, values) {
   where.push("COALESCE(e.metadata->>'legacy', 'false') <> 'true'");
   for (const [param, column] of [["country", "e.country"], ["channel", "e.channel"], ["device", "e.device"]]) {
     const value = clean(searchParams.get(param), 120);
-    if (value) where.push(`${column} = ${add(value)}`);
+    if (value && param === "channel") {
+      // Earlier valid records used lowercase / underscore channel labels. Treat
+      // those as the same business channel as current normalized events.
+      where.push(`LOWER(REPLACE(${column}, '_', ' ')) = LOWER(REPLACE(${add(value)}, '_', ' '))`);
+    } else if (value) {
+      where.push(`${column} = ${add(value)}`);
+    }
   }
   const page = clean(searchParams.get("pagePath"), 700);
   if (page) where.push(`e.page_path ILIKE ${add(`%${page}%`)}`);

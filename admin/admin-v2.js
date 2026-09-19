@@ -201,7 +201,7 @@
       <label>开始日期<input type="date" data-from value="${esc(current.from || "")}"></label>
       <label>结束日期<input type="date" data-to value="${esc(current.to || "")}"></label>
       <label>国家<input data-country placeholder="例如 ZA" value="${esc(current.country || "")}"></label>
-      <label>渠道<select data-channel><option value="" ${sourceSelected("")}>全部渠道</option><option value="Direct" ${sourceSelected("Direct")}>Direct</option><option value="Organic Search" ${sourceSelected("Organic Search")}>Organic Search</option><option value="Referral" ${sourceSelected("Referral")}>Referral</option><option value="Social" ${sourceSelected("Social")}>Social</option><option value="Campaign" ${sourceSelected("Campaign")}>Campaign</option></select></label>
+      <label>渠道<select data-channel><option value="" ${sourceSelected("")}>全部渠道</option><option value="Direct" ${sourceSelected("Direct")}>Direct</option><option value="Organic Search" ${sourceSelected("Organic Search")}>Organic Search</option><option value="Referral" ${sourceSelected("Referral")}>Referral</option><option value="Social" ${sourceSelected("Social")}>Social</option><option value="Paid" ${sourceSelected("Paid")}>Paid</option><option value="Email" ${sourceSelected("Email")}>Email</option><option value="WhatsApp" ${sourceSelected("WhatsApp")}>WhatsApp</option><option value="Other" ${sourceSelected("Other")}>Other</option></select></label>
       <label>设备<select data-device><option value="" ${deviceSelected("")}>全部设备</option><option value="Desktop" ${deviceSelected("Desktop")}>Desktop</option><option value="Mobile" ${deviceSelected("Mobile")}>Mobile</option><option value="Tablet" ${deviceSelected("Tablet")}>Tablet</option></select></label>
       <label>搜索<input data-visitor-q placeholder="访问路径 / 来源" value="${esc(current.q || "")}"></label>
       <label>每页<select data-page-size><option value="20" ${(current.pageSize || state.pageSize) === "20" || Number(current.pageSize || state.pageSize) === 20 ? "selected" : ""}>20 条</option><option value="50" ${Number(current.pageSize || state.pageSize) === 50 ? "selected" : ""}>50 条</option><option value="100" ${Number(current.pageSize || state.pageSize) === 100 ? "selected" : ""}>100 条</option></select></label>
@@ -290,7 +290,7 @@
       ]),
       `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><h2>访问趋势</h2><a class="text-link" href="?view=analytics">查看分析</a></div>${lineChart(report.timeline || [])}</section>
       <section class="section-card"><h2>来源渠道</h2>${miniBars(report.channels || [])}</section></div>`,
-      `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><h2>最近访客</h2><a class="text-link" href="?view=visitors">查看足迹</a></div>${visitorTable(report, false)}</section>
+      `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><h2>最近访客</h2><a class="text-link" href="?view=visitors">查看足迹</a></div>${visitorTable({ ...report, visitors: { ...(report.visitors || {}), items: (report.visitors?.items || []).slice(0, 8) } }, false)}</section>
       <section class="section-card"><h2>来源平台</h2>${miniBars((report.sources || []).map((item) => ({ name: item.source, count: item.pv })))}</section></div>`
       ].join("");
     };
@@ -367,6 +367,11 @@
     return `<div class="detail-grid">${items.map(([label, value]) => `<div><span>${esc(label)}</span><strong>${esc(value || "-")}</strong></div>`).join("")}</div>`;
   }
 
+  function detailSection(title, items, open = false) {
+    if (!items.length) return "";
+    return `<details class="detail-section" ${open ? "open" : ""}><summary>${esc(title)} <span>${items.length} 项</span></summary>${detailGrid(items)}</details>`;
+  }
+
   async function openEnquiryDetail(panel, enquiryId) {
     const detail = qs("[data-enquiry-detail]", panel);
     if (!detail) return;
@@ -376,13 +381,20 @@
       const data = await api(`/api/admin/enquiries/${encodeURIComponent(enquiryId)}`);
       const enquiry = data.enquiry || {};
       const visitor = data.visitor?.visitor;
-      const payload = Object.entries(enquiry.payload || {}).filter(([key]) => !["website", "analyticsClientId", "analyticsSessionId"].includes(key));
+      const payload = Object.entries(enquiry.payload || {})
+        .filter(([key, value]) => !["website", "analyticsClientId", "analyticsSessionId", "fileUpload", "duplicateKey"].includes(key) && (typeof value === "string" || typeof value === "number" || typeof value === "boolean"))
+        .filter(([, value]) => typeof value === "boolean" || (String(value || "").trim() && String(value).trim() !== "-"));
+      const technicalKeys = /^(product|productRequired|capacity|material|belt|tramp|cleaning|voltage|frequency|suspension)/i;
+      const projectKeys = /^(project|installation|siteType|region|coastal|temperature|humidity|altitude|dust|operating)/i;
+      const technicalPayload = payload.filter(([key]) => technicalKeys.test(key));
+      const projectPayload = payload.filter(([key]) => projectKeys.test(key));
+      const otherPayload = payload.filter(([key]) => !technicalKeys.test(key) && !projectKeys.test(key));
       const notes = enquiry.internalNotes || [];
       detail.innerHTML = `<div class="card-heading"><div><h2>${esc(enquiry.name || "客户询盘")}</h2><p>${esc(enquiry.id || "")} · ${formatTime(enquiry.submissionTime)}</p></div><button class="text-button" data-close-enquiry>收起</button></div>
         <h3>客户与询盘</h3>${detailGrid([["公司", enquiry.company], ["邮箱", enquiry.email], ["电话 / WhatsApp", enquiry.phone || enquiry.whatsapp], ["国家 / 地区", enquiry.country || enquiry.region], ["意向产品", enquiry.product], ["行业", enquiry.industry], ["处理状态", enquiry.status], ["提交页面", enquiry.sourcePage]])}
         <h3>来源归因</h3>${visitor ? detailGrid([["首次来源", `${visitor.firstChannel || "Direct"} / ${visitor.firstSource || "Direct"}`], ["最近来源", `${visitor.lastChannel || visitor.channel || "Direct"} / ${visitor.lastSource || visitor.source || "Direct"}`], ["首次访问", formatTime(visitor.firstSeenAt)], ["最近访问", formatTime(visitor.lastSeenAt)], ["访客编号", shortVisitorId(visitor.visitorId)]]) : '<p class="empty-copy">该历史询盘没有可关联的访客访问记录。</p>'}
         ${visitor ? `<div class="actions"><button class="button secondary" data-open-enquiry-visitor="${esc(visitor.visitorId)}">查看完整浏览路径</button></div>` : ""}
-        <h3>客户填写内容</h3>${payload.length ? detailGrid(payload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)])) : '<p class="empty-copy">没有额外填写字段。</p>'}
+        <h3>客户填写内容</h3>${payload.length ? `${detailSection("技术与产品要求", technicalPayload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)]), true)}${detailSection("项目环境与安装信息", projectPayload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)]))}${detailSection("其他填写内容", otherPayload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)]))}` : '<p class="empty-copy">没有额外填写字段。</p>'}
         <h3>跟进记录</h3>${notes.length ? table(notes, [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "操作人", value: "user" }, { label: "记录", value: "note" }]) : '<p class="empty-copy">暂无跟进记录。</p>'}`;
       qs("[data-close-enquiry]", detail)?.addEventListener("click", () => { detail.hidden = true; });
       qs("[data-open-enquiry-visitor]", detail)?.addEventListener("click", (event) => {
