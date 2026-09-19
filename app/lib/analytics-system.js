@@ -230,6 +230,15 @@ async function ensureAnalyticsSchema() {
       CREATE INDEX IF NOT EXISTS analytics_events_visitor_idx ON analytics_events (visitor_id, occurred_at DESC);
       CREATE INDEX IF NOT EXISTS analytics_events_filters_idx ON analytics_events (is_bot, is_internal, is_test, country, channel, occurred_at DESC);
       CREATE INDEX IF NOT EXISTS analytics_events_page_idx ON analytics_events (page_path, occurred_at DESC);
+      CREATE INDEX IF NOT EXISTS analytics_events_business_time_idx ON analytics_events (occurred_at DESC)
+        WHERE is_bot = FALSE AND is_internal = FALSE AND is_test = FALSE
+          AND COALESCE(metadata->>'legacy', 'false') <> 'true';
+      CREATE INDEX IF NOT EXISTS analytics_events_business_visitor_idx ON analytics_events (visitor_id, occurred_at DESC)
+        WHERE is_bot = FALSE AND is_internal = FALSE AND is_test = FALSE
+          AND COALESCE(metadata->>'legacy', 'false') <> 'true';
+      CREATE INDEX IF NOT EXISTS analytics_events_business_source_idx ON analytics_events (source, channel, occurred_at DESC)
+        WHERE is_bot = FALSE AND is_internal = FALSE AND is_test = FALSE
+          AND COALESCE(metadata->>'legacy', 'false') <> 'true';
 
       CREATE TABLE IF NOT EXISTS analytics_visitors (
         visitor_id TEXT PRIMARY KEY,
@@ -393,7 +402,11 @@ function filterSql(searchParams, values) {
   const range = rangeClause(searchParams, values);
   const where = [range.clause];
   const add = (value) => { values.push(value); return `$${values.length}`; };
-  if (searchParams.get("includeExcluded") !== "1") where.push("e.is_bot = FALSE AND e.is_internal = FALSE AND e.is_test = FALSE");
+  // Business reporting never mixes operational, preview, bot, or imported seed
+  // events into client-facing figures. Those records remain retained for audit,
+  // but are deliberately not exposed through this reporting surface.
+  where.push("e.is_bot = FALSE AND e.is_internal = FALSE AND e.is_test = FALSE");
+  where.push("COALESCE(e.metadata->>'legacy', 'false') <> 'true'");
   for (const [param, column] of [["country", "e.country"], ["channel", "e.channel"], ["device", "e.device"]]) {
     const value = clean(searchParams.get(param), 120);
     if (value) where.push(`${column} = ${add(value)}`);
@@ -541,26 +554,29 @@ export async function getAnalyticsReport(url) {
   const page = Math.max(1, Math.min(100000, Number(searchParams.get("page") || 1)));
   const pageSize = Math.max(20, Math.min(100, Number(searchParams.get("pageSize") || 20)));
   const offset = (page - 1) * pageSize;
+  const includeVisitors = searchParams.get("includeVisitors") !== "0";
+  const visitorsOnly = searchParams.get("scope") === "visitors";
+  const emptyResult = () => Promise.resolve({ rows: [] });
 
-  const [summaryResult, countriesResult, channelsResult, pagesResult, devicesResult, timelineResult, visitorCountResult] = await Promise.all([
-    db.query(`SELECT
+  const [summaryResult, countriesResult, channelsResult, sourcesResult, pagesResult, devicesResult, timelineResult, visitorCountResult] = await Promise.all([
+    visitorsOnly ? emptyResult() : db.query(`SELECT
       COUNT(*) FILTER (WHERE e.event_type = 'pageview')::int AS pv,
       COUNT(DISTINCT e.visitor_id)::int AS uv,
       COUNT(DISTINCT e.session_id)::int AS sessions,
       COUNT(*) FILTER (WHERE e.event_type = 'quote_submit')::int AS enquiries,
-      COUNT(*) FILTER (WHERE e.event_type = 'whatsapp_click')::int AS whatsapp_clicks,
-      COUNT(*) FILTER (WHERE e.is_bot OR e.is_internal OR e.is_test)::int AS excluded
+      COUNT(*) FILTER (WHERE e.event_type = 'whatsapp_click')::int AS whatsapp_clicks
       ${source}`, values),
-    db.query(`SELECT COALESCE(e.country, 'Unknown') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    db.query(`SELECT COALESCE(e.channel, 'Direct') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    db.query(`SELECT e.page_path AS page, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 20`, values),
-    db.query(`SELECT CONCAT(COALESCE(e.device, 'Desktop'), ' / ', COALESCE(e.browser, 'Browser')) AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    db.query(`SELECT to_char(date_trunc('hour', e.occurred_at AT TIME ZONE '${TIMEZONE}'), 'YYYY-MM-DD HH24:00') AS bucket, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 1 ASC LIMIT 240`, values),
-    db.query(`SELECT COUNT(DISTINCT e.visitor_id)::int AS total ${source}`, values)
+    visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(e.country, 'Unknown') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
+    visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(e.channel, 'Direct') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
+    visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(NULLIF(e.source, ''), NULLIF(e.referrer_host, ''), 'Direct') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
+    visitorsOnly ? emptyResult() : db.query(`SELECT e.page_path AS page, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 20`, values),
+    visitorsOnly ? emptyResult() : db.query(`SELECT CONCAT(COALESCE(e.device, 'Desktop'), ' / ', COALESCE(e.browser, 'Browser')) AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
+    visitorsOnly ? emptyResult() : db.query(`SELECT to_char(date_trunc('hour', e.occurred_at AT TIME ZONE '${TIMEZONE}'), 'YYYY-MM-DD HH24:00') AS bucket, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 1 ASC LIMIT 240`, values),
+    includeVisitors ? db.query(`SELECT COUNT(DISTINCT e.visitor_id)::int AS total ${source}`, values) : Promise.resolve({ rows: [{ total: 0 }] })
   ]);
 
   const visitorValues = [...values, pageSize, offset];
-  const visitorsResult = await db.query(
+  const visitorsResult = includeVisitors ? await db.query(
     `SELECT
       e.visitor_id AS "visitorId",
       MAX(e.occurred_at) AS "lastSeenAt",
@@ -580,7 +596,7 @@ export async function getAnalyticsReport(url) {
     ORDER BY MAX(e.occurred_at) DESC
     LIMIT $${visitorValues.length - 1} OFFSET $${visitorValues.length}`,
     visitorValues
-  );
+  ) : { rows: [] };
 
   const summary = summaryResult.rows[0] || {};
   const pv = Number(summary.pv || 0);
@@ -596,17 +612,16 @@ export async function getAnalyticsReport(url) {
       channel: searchParams.get("channel") || "",
       device: searchParams.get("device") || "",
       visitorType: searchParams.get("visitorType") || "",
-      includeExcluded: searchParams.get("includeExcluded") === "1"
+      includeVisitors
     },
     pv,
     uv: Number(summary.uv || 0),
     sessions: Number(summary.sessions || 0),
     enquiries,
     whatsappClicks: Number(summary.whatsapp_clicks || 0),
-    excluded: Number(summary.excluded || 0),
     conversionRate: pv ? Number(((enquiries / pv) * 100).toFixed(2)) : 0,
     countries: countriesResult.rows,
-    sources: channelsResult.rows.map((item) => ({ source: item.name, pv: Number(item.count || 0), uv: 0 })),
+    sources: sourcesResult.rows.map((item) => ({ source: item.name, pv: Number(item.count || 0), uv: 0 })),
     channels: channelsResult.rows,
     pages: pagesResult.rows,
     deviceBrowsers: devicesResult.rows.map((item) => {
@@ -683,10 +698,11 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
         MAX(COALESCE(v.lead_status, 'Anonymous')) AS "leadStatus"
        FROM analytics_events e LEFT JOIN analytics_visitors v ON v.visitor_id = e.visitor_id
        WHERE e.visitor_id = $1 AND NOT (e.is_bot OR e.is_internal OR e.is_test)
+         AND COALESCE(e.metadata->>'legacy', 'false') <> 'true'
        GROUP BY e.visitor_id`,
       [normalizedId]
     ),
-    db.query(`SELECT COUNT(*)::int AS total FROM analytics_events WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)`, [normalizedId]),
+    db.query(`SELECT COUNT(*)::int AS total FROM analytics_events WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test) AND COALESCE(metadata->>'legacy', 'false') <> 'true'`, [normalizedId]),
     db.query(
       `SELECT session_id AS "sessionId", MIN(occurred_at) AS "startedAt", MAX(occurred_at) AS "endedAt",
         COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv,
@@ -695,7 +711,7 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
         (array_agg(COALESCE(channel, 'Direct') ORDER BY occurred_at ASC))[1] AS channel,
         (array_agg(COALESCE(source, 'Direct') ORDER BY occurred_at ASC))[1] AS source
        FROM analytics_events
-       WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)
+       WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test) AND COALESCE(metadata->>'legacy', 'false') <> 'true'
        GROUP BY session_id ORDER BY MIN(occurred_at) DESC LIMIT 100`,
       [normalizedId]
     ),
@@ -705,7 +721,7 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
         COALESCE(source, 'Direct') AS "utmSource", COALESCE(medium, '') AS "utmMedium",
         COALESCE(campaign, '') AS "utmCampaign"
        FROM analytics_events
-       WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test)
+       WHERE visitor_id = $1 AND NOT (is_bot OR is_internal OR is_test) AND COALESCE(metadata->>'legacy', 'false') <> 'true'
        ORDER BY occurred_at DESC LIMIT $2 OFFSET $3`,
       [normalizedId, pageSize, offset]
     )

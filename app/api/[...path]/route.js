@@ -9,7 +9,7 @@ import { readDataJson, writeDataJson, withDataLock, isPublishedBlogArticle, isPu
 import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/google-seo-sync.js";
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 import { newsAutomationStatus, queueNewsSource, reviewNewsDraft, runNewsAutomation } from "../../lib/news-automation.js";
-import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, getAnalyticsVisitorJourney, migrateLegacyAnalyticsEvents, recordAnalyticsEvent, saveAnalyticsExclusionRule, updateAnalyticsVisitor } from "../../lib/analytics-system.js";
+import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, getAnalyticsVisitorJourney, recordAnalyticsEvent, saveAnalyticsExclusionRule, updateAnalyticsVisitor } from "../../lib/analytics-system.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -684,31 +684,9 @@ async function audit(user, action, object, objectId, summary) {
 }
 
 async function analyticsSummary(request) {
-  const legacyEvents = await readJson("data/cms/analytics-events.json");
-  try {
-    await migrateLegacyAnalyticsEvents(Array.isArray(legacyEvents) ? legacyEvents : []);
-    return await getAnalyticsReport(request?.url || "https://cowinmagnet.co.za/api/admin/analytics?range=7d");
-  } catch (error) {
-    return {
-      pv: 0,
-      uv: 0,
-      sessions: 0,
-      enquiries: 0,
-      whatsappClicks: 0,
-      excluded: 0,
-      conversionRate: 0,
-      countries: [],
-      pages: [],
-      sources: [],
-      channels: [],
-      deviceBrowsers: [],
-      timeline: [],
-      visitors: { items: [], page: 1, pageSize: 20, total: 0, totalPages: 1 },
-      lastSync: "",
-      storageMode: "unconfigured",
-      storageError: error?.message || String(error)
-    };
-  }
+  // Historical fixture imports are not part of the enterprise reporting path.
+  // Returning an error rather than invented zeroes keeps the interface honest.
+  return getAnalyticsReport(request?.url || "https://cowinmagnet.co.za/api/admin/analytics?range=7d");
 }
 
 function productUrl(product) {
