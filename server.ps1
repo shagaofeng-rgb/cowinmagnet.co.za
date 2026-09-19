@@ -31,7 +31,7 @@ Ensure-JsonFile "data\cms\settings.json" (@{
   brandName = "Cowinmagnet"
   globalWebsite = "https://www.cowinmagnet.com"
   africaWebsite = "http://localhost:$port/en-za/"
-  email = "davidsha@cowinmagnet.com"
+  email = "info@cowinmagnet.com"
   whatsapp = "+86 156 6513 5205"
   defaultLanguage = "en-za"
   supportedLanguages = @("en-za","af-za","zu-za","xh-za","st-za","tn-za")

@@ -150,7 +150,7 @@
   if (header && !document.querySelector(".utility-strip")) {
     const utility = document.createElement("aside");
     utility.className = "utility-strip";
-    utility.innerHTML = `<span>Magnetic separation support for African industrial projects</span><span><a href="mailto:davidsha@cowinmagnet.com">davidsha@cowinmagnet.com</a><a href="https://wa.me/8615665135205" target="_blank" rel="noopener noreferrer nofollow">WhatsApp +86 156 6513 5205</a></span>`;
+    utility.innerHTML = `<span>Magnetic separation support for African industrial projects</span><span><a href="mailto:info@cowinmagnet.com">info@cowinmagnet.com</a><a href="https://wa.me/8615665135205" target="_blank" rel="noopener noreferrer nofollow">WhatsApp +86 156 6513 5205</a></span>`;
     header.before(utility);
   }
   const mobileButton = document.querySelector("[data-mobile-toggle]");

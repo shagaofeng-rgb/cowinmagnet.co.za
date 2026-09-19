@@ -56,7 +56,7 @@ function pageShell({ title, description, canonical, body, schema = [], feed = tr
   <footer class="footer">
     <section class="footer-main simple">
       <div class="footer-brand"><a class="brand" href="/en-za/"><img class="brand-logo" src="/assets/images/cowinmagnet-logo.png" alt="Cowinmagnet logo"><span><strong>Cowinmagnet</strong><small>South Africa</small></span></a><p>Magnetic separation equipment support for African mining and industrial projects.</p></div>
-      <div class="footer-contact"><a href="mailto:davidsha@cowinmagnet.com">davidsha@cowinmagnet.com</a><a href="https://wa.me/8615665135205">WhatsApp: +86 156 6513 5205</a><a class="button primary" href="/en-za/request-a-quote/">Request a Quote</a></div>
+      <div class="footer-contact"><a href="mailto:info@cowinmagnet.com">info@cowinmagnet.com</a><a href="https://wa.me/8615665135205">WhatsApp: +86 156 6513 5205</a><a class="button primary" href="/en-za/request-a-quote/">Request a Quote</a></div>
     </section>
   </footer>
   <script src="/assets/site.js"></script>

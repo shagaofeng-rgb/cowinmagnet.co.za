@@ -19,8 +19,9 @@ const root = process.cwd();
 const dataRoot = join(root, "data");
 const writableDataRoot = join(tmpdir(), "cowinmagnet-africa-data");
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
-const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "davidsha@cowinmagnet.com").trim().toLowerCase();
+const adminEmail = (process.env.ADMIN_EMAIL || process.env.ADMIN_USER || "info@cowinmagnet.com").trim().toLowerCase();
 const adminUser = process.env.ADMIN_USER || adminEmail;
+const enquiryNotificationRecipient = (process.env.INQUIRY_NOTIFICATION_TO || "info@cowinmagnet.com").trim().toLowerCase();
 
 const { Pool } = pg;
 let pool;
@@ -140,7 +141,7 @@ const jsonFiles = new Map([
     brandName: "Cowinmagnet",
     globalWebsite: "https://www.cowinmagnet.com",
     africaWebsite: "https://cowinmagnet.co.za/en-za/",
-    email: "davidsha@cowinmagnet.com",
+    email: "info@cowinmagnet.com",
     whatsapp: "+86 156 6513 5205",
     defaultLanguage: "en-za",
     supportedLanguages: ["en-za", "af-za", "zu-za", "xh-za", "st-za", "tn-za"],
@@ -395,6 +396,46 @@ function pluginResponse(code, msg, status = 200) {
 function operationalLog(event, fields = {}) {
   // Keep production logs useful for incident review without exposing request bodies or secrets.
   console.info(JSON.stringify({ event, at: new Date().toISOString(), ...fields }));
+}
+
+function escapeEmailHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function enquiryEmailBody(record) {
+  const field = (label, value) => `<tr><th align="left" style="padding:6px 14px 6px 0;vertical-align:top">${escapeEmailHtml(label)}</th><td style="padding:6px 0">${escapeEmailHtml(value || "—")}</td></tr>`;
+  return `<!doctype html><html><body style="font-family:Arial,sans-serif;color:#172033"><h1 style="font-size:20px">New Cowinmagnet.co.za website inquiry</h1><p>This notification was submitted through <strong>cowinmagnet.co.za</strong>.</p><table cellpadding="0" cellspacing="0">${field("Reference", record.id)}${field("Submitted", record.submissionTime)}${field("Name", record.name)}${field("Company", record.company)}${field("Email", record.email)}${field("WhatsApp", record.whatsapp)}${field("Country", record.country)}${field("Product", record.product)}${field("Industry", record.industry)}${field("Source page", record.sourcePage)}${field("Message", record.payload?.projectDescription || record.payload?.message || record.payload?.productRequired)}</table></body></html>`;
+}
+
+async function sendEnquiryEmailNotification(record) {
+  const apiKey = String(process.env.RESEND_API_KEY || "").trim();
+  const from = String(process.env.INQUIRY_NOTIFICATION_FROM || "").trim();
+  if (!apiKey || !from) {
+    return { status: "not_configured", detail: "RESEND_API_KEY or INQUIRY_NOTIFICATION_FROM is missing" };
+  }
+  try {
+    const result = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from,
+        to: [enquiryNotificationRecipient],
+        reply_to: record.email,
+        subject: `[cowinmagnet.co.za] New website inquiry ${record.id}`,
+        html: enquiryEmailBody(record)
+      })
+    });
+    if (!result.ok) return { status: "failed", detail: `email provider returned ${result.status}` };
+    const receipt = await result.json().catch(() => ({}));
+    return { status: "sent", providerId: String(receipt?.id || "") };
+  } catch (error) {
+    return { status: "failed", detail: error?.message || "email provider request failed" };
+  }
 }
 
 async function bodyFields(request) {
@@ -1299,6 +1340,18 @@ async function handleEnquiries(request) {
   if (!persisted.some((item) => item.id === id)) {
     throw new Error("Inquiry could not be verified after storage");
   }
+  const notification = await sendEnquiryEmailNotification(record);
+  record.notification = {
+    channel: "email",
+    recipient: enquiryNotificationRecipient,
+    status: notification.status,
+    providerId: notification.providerId || "",
+    attemptedAt: new Date().toISOString()
+  };
+  if (notification.status !== "sent") {
+    operationalLog("enquiry_email_notification_not_sent", { enquiryId: id, status: notification.status, detail: notification.detail || "" });
+  }
+  await writeJson("data/cms/enquiries.json", items);
   await audit("public-form", "Enquiry Created", "Enquiry", id, `New website inquiry saved from ${record.sourcePage}`);
   // A successful enquiry is a genuine conversion. Record it separately from page views,
   // but never let analytics availability change the outcome of the customer submission.
