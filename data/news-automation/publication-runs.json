@@ -1,5 +1,132 @@
 [
   {
+    "id": "run_f669a2597b8cd6bb",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-19T15:47:54.695Z",
+    "finishedAt": "2026-09-19T15:47:54.836Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19",
+    "sourceUrls": [
+      "https://eskom.co.za/eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-outperform-target-and-load-reduction-declines-to-just-3-4-of-customers",
+      "https://miningweekly.com/article/scale-up-hydrogen-global-council-urges-amid-growing-energy-security-concerns-2026-09-18"
+    ],
+    "qa": {
+      "wordCount": 1084,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.208,
+      "bodySimilarity": 0.541,
+      "strongestBodyMatch": "china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08"
+    },
+    "pairKey": "g3:6ca8a716b2879f99823f",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:6ca8a716b2879f99823f",
+        "coherent": true,
+        "variant": 0,
+        "title": "EAF reaches 67.96%, diesel expenditure falls by R4.8 billion, emissions…: Energy, Reliability and Separator Selection Decisions",
+        "sourceUrls": [
+          "https://eskom.co.za/eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-outperform-target-and-load-reduction-declines-to-just-3-4-of-customers",
+          "https://miningweekly.com/article/scale-up-hydrogen-global-council-urges-amid-growing-energy-security-concerns-2026-09-18"
+        ],
+        "qa": {
+          "wordCount": 1080,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.208,
+          "bodySimilarity": 0.759,
+          "strongestBodyMatch": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06"
+        },
+        "failures": [
+          "Similarity threshold against the last 180 days of published content was exceeded."
+        ]
+      },
+      {
+        "pairKey": "g3:6ca8a716b2879f99823f",
+        "coherent": true,
+        "variant": 1,
+        "title": "EAF reaches 67.96%, diesel expenditure falls by R4.8 billion, emissions…: Energy, Reliability and Separator Selection Decisions",
+        "sourceUrls": [
+          "https://eskom.co.za/eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-outperform-target-and-load-reduction-declines-to-just-3-4-of-customers",
+          "https://miningweekly.com/article/scale-up-hydrogen-global-council-urges-amid-growing-energy-security-concerns-2026-09-18"
+        ],
+        "qa": {
+          "wordCount": 1084,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.208,
+          "bodySimilarity": 0.541,
+          "strongestBodyMatch": "china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_d53d4ddcaa8529a2",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-19T15:47:43.345Z",
+    "finishedAt": "2026-09-19T15:47:54.530Z",
+    "result": "ingested",
+    "discovered": 67,
+    "added": 1,
+    "candidates": 363,
+    "poolChanged": true,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 2
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 6
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 71
+      }
+    ]
+  },
+  {
     "id": "ingest_274b2f626d1441e5",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",
