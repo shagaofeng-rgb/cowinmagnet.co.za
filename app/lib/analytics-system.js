@@ -698,15 +698,15 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
   const offset = (page - 1) * pageSize;
   const [visitorResult, totalResult, sessionsResult, eventsResult] = await Promise.all([
     db.query(
-      `SELECT e.visitor_id AS "visitorId", MIN(occurred_at) AS "firstSeenAt", MAX(occurred_at) AS "lastSeenAt",
-        COUNT(*) FILTER (WHERE event_type = 'pageview')::int AS pv, COUNT(DISTINCT session_id)::int AS "sessionCount",
-        MAX(COALESCE(country, 'Unknown')) AS country, MAX(COALESCE(ip_masked, 'unknown')) AS ip,
-        MAX(COALESCE(channel, 'Direct')) AS channel, MAX(COALESCE(source, 'Direct')) AS source,
-        (array_agg(COALESCE(channel, 'Direct') ORDER BY occurred_at ASC))[1] AS "firstChannel",
-        (array_agg(COALESCE(source, 'Direct') ORDER BY occurred_at ASC))[1] AS "firstSource",
-        (array_agg(COALESCE(channel, 'Direct') ORDER BY occurred_at DESC))[1] AS "lastChannel",
-        (array_agg(COALESCE(source, 'Direct') ORDER BY occurred_at DESC))[1] AS "lastSource",
-        MAX(COALESCE(device, 'Desktop')) AS device, MAX(COALESCE(browser, 'Browser')) AS browser,
+      `SELECT e.visitor_id AS "visitorId", MIN(e.occurred_at) AS "firstSeenAt", MAX(e.occurred_at) AS "lastSeenAt",
+        COUNT(*) FILTER (WHERE e.event_type = 'pageview')::int AS pv, COUNT(DISTINCT e.session_id)::int AS "sessionCount",
+        MAX(COALESCE(e.country, 'Unknown')) AS country, MAX(COALESCE(e.ip_masked, 'unknown')) AS ip,
+        MAX(COALESCE(e.channel, 'Direct')) AS channel, MAX(COALESCE(e.source, 'Direct')) AS source,
+        (array_agg(COALESCE(e.channel, 'Direct') ORDER BY e.occurred_at ASC))[1] AS "firstChannel",
+        (array_agg(COALESCE(e.source, 'Direct') ORDER BY e.occurred_at ASC))[1] AS "firstSource",
+        (array_agg(COALESCE(e.channel, 'Direct') ORDER BY e.occurred_at DESC))[1] AS "lastChannel",
+        (array_agg(COALESCE(e.source, 'Direct') ORDER BY e.occurred_at DESC))[1] AS "lastSource",
+        MAX(COALESCE(e.device, 'Desktop')) AS device, MAX(COALESCE(e.browser, 'Browser')) AS browser,
         MAX(COALESCE(v.lead_status, 'Anonymous')) AS "leadStatus"
        FROM analytics_events e LEFT JOIN analytics_visitors v ON v.visitor_id = e.visitor_id
        WHERE e.visitor_id = $1 AND NOT (e.is_bot OR e.is_internal OR e.is_test)
