@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-21T18:10:02.362Z",
     "finishedAt": "2026-09-21T18:10:02.548Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "sanankoro-gold-project-nears-construction-phase-cora-gold-says-material-handling-decisions-2026-09-21",
     "sourceUrls": [
       "https://miningweekly.com/article/sanankoro-gold-project-nears-construction-phase-cora-gold-says-2026-09-21",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-21T18:10:56.418Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-21T18:10:56.418Z"
   },
   {
     "id": "ingest_4a8a037e75641fc8",
