@@ -432,10 +432,27 @@ function filterSql(searchParams, values) {
   return { where: where.join(" AND "), range: range.range };
 }
 
+function channelLabelSql(alias = "e") {
+  return `CASE LOWER(REPLACE(COALESCE(${alias}.channel, 'direct'), '_', ' '))
+    WHEN 'direct' THEN 'Direct'
+    WHEN 'organic search' THEN 'Organic Search'
+    WHEN 'organic' THEN 'Organic Search'
+    WHEN 'seo' THEN 'Organic Search'
+    WHEN 'referral' THEN 'Referral'
+    WHEN 'social' THEN 'Social'
+    WHEN 'paid social' THEN 'Social'
+    WHEN 'paid' THEN 'Paid'
+    WHEN 'email' THEN 'Email'
+    WHEN 'whatsapp' THEN 'WhatsApp'
+    ELSE 'Other'
+  END`;
+}
+
 function sourceLabelSql(alias = "e") {
+  const channel = channelLabelSql(alias);
   return `CASE
-    WHEN COALESCE(${alias}.source, 'Direct') = 'Direct' AND COALESCE(${alias}.channel, 'Direct') <> 'Direct'
-      THEN COALESCE(${alias}.channel, 'Other') || ' (unattributed)'
+    WHEN COALESCE(${alias}.source, 'Direct') = 'Direct' AND ${channel} <> 'Direct'
+      THEN ${channel} || ' (unattributed)'
     ELSE COALESCE(NULLIF(${alias}.source, ''), NULLIF(${alias}.referrer_host, ''), 'Direct')
   END`;
 }
@@ -601,6 +618,7 @@ export async function getAnalyticsReport(url) {
   const offset = (page - 1) * pageSize;
   const includeVisitors = searchParams.get("includeVisitors") !== "0";
   const visitorsOnly = searchParams.get("scope") === "visitors";
+  const channelLabel = channelLabelSql("e");
   const sourceLabel = sourceLabelSql("e");
   const emptyResult = () => Promise.resolve({ rows: [] });
 
@@ -613,7 +631,7 @@ export async function getAnalyticsReport(url) {
       COUNT(*) FILTER (WHERE e.event_type = 'whatsapp_click')::int AS whatsapp_clicks
       ${source}`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(e.country, 'Unknown') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(e.channel, 'Direct') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
+    visitorsOnly ? emptyResult() : db.query(`SELECT ${channelLabel} AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT ${sourceLabel} AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT e.page_path AS page, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 20`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT CONCAT(COALESCE(e.device, 'Desktop'), ' / ', COALESCE(e.browser, 'Browser')) AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
@@ -629,7 +647,7 @@ export async function getAnalyticsReport(url) {
       MIN(e.occurred_at) AS "firstSeenAt",
       MAX(COALESCE(e.country, 'Unknown')) AS country,
       MAX(COALESCE(e.ip_masked, 'unknown')) AS ip,
-      MAX(COALESCE(e.channel, 'Direct')) AS channel,
+      MAX(${channelLabel}) AS channel,
       MAX(${sourceLabel}) AS source,
       MAX(COALESCE(e.device, 'Desktop')) AS device,
       MAX(COALESCE(e.browser, 'Browser')) AS browser,
