@@ -571,7 +571,7 @@
   async function sync() {
     const key = "syncJobs";
     const panel = qs("[data-panel='sync']");
-    panel.innerHTML = card("\u6570\u636e\u6e90", `<div class="actions"><button class="button primary" data-sync-gsc>\u540c\u6b65 Google SEO</button></div>${label.loading}<div data-sync-sources></div>`) + card("\u6700\u8fd1\u4efb\u52a1", `${toolbar(key)}<div data-sync-jobs>${label.loading}</div>`);
+    panel.innerHTML = card("\u6570\u636e\u6e90", `<div class="actions"><button class="button primary" data-sync-gsc>\u540c\u6b65 Google SEO</button></div><div data-sync-sources>${label.loading}</div>`) + card("\u6700\u8fd1\u4efb\u52a1", `${toolbar(key)}<div data-sync-jobs>${label.loading}</div>`);
     const load = async () => {
       const data = await api(`/api/admin/sync?${query(key)}`);
       qs("[data-sync-sources]", panel).innerHTML = table(data.sources || [], [{ label: "\u6570\u636e\u6e90", value: "name" }, { label: "\u914d\u7f6e", value: (row) => row.configured ? "\u5df2\u914d\u7f6e" : "\u672a\u914d\u7f6e" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u6700\u8fd1\u540c\u6b65", value: "lastSync" }]);
