@@ -32,7 +32,8 @@
     dashboard: ["经营概览", "经营概览"], categories: ["产品分类", "产品分类"], products: ["产品管理", "产品管理"],
     news: ["新闻管理", "新闻与博客"], forms: ["客户线索", "客户线索"], analytics: ["数据分析", "数据分析"],
     visitors: ["客户足迹", "客户足迹"], seo: ["SEO 数据", "SEO 数据"], media: ["媒体库", "媒体库"],
-    users: ["账号与权限", "账号与权限"], settings: ["站点设置", "站点设置"]
+    users: ["账号与权限", "账号与权限"], sync: ["数据同步", "数据同步"],
+    logs: ["操作日志", "操作日志"], settings: ["站点设置", "站点设置"]
   };
 
   const qs = (selector, root = document) => root.querySelector(selector);
@@ -100,8 +101,7 @@
       <input data-q placeholder="关键词 / 名称 / URL">
       ${filters}
       <select data-range aria-label="时间范围"><option value="all" ${range === "all" ? "selected" : ""}>全部时间</option><option value="today" ${range === "today" ? "selected" : ""}>今天</option><option value="7d" ${range === "7d" ? "selected" : ""}>近 7 天</option><option value="15d" ${range === "15d" ? "selected" : ""}>近 15 天</option><option value="week" ${range === "week" ? "selected" : ""}>本周</option><option value="month" ${range === "month" ? "selected" : ""}>本月</option><option value="custom" ${range === "custom" ? "selected" : ""}>自定义</option></select>
-      <input type="date" data-from aria-label="开始日期">
-      <input type="date" data-to aria-label="结束日期">
+      <span class="range-dates" data-range-dates hidden><input type="date" data-from aria-label="开始日期"><input type="date" data-to aria-label="结束日期"></span>
       <select data-page-size aria-label="每页显示数量"><option value="20">20 / 页</option><option value="50">50 / 页</option><option value="100">100 / 页</option></select>
       <button class="button primary" data-search>${label.search}</button>
       <button class="button secondary" data-reset>${label.reset}</button>
@@ -114,10 +114,16 @@
     params.set("page", state.page[key] || 1);
     params.set("pageSize", bar?.querySelector("[data-page-size]")?.value || state.pageSize);
     params.set("range", bar?.querySelector("[data-range]")?.value || "all");
-    [["q", "[data-q]"], ["status", "[data-status]"], ["from", "[data-from]"], ["to", "[data-to]"]].forEach(([name, selector]) => {
+    [["q", "[data-q]"], ["status", "[data-status]"]].forEach(([name, selector]) => {
       const value = bar?.querySelector(selector)?.value?.trim();
       if (value) params.set(name, value);
     });
+    if (bar?.querySelector("[data-range]")?.value === "custom") {
+      [["from", "[data-from]"], ["to", "[data-to]"]].forEach(([name, selector]) => {
+        const value = bar.querySelector(selector)?.value?.trim();
+        if (value) params.set(name, value);
+      });
+    }
     qsa("[data-query]", bar).forEach((node) => {
       const value = node.value?.trim();
       if (value && node.dataset.query) params.set(node.dataset.query, value);
@@ -125,7 +131,16 @@
     return params.toString();
   }
 
+  function syncRangeDateVisibility(root) {
+    if (!root) return;
+    const isCustom = root.querySelector("[data-range]")?.value === "custom";
+    qsa("[data-range-dates]", root).forEach((node) => { node.hidden = !isCustom; });
+  }
+
   function bindToolbar(panel, key, load) {
+    const root = qs(`[data-toolbar="${key}"]`, panel);
+    syncRangeDateVisibility(root);
+    qs("[data-range]", root)?.addEventListener("change", () => syncRangeDateVisibility(root));
     qs("[data-search]", panel)?.addEventListener("click", () => { state.page[key] = 1; load(); });
     qs("[data-page-size]", panel)?.addEventListener("change", (event) => { state.pageSize = Number(event.target.value) || 20; state.page[key] = 1; load(); });
     qs("[data-reset]", panel)?.addEventListener("click", () => {
@@ -135,6 +150,7 @@
         qs("[data-range]", toolbarNode).value = "all";
         qs("[data-page-size]", toolbarNode).value = "20";
       }
+      syncRangeDateVisibility(toolbarNode);
       state.page[key] = 1;
       load();
     });
@@ -198,8 +214,7 @@
     const deviceSelected = (value) => String(current.device || "") === value ? "selected" : "";
     return `<div class="analytics-toolbar" data-analytics-toolbar="${key}">
       <label>日期范围<select data-range><option value="all" ${selected("all")}>全部时间</option><option value="today" ${selected("today")}>今天</option><option value="7d" ${selected("7d")}>近 7 天</option><option value="15d" ${selected("15d")}>近 15 天</option><option value="week" ${selected("week")}>本周</option><option value="month" ${selected("month")}>本月</option><option value="custom" ${selected("custom")}>自定义</option></select></label>
-      <label>开始日期<input type="date" data-from value="${esc(current.from || "")}"></label>
-      <label>结束日期<input type="date" data-to value="${esc(current.to || "")}"></label>
+      <span class="range-dates" data-range-dates ${String(current.range || options.defaultRange || "today") === "custom" ? "" : "hidden"}><label>开始日期<input type="date" data-from value="${esc(current.from || "")}"></label><label>结束日期<input type="date" data-to value="${esc(current.to || "")}"></label></span>
       <label>国家<input data-country placeholder="例如 ZA" value="${esc(current.country || "")}"></label>
       <label>渠道<select data-channel><option value="" ${sourceSelected("")}>全部渠道</option><option value="Direct" ${sourceSelected("Direct")}>Direct</option><option value="Organic Search" ${sourceSelected("Organic Search")}>Organic Search</option><option value="Referral" ${sourceSelected("Referral")}>Referral</option><option value="Social" ${sourceSelected("Social")}>Social</option><option value="Paid" ${sourceSelected("Paid")}>Paid</option><option value="Email" ${sourceSelected("Email")}>Email</option><option value="WhatsApp" ${sourceSelected("WhatsApp")}>WhatsApp</option><option value="Other" ${sourceSelected("Other")}>Other</option></select></label>
       <label>设备<select data-device><option value="" ${deviceSelected("")}>全部设备</option><option value="Desktop" ${deviceSelected("Desktop")}>Desktop</option><option value="Mobile" ${deviceSelected("Mobile")}>Mobile</option><option value="Tablet" ${deviceSelected("Tablet")}>Tablet</option></select></label>
@@ -215,14 +230,23 @@
     params.set("range", root?.querySelector("[data-range]")?.value || "all");
     params.set("page", state.page[key] || 1);
     params.set("pageSize", root?.querySelector("[data-page-size]")?.value || state.pageSize || 20);
-    [["from", "[data-from]"], ["to", "[data-to]"], ["country", "[data-country]"], ["channel", "[data-channel]"], ["device", "[data-device]"], ["q", "[data-visitor-q]"]].forEach(([name, selector]) => {
+    [["country", "[data-country]"], ["channel", "[data-channel]"], ["device", "[data-device]"], ["q", "[data-visitor-q]"]].forEach(([name, selector]) => {
       const value = root?.querySelector(selector)?.value?.trim();
       if (value) params.set(name, value);
     });
+    if (root?.querySelector("[data-range]")?.value === "custom") {
+      [["from", "[data-from]"], ["to", "[data-to]"]].forEach(([name, selector]) => {
+        const value = root.querySelector(selector)?.value?.trim();
+        if (value) params.set(name, value);
+      });
+    }
     return params;
   }
 
   function bindAnalyticsControls(panel, key, load) {
+    const root = qs(`[data-analytics-toolbar="${key}"]`, panel);
+    syncRangeDateVisibility(root);
+    qs("[data-range]", root)?.addEventListener("change", () => syncRangeDateVisibility(root));
     qs("[data-analytics-apply]", panel)?.addEventListener("click", () => { state.page[key] = 1; load(); });
     qs("[data-analytics-reset]", panel)?.addEventListener("click", () => {
       const root = qs(`[data-analytics-toolbar="${key}"]`, panel);
@@ -230,6 +254,7 @@
       qs("[data-range]", root).value = "all";
       state.analyticsFilters[key] = { range: "all" };
       state.page[key] = 1;
+      syncRangeDateVisibility(root);
       load();
     });
   }
@@ -276,16 +301,13 @@
       state.analyticsFilters[key] = Object.fromEntries(params.entries());
       const results = qs("[data-dashboard-results]", panel);
       results.innerHTML = '<section class="section-card"><p class="empty-copy">正在更新当前筛选数据…</p></section>';
-      const [site, report] = await Promise.all([
-        api(`/api/admin/dashboard?${params.toString()}`),
-        api(`/api/admin/analytics?${params.toString()}`)
-      ]);
+      const report = await api(`/api/admin/analytics?${params.toString()}`);
       results.innerHTML = [
       metrics([
         { label: "PV", value: formatNumber(report.pv), note: "当前筛选条件" },
         { label: "UV", value: formatNumber(report.uv), note: "独立访客" },
         { label: "有效会话", value: formatNumber(report.sessions), note: "按访客会话归并" },
-        { label: "询盘提交", value: formatNumber(report.enquiries || site.unreadEnquiries), note: `转化率 ${report.conversionRate || 0}%` },
+        { label: "询盘提交", value: formatNumber(report.enquiries), note: `转化率 ${report.conversionRate || 0}%` },
         { label: "WhatsApp 点击", value: formatNumber(report.whatsappClicks), note: "高意向动作" }
       ]),
       `<div class="dashboard-grid"><section class="section-card span-2"><div class="card-heading"><h2>访问趋势</h2><a class="text-link" href="?view=analytics">查看分析</a></div>${lineChart(report.timeline || [])}</section>
@@ -355,7 +377,7 @@
       const data = await api(`/api/admin/enquiries?${queryString}`);
       const exportLink = qs("[data-export-enquiries]", panel);
       if (exportLink) exportLink.href = `/api/admin/enquiries/export?${queryString}`;
-      qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u63d0\u4ea4\u65f6\u95f4", value: (row) => formatTime(row.submissionTime || row.createdAt) }, { label: "\u5ba2\u6237", value: (row) => [row.name, row.company].filter(Boolean).join(" / ") || "-" }, { label: "\u90ae\u7bb1", value: "email" }, { label: "\u4ea7\u54c1", value: "product" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u64cd\u4f5c", html: (row) => `<button class="text-button" data-enquiry-id="${esc(row.id)}">\u67e5\u770b\u8be6\u60c5</button>` }]) + pager(data, key);
+      qs("[data-list]", panel).innerHTML = table(data.items || [], [{ label: "\u63d0\u4ea4\u65f6\u95f4", value: (row) => formatTime(row.submissionTime || row.createdAt) }, { label: "\u5ba2\u6237", value: (row) => [row.name, row.company].filter(Boolean).join(" / ") || "-" }, { label: "\u90ae\u7bb1", value: "email" }, { label: "\u4ea7\u54c1", value: "product" }, { label: "\u5ba2\u6237\u8bb0\u5f55", value: (row) => `${formatNumber(row.customerInquiryCount || 1)} \u6761` }, { label: "\u72b6\u6001", value: "status" }, { label: "\u64cd\u4f5c", html: (row) => `<button class="text-button" data-enquiry-id="${esc(row.id)}">\u67e5\u770b\u8be6\u60c5</button>` }]) + pager(data, key);
       bindPager(panel, key, load);
       qsa("[data-enquiry-id]", panel).forEach((button) => button.addEventListener("click", () => openEnquiryDetail(panel, button.dataset.enquiryId)));
     };
@@ -394,6 +416,7 @@
         <h3>客户与询盘</h3>${detailGrid([["公司", enquiry.company], ["邮箱", enquiry.email], ["电话 / WhatsApp", enquiry.phone || enquiry.whatsapp], ["国家 / 地区", enquiry.country || enquiry.region], ["意向产品", enquiry.product], ["行业", enquiry.industry], ["处理状态", enquiry.status], ["提交页面", enquiry.sourcePage]])}
         <h3>来源归因</h3>${visitor ? detailGrid([["首次来源", `${visitor.firstChannel || "Direct"} / ${visitor.firstSource || "Direct"}`], ["最近来源", `${visitor.lastChannel || visitor.channel || "Direct"} / ${visitor.lastSource || visitor.source || "Direct"}`], ["首次访问", formatTime(visitor.firstSeenAt)], ["最近访问", formatTime(visitor.lastSeenAt)], ["访客编号", shortVisitorId(visitor.visitorId)]]) : '<p class="empty-copy">该历史询盘没有可关联的访客访问记录。</p>'}
         ${visitor ? `<div class="actions"><button class="button secondary" data-open-enquiry-visitor="${esc(visitor.visitorId)}">查看完整浏览路径</button></div>` : ""}
+        <h3>同一客户历史</h3>${table(data.customer?.enquiries || [], [{ label: "提交时间", value: (item) => formatTime(item.submissionTime) }, { label: "产品", value: "product" }, { label: "状态", value: "status" }, { label: "提交页面", value: "sourcePage" }], "该客户暂无其他询盘记录")}
         <h3>客户填写内容</h3>${payload.length ? `${detailSection("技术与产品要求", technicalPayload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)]), true)}${detailSection("项目环境与安装信息", projectPayload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)]))}${detailSection("其他填写内容", otherPayload.map(([key, value]) => [key, typeof value === "boolean" ? (value ? "Yes" : "No") : String(value)]))}` : '<p class="empty-copy">没有额外填写字段。</p>'}
         <h3>跟进记录</h3>${notes.length ? table(notes, [{ label: "时间", value: (item) => formatTime(item.time) }, { label: "操作人", value: "user" }, { label: "记录", value: "note" }]) : '<p class="empty-copy">暂无跟进记录。</p>'}`;
       qs("[data-close-enquiry]", detail)?.addEventListener("click", () => { detail.hidden = true; });
@@ -491,12 +514,17 @@
 
   async function seo() {
     const [seoData, google] = await Promise.all([api("/api/admin/seo"), api("/api/admin/google-seo")]);
+    const report = google.latest || {};
+    const gscRows = (report.topPages || []).map((row) => ({ page: row.keys?.[0] || "-", clicks: row.clicks, impressions: row.impressions, ctr: `${(Number(row.ctr || 0) * 100).toFixed(2)}%`, position: Number(row.position || 0).toFixed(1) }));
+    const syncState = report.syncedAt
+      ? `最近同步：${formatTime(report.syncedAt)} · ${report.startDate || "-"} 至 ${report.endDate || "-"}`
+      : (google.configured ? "Google 已连接，暂未返回可展示的搜索数据。" : "Google Search Console 尚未完成连接。");
     qs("[data-panel='seo']").innerHTML = metrics([
       { label: "\u9875\u9762", value: seoData.pages?.length || 0 },
       { label: "\u95ee\u9898", value: seoData.issues?.length || 0 },
-      { label: "Clicks", value: google.summary?.clicks || 0 },
-      { label: "Impressions", value: google.summary?.impressions || 0 }
-    ]) + card("Google Search Console", `<div class="actions"><button class="button primary" data-gsc>${label.manualSync}</button></div>${table(google.pages || [], [{ label: "\u9875\u9762", value: "page" }, { label: "Clicks", value: "clicks" }, { label: "Impressions", value: "impressions" }, { label: "CTR", value: "ctr" }])}`) + card("SEO Issues", table(seoData.issues || [], [{ label: "\u7c7b\u578b", value: "type" }, { label: "\u9875\u9762", value: "page" }, { label: "\u8bf4\u660e", value: "message" }]));
+      { label: "Clicks", value: report.summary?.clicks || 0 },
+      { label: "Impressions", value: report.summary?.impressions || 0 }
+    ]) + card("Google Search Console", `<p class="data-note">${esc(syncState)}</p><div class="actions"><button class="button primary" data-gsc ${google.configured ? "" : "disabled"}>${label.manualSync}</button></div>${table(gscRows, [{ label: "\u9875\u9762", value: "page" }, { label: "Clicks", value: "clicks" }, { label: "Impressions", value: "impressions" }, { label: "CTR", value: "ctr" }, { label: "\u5e73\u5747\u6392\u540d", value: "position" }], google.configured ? "暂无 Google 返回的页面数据。" : "Google Search Console 尚未配置。")}`) + card("SEO Issues", table(seoData.issues || [], [{ label: "\u7c7b\u578b", value: "type" }, { label: "\u9875\u9762", value: "page" }, { label: "\u8bf4\u660e", value: "message" }]));
     qs("[data-gsc]")?.addEventListener("click", async () => { await api("/api/admin/google-seo/sync", { method: "POST" }); setStatus("Google SEO \u540c\u6b65\u5df2\u5b8c\u6210"); activate("seo"); });
   }
 
@@ -592,7 +620,7 @@
     });
   }
 
-  const loaders = { dashboard, categories, products, news, forms, analytics, visitors, seo, media, users, settings };
+  const loaders = { dashboard, categories, products, news, forms, analytics, visitors, seo, media, users, sync, logs, settings };
 
   async function init() {
     localizeShell();

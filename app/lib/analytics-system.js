@@ -89,6 +89,7 @@ function paramsFromPage(value) {
 function sourceFromReferrer(referrer) {
   const host = hostFrom(referrer);
   if (!host) return { channel: "Direct", source: "Direct" };
+  if (/(^|\.)cowinmagnet\.co\.za$/i.test(host)) return { channel: "Direct", source: "Direct" };
   if (/google\.|bing\.|yahoo\.|duckduckgo\.|baidu\./i.test(host)) return { channel: "Organic Search", source: host };
   if (/linkedin\.com|facebook\.com|instagram\.com|tiktok\.com|twitter\.com|x\.com|youtube\.com/i.test(host)) return { channel: "Social", source: host };
   if (/mail\.|outlook\.|gmail\.|mailchimp\.|sendgrid\./i.test(host)) return { channel: "Email", source: host };
@@ -460,6 +461,23 @@ export async function recordAnalyticsEvent({ requestHeaders, body = {} }) {
     term: clean(body.utmTerm || pageParams.term, 180)
   };
   const channel = normalizeChannel(attribution.medium, referrerAttribution.channel);
+  if (channel !== "Direct" && attribution.source === "Direct") attribution.source = `${channel} campaign`;
+  if (!attribution.medium && !body.utmSource && !pageParams.source && referrerAttribution.channel === "Direct") {
+    const previous = await db.query(
+      `SELECT source, medium, campaign, campaign_content, campaign_term
+       FROM analytics_events
+       WHERE visitor_id = $1 AND session_id = $2 AND source <> 'Direct'
+       ORDER BY occurred_at ASC LIMIT 1`,
+      [attribution.visitorId, attribution.sessionId]
+    );
+    if (previous.rowCount) {
+      attribution.source = previous.rows[0].source || attribution.source;
+      attribution.medium = previous.rows[0].medium || attribution.medium;
+      attribution.campaign = previous.rows[0].campaign || attribution.campaign;
+      attribution.content = previous.rows[0].campaign_content || attribution.content;
+      attribution.term = previous.rows[0].campaign_term || attribution.term;
+    }
+  }
   const ruleLabel = await matchingRule({
     user_agent: userAgent,
     referrer,
@@ -471,6 +489,17 @@ export async function recordAnalyticsEvent({ requestHeaders, body = {} }) {
   });
   const flags = trackingFlags({ requestHeaders, pagePath, referrer, userAgent, attribution, rawIp, ruleLabel });
   const eventType = EVENT_TYPES.has(clean(body.eventType, 80)) ? clean(body.eventType, 80) : "pageview";
+  if (eventType === "pageview") {
+    const duplicate = await db.query(
+      `SELECT id FROM analytics_events
+       WHERE visitor_id = $1 AND COALESCE(session_id, '') = COALESCE($2, '')
+         AND event_type = 'pageview' AND page_path = $3
+         AND occurred_at >= NOW() - INTERVAL '5 seconds'
+       ORDER BY occurred_at DESC LIMIT 1`,
+      [attribution.visitorId, attribution.sessionId, pagePath]
+    );
+    if (duplicate.rowCount) return { id: duplicate.rows[0].id, visitorId: attribution.visitorId, sessionId: attribution.sessionId, excluded: false, deduplicated: true };
+  }
   const occurredAt = new Date();
   const eventId = id("EVT");
   const country = clean(requestHeaders.get("x-vercel-ip-country"), 80) || "Unknown";

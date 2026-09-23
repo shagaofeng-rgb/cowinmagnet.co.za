@@ -180,7 +180,7 @@ export async function newsAutomationStatus() {
     counts: {
       sources: data.sources.length, candidates: data.candidates.length, plans: data.plans.length,
       drafts: data.drafts.length, runs: data.runs.length,
-      published: data.runs.filter((run) => run.result === "published").length
+      published: data.runs.filter((run) => String(run.result || "").startsWith("published")).length
     },
     schedule: data.config.schedule,
     latestRun: data.runs[0] || null,

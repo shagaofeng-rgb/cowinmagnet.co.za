@@ -948,6 +948,15 @@ async function adminEnquiriesList(request) {
   if (country) rows = rows.filter((item) => String(item.country || item.region || "").toLowerCase().includes(country));
   if (product) rows = rows.filter((item) => String(item.product || item.productRequired || "").toLowerCase().includes(product));
   if (source) rows = rows.filter((item) => `${item.sourcePage || ""} ${item.utm?.source || ""} ${item.utm?.medium || ""}`.toLowerCase().includes(source));
+  const customerCounts = new Map();
+  for (const item of (Array.isArray(items) ? items : [])) {
+    const email = String(item.email || "").trim().toLowerCase();
+    if (email) customerCounts.set(email, (customerCounts.get(email) || 0) + 1);
+  }
+  rows = rows.map((item) => ({
+    ...item,
+    customerInquiryCount: customerCounts.get(String(item.email || "").trim().toLowerCase()) || 1
+  }));
   return response({ success: true, data: paginate(rows, request, { searchFields: ["id", "name", "company", "email", "phone", "whatsapp", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true }), requestId: token(8) });
 }
 
@@ -965,7 +974,13 @@ async function adminEnquiryDetail(id) {
       visitor = { unavailable: true };
     }
   }
-  return { enquiry, visitor };
+  const customerEmail = String(enquiry.email || "").trim().toLowerCase();
+  const relatedEnquiries = customerEmail
+    ? items.filter((item) => String(item.email || "").trim().toLowerCase() === customerEmail)
+      .sort((left, right) => new Date(right.submissionTime || 0) - new Date(left.submissionTime || 0))
+      .map((item) => ({ id: item.id, submissionTime: item.submissionTime, product: item.product, status: item.status, sourcePage: item.sourcePage }))
+    : [];
+  return { enquiry, visitor, customer: { enquiryCount: relatedEnquiries.length, enquiries: relatedEnquiries } };
 }
 
 async function adminUsers(request, session) {
@@ -1346,7 +1361,11 @@ async function handleEnquiries(request) {
     assignedUser: "",
     internalNotes: [],
     submissionTime: new Date().toISOString(),
-    utm: {}
+    utm: {
+      source: clean(body.utm_source, 120),
+      medium: clean(body.utm_medium, 120),
+      campaign: clean(body.utm_campaign, 180)
+    }
   };
   items.push(record);
   await writeJson("data/cms/enquiries.json", items);
