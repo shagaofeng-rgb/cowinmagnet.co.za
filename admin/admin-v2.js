@@ -169,6 +169,19 @@
     });
   }
 
+  function bindPagerWithin(root, key, load) {
+    qsa("[data-page]", root).forEach((button) => button.addEventListener("click", () => {
+      state.page[key] = Number(button.dataset.page);
+      load();
+    }));
+    qs("[data-page-jump-go]", root)?.addEventListener("click", () => {
+      const input = qs("[data-page-jump]", root);
+      const pages = Number(input?.max || 1);
+      state.page[key] = Math.max(1, Math.min(pages, Number(input?.value || 1)));
+      load();
+    });
+  }
+
   function pager(data, key) {
     const page = data.page || 1;
     const pages = data.pages || data.totalPages || 1;
@@ -514,8 +527,30 @@
 
   async function seo() {
     const [seoData, google] = await Promise.all([api("/api/admin/seo"), api("/api/admin/google-seo")]);
-    const report = google.latest || {};
-    const gscRows = (report.topPages || []).map((row) => ({ page: row.keys?.[0] || "-", clicks: row.clicks, impressions: row.impressions, ctr: `${(Number(row.ctr || 0) * 100).toFixed(2)}%`, position: Number(row.position || 0).toFixed(1) }));
+   const report = google.latest || {};
+   const gscRows = (report.topPages || []).map((row) => ({ page: row.keys?.[0] || "-", clicks: row.clicks, impressions: row.impressions, ctr: `${(Number(row.ctr || 0) * 100).toFixed(2)}%`, position: Number(row.position || 0).toFixed(1) }));
+    const gscPageKey = "seoGsc";
+    const renderGscPages = () => {
+      const panel = qs("[data-panel='seo']");
+      const gscCard = qsa(".section-card", panel)[0];
+      if (!gscCard) return;
+      let target = qs("[data-gsc-pages]", gscCard);
+      if (!target) {
+        const originalTable = qs(".table-wrap", gscCard);
+        if (!originalTable) return;
+        target = document.createElement("div");
+        target.dataset.gscPages = "";
+        originalTable.replaceWith(target);
+      }
+      const pageSize = 20;
+      const pages = Math.max(1, Math.ceil(gscRows.length / pageSize));
+      const page = Math.max(1, Math.min(state.page[gscPageKey] || 1, pages));
+      state.page[gscPageKey] = page;
+      const rows = gscRows.slice((page - 1) * pageSize, page * pageSize);
+      target.innerHTML = table(rows, [{ label: "页面", value: "page" }, { label: "Clicks", value: "clicks" }, { label: "Impressions", value: "impressions" }, { label: "CTR", value: "ctr" }, { label: "平均排名", value: "position" }], google.configured ? "暂无 Google 返回的页面数据。" : "Google Search Console 尚未配置。") + pager({ page, pages, total: gscRows.length }, gscPageKey);
+      bindPagerWithin(target, gscPageKey, renderGscPages);
+    };
+    queueMicrotask(renderGscPages);
     const syncState = report.syncedAt
       ? `最近同步：${formatTime(report.syncedAt)} · ${report.startDate || "-"} 至 ${report.endDate || "-"}`
       : (google.configured ? "Google 已连接，暂未返回可展示的搜索数据。" : "Google Search Console 尚未完成连接。");
