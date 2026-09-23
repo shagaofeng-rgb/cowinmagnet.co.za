@@ -432,6 +432,14 @@ function filterSql(searchParams, values) {
   return { where: where.join(" AND "), range: range.range };
 }
 
+function sourceLabelSql(alias = "e") {
+  return `CASE
+    WHEN COALESCE(${alias}.source, 'Direct') = 'Direct' AND COALESCE(${alias}.channel, 'Direct') <> 'Direct'
+      THEN COALESCE(${alias}.channel, 'Other') || ' (unattributed)'
+    ELSE COALESCE(NULLIF(${alias}.source, ''), NULLIF(${alias}.referrer_host, ''), 'Direct')
+  END`;
+}
+
 export async function recordAnalyticsEvent({ requestHeaders, body = {} }) {
   const db = getPool();
   if (!db) {
@@ -593,6 +601,7 @@ export async function getAnalyticsReport(url) {
   const offset = (page - 1) * pageSize;
   const includeVisitors = searchParams.get("includeVisitors") !== "0";
   const visitorsOnly = searchParams.get("scope") === "visitors";
+  const sourceLabel = sourceLabelSql("e");
   const emptyResult = () => Promise.resolve({ rows: [] });
 
   const [summaryResult, countriesResult, channelsResult, sourcesResult, pagesResult, devicesResult, timelineResult, visitorCountResult] = await Promise.all([
@@ -605,7 +614,7 @@ export async function getAnalyticsReport(url) {
       ${source}`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(e.country, 'Unknown') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(e.channel, 'Direct') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(NULLIF(e.source, ''), NULLIF(e.referrer_host, ''), 'Direct') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
+    visitorsOnly ? emptyResult() : db.query(`SELECT ${sourceLabel} AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT e.page_path AS page, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 20`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT CONCAT(COALESCE(e.device, 'Desktop'), ' / ', COALESCE(e.browser, 'Browser')) AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
     visitorsOnly ? emptyResult() : db.query(`SELECT to_char(date_trunc('hour', e.occurred_at AT TIME ZONE '${TIMEZONE}'), 'YYYY-MM-DD HH24:00') AS bucket, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 1 ASC LIMIT 240`, values),
@@ -621,7 +630,7 @@ export async function getAnalyticsReport(url) {
       MAX(COALESCE(e.country, 'Unknown')) AS country,
       MAX(COALESCE(e.ip_masked, 'unknown')) AS ip,
       MAX(COALESCE(e.channel, 'Direct')) AS channel,
-      MAX(COALESCE(e.source, 'Direct')) AS source,
+      MAX(${sourceLabel}) AS source,
       MAX(COALESCE(e.device, 'Desktop')) AS device,
       MAX(COALESCE(e.browser, 'Browser')) AS browser,
       MAX(COALESCE(v.visit_count, 1))::int AS "visitCount",
