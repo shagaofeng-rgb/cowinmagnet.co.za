@@ -569,9 +569,19 @@
   }
 
   async function sync() {
-    const data = await api("/api/admin/sync");
-    qs("[data-panel='sync']").innerHTML = card("\u6570\u636e\u6e90", `<div class="actions"><button class="button primary" data-sync-gsc>\u540c\u6b65 Google SEO</button></div>${table(data.sources || [], [{ label: "\u6570\u636e\u6e90", value: "name" }, { label: "\u914d\u7f6e", value: (row) => row.configured ? "\u5df2\u914d\u7f6e" : "\u672a\u914d\u7f6e" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u6700\u8fd1\u540c\u6b65", value: "lastSync" }])}`) + card("\u6700\u8fd1\u4efb\u52a1", table(data.jobs || [], [{ label: "\u65f6\u95f4", value: "time" }, { label: "\u7c7b\u578b", value: "type" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u8bf4\u660e", value: "message" }]));
-    qs("[data-sync-gsc]")?.addEventListener("click", async () => { await api("/api/admin/sync/google-seo", { method: "POST" }); setStatus("Google SEO \u540c\u6b65\u5b8c\u6210"); activate("sync"); });
+    const key = "syncJobs";
+    const panel = qs("[data-panel='sync']");
+    panel.innerHTML = card("\u6570\u636e\u6e90", `<div class="actions"><button class="button primary" data-sync-gsc>\u540c\u6b65 Google SEO</button></div>${label.loading}<div data-sync-sources></div>`) + card("\u6700\u8fd1\u4efb\u52a1", `${toolbar(key)}<div data-sync-jobs>${label.loading}</div>`);
+    const load = async () => {
+      const data = await api(`/api/admin/sync?${query(key)}`);
+      qs("[data-sync-sources]", panel).innerHTML = table(data.sources || [], [{ label: "\u6570\u636e\u6e90", value: "name" }, { label: "\u914d\u7f6e", value: (row) => row.configured ? "\u5df2\u914d\u7f6e" : "\u672a\u914d\u7f6e" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u6700\u8fd1\u540c\u6b65", value: "lastSync" }]);
+      const jobs = data.jobs || { items: [] };
+      qs("[data-sync-jobs]", panel).innerHTML = table(jobs.items || [], [{ label: "\u65f6\u95f4", value: "time" }, { label: "\u7c7b\u578b", value: "type" }, { label: "\u72b6\u6001", value: "status" }, { label: "\u8bf4\u660e", value: "message" }]) + pager(jobs, key);
+      bindPager(panel, key, load);
+    };
+    qs("[data-sync-gsc]")?.addEventListener("click", async () => { await api("/api/admin/sync/google-seo", { method: "POST" }); state.page[key] = 1; setStatus("Google SEO \u540c\u6b65\u5b8c\u6210"); await load(); });
+    bindToolbar(panel, key, load);
+    await load();
   }
 
   async function logs() {

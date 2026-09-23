@@ -1036,7 +1036,7 @@ async function adminMedia(request, session) {
   return response({ success: true, data: payload, requestId: token(8) });
 }
 
-async function adminSyncState() {
+async function adminSyncState(request) {
   const [googleSeo, googleJobs, sitemapState, sitemapRuns, storage, newsState] = await Promise.all([
     readJson("data/seo/google-search-console.json"),
     readJson("data/seo/google-seo-jobs.json"),
@@ -1045,6 +1045,10 @@ async function adminSyncState() {
     Promise.resolve({ mode: storageMode(), databaseConfigured: Boolean(process.env.DATABASE_URL) }),
     newsAutomationStatus()
   ]);
+  const jobs = [
+    ...(newsState.latestRun ? [{ ...newsState.latestRun, type: "news", time: newsState.latestRun.startedAt, status: newsState.latestRun.result, message: (newsState.latestRun.blockers || []).join(" ") }] : []),
+    ...(Array.isArray(googleJobs) ? googleJobs.map((job) => ({ ...job, type: "google-seo", time: job.started_at || job.completed_at || "" })) : [])
+  ];
   return {
     sources: [
       { id: "news", name: "News automation", configured: newsState.enabled, status: newsState.productionReady ? "ready" : "gated", lastSync: newsState.latestRun?.startedAt || "", successCount: newsState.counts.published, failedCount: newsState.counts.runs - newsState.counts.published },
@@ -1056,10 +1060,7 @@ async function adminSyncState() {
     googleJobs,
     sitemapState,
     sitemapRuns: (sitemapRuns || []).slice(0, 20),
-    jobs: [
-      ...(newsState.latestRun ? [{ ...newsState.latestRun, type: "news", time: newsState.latestRun.startedAt, status: newsState.latestRun.result, message: (newsState.latestRun.blockers || []).join(" ") }] : []),
-      ...(Array.isArray(googleJobs) ? googleJobs.map((job) => ({ ...job, type: "google-seo" })) : [])
-    ].slice(0, 30),
+    jobs: paginate(jobs, request, { searchFields: ["type", "status", "message", "requested_by"], dateFields: ["time", "started_at", "completed_at"] }),
     storage
   };
 }
@@ -1761,7 +1762,7 @@ async function handleAdmin(request, path) {
   if (path === "admin/media" && ["GET", "PUT", "POST"].includes(request.method)) return adminMedia(request, session);
   if (path === "admin/media/export" && request.method === "GET") return csvResponse("media.csv", await readJson("data/media/assets.json"));
   if (path === "admin/users" && ["GET", "PUT", "POST"].includes(request.method)) return adminUsers(request, session);
-  if (path === "admin/sync" && request.method === "GET") return response({ success: true, data: await adminSyncState(), requestId: token(8) });
+  if (path === "admin/sync" && request.method === "GET") return response({ success: true, data: await adminSyncState(request), requestId: token(8) });
   if (path === "admin/sync/google-seo" && request.method === "POST") {
     try {
       const result = await syncGoogleSeo(session.user);
