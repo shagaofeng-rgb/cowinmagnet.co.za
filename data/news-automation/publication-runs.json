@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-24T04:30:21.524Z",
     "finishedAt": "2026-09-24T04:30:21.676Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "us-to-fund-7bn-of-argentina-mineral-energy-projects-document-shows-energy-reliability-and--2026-09-24",
     "sourceUrls": [
       "https://miningweekly.com/article/us-to-fund-7bn-of-argentina-mineral-energy-projects-document-shows-2026-09-23",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-24T04:30:54.359Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-24T04:30:54.359Z"
   },
   {
     "id": "ingest_d21e51f78bebfb22",
