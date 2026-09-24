@@ -1,5 +1,112 @@
 [
   {
+    "id": "run_ce1e98bddc437315",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-24T04:30:21.524Z",
+    "finishedAt": "2026-09-24T04:30:21.676Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "us-to-fund-7bn-of-argentina-mineral-energy-projects-document-shows-energy-reliability-and--2026-09-24",
+    "sourceUrls": [
+      "https://miningweekly.com/article/us-to-fund-7bn-of-argentina-mineral-energy-projects-document-shows-2026-09-23",
+      "https://eskom.co.za/eskom-raises-eaf-to-67-78-cuts-diesel-costs-by-r4-8-billion-year-on-year-and-reduces-year-to-date-particulate-emissions-by-67-in-5-months"
+    ],
+    "qa": {
+      "wordCount": 1072,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.25,
+      "bodySimilarity": 0.636,
+      "strongestBodyMatch": "eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19"
+    },
+    "pairKey": "g3:c60709736e9dae6eb876",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:c60709736e9dae6eb876",
+        "coherent": true,
+        "variant": 0,
+        "title": "US to fund $7bn of Argentina mineral, energy projects, document shows: Energy, Reliability and Separator Selection Decisions",
+        "sourceUrls": [
+          "https://miningweekly.com/article/us-to-fund-7bn-of-argentina-mineral-energy-projects-document-shows-2026-09-23",
+          "https://eskom.co.za/eskom-raises-eaf-to-67-78-cuts-diesel-costs-by-r4-8-billion-year-on-year-and-reduces-year-to-date-particulate-emissions-by-67-in-5-months"
+        ],
+        "qa": {
+          "wordCount": 1072,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.25,
+          "bodySimilarity": 0.636,
+          "strongestBodyMatch": "eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_d21e51f78bebfb22",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-24T04:30:17.440Z",
+    "finishedAt": "2026-09-24T04:30:21.397Z",
+    "result": "ingested",
+    "discovered": 67,
+    "added": 0,
+    "candidates": 441,
+    "poolChanged": false,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "rejected",
+        "itemCount": 0,
+        "error": "500 https://www.gov.za/taxonomy/term/659/%2A/feed"
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 2
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 6
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "fulfilled",
+        "itemCount": 72
+      }
+    ]
+  },
+  {
     "id": "ingest_1fb58c839bf87f10",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",
