@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-26T04:44:28.053Z",
     "finishedAt": "2026-09-26T04:44:28.260Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "eskom-achieves-weekly-eaf-of-70-and-year-to-date-eaf-of-68-06-emissions-energy-reliability-2026-09-26",
     "sourceUrls": [
       "https://eskom.co.za/eskom-achieves-weekly-eaf-of-70-and-year-to-date-eaf-of-68-06-emissions-reduction-target-surpassed-diesel-costs-fall-by-r4-8-billion-year-on-year-and-load-reduction-further-reduced-from-1-69-million",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-26T04:45:00.431Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-26T04:45:00.431Z"
   },
   {
     "id": "ingest_afd68dc10e6e4174",
