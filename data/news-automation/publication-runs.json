@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-28T05:08:35.490Z",
     "finishedAt": "2026-09-28T05:08:35.706Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "big-boost-for-platinum-palladium-as-china-exchange-internationalises-material-handling-dec-2026-09-28",
     "sourceUrls": [
       "https://miningweekly.com/article/big-boost-for-platinum-palladium-as-china-exchange-internationalises-trading-2026-09-25",
@@ -44,10 +44,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-28T05:09:27.951Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-28T05:09:27.951Z"
   },
   {
     "id": "ingest_28f5c725bfced57d",
