@@ -13,11 +13,15 @@
     "id": "candidate_2161730b8b89a53a",
     "fingerprint": "2161730b8b89a53a6d6ffc2a60e249c32451b6f887d8f356107357e0a328c947",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-26T04:44:23.800Z",
     "updated_at": "2026-09-26T04:44:23.800Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-28T05:08:35.490Z",
+    "article_slug": "big-boost-for-platinum-palladium-as-china-exchange-internationalises-material-handling-dec-2026-09-28",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "NDB signs USD 200 million loan with government to support water infrastructure",
@@ -7223,11 +7227,15 @@
     "id": "candidate_4836dc34000e2f85",
     "fingerprint": "4836dc34000e2f85cc066180b18d4687c27559307fa101f66a85c480a1e7289f",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-09T04:25:26.450Z",
     "updated_at": "2026-09-09T04:25:26.450Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-28T05:08:35.490Z",
+    "article_slug": "big-boost-for-platinum-palladium-as-china-exchange-internationalises-material-handling-dec-2026-09-28",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Harmony reports loss-of-life incident at Moab Khotsong mine",
