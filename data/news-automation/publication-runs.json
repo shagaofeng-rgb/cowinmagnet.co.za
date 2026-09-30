@@ -5,7 +5,7 @@
     "trigger": "github-actions",
     "startedAt": "2026-09-30T05:20:05.599Z",
     "finishedAt": "2026-09-30T05:20:05.857Z",
-    "result": "pending_frontend_verification",
+    "result": "published_success",
     "articleSlug": "canada-energy-regulator-approves-trans-mountain-tolls-settlement-energy-reliability-and-se-2026-09-30",
     "sourceUrls": [
       "https://miningweekly.com/article/canada-energy-regulator-approves-trans-mountain-tolls-settlement-2026-09-29",
@@ -86,10 +86,36 @@
     ],
     "retryCount": 0,
     "delivery": {
-      "status": "pending",
-      "checkedAt": null,
-      "checks": []
-    }
+      "status": "verified",
+      "checkedAt": "2026-09-30T05:20:38.213Z",
+      "checks": [
+        {
+          "name": "news-list",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-detail",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-sitemap",
+          "passed": true,
+          "status": 200,
+          "error": null
+        },
+        {
+          "name": "news-rss",
+          "passed": true,
+          "status": 200,
+          "error": null
+        }
+      ]
+    },
+    "updatedAt": "2026-09-30T05:20:38.213Z"
   },
   {
     "id": "ingest_2714f20b25a4030c",
