@@ -1,5 +1,154 @@
 [
   {
+    "id": "run_ecc88ce0bdb8d85a",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions",
+    "startedAt": "2026-09-30T05:20:05.599Z",
+    "finishedAt": "2026-09-30T05:20:05.857Z",
+    "result": "pending_frontend_verification",
+    "articleSlug": "canada-energy-regulator-approves-trans-mountain-tolls-settlement-energy-reliability-and-se-2026-09-30",
+    "sourceUrls": [
+      "https://miningweekly.com/article/canada-energy-regulator-approves-trans-mountain-tolls-settlement-2026-09-29",
+      "https://eskom.co.za/eskom-welcomes-three-year-extension-of-board-chairperson-mteto-nyatis-term-as-utility-advances-operational-and-financial-sustainability-energy-security-and-market-reforms"
+    ],
+    "qa": {
+      "wordCount": 1058,
+      "sourceCount": 2,
+      "independentSourceCount": 2,
+      "titleSimilarity": 0.25,
+      "bodySimilarity": 0.57,
+      "strongestBodyMatch": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06"
+    },
+    "pairKey": "g3:07dbe8d51b8c4b84455a",
+    "generatorVersion": 3,
+    "attempts": [
+      {
+        "pairKey": "g3:07dbe8d51b8c4b84455a",
+        "coherent": true,
+        "variant": 0,
+        "title": "Canada energy regulator approves Trans Mountain tolls settlement: Energy, Reliability and Separator Selection Decisions",
+        "sourceUrls": [
+          "https://miningweekly.com/article/canada-energy-regulator-approves-trans-mountain-tolls-settlement-2026-09-29",
+          "https://eskom.co.za/eskom-welcomes-three-year-extension-of-board-chairperson-mteto-nyatis-term-as-utility-advances-operational-and-financial-sustainability-energy-security-and-market-reforms"
+        ],
+        "qa": {
+          "wordCount": 1072,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.25,
+          "bodySimilarity": 0.868,
+          "strongestBodyMatch": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06"
+        },
+        "failures": [
+          "Similarity threshold against the last 180 days of published content was exceeded."
+        ]
+      },
+      {
+        "pairKey": "g3:07dbe8d51b8c4b84455a",
+        "coherent": true,
+        "variant": 1,
+        "title": "Canada energy regulator approves Trans Mountain tolls settlement: Energy, Reliability and Separator Selection Decisions",
+        "sourceUrls": [
+          "https://miningweekly.com/article/canada-energy-regulator-approves-trans-mountain-tolls-settlement-2026-09-29",
+          "https://eskom.co.za/eskom-welcomes-three-year-extension-of-board-chairperson-mteto-nyatis-term-as-utility-advances-operational-and-financial-sustainability-energy-security-and-market-reforms"
+        ],
+        "qa": {
+          "wordCount": 1081,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.25,
+          "bodySimilarity": 0.759,
+          "strongestBodyMatch": "eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19"
+        },
+        "failures": [
+          "Similarity threshold against the last 180 days of published content was exceeded."
+        ]
+      },
+      {
+        "pairKey": "g3:07dbe8d51b8c4b84455a",
+        "coherent": true,
+        "variant": 2,
+        "title": "Canada energy regulator approves Trans Mountain tolls settlement: Energy, Reliability and Separator Selection Decisions",
+        "sourceUrls": [
+          "https://miningweekly.com/article/canada-energy-regulator-approves-trans-mountain-tolls-settlement-2026-09-29",
+          "https://eskom.co.za/eskom-welcomes-three-year-extension-of-board-chairperson-mteto-nyatis-term-as-utility-advances-operational-and-financial-sustainability-energy-security-and-market-reforms"
+        ],
+        "qa": {
+          "wordCount": 1058,
+          "sourceCount": 2,
+          "independentSourceCount": 2,
+          "titleSimilarity": 0.25,
+          "bodySimilarity": 0.57,
+          "strongestBodyMatch": "eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06"
+        },
+        "failures": []
+      }
+    ],
+    "retryCount": 0,
+    "delivery": {
+      "status": "pending",
+      "checkedAt": null,
+      "checks": []
+    }
+  },
+  {
+    "id": "ingest_2714f20b25a4030c",
+    "site_id": "cowinmagnet-za",
+    "trigger": "github-actions-ingest",
+    "startedAt": "2026-09-30T05:20:01.032Z",
+    "finishedAt": "2026-09-30T05:20:05.411Z",
+    "result": "ingested",
+    "discovered": 9,
+    "added": 0,
+    "candidates": 482,
+    "poolChanged": false,
+    "sourceHealth": [
+      {
+        "id": "sanews-rss",
+        "url": "https://www.sanews.gov.za/rss.xml",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "government-mining-rss",
+        "url": "https://www.gov.za/taxonomy/term/659/%2A/feed",
+        "status": "fulfilled",
+        "itemCount": 10
+      },
+      {
+        "id": "statistics-sa-rss",
+        "url": "https://www.statssa.gov.za/?feed=rss2",
+        "status": "fulfilled",
+        "itemCount": 1
+      },
+      {
+        "id": "eskom-rss",
+        "url": "https://www.eskom.co.za/feed/",
+        "status": "fulfilled",
+        "itemCount": 6
+      },
+      {
+        "id": "minerals-council-releases",
+        "url": "https://www.mineralscouncil.org.za/industry-news/media-releases/2026",
+        "status": "fulfilled",
+        "itemCount": 15
+      },
+      {
+        "id": "minerals-council-economics",
+        "url": "https://www.mineralscouncil.org.za/work/economics/monthly-economic-reports/2026",
+        "status": "fulfilled",
+        "itemCount": 4
+      },
+      {
+        "id": "mining-weekly",
+        "url": "https://www.miningweekly.com/",
+        "status": "rejected",
+        "itemCount": 0,
+        "error": "526 https://www.miningweekly.com/"
+      }
+    ]
+  },
+  {
     "id": "ingest_26c2d61285ea0e19",
     "site_id": "cowinmagnet-za",
     "trigger": "github-actions-ingest",

@@ -413,11 +413,15 @@
     "id": "candidate_13c5c40306134de4",
     "fingerprint": "13c5c40306134de4adf5f0616397c60dc2d8957d733ac6e558a76732c451ebc6",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-29T18:00:54.300Z",
     "updated_at": "2026-09-29T18:00:54.300Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-30T05:20:05.599Z",
+    "article_slug": "canada-energy-regulator-approves-trans-mountain-tolls-settlement-energy-reliability-and-se-2026-09-30",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Gold's lustre dims as Treasury yields surge, markets bet on higher Fed rates",
@@ -1194,11 +1198,15 @@
     "id": "candidate_547857c90cd0eac5",
     "fingerprint": "547857c90cd0eac52f4bf4c287d430c72c85c0173c17ef817eb94333496a836a",
     "site_id": "cowinmagnet-za",
-    "status": "candidate",
+    "status": "used",
     "freshness_tier": "primary",
     "discovered_at": "2026-09-25T17:02:33.254Z",
     "updated_at": "2026-09-25T17:02:33.254Z",
-    "reject_reason": ""
+    "reject_reason": "",
+    "used_at": "2026-09-30T05:20:05.599Z",
+    "article_slug": "canada-energy-regulator-approves-trans-mountain-tolls-settlement-energy-reliability-and-se-2026-09-30",
+    "retry_count": 0,
+    "retry_after": null
   },
   {
     "title": "Eskom achieves weekly EAF of 70% and year-to-date EAF of 68.06%; emissions reduction target surpassed; diesel costs fall by R4.8 billion year-on-year and load reduction further reduced from 1.69 million customers to just over 240,000",
