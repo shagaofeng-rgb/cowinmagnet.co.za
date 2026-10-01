@@ -1,4 +1,4 @@
-process.env.NEWS_AUTOPUBLISH_ENABLED = "true";
+process.env.NEWS_AUTOPUBLISH_ENABLED ??= "false";
 process.env.NEWS_AUTOPUBLISH_MODE = "production";
 
 const { runNewsIngest } = await import("../app/lib/news-automation.js");

@@ -1,6 +1,6 @@
 import { appendFile } from "node:fs/promises";
 
-process.env.NEWS_AUTOPUBLISH_ENABLED = "true";
+process.env.NEWS_AUTOPUBLISH_ENABLED ??= "false";
 process.env.NEWS_AUTOPUBLISH_MODE = "production";
 
 const { runNewsAutomation } = await import("../app/lib/news-automation.js");

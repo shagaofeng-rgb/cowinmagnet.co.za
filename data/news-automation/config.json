@@ -5,7 +5,7 @@
   "locale": "en-ZA",
   "timezone": "Africa/Johannesburg",
   "mode": "production",
-  "enabled": true,
+  "enabled": false,
   "schedule": {
     "discovery": "0 */12 * * *",
     "editorial": "0 8 */2 * *",
@@ -21,5 +21,5 @@
   "maxDraftVariantsPerPair": 3,
   "retryBackoffHours": 24,
   "publicationSlaHours": 60,
-  "updatedAt": "2026-08-31T11:00:00.000Z"
+  "updatedAt": "2026-10-01T00:00:00.000Z"
 }

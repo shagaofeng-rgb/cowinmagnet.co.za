@@ -417,6 +417,9 @@ export async function runNewsIngest(trigger = "cron", options = {}) {
   return withDataLock("news-automation-ingest", async () => {
     const now = options.now ? new Date(options.now) : new Date();
     const data = await loadAutomationData();
+    if (!data.config.enabled || process.env.NEWS_AUTOPUBLISH_ENABLED !== "true") {
+      return { result: "disabled", reason: "News automation is disabled." };
+    }
     const maxAgeHours = Number(data.config.candidateMaxAgeHours || 72);
     const fallbackMaxAgeDays = Number(data.config.fallbackCandidateMaxAgeDays || 7);
     const discovery = await discoverNewsSources({ fetchImpl: options.fetchImpl || fetch, now, maxAgeDays: fallbackMaxAgeDays, includeDiagnostics: true });

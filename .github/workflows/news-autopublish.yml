@@ -1,18 +1,7 @@
 name: News autopublish pipeline
 
 on:
-  schedule:
-    - cron: "0 0,12 * * *"
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/news-autopublish.yml"
-      - "app/lib/news-automation.js"
-      - "app/lib/news-article-generator.js"
-      - "app/lib/news-sources.js"
-      - "tools/publish-news-automation.mjs"
-      - "tools/verify-news-delivery.mjs"
 
 permissions:
   contents: write
@@ -23,6 +12,8 @@ concurrency:
 
 jobs:
   publish-and-verify:
+    # Disabled at the site owner's request on 2026-10-01.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
