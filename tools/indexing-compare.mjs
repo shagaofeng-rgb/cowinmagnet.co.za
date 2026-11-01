@@ -1,0 +1,12 @@
+import {readFile,writeFile} from 'node:fs/promises';
+const dir='reports/indexing-20261101';
+const pages=JSON.parse(await readFile(`${dir}/public-pages.json`,'utf8'));
+const products=JSON.parse(await readFile('data/products/products.json','utf8'));
+const affected=JSON.parse(await readFile(`${dir}/gsc-export.json`,'utf8'))[0].rows.map(r=>r[0].match(/^https:\/\/[^\s]+/)[0]);
+const words=s=>new Set(s.toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(w=>w.length>2));
+const text=h=>(h.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1]||h).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ');
+const output=[];let cursor=0;
+const jobs=products.filter(p=>affected.some(u=>new URL(u).pathname.endsWith('/'+p.slug+'/')));
+await Promise.all(Array.from({length:3},async()=>{while(cursor<jobs.length){const p=jobs[cursor++];const local=pages.find(r=>new URL(r.url).pathname.endsWith('/'+p.slug+'/'));if(!local)continue;
+for(const [site,url] of [['global',p.sourceUrl],['chile',local.url.replace('https://cowinmagnet.co.za/en-za/','https://cowinmagnet.cl/en/').replace('metal-detection-and-recycling-sorting','metal-detection-recycling-sorting')]]){try{const res=await fetch(url,{signal:AbortSignal.timeout(15000)});const body=await res.text();const a=words(local.text),b=words(text(body));const intersection=[...a].filter(w=>b.has(w)).length;output.push({url:local.url,comparisonSite:site,comparisonUrl:url,status:res.status,finalUrl:res.url,tokenJaccard:Math.round(intersection/(a.size+b.size-intersection)*1000)/1000,note:'Word-set overlap is a screening metric, not proof of duplication or Google rejection.'});}catch(error){output.push({url:local.url,comparisonSite:site,comparisonUrl:url,error:error.message})}}}}));
+await writeFile(`${dir}/cross-site-comparison.json`,JSON.stringify(output,null,2));console.log(JSON.stringify({products:jobs.length,comparisons:output.length,unavailable:output.filter(r=>r.status!==200).length}));

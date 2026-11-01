@@ -1,0 +1,2945 @@
+{
+  "payload": {
+    "total": 191,
+    "results": [
+      {
+        "url": "https://cowinmagnet.co.za/en-za/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-10-08T21:33:07Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/",
+          "https://cowinmagnet.co.za/en-za/news/caterpillar-buys-skycatch-to-boost-ai-mine-technology-2026-07-07/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/about/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T01:54:22Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/about/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/about/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/about/company-profile/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T12:08:25Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/about/company-profile/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/about/company-profile/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/about/export-service/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T18:20:02Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/about/export-service/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/about/export-service/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/about/oem-odm-coordination/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T17:34:44Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/about/oem-odm-coordination/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/about/oem-odm-coordination/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/about/quality-control/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T05:44:50Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/about/quality-control/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/about/quality-control/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/about/why-choose-us/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T03:03:59Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/about/why-choose-us/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/about/why-choose-us/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/contact/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T13:25:56Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/power-plants/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/contact/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/contact/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/cookie-policy/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Excluded by ‘noindex’ tag",
+        "indexingState": "BLOCKED_BY_HTTP_HEADER",
+        "lastCrawlTime": "2026-07-10T20:44:22Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/",
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/cookie-policy/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/cookie-policy/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/downloads/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Excluded by ‘noindex’ tag",
+        "indexingState": "BLOCKED_BY_HTTP_HEADER",
+        "lastCrawlTime": "2026-07-10T20:58:28Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/downloads/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/downloads/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T05:53:59Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/about/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/aggregates-quarries-and-cement/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/cement/",
+        "error": "Internal error encountered.",
+        "verdict": "ERROR",
+        "coverageState": "Inspection error"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/chrome-ore/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T12:48:51Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/chrome-ore/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/chrome-ore/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/coal-handling-and-washing/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/coal-handling/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-21T23:24:02Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/coal-handling/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/coal-handling/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/conveyor-systems/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-10-07T11:50:57Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/conveyor-systems/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/conveyor-systems/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/food-processing/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T18:02:25Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/food-processing/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/food-processing/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/gold-mining/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T12:23:17Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/gold-mining/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/gold-mining/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/iron-ore/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/manganese-ore/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-24T17:20:36Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/manganese-ore/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/manganese-ore/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/mineral-processing/",
+        "sitemap": [],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T18:17:23Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/mineral-processing/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/mineral-processing/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/mining-and-mineral-processing/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/mining/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T02:44:26Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/mining/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/mining/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/ports-bulk-terminals/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T16:58:08Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/ports-bulk-terminals/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/ports-bulk-terminals/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/ports-power-and-bulk-handling/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/power-plants/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T05:40:59Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/pages-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/power-plants/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/power-plants/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/quarry-aggregates/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T06:22:21Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/quarry-aggregates/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/quarry-aggregates/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/recycling-and-material-recovery/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/industries/recycling/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-16T22:21:54Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/about/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/industries/recycling/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/industries/recycling/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T01:53:06Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/angola/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T08:57:56Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/angola/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/angola/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/botswana/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-18T05:00:18Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/botswana/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/botswana/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/drc/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T07:28:48Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/drc/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/drc/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/ghana/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T03:55:20Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/ghana/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/ghana/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/kenya/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T10:21:00Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/kenya/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/kenya/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/mozambique/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T23:05:18Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/mozambique/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/mozambique/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/namibia/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T19:04:39Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/namibia/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/namibia/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/nigeria/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-20T13:35:29Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/nigeria/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/nigeria/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T22:57:35Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/eastern-cape/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T12:53:27Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/eastern-cape/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/eastern-cape/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/gauteng/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T21:10:48Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/gauteng/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/gauteng/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/kwazulu-natal/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T18:45:33Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/kwazulu-natal/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/kwazulu-natal/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/limpopo/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T13:31:54Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/limpopo/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/limpopo/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/mpumalanga/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T16:04:59Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/mpumalanga/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/mpumalanga/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/north-west/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/northern-cape/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T22:10:01Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/northern-cape/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/northern-cape/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/south-africa/western-cape/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T02:40:06Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/western-cape/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/south-africa/western-cape/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/tanzania/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-20T08:58:25Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/tanzania/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/tanzania/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/zambia/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T09:38:55Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/zambia/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/zambia/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/markets/zimbabwe/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-10-20T20:02:25Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/markets/zimbabwe/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/markets/zimbabwe/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/privacy-policy/",
+        "sitemap": [],
+        "verdict": "NEUTRAL",
+        "coverageState": "Excluded by ‘noindex’ tag",
+        "indexingState": "BLOCKED_BY_HTTP_HEADER",
+        "lastCrawlTime": "2026-07-11T04:49:41Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/privacy-policy/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/privacy-policy/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/request-a-quote/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T12:21:54Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/about/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/request-a-quote/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/request-a-quote/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T16:41:33Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/about/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/coastal-corrosive-environments/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T10:33:28Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/coastal-corrosive-environments/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/coastal-corrosive-environments/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/conveyor-belt-protection/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T23:51:11Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/conveyor-belt-protection/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/conveyor-belt-protection/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/conveyor-protection/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/crusher-protection/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T21:07:27Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/crusher-protection/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/crusher-protection/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/ferrous-metal-recovery/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-18T16:37:13Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/ferrous-metal-recovery/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/ferrous-metal-recovery/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/heavy-duty-mining-applications/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T20:17:36Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/heavy-duty-mining-applications/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/heavy-duty-mining-applications/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/high-temperature-applications/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T20:55:10Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/high-temperature-applications/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/high-temperature-applications/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/non-ferrous-metal-recovery/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-10T09:28:59Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/non-ferrous-metal-recovery/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/non-ferrous-metal-recovery/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/outdoor-dusty-environments/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T17:06:07Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/outdoor-dusty-environments/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/outdoor-dusty-environments/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/remote-mining-sites/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T08:25:58Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/remote-mining-sites/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/remote-mining-sites/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/self-cleaning-magnetic-separation/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T19:21:56Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/self-cleaning-magnetic-separation/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/self-cleaning-magnetic-separation/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/solutions/tramp-iron-removal/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T02:01:19Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/solutions/tramp-iron-removal/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/solutions/tramp-iron-removal/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T15:07:52Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/after-sales-process/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T12:32:22Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/after-sales-process/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/after-sales-process/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T00:48:39Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/pages-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/dust-protection/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T04:45:42Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/dust-protection/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/dust-protection/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T05:45:33Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/pages-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/high-temperature-configuration/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T13:48:34Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/high-temperature-configuration/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/high-temperature-configuration/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/installation-guide/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-16T17:34:08Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/",
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/installation-guide/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/installation-guide/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T00:49:56Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/pages-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/outdoor-installation/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T11:32:48Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/outdoor-installation/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/outdoor-installation/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/product-selection-guide/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T22:31:09Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/product-selection-guide/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/product-selection-guide/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/technical-support/spare-parts-support/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T12:41:06Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/technical-support/spare-parts-support/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/technical-support/spare-parts-support/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/terms-and-conditions/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Excluded by ‘noindex’ tag",
+        "indexingState": "BLOCKED_BY_HTTP_HEADER",
+        "lastCrawlTime": "2026-07-10T20:20:02Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/terms-and-conditions/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/terms-and-conditions/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/high-frequency-screen/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/"
+        ],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-21T20:15:42Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/news/evaluating-passive-dust-control-at-conveyor-transfer-points-2026-07-24/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T07:20:10Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kxb-mining-explosion-proof-electromagnetic-iron-remover-control-box/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T08:53:06Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/qjz-mining-explosion-proof-permanent-magnet-iron-remover-control-box/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-29T08:04:36Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdd-explosion-proof-electromagnetic-self-dumping-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T11:40:29Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdd-explosion-proof-electromagnetic-self-dumping-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdd-explosion-proof-electromagnetic-self-dumping-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcyd-explosion-proof-permanent-magnet-self-dumping-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T09:46:53Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcyd-explosion-proof-permanent-magnet-self-dumping-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcyd-explosion-proof-permanent-magnet-self-dumping-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/round-electromagnetic-lifting-magnet/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Crawled - currently not indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-13T03:36:35Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/round-electromagnetic-lifting-magnet/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/round-electromagnetic-lifting-magnet/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-30T01:11:01Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T03:47:37Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-wet-slot-magnetic-filter/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T11:36:55Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-wet-slot-magnetic-filter/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-wet-slot-magnetic-filter/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/ctq-type-roller-automatic-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T12:41:24Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/ctq-type-roller-automatic-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/ctq-type-roller-automatic-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/cyg-wet-pipeline-magnetic-filter/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-09T20:22:37Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhj-type-strong-roller-automatic-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T09:36:21Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhj-type-strong-roller-automatic-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhj-type-strong-roller-automatic-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/drawer-magnet/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T08:09:19Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/drawer-magnet/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/drawer-magnet/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/hump-magnet/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T23:26:06Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/hump-magnet/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/hump-magnet/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-grid/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T22:15:24Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-grid/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-grid/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-rod/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T01:38:17Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-rod/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-rod/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-trap/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-09T10:43:29Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-trap/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-trap/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/permanent-filter-bar-magnetic-neodymium-rod/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-10T12:12:21Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/permanent-filter-bar-magnetic-neodymium-rod/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/permanent-filter-bar-magnetic-neodymium-rod/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-29T03:26:38Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-01T00:25:24Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rotary-pipe-magnet/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T23:28:47Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rotary-pipe-magnet/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rotary-pipe-magnet/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-16T20:14:21Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/maintenance-guide/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-31T00:02:47Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/products-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cgb-type-rotary-semi-automatic-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-grid/"
+        ],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-07T19:37:54Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/clt-type-magnetic-desliming-tank/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T16:31:38Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/clt-type-magnetic-desliming-tank/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/clt-type-magnetic-desliming-tank/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T02:34:19Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T15:21:09Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctb-type-semi-countercurrent-wet-selection-machine/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T12:52:55Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctb-type-semi-countercurrent-wet-selection-machine/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctb-type-semi-countercurrent-wet-selection-machine/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctb-wet-semi-countercurrent-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T13:54:21Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctb-wet-semi-countercurrent-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctb-wet-semi-countercurrent-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctdg-type-permanent-magnet-bulk-dry-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T12:40:40Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctdg-type-permanent-magnet-bulk-dry-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctdg-type-permanent-magnet-bulk-dry-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T06:40:23Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-05T10:36:09Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-wet-full-countercurrent-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T06:26:51Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-wet-full-countercurrent-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-wet-full-countercurrent-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cts-type-downstream-wet-pre-selection-machine/",
+        "sitemap": [],
+        "verdict": "NEUTRAL",
+        "coverageState": "URL is unknown to Google",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cts-type-wet-co-current-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T13:01:21Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cts-type-wet-co-current-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cts-type-wet-co-current-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-08T20:01:47Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctzs-type-upward-suction-magnetic-separator/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T16:14:48Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctzs-type-upward-suction-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctzs-type-upward-suction-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T00:08:48Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcx-wet-fully-automatic-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T07:33:11Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcx-wet-fully-automatic-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcx-wet-fully-automatic-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T01:48:39Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dcz-type-dry-fully-automatic-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-02T03:46:11Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/news/caterpillar-buys-skycatch-to-boost-ai-mine-technology-2026-07-07/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dry-drum-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T21:14:07Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dry-drum-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/dry-drum-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T17:29:49Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T02:53:48Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hcg-type-dry-pre-selection-machine/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T09:14:32Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hcg-type-dry-pre-selection-machine/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hcg-type-dry-pre-selection-machine/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjlh-type-vertical-ring-high-gradient-magnetic-separation/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T22:21:57Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjlh-type-vertical-ring-high-gradient-magnetic-separation/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjlh-type-vertical-ring-high-gradient-magnetic-separation/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjlh-wet-vertical-ring-high-gradient-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T18:36:56Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjlh-wet-vertical-ring-high-gradient-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjlh-wet-vertical-ring-high-gradient-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjpc-wet-disc-magnetic-separation/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T13:48:21Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjpc-wet-disc-magnetic-separation/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hjpc-wet-disc-magnetic-separation/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/hmdn-coal-washing-special-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ljk-type-magnetic-ore-special-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-19T03:23:47Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ljk-type-magnetic-ore-special-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ljk-type-magnetic-ore-special-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-01T08:47:59Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T00:17:03Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T23:52:08Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdc-type-air-cooled-self-dumping-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-08T16:36:08Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-11T06:32:35Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T10:34:57Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdfj-type-forced-oil-circulation-self-dumping-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcps-self-dumping-disc-type-permanent-magnet-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T03:44:28Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcps-self-dumping-disc-type-permanent-magnet-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcps-self-dumping-disc-type-permanent-magnet-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rct-type-fully-magnetic-drum/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T21:05:31Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rct-type-fully-magnetic-drum/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rct-type-fully-magnetic-drum/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcya-type-inclined-pipeline-permanent-magnet-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T11:37:17Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcya-type-inclined-pipeline-permanent-magnet-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcya-type-inclined-pipeline-permanent-magnet-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcydii-type-permanent-magnet-self-dumping-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T01:48:37Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcydii-type-permanent-magnet-self-dumping-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcydii-type-permanent-magnet-self-dumping-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcye-type-permanent-magnet-self-dumping-iron-remover/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T13:51:22Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcye-type-permanent-magnet-self-dumping-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcye-type-permanent-magnet-self-dumping-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyf-type-vertical-pipeline-permanent-magnet-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T20:52:25Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyf-type-vertical-pipeline-permanent-magnet-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyf-type-vertical-pipeline-permanent-magnet-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-09T21:47:07Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-22T21:51:43Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T11:31:02Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-electromagnetic-conveyor-belt-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T07:52:37Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-electromagnetic-conveyor-belt-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-electromagnetic-conveyor-belt-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T13:03:35Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/coal-handling/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/wbc-semi-magnetic-tailings-recovery-machine/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T12:54:49Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/wbc-semi-magnetic-tailings-recovery-machine/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/wbc-semi-magnetic-tailings-recovery-machine/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T06:07:23Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/wet-drum-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/dls-type-window-metal-detector/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T00:02:43Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/dls-type-window-metal-detector/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/dls-type-window-metal-detector/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-18T05:16:26Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T23:40:51Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/electromagnet-separator/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-11T00:20:08Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/electromagnet-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/electromagnet-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/gjt-type-window-metal-detector/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T22:06:59Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/gjt-type-window-metal-detector/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/gjt-type-window-metal-detector/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/hecp-eddy-current-metal-sorting-machine/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-17T16:14:47Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/hecp-eddy-current-metal-sorting-machine/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/hecp-eddy-current-metal-sorting-machine/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/hecs-type-eddy-current-metal-sorting-machine/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T23:28:47Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/hecs-type-eddy-current-metal-sorting-machine/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/hecs-type-eddy-current-metal-sorting-machine/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T04:37:47Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/coal-handling/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/",
+        "sitemap": [],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-14T23:17:36Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/permanent-overband-magnetic-separator/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/stainless-steel-separation-conveyor/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-18T08:15:06Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/stainless-steel-separation-conveyor/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/stainless-steel-separation-conveyor/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdb-type-self-cooling-plate-electromagnetic-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-08T19:37:43Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdb-type-self-cooling-plate-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdb-type-self-cooling-plate-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T05:20:24Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/electrical-specification-guide/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyb-type-permanent-magnet-manual-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-15T13:54:21Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyb-type-permanent-magnet-manual-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyb-type-permanent-magnet-manual-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-16T23:21:38Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/power-plants/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-03T00:19:39Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/kgla-series-rectifier-control-box/",
+          "https://cowinmagnet.co.za/en-za/technical-support/after-sales-process/",
+          "https://cowinmagnet.co.za/en-za/industries/"
+        ],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-16T17:19:43Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T16:37:32Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/industries/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-19T16:19:27Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-18T16:40:01Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/technical-support/coastal-corrosion-protection/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/blog/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-07-20T11:07:55Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/blog/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/blog/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/blog/conveyor-belt-magnetic-separators-south-african-mines/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-28T01:35:38Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/posts-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/blog/conveyor-belt-magnetic-separators-south-african-mines/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/blog/conveyor-belt-magnetic-separators-south-african-mines/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-08-17T15:57:55Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/en-za/news/caterpillar-buys-skycatch-to-boost-ai-mine-technology-2026-07-07/"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/news/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/news/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/big-boost-for-platinum-palladium-as-china-exchange-internationalises-material-handling-dec-2026-09-28/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-10-01T11:59:50Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/posts-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/news/big-boost-for-platinum-palladium-as-china-exchange-internationalises-material-handling-dec-2026-09-28/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/news/big-boost-for-platinum-palladium-as-china-exchange-internationalises-material-handling-dec-2026-09-28/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/canada-energy-regulator-approves-trans-mountain-tolls-settlement-energy-reliability-and-se-2026-09-30/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-10-01T02:37:05Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/posts-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/news/canada-energy-regulator-approves-trans-mountain-tolls-settlement-energy-reliability-and-se-2026-09-30/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/news/canada-energy-regulator-approves-trans-mountain-tolls-settlement-energy-reliability-and-se-2026-09-30/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/china-august-iron-ore-imports-beat-expectations-as-typhoons-delay-july-material-handling-d-2026-09-08/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-22T10:57:52Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/posts-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/news/eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/news/eaf-reaches-67-96-diesel-expenditure-falls-by-r4-8-billion-emissions-energy-reliability-an-2026-09-19/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/eskom-achieves-weekly-eaf-of-70-and-year-to-date-eaf-of-68-06-emissions-energy-reliability-2026-09-26/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-29T00:57:55Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/posts-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/news/eskom-achieves-weekly-eaf-of-70-and-year-to-date-eaf-of-68-06-emissions-energy-reliability-2026-09-26/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/news/eskom-achieves-weekly-eaf-of-70-and-year-to-date-eaf-of-68-06-emissions-energy-reliability-2026-09-26/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/eskom-fully-meets-2026-winter-demand-eaf-remains-at-its-highest-level-since-energy-reliabi-2026-09-06/",
+        "sitemap": [],
+        "verdict": "NEUTRAL",
+        "coverageState": "URL is unknown to Google",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/guinea-discussing-alumina-energy-investments-with-glencore-after-bauxite-bulk-material-pro-2026-09-15/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/hydrogen-investment-hits-130bn-plus-mark-on-energy-security-resilience-bulk-material-proje-2026-09-11/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/illegal-mining-risks-and-the-material-control-questions-south-african-plants-should-review-2026-08-14/",
+        "error": "Internal error encountered.",
+        "verdict": "ERROR",
+        "coverageState": "Inspection error"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/new-phase-r60bn-capex-programme-announced-by-impala-platinum-material-handling-decisions-f-2026-09-04/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/niu-takes-down-wanted-and-dangerous-underground-illegal-mining-kingpin-material-control-an-2026-08-31/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/sa-urged-to-unlock-battery-mineral-value-material-handling-decisions-for-conveyor-protecti-2026-09-13/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-10-09T13:08:09Z",
+        "referringUrls": [],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/news/sa-urged-to-unlock-battery-mineral-value-material-handling-decisions-for-conveyor-protecti-2026-09-13/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/news/sa-urged-to-unlock-battery-mineral-value-material-handling-decisions-for-conveyor-protecti-2026-09-13/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/sanankoro-gold-project-nears-construction-phase-cora-gold-says-material-handling-decisions-2026-09-21/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "PASS",
+        "coverageState": "Submitted and indexed",
+        "indexingState": "INDEXING_ALLOWED",
+        "lastCrawlTime": "2026-09-22T10:58:35Z",
+        "referringUrls": [
+          "https://cowinmagnet.co.za/sitemaps/posts-1.xml"
+        ],
+        "userCanonical": "https://cowinmagnet.co.za/en-za/news/sanankoro-gold-project-nears-construction-phase-cora-gold-says-material-handling-decisions-2026-09-21/",
+        "pageFetchState": "SUCCESSFUL",
+        "robotsTxtState": "ALLOWED",
+        "googleCanonical": "https://cowinmagnet.co.za/en-za/news/sanankoro-gold-project-nears-construction-phase-cora-gold-says-material-handling-decisions-2026-09-21/"
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/south-africa-july-mining-updates-conveyor-protection/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/us-to-fund-7bn-of-argentina-mineral-energy-projects-document-shows-energy-reliability-and--2026-09-24/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/wc-assesses-flood-damage-to-critical-klawer-water-infrastructure-bulk-material-project-che-2026-09-17/",
+        "sitemap": [
+          "https://cowinmagnet.co.za/sitemap.xml"
+        ],
+        "verdict": "NEUTRAL",
+        "coverageState": "Discovered - currently not indexed",
+        "indexingState": "INDEXING_STATE_UNSPECIFIED",
+        "lastCrawlTime": "",
+        "referringUrls": [],
+        "userCanonical": "",
+        "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
+        "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
+        "googleCanonical": ""
+      },
+      {
+        "url": "https://cowinmagnet.co.za/en-za/news/what-recent-south-african-industry-updates-mean-for-conveyor-protection-2026-08-11/",
+        "error": "Internal error encountered.",
+        "verdict": "ERROR",
+        "coverageState": "Inspection error"
+      }
+    ],
+    "byVerdict": {
+      "PASS": 147,
+      "ERROR": 3,
+      "NEUTRAL": 41
+    },
+    "nextOffset": 63,
+    "inspectedAt": "2026-10-26T02:20:58.322Z",
+    "propertyUrl": "sc-domain:cowinmagnet.co.za",
+    "cycleStartedAt": "2026-09-08T02:21:01.735Z",
+    "byCoverageState": {
+      "Inspection error": 3,
+      "Submitted and indexed": 147,
+      "URL is unknown to Google": 2,
+      "Excluded by ‘noindex’ tag": 4,
+      "Crawled - currently not indexed": 14,
+      "Discovered - currently not indexed": 21
+    },
+    "inspectedThisRun": 24
+  },
+  "updated_at": "2026-10-26T02:20:58.357Z"
+}

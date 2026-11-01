@@ -1,0 +1,632 @@
+[
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/suspended-permanent-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/suspended-permanent-magnetic-separator",
+    "tokenJaccard": 0.52,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcyd-type-permanent-magnet-self-dumping-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcyd-type-permanent-magnet-self-dumping-iron-remover",
+    "tokenJaccard": 0.473,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/round-electromagnetic-lifting-magnet/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/round-electromagnetic-lifting-magnet",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/round-electromagnetic-lifting-magnet",
+    "tokenJaccard": 0.456,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/round-electromagnetic-lifting-magnet/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/industry-application-equipment/round-electromagnetic-lifting-magnet/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/industry-application-equipment/round-electromagnetic-lifting-magnet",
+    "tokenJaccard": 0.295,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/suspended-and-self-unloading-iron-removers/rcyd-type-permanent-magnet-self-dumping-iron-remover",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/suspended-permanent-magnetic-separator",
+    "tokenJaccard": 0.292,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover",
+    "tokenJaccard": 0.455,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/belt-high-gradient-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/belt-high-gradient-magnetic-separator",
+    "tokenJaccard": 0.504,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/disc-magnetic-separator-for-tailing",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/disc-magnetic-separator-for-tailing",
+    "tokenJaccard": 0.48,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/suspended-and-self-unloading-iron-removers/rcdd-type-self-cooling-self-dumping-electromagnetic-iron-remover",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/belt-high-gradient-magnetic-separator",
+    "tokenJaccard": 0.258,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/cbz-type-rotary-automatic-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/cbz-type-rotary-automatic-magnetic-separator",
+    "tokenJaccard": 0.472,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/disc-magnetic-separator-for-tailing",
+    "tokenJaccard": 0.262,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/cxj-drum-type-automatic-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/cxj-drum-type-automatic-magnetic-separator",
+    "tokenJaccard": 0.439,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/gls-type-integral-channel-metal-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/gls-type-integral-channel-metal-separator",
+    "tokenJaccard": 0.461,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cbz-type-rotary-automatic-magnetic-separator",
+    "tokenJaccard": 0.285,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cxj-drum-type-automatic-magnetic-separator",
+    "tokenJaccard": 0.277,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/gls-type-integral-channel-metal-separator",
+    "tokenJaccard": 0.293,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/cgt-type-super-strong-full-magnetic-drum",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/cgt-type-super-strong-full-magnetic-drum",
+    "tokenJaccard": 0.486,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/ctz-type-midfield-strong-semi-magnetic-drum",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/ctz-type-midfield-strong-semi-magnetic-drum",
+    "tokenJaccard": 0.487,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcda-type-air-cooled-electromagnetic-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcda-type-air-cooled-electromagnetic-iron-remover",
+    "tokenJaccard": 0.433,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cgt-type-super-strong-full-magnetic-drum",
+    "tokenJaccard": 0.286,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/ctz-type-midfield-strong-semi-magnetic-drum",
+    "tokenJaccard": 0.286,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcda-type-air-cooled-electromagnetic-iron-remover",
+    "tokenJaccard": 0.294,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcde-type-oil-cooled-electromagnetic-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcde-type-oil-cooled-electromagnetic-iron-remover",
+    "tokenJaccard": 0.424,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover",
+    "tokenJaccard": 0.435,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover",
+    "tokenJaccard": 0.454,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcdf-oil-cooled-self-dumping-electromagnetic-iron-remover",
+    "tokenJaccard": 0.292,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcde-type-oil-cooled-electromagnetic-iron-remover",
+    "tokenJaccard": 0.294,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcyg-type-pipeline-self-dumping-permanent-magnet-iron-remover",
+    "tokenJaccard": 0.292,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover",
+    "tokenJaccard": 0.495,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover",
+    "tokenJaccard": 0.48,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/cqz-type-fully-automatic-online-magnetic-separation",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/cqz-type-fully-automatic-online-magnetic-separation",
+    "tokenJaccard": 0.498,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcyz-type-vertical-pipeline-permanent-magnet-iron-remover",
+    "tokenJaccard": 0.29,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/rcyp-type-permanent-magnet-manual-self-dumping-iron-remover",
+    "tokenJaccard": 0.291,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/cqz-type-fully-automatic-online-magnetic-separation",
+    "tokenJaccard": 0.285,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/gtc-wet-plate-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/gtc-wet-plate-magnetic-separator",
+    "tokenJaccard": 0.482,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/ctn-type-full-countercurrent-wet-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/ctn-type-full-countercurrent-wet-magnetic-separator",
+    "tokenJaccard": 0.487,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/nct-type-concentrated-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/nct-type-concentrated-magnetic-separator",
+    "tokenJaccard": 0.483,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/gtc-wet-plate-magnetic-separator",
+    "tokenJaccard": 0.272,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/ctn-type-full-countercurrent-wet-magnetic-separator",
+    "tokenJaccard": 0.288,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/nct-type-concentrated-magnetic-separator",
+    "tokenJaccard": 0.274,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/ctn-type-specialized-magnetic-separator-for-coal-washing",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/ctn-type-specialized-magnetic-separator-for-coal-washing",
+    "tokenJaccard": 0.486,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/drum-magnet",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/drum-magnet",
+    "tokenJaccard": 0.471,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/eccentric-eddy-current-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/eccentric-eddy-current-separator",
+    "tokenJaccard": 0.491,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-separation-equipment/ctn-type-specialized-magnetic-separator-for-coal-washing",
+    "tokenJaccard": 0.289,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/drum-magnet/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/drum-magnet/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/drum-magnet",
+    "tokenJaccard": 0.282,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/eccentric-eddy-current-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/eccentric-eddy-current-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/eccentric-eddy-current-separator",
+    "tokenJaccard": 0.293,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/electromagnet-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/electromagnet-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/electromagnet-separator",
+    "tokenJaccard": 0.524,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/stainless-steel-separation-conveyor/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/stainless-steel-separation-conveyor",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/stainless-steel-separation-conveyor",
+    "tokenJaccard": 0.476,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/magnetic-head-pulley",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/magnetic-head-pulley",
+    "tokenJaccard": 0.506,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/electromagnet-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/electromagnet-separator/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/electromagnet-separator",
+    "tokenJaccard": 0.305,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/stainless-steel-separation-conveyor/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/stainless-steel-separation-conveyor/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/stainless-steel-separation-conveyor",
+    "tokenJaccard": 0.297,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/metal-detection-and-recycling-sorting/magnetic-head-pulley/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/magnetic-head-pulley/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/metal-detection-recycling-sorting/magnetic-head-pulley",
+    "tokenJaccard": 0.29,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/cbs-drawer-type-magnetic-filter",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/cbs-drawer-type-magnetic-filter",
+    "tokenJaccard": 0.481,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rcyz-type-pipeline-magnetic-filter",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rcyz-type-pipeline-magnetic-filter",
+    "tokenJaccard": 0.481,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/clc-type-slot-magnetic-filter",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/clc-type-slot-magnetic-filter",
+    "tokenJaccard": 0.483,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/cbs-drawer-type-magnetic-filter",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/rcyz-type-pipeline-magnetic-filter",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/dhd-type-roller-type-automatic-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/dhd-type-roller-type-automatic-magnetic-separator",
+    "tokenJaccard": 0.468,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/clc-type-slot-magnetic-filter",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/qcg-wet-roller-magnetic-separator",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/qcg-wet-roller-magnetic-separator",
+    "tokenJaccard": 0.488,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/hump-magnet/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/hump-magnet",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/hump-magnet",
+    "tokenJaccard": 0.481,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/dhd-type-roller-type-automatic-magnetic-separator",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/qcg-wet-roller-magnetic-separator",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-trap/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/magnetic-trap",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/magnetic-trap",
+    "tokenJaccard": 0.48,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/hump-magnet/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/hump-magnet/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/hump-magnet",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/",
+    "comparisonSite": "global",
+    "comparisonUrl": "https://www.cowinmagnet.com/en/products/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+    "status": 200,
+    "finalUrl": "https://www.cowinmagnet.com/en/products/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+    "tokenJaccard": 0.453,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/magnetic-components-and-filters/magnetic-trap/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/magnetic-trap/",
+    "status": 404,
+    "finalUrl": "https://cowinmagnet.cl/en/products/magnetic-components-and-filters/magnetic-trap",
+    "tokenJaccard": 0,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  },
+  {
+    "url": "https://cowinmagnet.co.za/en-za/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/",
+    "comparisonSite": "chile",
+    "comparisonUrl": "https://cowinmagnet.cl/en/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover/",
+    "status": 200,
+    "finalUrl": "https://cowinmagnet.cl/en/products/industry-application-equipment/rbcdb-explosion-proof-disc-type-electromagnetic-iron-remover",
+    "tokenJaccard": 0.303,
+    "note": "Word-set overlap is a screening metric, not proof of duplication or Google rejection."
+  }
+]

@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join, normalize, sep } from "node:path";
 import { renderBlogArticle, renderBlogFeed, renderBlogList } from "../lib/blog-renderer.js";
 import { renderNewsArticle, renderNewsFeed, renderNewsList } from "../lib/news-renderer.js";
+import { normalizeRegionalAlternates, regionalProductContext, regionalPageContext } from "../lib/regional-seo.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,7 +46,7 @@ function withVersionedStylesheet(html) {
     .replace(/((?:\.\.\/|\/)?assets\/site\.js)(?:\?[^"']*)?(?=["'])/g, `$1?v=${siteAssetVersion}`);
   if (!/class=["'][^"']*skip-link/i.test(output)) output = output.replace(/<body([^>]*)>/i, `<body$1><a class="skip-link" href="#main-content">Skip to main content</a>`);
   if (!/<main\b[^>]*\bid=/i.test(output)) output = output.replace(/<main\b/i, '<main id="main-content"');
-  return output;
+  return normalizeRegionalAlternates(output);
 }
 
 function safePath(parts) {
@@ -167,13 +168,20 @@ export async function GET(_request, context) {
     const isUnverifiedTranslation = ["af-za", "zu-za", "xh-za", "st-za", "tn-za"].includes(locale);
     const isIncompleteContent = /local prototype|prepared for deployment|pending production|verified translation is pending/i.test(file.body.toString("utf8"));
     const isHtml = contentType(file.filePath) === "text/html; charset=utf-8";
-    const body = isHtml ? withVersionedStylesheet(file.body.toString("utf8")) : file.body;
+    let body = isHtml ? withVersionedStylesheet(file.body.toString("utf8")) : file.body;
+    if (isHtml) {
+      const regional = regionalProductContext(`/${parts.join('/')}/`);
+      if (regional) body = body.replace(/(<div class=['"]product-source-body['"]>)/, `$1${regional}`);
+      const pageContext = regionalPageContext(`/${parts.join('/')}/`);
+      if (pageContext) body = body.replace(/<\/main>/i, `${pageContext}</main>`);
+    }
     return new Response(body, {
+      status: parts.join('/') === 'en-za/404' ? 404 : 200,
       headers: {
         "content-type": contentType(file.filePath),
         "cache-control": "public, max-age=0, s-maxage=300",
         ...(locale ? { "content-language": locale } : {}),
-        ...(isUnverifiedTranslation || isIncompleteContent ? { "x-robots-tag": "noindex, follow" } : {})
+        ...(isUnverifiedTranslation || isIncompleteContent || parts.join('/') === 'en-za/404' ? { "x-robots-tag": "noindex, follow" } : {})
       }
     });
   }
