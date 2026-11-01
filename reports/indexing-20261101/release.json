@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-01",
+  "codeCommit": "9d5fe472",
+  "deploymentId": "dpl_Cxmg5mYBK9GbrXSYmbJj4ayVCGDf",
+  "deploymentUrl": "https://cowinmagnetco-mupfip1ao-davidsha.vercel.app",
+  "productionUrl": "https://cowinmagnet.co.za",
+  "deploymentStatus": "READY",
+  "build": "passed",
+  "sitemapGoogleTests": "13 passed",
+  "directRouteChecks": "passed: product, industry, explicit404",
+  "production": {"sitemapUrls":191,"all200SelfCanonical":true,"unexpectedNoindex":0,"brokenInternalLinks":0,"globalHomepageXDefault":0,"regionalContentConfirmed":true,"explicit404Status":404},
+  "gscValidation": "Crawled-not-indexed: Validation Started 2026-11-01; Pending 62, Failed 0; not yet passed",
+  "gsc404Validation": "Validation Started 2026-11-01; Pending 10, Failed 0; intentional removed articles remain 404; not yet passed",
+  "dispositionTotals": {"total":109,"repairedAwaitingGoogle":60,"waitingRecrawl":24,"intentionalExclusions":25},
+  "rollbackTag": "backup/indexing-20261101-before-fix"
+}

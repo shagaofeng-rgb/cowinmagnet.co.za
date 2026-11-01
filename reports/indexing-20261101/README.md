@@ -10,7 +10,7 @@ GSC Page Indexing report updated 2026-10-23, read 2026-11-01: indexed 115; exclu
 
 `stored-inspection.json` is a read-only export of the site's rolling inspection record, last updated 2026-10-26, cycle started 2026-09-08. Its 147 indexed/14 crawled-not-indexed counts do NOT supersede the Page Indexing report; individual results have different inspection ages. Four historical noindex URLs are cookie-policy, downloads, privacy-policy and terms-and-conditions. Current public checks return 200 and no HTTP noindex. Their GSC last crawls are in July, so they remain waiting for recrawl; no indexability change was made to these pages.
 
-The 24 discovered URLs, 6 redirect URLs and 3 alternative-canonical URLs have not yet been exported from the live GSC UI. Browser interactions repeatedly timed out and the controlled tab changed ID during the session. Their exact URL dispositions and verification remain evidence-insufficient; no speculative redirects or canonical changes were applied to them.
+Browser access recovered after repeated timeouts. `gsc-extra.json` now contains the remaining 37 live UI rows: discovered 24, redirects 6, canonical alternatives 3, noindex 4. Together with the 62-row export and the 10 observed 404 rows, all 109 exclusions are represented in the disposition table. The 6 redirects all lead to 200 targets (root default-language normalization and 5 historical product-category corrections). The 3 canonical alternatives are product-prefill query URLs for the quote form and correctly canonicalize to the unparameterized quote form. These 9 exclusions are intentional. The 4 noindex UI rows match the stored inspection paths; live HTTP checks show no HTTP noindex and they await recrawl.
 
 ## Confirmed findings and changes
 
@@ -31,6 +31,8 @@ The 24 discovered URLs, 6 redirect URLs and 3 alternative-canonical URLs have no
 
 Local checks: direct route checks for product, industry and explicit 404 status passed; 13 sitemap/Google API/weekly cron tests passed. Build and production acceptance are recorded in `release.json` after deployment.
 
-GSC validation: not yet restarted; browser submission is still required after production acceptance. Existing discovered/noindex validation remains in progress. Intentional deleted articles remain legitimate 404 and must not be described as restored or as a passed Google validation.
+GSC crawled-not-indexed validation was restarted after production acceptance: Validation Started, 2026-11-01; Pending 62, Failed 0. This is not an indexing success. Existing discovered/noindex validation remains in progress. The 404 validation outcome is recorded in release.json. Intentional deleted articles remain legitimate 404 and must not be described as restored or as a passed Google validation.
+
+Final disposition totals for 109 URLs: 60 code/content repairs awaiting Google's reassessment, 24 waiting for recrawl, 25 intentionally excluded (15 deleted news, 1 RSS feed, 6 redirects and 3 quote-form canonical alternatives). Every row identifies its evidence source and GSC last-crawl date; N/A means Google has not reported a crawl. No missing crawl dates are invented.
 
 Rollback: Git tag `backup/indexing-20261101-before-fix`; revert the route/helper change and redeploy this South Africa project. Production database was read only; no customer or article data was changed.
