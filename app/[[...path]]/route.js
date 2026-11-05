@@ -3,6 +3,7 @@ import { join, normalize, sep } from "node:path";
 import { renderBlogArticle, renderBlogFeed, renderBlogList } from "../lib/blog-renderer.js";
 import { renderNewsArticle, renderNewsFeed, renderNewsList } from "../lib/news-renderer.js";
 import { normalizeRegionalAlternates, regionalProductContext, regionalPageContext } from "../lib/regional-seo.js";
+import { withZaInnerLayout } from "../lib/za-inner-layout.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -99,6 +100,8 @@ async function readRouteFile(parts) {
 export async function GET(_request, context) {
   const params = await context.params;
   const parts = params.path || [];
+  const path = `/${parts.join("/")}/`;
+  const renderInner = (html) => withZaInnerLayout(withVersionedStylesheet(html), path);
   if (isPrivateStaticPath(parts)) {
     return new Response("Not found", { status: 404, headers: { "x-robots-tag": "noindex, nofollow" } });
   }
@@ -109,7 +112,7 @@ export async function GET(_request, context) {
     return Response.redirect(new URL("/admin/", _request.url), 303);
   }
   if (parts.join("/") === "en-za/news") {
-    return new Response(withVersionedStylesheet(await renderNewsList()), {
+    return new Response(renderInner(await renderNewsList()), {
       headers: {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "public, max-age=0, s-maxage=300"
@@ -125,7 +128,7 @@ export async function GET(_request, context) {
     });
   }
   if (parts.join("/") === "en-za/blog") {
-    return new Response(withVersionedStylesheet(await renderBlogList()), {
+    return new Response(renderInner(await renderBlogList()), {
       headers: {
         "content-type": "text/html; charset=utf-8",
         "cache-control": "public, max-age=0, s-maxage=300"
@@ -143,7 +146,7 @@ export async function GET(_request, context) {
   if (parts.length === 3 && parts[0] === "en-za" && parts[1] === "blog") {
     const html = await renderBlogArticle(parts[2]);
     if (html) {
-      return new Response(withVersionedStylesheet(html), {
+      return new Response(renderInner(html), {
         headers: {
           "content-type": "text/html; charset=utf-8",
           "cache-control": "public, max-age=0, s-maxage=300"
@@ -154,7 +157,7 @@ export async function GET(_request, context) {
   if (parts.length === 3 && parts[0] === "en-za" && parts[1] === "news") {
     const html = await renderNewsArticle(parts[2]);
     if (html) {
-      return new Response(withVersionedStylesheet(html), {
+      return new Response(renderInner(html), {
         headers: {
           "content-type": "text/html; charset=utf-8",
           "cache-control": "public, max-age=0, s-maxage=300"
@@ -174,6 +177,7 @@ export async function GET(_request, context) {
       if (regional) body = body.replace(/(<div class=['"]product-source-body['"]>)/, `$1${regional}`);
       const pageContext = regionalPageContext(`/${parts.join('/')}/`);
       if (pageContext) body = body.replace(/<\/main>/i, `${pageContext}</main>`);
+      body = withZaInnerLayout(body, path);
     }
     return new Response(body, {
       status: parts.join('/') === 'en-za/404' ? 404 : 200,
@@ -187,7 +191,10 @@ export async function GET(_request, context) {
   }
 
   const notFound = await readRouteFile(["en-za", "404"]);
-  return new Response(notFound?.body || "Not found", {
+  const errorPage = notFound && parts[0] === "en-za"
+    ? withZaInnerLayout(withVersionedStylesheet(notFound.body.toString("utf8")), "/en-za/404/")
+    : notFound?.body || "Not found";
+  return new Response(errorPage, {
     status: 404,
     headers: { "content-type": "text/html; charset=utf-8" }
   });
