@@ -1,17 +1,18 @@
-import { isPublishedNewsArticle, readDataJson } from "../lib/news-system.js";
+import { connection } from "next/server";
+import { isPublishedNewsArticle, readPublicArticles } from "../lib/news-system.js";
 import { escapeXml, productionSiteUrl } from "../lib/sitemap-system.js";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 function articleUrl(item) {
   return `${productionSiteUrl()}/en-za/news/${encodeURIComponent(item.slug)}/`;
 }
 
 export async function GET() {
+  await connection();
   const now = Date.now();
   const recentMs = 2 * 24 * 60 * 60 * 1000;
-  const articles = (await readDataJson("data/articles/articles.json", []))
+  const articles = (await readPublicArticles())
     .filter(isPublishedNewsArticle)
     .filter((item) => now - new Date(item.published_at || item.date || 0).getTime() <= recentMs)
     .slice(0, 1000);
