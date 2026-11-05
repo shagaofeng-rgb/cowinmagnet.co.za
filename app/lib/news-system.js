@@ -3,6 +3,7 @@ import { mkdir, open, readFile, stat, unlink, writeFile } from "node:fs/promises
 import { tmpdir } from "node:os";
 import { dirname, join, normalize, sep } from "node:path";
 import pg from "pg";
+import { cachePublicDatabaseRead, invalidatePublicDatabaseRead } from "./public-database-cache.js";
 
 const root = process.cwd();
 const dataRoot = join(root, "data");
@@ -12,7 +13,7 @@ let pool;
 let schemaReady;
 const activeLocks = new Set();
 const databaseFailureMessages = new Map();
-const RELEASE_SNAPSHOT_PATHS = new Set(["articles/articles.json"]);
+const ARTICLES_PATH = "data/articles/articles.json";
 
 export class PersistentStorageError extends Error {
   constructor(message, cause) {
@@ -135,20 +136,29 @@ export function mergeReleaseSnapshot(releaseSnapshot, databaseSnapshot) {
   return merged;
 }
 
-export async function readDataJson(relativePath, fallback) {
-  const cleanPath = cleanDataPath(relativePath);
-  if (RELEASE_SNAPSHOT_PATHS.has(cleanPath)) {
-    const bundled = await readBundledDataJson(relativePath, fallback);
-    try {
-      return mergeReleaseSnapshot(bundled, await readDatabaseJson(relativePath));
-    } catch (error) {
-      const message = error?.message || String(error);
-      if (databaseFailureMessages.get(relativePath) !== message) {
-        databaseFailureMessages.set(relativePath, message);
-        console.warn(`[content-store] Database read failed for ${relativePath}: ${message}`);
-      }
-      return bundled;
+const readCachedArticles = cachePublicDatabaseRead("za-articles", () => readDatabaseJson(ARTICLES_PATH));
+
+async function readReleaseArticles(fallback, readSnapshot) {
+  const bundled = await readBundledDataJson(ARTICLES_PATH, fallback);
+  try {
+    return mergeReleaseSnapshot(bundled, await readSnapshot());
+  } catch (error) {
+    const message = error?.message || String(error);
+    if (databaseFailureMessages.get(ARTICLES_PATH) !== message) {
+      databaseFailureMessages.set(ARTICLES_PATH, message);
+      console.warn(`[content-store] Database read failed for ${ARTICLES_PATH}: ${message}`);
     }
+    return bundled;
+  }
+}
+
+export async function readPublicArticles() {
+  return readReleaseArticles([], readCachedArticles);
+}
+
+export async function readDataJson(relativePath, fallback) {
+  if (cleanDataPath(relativePath) === "articles/articles.json") {
+    return readReleaseArticles(fallback, () => readDatabaseJson(relativePath));
   }
 
   try {
@@ -175,7 +185,10 @@ export async function readDataJson(relativePath, fallback) {
 
 export async function writeDataJson(relativePath, value) {
   try {
-    if (await writeDatabaseJson(relativePath, value)) return;
+    if (await writeDatabaseJson(relativePath, value)) {
+      if (cleanDataPath(relativePath) === "articles/articles.json") invalidatePublicDatabaseRead("za-articles");
+      return;
+    }
   } catch (error) {
     const message = error?.message || String(error);
     console.warn(`[content-store] Database write failed for ${relativePath}: ${message}`);

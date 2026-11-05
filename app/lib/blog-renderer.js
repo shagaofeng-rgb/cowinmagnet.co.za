@@ -1,4 +1,4 @@
-﻿import { escapeHtml, isPublishedBlogArticle, readDataJson } from "./news-system.js";
+﻿import { escapeHtml, isPublishedBlogArticle, readPublicArticles } from "./news-system.js";
 
 import { sanitizePublishedArticleHtml } from "./news-system.js";
 
@@ -104,7 +104,7 @@ function productCard(product) {
 }
 
 export async function renderBlogList() {
-  const articles = blogArticles(await readDataJson("data/articles/articles.json", []));
+  const articles = blogArticles(await readPublicArticles());
   const body = `<section class="page-hero blog-list-hero">
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / Blog</nav>
     <p class="eyebrow">Blog</p>
@@ -146,7 +146,7 @@ export async function renderBlogList() {
 }
 
 export async function renderBlogArticle(slug) {
-  const articles = blogArticles(await readDataJson("data/articles/articles.json", []));
+  const articles = blogArticles(await readPublicArticles());
   const item = articles.find((article) => article.slug === slug);
   if (!item) return null;
   const canonical = articleUrl(item);
@@ -199,7 +199,7 @@ export async function renderBlogArticle(slug) {
 }
 
 export async function renderBlogFeed() {
-  const articles = blogArticles(await readDataJson("data/articles/articles.json", [])).slice(0, 30);
+  const articles = blogArticles(await readPublicArticles()).slice(0, 30);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>

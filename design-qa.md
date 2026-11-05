@@ -35,6 +35,6 @@ Both pairs use 1× density, with no browser chrome or phone frame. The full view
 
 Live content and shared resources are checked again after deployment. Browser checks use representative page templates and test the enquiry workflow up to submission without creating a customer enquiry.
 
-Release recovery: `backup/za-inner-design-20261105` marks the previous Git state; the previous Vercel production deployment is `dpl_6t8xr287ve9MaDm4mTpSh2cThMJ4`.
+Release recovery: the immediate pre-release Git state is `f1689d0a` and its Vercel production deployment is `dpl_9PnQBwdtWkQnDWc15VxbdkUiR2NJ`. The release incorporates this revision's article cache changes.
 
 final result: passed

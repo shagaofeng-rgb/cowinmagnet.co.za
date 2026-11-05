@@ -1,4 +1,4 @@
-import { escapeHtml, isExternalNewsImage, isPublishedNewsArticle, readDataJson, sanitizePublishedArticleHtml } from "./news-system.js";
+import { escapeHtml, isExternalNewsImage, isPublishedNewsArticle, readPublicArticles, sanitizePublishedArticleHtml } from "./news-system.js";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.APP_URL || "https://cowinmagnet.co.za").replace(/\/$/, "");
 
@@ -100,7 +100,7 @@ function productCard(item) {
 }
 
 export async function renderNewsList() {
-  const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedNewsArticle);
+  const articles = (await readPublicArticles()).filter(isPublishedNewsArticle);
   const body = `<section class="page-hero news-list-hero">
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / News</nav>
     <p class="eyebrow">News</p>
@@ -143,7 +143,7 @@ export async function renderNewsList() {
 }
 
 export async function renderNewsArticle(slug) {
-  const articles = await readDataJson("data/articles/articles.json", []);
+  const articles = await readPublicArticles();
   const item = articles.find((article) => article.slug === slug && isPublishedNewsArticle(article));
   if (!item) return null;
   const canonical = articleUrl(item);
@@ -207,7 +207,7 @@ export async function renderNewsArticle(slug) {
 }
 
 export async function renderNewsFeed() {
-  const articles = (await readDataJson("data/articles/articles.json", [])).filter(isPublishedNewsArticle).slice(0, 30);
+  const articles = (await readPublicArticles()).filter(isPublishedNewsArticle).slice(0, 30);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>

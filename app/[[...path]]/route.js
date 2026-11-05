@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { readFile } from "node:fs/promises";
 import { join, normalize, sep } from "node:path";
 import { renderBlogArticle, renderBlogFeed, renderBlogList } from "../lib/blog-renderer.js";
@@ -6,7 +7,6 @@ import { normalizeRegionalAlternates, regionalProductContext, regionalPageContex
 import { withZaInnerLayout } from "../lib/za-inner-layout.js";
 
 export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
 
 const root = /*turbopackIgnore: true*/ process.cwd();
 // Static HTML pages are generated as files, so their stylesheet URL needs a
@@ -98,6 +98,7 @@ async function readRouteFile(parts) {
 }
 
 export async function GET(_request, context) {
+  await connection();
   const params = await context.params;
   const parts = params.path || [];
   const path = `/${parts.join("/")}/`;
