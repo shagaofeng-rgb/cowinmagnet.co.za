@@ -48,7 +48,7 @@ await Promise.all(Array.from({ length: 7 }, async () => {
   }
 }));
 const shared = {};
-for (const path of ["/en-za/", "/assets/site.css?v=20260919-info-mailbox", "/assets/site.js?v=20260919-info-mailbox", "/assets/za-inner-v1.css", "/assets/za-inner-v1.js", "/assets/za-inner-icons-v1.svg", "/en-za/news/feed.xml", "/en-za/blog/feed.xml", "/robots.txt"]) {
+for (const path of ["/en-za/", "/assets/site.css?v=20261106-workbench-1", "/assets/site.js?v=20261106-workbench-1", "/assets/za-inner-v1.css?v=20261106-workbench-1", "/assets/za-inner-v1.js?v=20261106-workbench-1", "/assets/za-inner-icons-v1.svg", "/en-za/news/feed.xml", "/en-za/blog/feed.xml", "/robots.txt"]) {
   const response = await get(path);
   const body = Buffer.from(await response.arrayBuffer());
   shared[path] = { status: response.status, hash: sha(body) };

@@ -10,6 +10,10 @@ import { googleSeoConfig, inspectGoogleUrls, runGoogleSeoSync } from "../../lib/
 import { markSitemapDirty, productionSiteUrl, runSitemapAudit } from "../../lib/sitemap-system.js";
 import { newsAutomationStatus, queueNewsSource, reviewNewsDraft, runNewsAutomation } from "../../lib/news-automation.js";
 import { analyticsHealth, getAnalyticsExclusionRules, getAnalyticsReport, getAnalyticsVisitorJourney, recordAnalyticsEvent, saveAnalyticsExclusionRule, updateAnalyticsVisitor } from "../../lib/analytics-system.js";
+import { ADMIN_TIMEZONE, InvalidDateRangeError, reportDateBounds } from "../../lib/admin-date-range.js";
+import { ENQUIRIES_PATH, EnquiryError, enquiryAttachment, expireEnquiryUploads, readUploadPart, saveEnquiry, saveUploadPart, startEnquiryUpload, updateEnquiry } from "../../lib/enquiry-store.js";
+import { enquiryMailConfigured, notificationDue, processEnquiryNotification, queuedNotification } from "../../lib/enquiry-notifications.js";
+import { EDITORIAL_PATH, editorialLimits, updateProductEditorial } from "../../lib/product-editorial.js";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -30,8 +34,6 @@ const adminLoginAliases = [...new Set([
   "davidsha@cowinmagnet.com",
   "info@cowinmagnet.com"
 ].map((value) => String(value || "").trim().toLowerCase()).filter(Boolean))];
-const enquiryNotificationRecipient = (process.env.INQUIRY_NOTIFICATION_TO || "info@cowinmagnet.com").trim().toLowerCase();
-
 const { Pool } = pg;
 let pool;
 let schemaReady;
@@ -87,7 +89,10 @@ async function ensureDatabaseSchema() {
         payload JSONB NOT NULL,
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       )
-    `).then(() => true);
+    `).then(() => true).catch((error) => {
+      schemaReady = undefined;
+      throw error;
+    });
   }
   return schemaReady;
 }
@@ -111,6 +116,24 @@ async function writeDatabaseJson(relativePath, value) {
     [relativePath, JSON.stringify(value)]
   );
   return true;
+}
+
+async function enquiryPool() {
+  const db = getPool();
+  if (!db) throw new EnquiryError(503, "Enquiry storage is temporarily unavailable. Please contact us by email or WhatsApp.");
+  await ensureDatabaseSchema();
+  return db;
+}
+
+async function readEnquiryItems() {
+  if (!getPool()) {
+    if (process.env.VERCEL) throw new EnquiryError(503, "Enquiry storage is temporarily unavailable.");
+    return readJson(ENQUIRIES_PATH);
+  }
+  const items = await readDatabaseJson(ENQUIRIES_PATH);
+  if (items === null) return readJson(ENQUIRIES_PATH);
+  if (!Array.isArray(items)) throw new Error("Unexpected enquiries document");
+  return items;
 }
 
 function storageMode() {
@@ -140,7 +163,7 @@ const jsonFiles = new Map([
     { id: "ROLE-admin", name: "Admin", description: "Manage content, enquiries, SEO data and sync tasks.", permissions: ["dashboard:view", "products:*", "categories:*", "news:*", "forms:*", "analytics:view", "seo:*", "media:*", "sync:*", "logs:view", "settings:view"], status: "active" },
     { id: "ROLE-editor", name: "Editor", description: "Maintain products, categories, news and media assets.", permissions: ["products:view", "products:edit", "categories:view", "categories:edit", "news:*", "media:*"], status: "active" },
     { id: "ROLE-sales", name: "Sales", description: "View and follow up customer enquiry forms.", permissions: ["forms:*", "products:view", "analytics:view"], status: "active" },
-    { id: "ROLE-readonly", name: "Viewer", description: "Read-only access to admin data.", permissions: ["dashboard:view", "products:view", "categories:view", "news:view", "forms:view", "analytics:view", "seo:view"], status: "active" }
+    { id: "ROLE-readonly", name: "Viewer", description: "Read-only access to content and reports.", permissions: ["dashboard:view", "products:view", "categories:view", "news:view", "analytics:view", "seo:view"], status: "active" }
   ]],
   ["data/media/assets.json", []],
   ["data/seo/google-search-console.json", null],
@@ -184,12 +207,10 @@ function slugifyAdmin(value) {
     .replace(/(^-|-$)/g, "");
 }
 
-const ADMIN_TIMEZONE = "Africa/Johannesburg";
-
 function listParams(request) {
   const url = new URL(request.url);
-  const page = Math.max(1, Number(url.searchParams.get("page") || 1));
-  const pageSize = Math.min(100, Math.max(20, Number(url.searchParams.get("pageSize") || url.searchParams.get("limit") || 20)));
+  const page = Math.max(1, Math.min(100000, Number.parseInt(url.searchParams.get("page"), 10) || 1));
+  const pageSize = Math.min(100, Math.max(20, Number.parseInt(url.searchParams.get("pageSize") || url.searchParams.get("limit"), 10) || 20));
   const q = String(url.searchParams.get("q") || "").trim().toLowerCase();
   const status = String(url.searchParams.get("status") || "").trim().toLowerCase();
   const sort = String(url.searchParams.get("sort") || "updatedAt");
@@ -199,46 +220,6 @@ function listParams(request) {
   const to = String(url.searchParams.get("to") || "").trim();
   const timeField = String(url.searchParams.get("timeField") || "").trim();
   return { page, pageSize, q, status, sort, dir, range, from, to, timeField };
-}
-
-function parseRangeBoundary(value, endOfDay = false) {
-  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
-  const suffix = endOfDay ? "T23:59:59.999" : "T00:00:00.000";
-  const date = new Date(`${value}${suffix}+02:00`);
-  return Number.isNaN(date.getTime()) ? null : date.getTime();
-}
-
-function rangeBounds(params) {
-  if (params.range === "all") return null;
-  const now = new Date();
-  const formatter = new Intl.DateTimeFormat("en-CA", { timeZone: ADMIN_TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" });
-  const parts = Object.fromEntries(formatter.formatToParts(now).filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
-  const southAfricaToday = `${parts.year}-${parts.month}-${parts.day}`;
-  if (params.range === "custom") {
-    const from = parseRangeBoundary(params.from);
-    const to = parseRangeBoundary(params.to, true);
-    return from !== null && to !== null && from <= to ? { from, to } : null;
-  }
-  const start = new Date(`${southAfricaToday}T00:00:00.000+02:00`);
-  if (params.range === "today") return { from: start.getTime(), to: now.getTime() };
-  if (params.range === "7d") {
-    start.setUTCDate(start.getUTCDate() - 6);
-    return { from: start.getTime(), to: now.getTime() };
-  }
-  if (params.range === "15d") {
-    start.setUTCDate(start.getUTCDate() - 14);
-    return { from: start.getTime(), to: now.getTime() };
-  }
-  if (params.range === "week") {
-    const mondayOffset = (start.getUTCDay() + 6) % 7;
-    start.setUTCDate(start.getUTCDate() - mondayOffset);
-    return { from: start.getTime(), to: now.getTime() };
-  }
-  if (params.range === "month") {
-    start.setUTCDate(1);
-    return { from: start.getTime(), to: now.getTime() };
-  }
-  return null;
 }
 
 function itemTimestamp(item, fields) {
@@ -254,16 +235,16 @@ function filterList(items, request, options = {}) {
   const params = listParams(request);
   const searchFields = options.searchFields || [];
   const statusField = options.statusField || "status";
-  const dateFields = options.dateFields || ["updatedAt", "createdAt", "submissionTime", "publishedAt", "time"];
+  const dateFields = options.dateFields || ["updatedAt", "updated_at", "createdAt", "created_at", "submissionTime", "publishedAt", "published_at", "date", "time"];
   const selectedDateFields = params.timeField && dateFields.includes(params.timeField) ? [params.timeField] : dateFields;
-  const bounds = rangeBounds(params);
+  const bounds = reportDateBounds(params.range, params.from, params.to);
   let rows = Array.isArray(items) ? [...items] : [];
   if (!options.includeDeleted) rows = rows.filter((item) => !item.deletedAt);
   if (params.q) rows = rows.filter((item) => searchFields.some((field) => String(item?.[field] || "").toLowerCase().includes(params.q)));
   if (params.status) rows = rows.filter((item) => String(item?.[statusField] || "").toLowerCase() === params.status);
   if (bounds) rows = rows.filter((item) => {
     const timestamp = itemTimestamp(item, selectedDateFields);
-    return timestamp !== null && timestamp >= bounds.from && timestamp <= bounds.to;
+    return timestamp !== null && timestamp >= bounds.from && timestamp < bounds.before;
   });
   rows.sort((a, b) => {
     const av = String(a?.[params.sort] ?? a?.updatedAt ?? a?.createdAt ?? a?.submissionTime ?? a?.publishedAt ?? a?.time ?? "");
@@ -291,10 +272,16 @@ function paginate(items, request, options = {}) {
 
 function csvResponse(filename, rows) {
   const keys = [...new Set((rows || []).flatMap((row) => Object.keys(row || {}).filter((key) => typeof row[key] !== "object")))];
-  const csv = [keys.join(","), ...(rows || []).map((row) => keys.map((key) => `"${String(row[key] ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
+  const cell = (value) => {
+    const text = String(value ?? "");
+    const safe = typeof value === "string" && /^[\s\uFEFF]*[=+\-@\r\n\t]/.test(text) ? "'" + text : text;
+    return `"${safe.replace(/"/g, '""')}"`;
+  };
+  const csv = [keys.map(cell).join(","), ...(rows || []).map((row) => keys.map((key) => cell(row[key])).join(","))].join("\r\n");
   return new Response(csv, {
     headers: {
       "content-type": "text/csv; charset=utf-8",
+      "cache-control": "private, no-store",
       "content-disposition": `attachment; filename="${filename}"`,
       "x-robots-tag": "noindex, nofollow"
     }
@@ -413,46 +400,6 @@ function pluginResponse(code, msg, status = 200) {
 function operationalLog(event, fields = {}) {
   // Keep production logs useful for incident review without exposing request bodies or secrets.
   console.info(JSON.stringify({ event, at: new Date().toISOString(), ...fields }));
-}
-
-function escapeEmailHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function enquiryEmailBody(record) {
-  const field = (label, value) => `<tr><th align="left" style="padding:6px 14px 6px 0;vertical-align:top">${escapeEmailHtml(label)}</th><td style="padding:6px 0">${escapeEmailHtml(value || "—")}</td></tr>`;
-  return `<!doctype html><html><body style="font-family:Arial,sans-serif;color:#172033"><h1 style="font-size:20px">New Cowinmagnet.co.za website inquiry</h1><p>This notification was submitted through <strong>cowinmagnet.co.za</strong>.</p><table cellpadding="0" cellspacing="0">${field("Reference", record.id)}${field("Submitted", record.submissionTime)}${field("Name", record.name)}${field("Company", record.company)}${field("Email", record.email)}${field("WhatsApp", record.whatsapp)}${field("Country", record.country)}${field("Product", record.product)}${field("Industry", record.industry)}${field("Source page", record.sourcePage)}${field("Message", record.payload?.projectDescription || record.payload?.message || record.payload?.productRequired)}</table></body></html>`;
-}
-
-async function sendEnquiryEmailNotification(record) {
-  const apiKey = String(process.env.RESEND_API_KEY || "").trim();
-  const from = String(process.env.INQUIRY_NOTIFICATION_FROM || "").trim();
-  if (!apiKey || !from) {
-    return { status: "not_configured", detail: "RESEND_API_KEY or INQUIRY_NOTIFICATION_FROM is missing" };
-  }
-  try {
-    const result = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from,
-        to: [enquiryNotificationRecipient],
-        reply_to: record.email,
-        subject: `[cowinmagnet.co.za] New website inquiry ${record.id}`,
-        html: enquiryEmailBody(record)
-      })
-    });
-    if (!result.ok) return { status: "failed", detail: `email provider returned ${result.status}` };
-    const receipt = await result.json().catch(() => ({}));
-    return { status: "sent", providerId: String(receipt?.id || "") };
-  } catch (error) {
-    return { status: "failed", detail: error?.message || "email provider request failed" };
-  }
 }
 
 async function bodyFields(request) {
@@ -611,8 +558,14 @@ async function handleArticleWebhook(request) {
       classId: String(fields.class_id || ""),
       durationMs: Date.now() - startedAt
     });
+    await writeDataJson("data/cms/blog-webhook-state.json", {
+      status: "published", slug: article.slug, at: new Date().toISOString(), durationMs: Date.now() - startedAt
+    }).catch(() => {});
     return pluginResponse(1, "\u53d1\u5e03\u6210\u529f");
   } catch (error) {
+    await writeDataJson("data/cms/blog-webhook-state.json", {
+      status: "failed", at: new Date().toISOString(), durationMs: Date.now() - startedAt
+    }).catch(() => {});
     operationalLog("blog_webhook_failed", {
       reason: error?.message || "database-insert-failed",
       classId: String(fields.class_id || ""),
@@ -621,16 +574,57 @@ async function handleArticleWebhook(request) {
     return pluginResponse(0, error?.message || "Database insert failed, please retry");
   }
 }
-function makeSessionCookie(csrf) {
+function teamCredentials() {
+  try { return JSON.parse(process.env.ADMIN_TEAM_CREDENTIALS || "{}") || {}; } catch { return {}; }
+}
+
+function teamCredential(email) {
+  const credentials = teamCredentials();
+  const value = Object.hasOwn(credentials, email) ? credentials[email] : "";
+  return typeof value === "string" && /^[0-9a-f]{32}:[0-9a-f]{128}$/i.test(value) ? value : "";
+}
+
+async function staffAccess(email) {
+  if (!teamCredential(email)) return null;
+  const users = await readDatabaseJson("data/cms/users.json");
+  const user = Array.isArray(users) && users.find((row) => row.email === email && row.status === "active");
+  if (!user || user.role === "Super Admin") return null;
+  const roles = await readAdminRoles();
+  const role = roles.find((row) => row.name === user.role && row.status === "active");
+  return role ? { email, role: role.name, permissions: role.permissions } : null;
+}
+
+async function readAdminRoles() {
+  const path = "data/cms/roles.json";
+  const stored = await readDatabaseJson(path);
+  const roles = Array.isArray(stored) ? stored : jsonFiles.get(path);
+  return roles.filter((role) => Array.isArray(role.permissions)).map((role) => ({
+    ...role, status: role.status || "active",
+    permissions: role.permissions.filter((value) => typeof value === "string").map((value) => value.replace(/^enquiries:/, "forms:"))
+  }));
+}
+
+async function authenticateAdmin(identifier, password) {
+  if (verifyAdminCredentials(identifier, password)) return { email: adminEmail, role: "Super Admin" };
+  const email = String(identifier || "").trim().toLowerCase();
+  if (adminLoginAliases.includes(email) || !password || password.length > 1024) return null;
+  const credential = teamCredential(email);
+  if (!credential) return null;
+  const [salt, expected] = credential.split(":");
+  const actual = crypto.scryptSync(password, Buffer.from(salt, "hex"), 64).toString("hex");
+  return safeEqualText(expected, actual) ? staffAccess(email) : null;
+}
+
+function makeSessionCookie(csrf, identity) {
   const payload = {
-    user: adminEmail,
-    email: adminEmail,
-    role: "Super Admin",
+    user: identity.email,
+    email: identity.email,
+    role: identity.role,
     csrf,
     expiresAt: new Date(Date.now() + SESSION_TTL_SECONDS * 1000).toISOString()
   };
   const payload64 = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  return `${payload64}.${hash(`${payload64}.${sessionSecret()}`)}.v1`;
+  return `${payload64}.${crypto.createHmac("sha256", sessionSecret()).update(payload64).digest("hex")}.v2`;
 }
 
 function isSecureRequest(request) {
@@ -644,6 +638,8 @@ function isSecureRequest(request) {
 }
 
 async function getSession() {
+  const secret = sessionSecret();
+  if (!secret) return null;
   const cookieStore = await cookies();
   let value = cookieStore.get("cowin_admin_session")?.value;
   if (!value) {
@@ -657,19 +653,43 @@ async function getSession() {
   }
   if (!value) return null;
 
-  const [payload64, signature] = value.split(".");
-  if (!payload64 || !signature || signature !== hash(`${payload64}.${sessionSecret()}`)) return null;
+  const [payload64, signature, version] = value.split(".");
+  const expected = version === "v2" ? crypto.createHmac("sha256", secret).update(payload64).digest("hex")
+    : version === "v1" ? hash(`${payload64}.${secret}`) : "";
+  if (!payload64 || !signature || !expected || !safeEqualText(signature, expected)) return null;
 
   try {
     const payload = JSON.parse(Buffer.from(payload64, "base64url").toString("utf8"));
-    if (new Date(payload.expiresAt).getTime() < Date.now()) return null;
-    return payload;
+    if (!(Date.parse(payload.expiresAt) > Date.now())) return null;
+    if (payload.role === "Super Admin" && payload.email === adminEmail) return { ...payload, permissions: ["*"] };
+    if (version !== "v2") return null;
+    const staff = await staffAccess(payload.email);
+    return staff ? { ...payload, ...staff } : null;
   } catch {
     return null;
   }
 }
 
-async function requireAdmin(request) {
+function permits(session, permission) {
+  if (!permission) return false;
+  return session.permissions?.some((value) => value === "*" || value === permission || value === permission.split(":")[0] + ":*");
+}
+
+function adminPermission(path, method) {
+  const section = path.split("/")[1];
+  const module = ({
+    enquiries: "forms", "news-automation": "news", blog: "news",
+    "google-seo": "seo", sitemap: "seo", links: "seo", "audit-logs": "logs", "storage-status": "sync",
+    products: "products", categories: "categories", news: "news", analytics: "analytics", dashboard: "dashboard",
+    seo: "seo", media: "media", users: "users", sync: "sync", settings: "settings", content: "dashboard"
+  })[section];
+  if (!module) return null;
+  const action = path.includes("/attachments/") ? "download" : path.endsWith("/export") ? "export"
+    : path.endsWith("/publish") ? "publish" : ["GET", "HEAD"].includes(method) ? "view" : "edit";
+  return `${module}:${action}`;
+}
+
+async function requireAdmin(request, path) {
   const session = await getSession();
   if (!session) {
     return { error: response({ success: false, error: "Unauthorized", requestId: token(8) }, 401) };
@@ -677,17 +697,20 @@ async function requireAdmin(request) {
 
   if (!["GET", "HEAD"].includes(request.method)) {
     const csrf = request.headers.get("x-csrf-token");
-    if (!csrf || csrf !== session.csrf) {
+    if (!csrf || !safeEqualText(csrf, session.csrf)) {
       return { error: response({ success: false, error: "CSRF validation failed", requestId: token(8) }, 403) };
     }
   }
 
+  if (session.role !== "Super Admin" && !permits(session, adminPermission(path, request.method))) {
+    return { error: response({ success: false, error: "当前账号没有此操作权限。", requestId: token(8) }, 403) };
+  }
   return { session };
 }
 
 async function audit(user, action, object, objectId, summary) {
-  const logs = await readJson("data/cms/audit-logs.json");
-  logs.push({
+  const path = "data/cms/audit-logs.json";
+  const entry = {
     id: token(10),
     user,
     action,
@@ -696,8 +719,19 @@ async function audit(user, action, object, objectId, summary) {
     summary,
     time: new Date().toISOString(),
     ip: "next-api"
-  });
-  await writeJson("data/cms/audit-logs.json", logs.slice(-500));
+  };
+  if (getPool()) {
+    await ensureDatabaseSchema();
+    await getPool().query(`
+      INSERT INTO africa_json_documents (path, payload) VALUES ($1, jsonb_build_array($2::jsonb))
+      ON CONFLICT (path) DO UPDATE SET
+        payload = (CASE WHEN jsonb_array_length(africa_json_documents.payload) >= 500
+          THEN africa_json_documents.payload - 0 ELSE africa_json_documents.payload END) || EXCLUDED.payload,
+        updated_at = NOW()`, [path, JSON.stringify(entry)]);
+    return;
+  }
+  const logs = await readJson(path);
+  await writeJson(path, [...logs, entry].slice(-500));
 }
 
 async function analyticsSummary(request) {
@@ -711,13 +745,14 @@ function productUrl(product) {
 }
 
 async function seoSummary() {
-  const [products, articles, categories, industries, solutions, markets] = await Promise.all([
+  const [products, articles, categories, industries, solutions, markets, sitemap] = await Promise.all([
     readJson("data/products/products.json"),
     readJson("data/articles/articles.json"),
     readJson("data/categories/categories.json"),
     readJson("data/industries/industries.json"),
     readJson("data/solutions/solutions.json"),
-    readJson("data/markets/markets.json")
+    readJson("data/markets/markets.json"),
+    readDataJson("data/seo/sitemap-state.json", {})
   ]);
 
   const rows = [
@@ -742,18 +777,25 @@ async function seoSummary() {
       status: item.status || "published"
     };
       }),
-    ...[...categories, ...industries, ...solutions, ...markets].map((item) => ({
-      page: item.slug ? `/${item.slug}/` : "",
+    ...[["products", categories], ["industries", industries], ["solutions", solutions], ["markets", markets]].flatMap(([section, items]) => items.map((item) => ({
+      page: item.slug ? `/en-za/${section}/${item.slug}/` : "",
       title: item.name || item.title ? "OK" : "Missing",
       description: item.description || item.summary ? "OK" : "Missing",
       image: item.image ? "OK" : "Pending",
       canonical: item.canonicalUrl || "",
       status: item.status || "published"
-    }))
+    })))
   ];
 
+  const issues = rows.flatMap((row) => [
+    ...(row.title === "Missing" ? [{ page: row.page, type: "标题", message: "内容记录没有标题" }] : []),
+    ...(row.description === "Missing" ? [{ page: row.page, type: "摘要", message: "内容记录没有摘要" }] : []),
+    ...(row.image === "Missing" ? [{ page: row.page, type: "图片", message: "产品记录没有主图" }] : [])
+  ]);
   return {
     total: rows.length,
+    sitemapTotal: Number.isInteger(sitemap.lastUrlCount) ? sitemap.lastUrlCount : null,
+    issues,
     missingTitle: rows.filter((row) => row.title !== "OK").length,
     missingDescription: rows.filter((row) => row.description !== "OK").length,
     missingImage: rows.filter((row) => row.image === "Missing").length,
@@ -762,10 +804,11 @@ async function seoSummary() {
 }
 
 async function googleSeoState() {
-  const [latest, jobs, inspection] = await Promise.all([
+  const [latest, jobs, inspection, sitemapRuns] = await Promise.all([
     readJson("data/seo/google-search-console.json"),
     readJson("data/seo/google-seo-jobs.json"),
-    readJson("data/seo/gsc-url-inspection.json")
+    readJson("data/seo/gsc-url-inspection.json"),
+    readDataJson("data/seo/sitemap-runs.json", [])
   ]);
   const config = googleSeoConfig();
   return {
@@ -775,6 +818,7 @@ async function googleSeoState() {
     serviceAccountEmail: config.clientEmail,
     latest,
     inspection,
+    sitemapSubmission: sitemapRuns.find((run) => run.searchConsole?.attempted) || null,
     jobs: (jobs || []).slice(0, 20)
   };
 }
@@ -784,15 +828,30 @@ async function runGoogleUrlInspection() {
   const urls = [...new Set((manifest.entries || []).map((item) => item.url || item.loc).filter(Boolean))];
   if (!urls.length) throw new Error("Sitemap manifest contains no inspectable URLs");
   const priorState = await readDataJson("data/seo/gsc-url-inspection-state.json", {});
-  // A daily 24-URL batch covers the current sitemap within about eight days while
-  // remaining well below Search Console's per-property inspection quota.
-  const batchSize = Math.min(24, Math.max(1, Number(process.env.GSC_INSPECTION_BATCH_SIZE || 24)));
+  const batchSize = Math.min(24, Math.max(1, Number.parseInt(process.env.GSC_INSPECTION_BATCH_SIZE, 10) || 24));
   const start = Number(priorState.nextOffset || 0) % urls.length;
-  const batch = Array.from({ length: Math.min(batchSize, urls.length) }, (_, index) => urls[(start + index) % urls.length]);
-  const batchReport = await inspectGoogleUrls(batch, { concurrency: 3 });
   const previous = await readDataJson("data/seo/gsc-url-inspection.json", {});
+  const retryQueue = priorState.retryQueue || (previous.results || [])
+    .filter((item) => item.verdict === "ERROR" && item.retryable !== false)
+    .map((item) => ({ url: item.url, attempts: 0 }));
+  const retries = retryQueue.filter((item) => item.attempts < 3 && urls.includes(item.url)).slice(0, Math.min(4, batchSize - 1));
+  const retryUrls = retries.map((item) => item.url);
+  const rotation = Array.from({ length: Math.min(batchSize - retries.length, urls.length) }, (_, index) => urls[(start + index) % urls.length]);
+  const batch = [...new Set([...retryUrls, ...rotation])];
+  const batchReport = await inspectGoogleUrls(batch, { concurrency: 3 });
   const resultsByUrl = new Map((previous.results || []).map((item) => [item.url, item]));
-  for (const result of batchReport.results) resultsByUrl.set(result.url, result);
+  const waiting = new Map(retryQueue.filter((item) => urls.includes(item.url)).map((item) => [item.url, item]));
+  for (const result of batchReport.results) {
+    if (result.verdict === "ERROR") {
+      const last = resultsByUrl.get(result.url);
+      resultsByUrl.set(result.url, last && last.verdict !== "ERROR" ? { ...last, latestError: result.error, lastAttemptAt: result.inspectedAt } : result);
+      if (result.retryable) waiting.set(result.url, { url: result.url, attempts: (waiting.get(result.url)?.attempts || 0) + 1 });
+      else waiting.delete(result.url);
+    } else {
+      resultsByUrl.set(result.url, result);
+      waiting.delete(result.url);
+    }
+  }
   const results = urls.map((url) => resultsByUrl.get(url)).filter(Boolean);
   const group = (key) => Object.fromEntries(Object.entries(results.reduce((counts, item) => {
     const value = item[key] || "Unknown";
@@ -803,7 +862,9 @@ async function runGoogleUrlInspection() {
     ...batchReport,
     total: urls.length,
     inspectedThisRun: batch.length,
-    nextOffset: (start + batch.length) % urls.length,
+    nextOffset: (start + rotation.length) % urls.length,
+    retryPending: [...waiting.values()].filter((item) => item.attempts < 3).length,
+    retryExhausted: [...waiting.values()].filter((item) => item.attempts >= 3).length,
     cycleStartedAt: start === 0 ? new Date().toISOString() : priorState.cycleStartedAt || "",
     byVerdict: group("verdict"),
     byCoverageState: group("coverageState"),
@@ -815,6 +876,7 @@ async function runGoogleUrlInspection() {
     cycleStartedAt: report.cycleStartedAt,
     lastRunAt: report.inspectedAt,
     lastBatchSize: batch.length,
+    retryQueue: [...waiting.values()],
     totalUrls: urls.length
   });
   return report;
@@ -939,7 +1001,7 @@ async function adminCategoryAction(request, session, slug, action) {
 }
 
 async function adminEnquiriesList(request) {
-  const items = await readJson("data/cms/enquiries.json");
+  const items = await readEnquiryItems();
   const url = new URL(request.url);
   let rows = items;
   const country = String(url.searchParams.get("country") || "").toLowerCase();
@@ -957,11 +1019,11 @@ async function adminEnquiriesList(request) {
     ...item,
     customerInquiryCount: customerCounts.get(String(item.email || "").trim().toLowerCase()) || 1
   }));
-  return response({ success: true, data: paginate(rows, request, { searchFields: ["id", "name", "company", "email", "phone", "whatsapp", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true }), requestId: token(8) });
+  return response({ success: true, data: paginate(rows, request, { searchFields: ["id", "name", "company", "email", "phone", "whatsapp", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true, dateFields: ["submissionTime", "createdAt"] }), requestId: token(8) });
 }
 
 async function adminEnquiryDetail(id) {
-  const items = await readJson("data/cms/enquiries.json");
+  const items = await readEnquiryItems();
   const enquiry = (Array.isArray(items) ? items : []).find((item) => item.id === id);
   if (!enquiry) return null;
   let visitor = null;
@@ -984,19 +1046,25 @@ async function adminEnquiryDetail(id) {
 }
 
 async function adminUsers(request, session) {
-  const [users, roles] = await Promise.all([readJson("data/cms/users.json"), readJson("data/cms/roles.json")]);
-  if (request.method === "GET") return response({ success: true, data: { users: paginate(users, request, { searchFields: ["email", "name", "role", "status"], includeDeleted: true }), roles }, requestId: token(8) });
+  const [users, roles] = await Promise.all([readJson("data/cms/users.json"), readAdminRoles()]);
+  if (request.method === "GET") return response({ success: true, data: { users: paginate(users.map((user) => ({
+    ...user, loginEnabled: user.status === "active" && (adminLoginAliases.includes(user.email) || Boolean(teamCredential(user.email)))
+  })), request, { searchFields: ["email", "name", "role", "status"], includeDeleted: true }), roles }, requestId: token(8) });
   const body = await bodyJson(request);
   const email = String(body.email || "").trim().toLowerCase();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return response({ success: false, error: "请输入有效邮箱", requestId: token(8) }, 400);
+  if (adminLoginAliases.includes(email)) return response({ success: false, error: "主账号不可在此变更角色或停用。" }, 400);
+  if (!roles.some((role) => role.name === body.role && role.status === "active" && role.name !== "Super Admin")) {
+    return response({ success: false, error: "请选择可用的团队角色。" }, 400);
+  }
   const now = new Date().toISOString();
   const existing = users.find((item) => item.email === email);
   const payload = {
     id: existing?.id || `USR-${token(6)}`,
     email,
     name: String(body.name || email),
-    role: String(body.role || "只读用户"),
-    status: String(body.status || "active"),
+    role: body.role,
+    status: body.status === "disabled" ? "disabled" : "active",
     updatedAt: now,
     updatedBy: session.user
   };
@@ -1037,23 +1105,31 @@ async function adminMedia(request, session) {
 }
 
 async function adminSyncState(request) {
-  const [googleSeo, googleJobs, sitemapState, sitemapRuns, storage, newsState] = await Promise.all([
+  const [googleSeo, googleJobs, sitemapState, sitemapRuns, storage, newsState, inspection, blog] = await Promise.all([
     readJson("data/seo/google-search-console.json"),
     readJson("data/seo/google-seo-jobs.json"),
     readDataJson("data/seo/sitemap-state.json", {}),
     readDataJson("data/seo/sitemap-runs.json", []),
-    Promise.resolve({ mode: storageMode(), databaseConfigured: Boolean(process.env.DATABASE_URL) }),
-    newsAutomationStatus()
+    persistentStorageState(),
+    newsAutomationStatus(),
+    readDataJson("data/seo/gsc-url-inspection.json", {}),
+    readDataJson("data/cms/blog-webhook-state.json", {})
   ]);
+  const latestSubmission = (sitemapRuns || []).find((run) => run.searchConsole?.attempted);
+  const googleDue = googleSeo?.syncedAt && Date.now() - Date.parse(googleSeo.syncedAt) > 9 * 86_400_000;
   const jobs = [
     ...(newsState.latestRun ? [{ ...newsState.latestRun, type: "news", time: newsState.latestRun.startedAt, status: newsState.latestRun.result, message: (newsState.latestRun.blockers || []).join(" ") }] : []),
     ...(Array.isArray(googleJobs) ? googleJobs.map((job) => ({ ...job, type: "google-seo", time: job.started_at || job.completed_at || "" })) : [])
   ];
   return {
     sources: [
-      { id: "news", name: "News automation", configured: newsState.enabled, status: newsState.productionReady ? "ready" : "gated", lastSync: newsState.latestRun?.startedAt || "", successCount: newsState.counts.published, failedCount: newsState.counts.runs - newsState.counts.published },
-      { id: "google-seo", name: "Google SEO 数据", configured: googleSeoConfig().configured, status: googleJobs?.[0]?.status || "pending", lastSync: googleSeo?.syncedAt || "", successCount: googleJobs?.filter((job) => job.status === "completed").length || 0, failedCount: googleJobs?.filter((job) => job.status === "failed").length || 0 },
-      { id: "storage", name: "后台持久化存储", configured: storage.databaseConfigured, status: storage.mode, lastSync: new Date().toISOString(), successCount: 1, failedCount: 0 }
+      { id: "news", name: "新闻自动发布", status: newsState.enabled ? (newsState.productionReady ? "已启用" : "待核验") : "已停用", lastSync: newsState.latestRun?.startedAt || "" },
+      { id: "blog", name: "第三方博客发布", status: !articleWebhookSign() ? "未配置" : blog.status === "published" ? "已确认入库" : blog.status === "failed" ? "最近投递失败" : "已接入，等待投递回执", lastSync: blog.at || "", durationMs: blog.durationMs },
+      { id: "google-seo", name: "Google 搜索表现", status: !googleSeoConfig().configured ? "未配置" : googleJobs?.[0]?.status === "failed" ? "最近同步失败" : googleDue ? "超过预期同步间隔" : googleSeo?.syncedAt ? "已同步" : "待同步", lastSync: googleSeo?.syncedAt || "" },
+      { id: "google-sitemap", name: "Google 站点地图提交", status: !latestSubmission ? "无提交回执" : latestSubmission.searchConsole.submitted ? `Google 已接收（HTTP ${latestSubmission.searchConsole.status || 204}）` : "最近提交失败", lastSync: latestSubmission?.finishedAt || "", durationMs: latestSubmission?.durationMs },
+      { id: "google-inspection", name: "Google URL 检查", status: !inspection.inspectedAt ? "无检查回执" : `本轮 ${inspection.inspectedThisRun || 0} 页 · 待重试 ${inspection.retryPending ?? inspection.byVerdict?.ERROR ?? 0}`, lastSync: inspection.inspectedAt || "" },
+      { id: "enquiry-email", name: "询盘邮件通知", status: enquiryMailConfigured() ? "已配置，回执见询盘详情" : "邮件服务待配置" },
+      { id: "storage", name: "后台持久化存储", status: storage.status, lastSync: storage.lastWriteAt, durationMs: storage.durationMs }
     ],
     newsState,
     googleSeo,
@@ -1061,8 +1137,22 @@ async function adminSyncState(request) {
     sitemapState,
     sitemapRuns: (sitemapRuns || []).slice(0, 20),
     jobs: paginate(jobs, request, { searchFields: ["type", "status", "message", "requested_by"], dateFields: ["time", "started_at", "completed_at"] }),
-    storage
+    storage,
+    timezone: ADMIN_TIMEZONE
   };
+}
+
+async function persistentStorageState() {
+  const db = getPool();
+  if (!db) return { mode: storageMode(), databaseConfigured: false, status: "未配置" };
+  const startedAt = Date.now();
+  try {
+    await ensureDatabaseSchema();
+    const { rows: [state] } = await db.query("SELECT MAX(updated_at) AS latest FROM africa_json_documents");
+    return { mode: "database", databaseConfigured: true, status: "可读取", lastWriteAt: state.latest || null, durationMs: Date.now() - startedAt };
+  } catch {
+    return { mode: "database", databaseConfigured: true, status: "读取失败", durationMs: Date.now() - startedAt };
+  }
 }
 
 async function publicNewsList(request) {
@@ -1269,24 +1359,25 @@ async function handleLogin(request, options = {}) {
   const body = await parseLoginBody(request);
   const wantsRedirect = options.redirect || body.form;
   const url = new URL(request.url);
-  if (!isAdminAuthConfigured()) {
+  if (!sessionSecret() || (!isAdminAuthConfigured() && !Object.keys(teamCredentials()).length)) {
     if (wantsRedirect) return NextResponse.redirect(new URL("/admin/login/?error=not-configured", url), 303);
     return response({ success: false, error: "Admin password is not configured", requestId: token(8) }, 503);
   }
 
-  if (verifyAdminCredentials(body.identifier, body.password)) {
+  const identity = await authenticateAdmin(body.identifier, body.password);
+  if (identity) {
     const csrf = token(24);
     const res = wantsRedirect
       ? NextResponse.redirect(new URL("/admin/dashboard", url), 303)
-      : response({ success: true, data: { user: adminEmail, role: "Super Admin", csrf }, requestId: token(8) });
-    res.cookies.set("cowin_admin_session", makeSessionCookie(csrf), {
+      : response({ success: true, data: { user: identity.email, role: identity.role, csrf }, requestId: token(8) });
+    res.cookies.set("cowin_admin_session", makeSessionCookie(csrf, identity), {
       httpOnly: true,
       sameSite: "lax",
       secure: isSecureRequest(request),
       path: "/",
       maxAge: SESSION_TTL_SECONDS
     });
-    await audit(adminEmail, "Login", "Session", "next", "Admin signed in to Cowinmagnet Africa admin");
+    await audit(identity.email, "Login", "Session", "next", "Admin signed in to Cowinmagnet Africa admin").catch(() => {});
     return res;
   }
   if (wantsRedirect) return NextResponse.redirect(new URL("/admin/login/?error=invalid", url), 303);
@@ -1296,7 +1387,7 @@ async function handleLogin(request, options = {}) {
 async function handleSession() {
   const session = await getSession();
   if (!session) return response({ success: false, error: "Unauthorized", requestId: token(8) }, 401);
-  return response({ success: true, data: { user: session.user, email: session.email || session.user, role: session.role, csrf: session.csrf }, requestId: token(8) });
+  return response({ success: true, data: { user: session.user, email: session.email || session.user, role: session.role, permissions: session.permissions, csrf: session.csrf }, requestId: token(8) });
 }
 
 function handleLogout() {
@@ -1305,7 +1396,56 @@ function handleLogout() {
   return res;
 }
 
+function verifyEnquiryOrigin(request) {
+  const origin = request.headers.get("origin");
+  if (origin && origin !== new URL(request.url).origin) {
+    throw new EnquiryError(403, "Please send the enquiry from the South Africa website.");
+  }
+}
+
+function sourcePageOf(value) {
+  const site = productionSiteUrl();
+  try {
+    const url = new URL(value || "/en-za/request-a-quote/", site);
+    if (url.origin === site && url.pathname.startsWith("/en-za/")) return site + url.pathname;
+  } catch {}
+  return site + "/en-za/request-a-quote/";
+}
+
+async function handleEnquiryUpload(request, partMatch) {
+  verifyEnquiryOrigin(request);
+  const db = await enquiryPool();
+  if (!partMatch) {
+    const input = await bodyJson(request);
+    const data = await startEnquiryUpload(db, input, enquiryRequestKey(request));
+    return response({ success: true, data }, 201);
+  }
+  if (request.headers.get("content-type") !== "application/octet-stream") {
+    throw new EnquiryError(415, "The attachment part must be binary data.");
+  }
+  const [, id, part] = partMatch;
+  const bytes = await readUploadPart(request);
+  await saveUploadPart(db, id, request.headers.get("x-enquiry-upload-token"), Number(part), bytes);
+  return response({ success: true });
+}
+
+async function handleEnquiryNotificationCron(request) {
+  if (!validCronRequest(request)) return response({ success: false, error: "Unauthorized cron request" }, 401);
+  const db = await enquiryPool();
+  await expireEnquiryUploads(db);
+  const pending = (await readEnquiryItems()).filter((item) => notificationDue(item)).slice(0, 12);
+  const results = {};
+  for (const item of pending) {
+    const notification = await processEnquiryNotification(db, item.id);
+    const status = notification?.status || "unavailable";
+    results[status] = (results[status] || 0) + 1;
+  }
+  operationalLog("enquiry_notification_check", { checked: pending.length, results });
+  return response({ success: true, data: { checked: pending.length, results } });
+}
+
 async function handleEnquiries(request) {
+  verifyEnquiryOrigin(request);
   const body = await bodyJson(request);
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return response({ success: false, error: "Inquiry data must be an object", requestId: token(8) }, 400);
@@ -1320,25 +1460,16 @@ async function handleEnquiries(request) {
   if (!name || !email) return response({ success: false, error: "Name and email are required", requestId: token(8) }, 400);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return response({ success: false, error: "Valid email is required", requestId: token(8) }, 400);
   if (body.website) return response({ success: true, data: { received: true }, requestId: token(8) });
-  if (storageMode() === "vercel-tmp") {
-    return response({ success: false, error: "Inquiry storage is temporarily unavailable. Please contact us by WhatsApp or email.", requestId: token(8) }, 503);
-  }
-
-  const items = await readJson("data/cms/enquiries.json");
+  const db = await enquiryPool();
   const company = clean(body.company, 180);
   const product = clean(body.productRequired, 500);
-  const duplicateSince = Date.now() - 30 * 60 * 1000;
-  const duplicate = items.find((item) => (
-    String(item.email || "").toLowerCase() === email &&
-    String(item.company || "").toLowerCase() === company.toLowerCase() &&
-    String(item.product || "").toLowerCase() === product.toLowerCase() &&
-    new Date(item.submissionTime || 0).getTime() >= duplicateSince
-  ));
-  if (duplicate) return response({ success: false, error: `A similar inquiry was already received. Reference: ${duplicate.id}`, requestId: token(8) }, 409);
   const id = `ENQ-${new Date().toISOString().replace(/\D/g, "").slice(0, 14)}-${token(4)}`;
   const payload = {};
   for (const [key, value] of Object.entries(body)) {
-    if (["duplicateKey", "website", "fileUpload"].includes(key)) continue;
+    if (!/^[A-Za-z][A-Za-z0-9_]{0,59}$/.test(key) || [
+      "constructor", "prototype", "duplicateKey", "website", "fileUpload", "attachmentUpload",
+      "submissionId", "fileName", "fileSize", "fileType", "sourcePage", "referrer", "analyticsClientId", "analyticsSessionId"
+    ].includes(key)) continue;
     if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
       payload[key] = clean(value, key === "projectDescription" ? 5000 : 1000);
     }
@@ -1354,7 +1485,7 @@ async function handleEnquiries(request) {
     preferredLanguage: clean(body.preferredLanguage || body.language, 30),
     product,
     industry: clean(body.industry, 180),
-    sourcePage: clean(body.sourcePage, 500),
+    sourcePage: sourcePageOf(clean(body.sourcePage, 500)),
     analyticsVisitorId: clean(body.analyticsClientId, 140),
     analyticsSessionId: clean(body.analyticsSessionId, 140),
     payload,
@@ -1362,54 +1493,44 @@ async function handleEnquiries(request) {
     assignedUser: "",
     internalNotes: [],
     submissionTime: new Date().toISOString(),
+    notification: queuedNotification(),
     utm: {
       source: clean(body.utm_source, 120),
       medium: clean(body.utm_medium, 120),
       campaign: clean(body.utm_campaign, 180)
     }
   };
-  items.push(record);
-  await writeJson("data/cms/enquiries.json", items);
-  const persisted = await readJson("data/cms/enquiries.json");
-  if (!persisted.some((item) => item.id === id)) {
-    throw new Error("Inquiry could not be verified after storage");
-  }
-  const notification = await sendEnquiryEmailNotification(record);
-  record.notification = {
-    channel: "email",
-    recipient: enquiryNotificationRecipient,
-    status: notification.status,
-    providerId: notification.providerId || "",
-    attemptedAt: new Date().toISOString()
-  };
-  if (notification.status !== "sent") {
-    operationalLog("enquiry_email_notification_not_sent", { enquiryId: id, status: notification.status, detail: notification.detail || "" });
-  }
-  await writeJson("data/cms/enquiries.json", items);
-  await audit("public-form", "Enquiry Created", "Enquiry", id, `New website inquiry saved from ${record.sourcePage}`);
-  // A successful enquiry is a genuine conversion. Record it separately from page views,
-  // but never let analytics availability change the outcome of the customer submission.
-  try {
-    await recordAnalyticsEvent({
-      requestHeaders: request.headers,
-      body: {
-        eventType: "quote_submit",
-        clientId: clean(body.analyticsClientId, 140) || `lead-${hash(email).slice(0, 24)}`,
-        sessionId: clean(body.analyticsSessionId, 140),
-        page: record.sourcePage || "/en-za/request-a-quote/",
-        referrer: clean(body.referrer, 700),
-        language: record.preferredLanguage || "en-za",
-        metadata: {
-          enquiryId: id,
-          industry: record.industry,
-          country: record.country
-        }
-      }
+  const submissionId = clean(body.submissionId, 80);
+  const currentForm = /^[a-zA-Z0-9_-]{16,80}$/.test(submissionId);
+  const submissionKey = currentForm
+    ? hash(`submission:${email}:${submissionId}`)
+    : hash(`legacy:${JSON.stringify(Object.entries(payload).sort(([a], [b]) => a.localeCompare(b)))}`);
+  const seed = await readFile(join(dataRoot, "cms/enquiries.json"), "utf8").then(JSON.parse).catch(() => []);
+  const saved = await saveEnquiry(db, record, {
+    upload: body.attachmentUpload, submissionKey, seed,
+    submissionWindowMs: currentForm ? null : 30 * 60_000
+  });
+  if (saved.created) {
+    const requestHeaders = new Headers(request.headers);
+    after(async () => {
+      const tasks = await Promise.allSettled([
+        audit("public-form", "Enquiry Created", "Enquiry", id, `New website enquiry saved from ${record.sourcePage}`),
+        processEnquiryNotification(db, id),
+        recordAnalyticsEvent({ requestHeaders, body: {
+          eventType: "quote_submit", clientId: record.analyticsVisitorId || `lead-${hash(email).slice(0, 24)}`,
+          sessionId: record.analyticsSessionId, page: record.sourcePage, referrer: clean(body.referrer, 700),
+          language: record.preferredLanguage || "en-za",
+          metadata: { enquiryId: id, industry: record.industry, country: record.country }
+        } })
+      ]);
+      tasks.forEach((item, index) => {
+        if (item.status === "rejected") operationalLog("enquiry_follow_up_failed", {
+          enquiryId: id, task: ["audit", "notification", "analytics"][index], code: item.reason?.code || item.reason?.name
+        });
+      });
     });
-  } catch (analyticsError) {
-    operationalLog("enquiry_analytics_not_recorded", { enquiryId: id, reason: analyticsError?.message || String(analyticsError) });
   }
-  return response({ success: true, data: record, requestId: token(8) });
+  return response({ success: true, data: { id: saved.record.id }, requestId: token(8) });
 }
 
 async function handleTrack(request) {
@@ -1433,7 +1554,7 @@ async function handleTrack(request) {
 }
 
 async function handleAdmin(request, path) {
-  const { session, error } = await requireAdmin(request);
+  const { session, error } = await requireAdmin(request, path);
   if (error) return error;
 
   if (path === "admin/dashboard" && request.method === "GET") {
@@ -1445,7 +1566,7 @@ async function handleAdmin(request, path) {
       readJson("data/markets/markets.json"),
       readJson("data/articles/articles.json"),
       readJson("data/downloads/downloads.json"),
-      readJson("data/cms/enquiries.json"),
+      readEnquiryItems(),
       readJson("data/cms/audit-logs.json"),
       analyticsSummary(request)
     ]);
@@ -1472,8 +1593,8 @@ async function handleAdmin(request, path) {
         topPages: analytics.pages,
         topSources: analytics.sources,
         recentVisitors: (analytics.visitors?.items || []).slice(0, 8),
-        recentEnquiries: enquiries.slice(-5),
-        recentLogs: logs.slice(-8),
+        recentEnquiries: permits(session, "forms:view") ? enquiries.slice(-5) : [],
+        recentLogs: permits(session, "logs:view") ? logs.slice(-8) : [],
         lastSync: analytics.lastSync,
         storageMode: storageMode()
       },
@@ -1487,7 +1608,7 @@ async function handleAdmin(request, path) {
     try {
       const visitorId = decodeURIComponent(analyticsVisitorMatch[1]);
       const data = await getAnalyticsVisitorJourney(visitorId, request.url);
-      const enquiries = await readJson("data/cms/enquiries.json");
+      const enquiries = permits(session, "forms:view") ? await readEnquiryItems() : [];
       data.enquiries = (Array.isArray(enquiries) ? enquiries : [])
         .filter((item) => item.analyticsVisitorId === visitorId)
         .map((item) => ({
@@ -1612,36 +1733,56 @@ async function handleAdmin(request, path) {
     return response({ success: true, data: result.run, requestId: token(8) });
   }
   if (path === "admin/links" && request.method === "GET") return response({ success: true, data: await linksSummary(), requestId: token(8) });
-  if (path === "admin/products" && request.method === "GET") return response({ success: true, data: paginate(await readJson("data/products/products.json"), request, { searchFields: ["name", "slug", "category", "categorySlug", "seoTitle", "shortDescription"], statusField: "productStatus", includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  if (path === "admin/products" && request.method === "GET") {
+    const [products, state] = await Promise.all([readJson("data/products/products.json"), readJson(EDITORIAL_PATH)]);
+    const rows = products.map((product) => {
+      const editorial = state && Object.hasOwn(state, product.slug) ? state[product.slug] : {};
+      return { ...product, publication: editorial.draft ? "draft" : editorial.live ? "published" : "release", publishedAt: editorial.live?.publishedAt };
+    });
+    return response({ success: true, data: paginate(rows, request, { searchFields: ["name", "slug", "category", "categorySlug", "seoTitle", "shortDescription"], statusField: "productStatus", includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
+  }
   if (path === "admin/products/export" && request.method === "GET") return csvResponse("products.csv", filterList(await readJson("data/products/products.json"), request, { searchFields: ["name", "slug", "category", "categorySlug", "seoTitle", "shortDescription"], statusField: "productStatus" }).rows);
   if (path === "admin/categories" && ["GET", "PUT", "POST"].includes(request.method)) return adminCategories(request, session);
   const categoryAction = path.match(/^admin\/categories\/([^/]+)\/(delete|restore|enable|disable)$/);
   if (categoryAction && ["POST", "PUT"].includes(request.method)) return adminCategoryAction(request, session, decodeURIComponent(categoryAction[1]), categoryAction[2]);
   if (path === "admin/categories/export" && request.method === "GET") return csvResponse("categories.csv", filterList(await readJson("data/categories/categories.json"), request, { searchFields: ["name", "title", "slug", "description"] }).rows);
 
-  const productMatch = path.match(/^admin\/products\/([^/]+)$/);
-  if (productMatch && request.method === "PUT") {
-    const slug = decodeURIComponent(productMatch[1]);
-    const body = await bodyJson(request);
-    const products = await readJson("data/products/products.json");
+  const productMatch = path.match(/^admin\/products\/([a-z0-9-]+)(\/publish)?$/);
+  if (productMatch && ["GET", "PUT", "POST"].includes(request.method)) {
+    const [, slug, publish] = productMatch;
+    const products = JSON.parse(await readFile(join(dataRoot, "products/products.json"), "utf8"));
     const product = products.find((item) => item.slug === slug);
     if (!product) return response({ success: false, error: "Product not found", requestId: token(8) }, 404);
-    for (const key of ["name", "categorySlug", "category", "shortDescription", "fullDescription", "seoTitle", "seoDescription", "cleaning", "layout", "type", "image"]) {
-      if (Object.hasOwn(body, key)) product[key] = body[key];
+    const url = product.canonicalUrl || productUrl(product);
+    if (request.method === "GET" && !publish) {
+      const state = await readJson(EDITORIAL_PATH) || {};
+      return response({ success: true, data: {
+        slug, url, name: product.name, limits: editorialLimits, ...(Object.hasOwn(state, slug) ? state[slug] : {})
+      } });
     }
-    if (body.applications) product.applications = body.applications;
-    if (body.features) product.features = body.features;
-    product.updatedAt = new Date().toISOString();
-    await writeJson("data/products/products.json", products);
-    scheduleSitemapAudit({ source: "products", action: "updated", objectId: slug, url: product.canonicalUrl || `/en-za/products/${product.categorySlug}/${slug}/` });
-    await audit(session.user, "Product Updated", "Product", slug, "Product content edited in Cowinmagnet Africa admin");
-    return response({ success: true, data: { slug }, requestId: token(8) });
+    if ((publish && request.method !== "POST") || (!publish && request.method !== "PUT")) {
+      return response({ success: false, error: "Method not allowed" }, 405);
+    }
+    const body = await bodyJson(request);
+    if (!publish && (!body.fields || Object.keys(body.fields).some((key) => !Object.hasOwn(editorialLimits, key)))) {
+      return response({ success: false, error: "请通过产品编辑面板保存详情简介、搜索标题和摘要。" }, 400);
+    }
+    const state = await updateProductEditorial(await enquiryPool(), slug, {
+      action: publish ? "publish" : "save", fields: body.fields, revision: String(body.revision || ""), actor: session.user
+    });
+    if (!state) return response({ success: false, error: "记录已被更新，请重新加载后再保存或发布。" }, 409);
+    if (publish) scheduleSitemapAudit({ source: "products", action: "published", objectId: slug, url });
+    await audit(session.user, publish ? "Product copy published" : "Product copy drafted", "Product", slug, publish ? "详情与搜索摘要已发布" : "已保存产品文案草稿");
+    return response({ success: true, data: { slug, url, ...state }, requestId: token(8) });
   }
 
   if (path === "admin/enquiries" && request.method === "GET") return adminEnquiriesList(request);
   if (path === "admin/enquiries/export" && request.method === "GET") {
     await audit(session.user, "Enquiries Exported", "Enquiry", "csv", "Admin exported enquiry list");
-    return csvResponse("enquiries.csv", filterList(await readJson("data/cms/enquiries.json"), request, { searchFields: ["id", "name", "company", "email", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true, dateFields: ["submissionTime", "updatedAt", "createdAt"] }).rows);
+    const { rows } = filterList(await readEnquiryItems(), request, { searchFields: ["id", "name", "company", "email", "country", "product", "sourcePage", "status"], statusField: "status", includeDeleted: true, dateFields: ["submissionTime", "createdAt"] });
+    return csvResponse("enquiries.csv", rows.map((row) => Object.fromEntries(
+      ["id", "submissionTime", "name", "company", "email", "whatsapp", "country", "product", "status", "sourcePage"].map((key) => [key, row[key]])
+    )));
   }
 
   if (path === "admin/news" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
@@ -1664,9 +1805,9 @@ async function handleAdmin(request, path) {
       return response({ success: false, error: error?.message || String(error), requestId: token(8) }, 400);
     }
   }
-  if (path === "admin/news/export" && request.method === "GET") return csvResponse("news.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"));
+  if (path === "admin/news/export" && request.method === "GET") return csvResponse("news.csv", filterList((await readJson("data/articles/articles.json")).filter((item) => item.article_type !== "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"] }).rows);
   if (path === "admin/blog" && request.method === "GET") return response({ success: true, data: paginate((await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"], includeDeleted: new URL(request.url).searchParams.get("deleted") === "1" }), requestId: token(8) });
-  if (path === "admin/blog/export" && request.method === "GET") return csvResponse("blog.csv", (await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"));
+  if (path === "admin/blog/export" && request.method === "GET") return csvResponse("blog.csv", filterList((await readJson("data/articles/articles.json")).filter((item) => item.article_type === "blog"), request, { searchFields: ["slug", "title", "summary", "category", "status"] }).rows);
   if (path === "admin/news" && request.method === "PUT") {
     const body = await bodyJson(request);
     const slug = String(body.slug || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -1715,6 +1856,26 @@ async function handleAdmin(request, path) {
     return response({ success: true, data: { slug }, requestId: token(8) });
   }
 
+  const downloadMatch = path.match(/^admin\/enquiries\/([^/]+)\/attachments\/([^/]+)$/);
+  if (downloadMatch && request.method === "GET") {
+    const [, id, attachmentId] = downloadMatch;
+    const file = await enquiryAttachment(await enquiryPool(), decodeURIComponent(id), attachmentId);
+    if (!file) return response({ success: false, error: "Attachment was not found." }, 404);
+    const name = encodeURIComponent(file.name.toWellFormed()).replace(/['()*]/g, (char) => `%${char.charCodeAt(0).toString(16)}`);
+    return new Response(file.stream, { headers: {
+      "content-type": "application/octet-stream",
+      "content-disposition": `attachment; filename*=UTF-8''${name}`,
+      "cache-control": "private, no-store",
+      "x-content-type-options": "nosniff",
+      "x-robots-tag": "noindex, nofollow"
+    } });
+  }
+  const receiptMatch = path.match(/^admin\/enquiries\/([^/]+)\/notification$/);
+  if (receiptMatch && request.method === "POST") {
+    const notification = await processEnquiryNotification(await enquiryPool(), decodeURIComponent(receiptMatch[1]), { manual: true });
+    if (!notification) return response({ success: false, error: "This enquiry has no email receipt." }, 404);
+    return response({ success: true, data: notification });
+  }
   const enquiryMatch = path.match(/^admin\/enquiries\/([^/]+)$/);
   if (enquiryMatch && request.method === "GET") {
     const id = decodeURIComponent(enquiryMatch[1]);
@@ -1725,16 +1886,16 @@ async function handleAdmin(request, path) {
   if (enquiryMatch && request.method === "PUT") {
     const id = decodeURIComponent(enquiryMatch[1]);
     const body = await bodyJson(request);
-    const items = await readJson("data/cms/enquiries.json");
-    const item = items.find((entry) => entry.id === id);
-    if (item) {
-      if (body.status) item.status = String(body.status);
-      if (body.assignedUser) item.assignedUser = String(body.assignedUser);
+    const updated = await updateEnquiry(await enquiryPool(), id, (item) => {
+      const next = { ...item, updatedAt: new Date().toISOString() };
+      if (["New", "In Progress", "Closed"].includes(body.status)) next.status = body.status;
+      if (Object.hasOwn(body, "assignedUser")) next.assignedUser = String(body.assignedUser || "").slice(0, 160);
       if (body.note) {
-        item.internalNotes = [...(item.internalNotes || []), { note: String(body.note), user: session.user, time: new Date().toISOString() }];
+        next.internalNotes = [...(item.internalNotes || []), { note: String(body.note).slice(0, 2000), user: session.user, time: next.updatedAt }];
       }
-    }
-    await writeJson("data/cms/enquiries.json", items);
+      return next;
+    });
+    if (!updated) return response({ success: false, error: "Inquiry was not found", requestId: token(8) }, 404);
     await audit(session.user, "Enquiry Status Changed", "Enquiry", id, "Enquiry updated in Cowinmagnet Africa admin");
     return response({ success: true, data: { id }, requestId: token(8) });
   }
@@ -1753,14 +1914,22 @@ async function handleAdmin(request, path) {
   }
   if (path === "admin/settings" && request.method === "PUT") {
     const body = await bodyJson(request);
-    body.updatedAt = new Date().toISOString();
-    await writeJson("data/cms/settings.json", body);
+    const existing = await readJson("data/cms/settings.json");
+    const payload = { ...existing };
+    for (const key of ["companyName", "brandName", "globalWebsite", "africaWebsite", "whatsapp", "defaultLanguage"]) {
+      if (typeof body[key] === "string") payload[key] = body[key].trim().slice(0, 400);
+    }
+    for (const key of ["supportedLanguages", "marketCoverage"]) {
+      if (Array.isArray(body[key])) payload[key] = body[key].filter((item) => typeof item === "string").slice(0, 50).map((item) => item.trim().slice(0, 120));
+    }
+    Object.assign(payload, { email: "info@cowinmagnet.com", timezone: ADMIN_TIMEZONE, updatedAt: new Date().toISOString() });
+    await writeJson("data/cms/settings.json", payload);
     await audit(session.user, "Settings Changed", "Settings", "site", "Site settings updated");
-    return response({ success: true, data: body, requestId: token(8) });
+    return response({ success: true, data: payload, requestId: token(8) });
   }
 
   if (path === "admin/media" && ["GET", "PUT", "POST"].includes(request.method)) return adminMedia(request, session);
-  if (path === "admin/media/export" && request.method === "GET") return csvResponse("media.csv", await readJson("data/media/assets.json"));
+  if (path === "admin/media/export" && request.method === "GET") return csvResponse("media.csv", filterList(await readJson("data/media/assets.json"), request, { searchFields: ["id", "filename", "url", "alt", "category", "mimeType"] }).rows);
   if (path === "admin/users" && ["GET", "PUT", "POST"].includes(request.method)) return adminUsers(request, session);
   if (path === "admin/sync" && request.method === "GET") return response({ success: true, data: await adminSyncState(request), requestId: token(8) });
   if (path === "admin/sync/google-seo" && request.method === "POST") {
@@ -1790,7 +1959,7 @@ async function handleAdmin(request, path) {
   return response({ success: false, error: "API route not found", requestId: token(8) }, 404);
 }
 
-async function dispatch(request, context) {
+async function dispatchRoute(request, context) {
   const params = await context.params;
   const path = (params.path || []).join("/");
 
@@ -1800,10 +1969,13 @@ async function dispatch(request, context) {
   if (path === "session" && request.method === "GET") return handleSession();
   if (path === "logout" && request.method === "POST") return handleLogout();
   if (path === "enquiries" && request.method === "POST") return handleEnquiries(request);
+  const uploadPart = path.match(/^enquiry-uploads\/([^/]+)\/(\d+)$/);
+  if ((path === "enquiry-uploads" || uploadPart) && request.method === "POST") return handleEnquiryUpload(request, uploadPart);
   if (path === "track" && request.method === "POST") return handleTrack(request);
   if (path === "cron/google-seo" && ["GET", "POST"].includes(request.method)) return handleCronGoogleSeo(request);
   if (path === "cron/gsc-inspection" && ["GET", "POST"].includes(request.method)) return handleCronGscInspection(request);
   if (path === "cron/news-publish" && ["GET", "POST"].includes(request.method)) return handleCronNewsAutomation(request);
+  if (path === "cron/enquiry-notifications" && ["GET", "POST"].includes(request.method)) return handleEnquiryNotificationCron(request);
   if (path === "news" && request.method === "GET") return publicNewsList(request);
   if (path === "news/categories" && request.method === "GET") return publicNewsCategories();
   const publicNewsMatch = path.match(/^news\/([^/]+)$/);
@@ -1818,6 +1990,19 @@ async function dispatch(request, context) {
   if (path.startsWith("admin/")) return handleAdmin(request, path);
 
   return response({ success: false, error: "API route not found", requestId: token(8) }, 404);
+}
+
+async function dispatch(request, context) {
+  try {
+    return await dispatchRoute(request, context);
+  } catch (error) {
+    const requestId = token(8);
+    if (error instanceof InvalidDateRangeError) return response({ success: false, error: error.message, requestId }, 400);
+    if (error instanceof EnquiryError) return response({ success: false, error: error.message, requestId }, error.status);
+    const { path = [] } = await context.params;
+    operationalLog("api_request_failed", { module: path.slice(0, 2).join("/"), requestId, code: error?.code || error?.name });
+    return response({ success: false, error: "The service is temporarily unavailable. Please try again.", requestId }, 503);
+  }
 }
 
 export const GET = dispatch;

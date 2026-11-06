@@ -523,13 +523,16 @@
   }
 
   const quoteForm = document.querySelector("[data-quote-form]");
+  const draftKey = "cowinmagnet_za_project_draft";
+  const projectDraftFields = ["productRequired", "materialType", "materialSize", "capacity", "beltWidth", "beltSpeed", "suspensionHeight", "layout", "siteType", "voltage", "frequency"];
+
   function enhanceQuoteWorkflow(form) {
     if (!form || !window.location.pathname.includes("/request-a-quote/") || form.dataset.quoteStepsReady === "true") return;
     const labels = [...form.querySelectorAll(":scope > label")];
     if (labels.length < 6) return;
     const groups = [
       { title: "Project contact", description: "Tell us who to contact and where the project is based.", names: ["name", "company", "country", "region", "email", "whatsapp", "preferredLanguage", "industry"] },
-      { title: "Material and equipment", description: "Describe the duty, material stream and requested equipment.", names: ["productRequired", "materialType", "materialSize", "capacity", "beltWidth", "beltSpeed", "layerThickness", "suspensionHeight", "installationPosition", "layout", "cleaning", "trampIronSize", "trampIronWeight"] },
+      { title: "Material and equipment", description: "Tell us the material and the separation result you need. Share measurements you know.", names: ["productRequired", "materialType", "materialSize", "capacity", "installationPosition", "cleaning", "trampIronSize", "trampIronWeight"] },
       { title: "Operating conditions", description: "Add the site conditions that affect final configuration.", names: ["operatingHours", "siteType", "temperature", "altitude", "dustLevel", "humidity", "coastal", "voltage", "frequency", "phases"] }
     ];
     const steps = groups.map((group, index) => {
@@ -550,10 +553,27 @@
         }
       });
     });
+    const conveyor = document.createElement("details");
+    conveyor.className = "quote-extra full";
+    conveyor.innerHTML = "<summary>Conveyor installation details (if applicable)</summary>";
+    for (const name of ["beltWidth", "beltSpeed", "layerThickness", "suspensionHeight", "layout"]) {
+      const field = form.querySelector(`[name='${name}']`);
+      const label = field?.closest("label");
+      if (label) {
+        field.required = false;
+        conveyor.append(label);
+        used.add(label);
+      }
+    }
+    steps[1].append(conveyor);
+    const slurry = document.createElement("div");
+    slurry.className = "quote-slurry full";
+    slurry.innerHTML = '<label>Slurry solids by mass (%) <input name="slurrySolids" inputmode="decimal" placeholder="If known"></label><label>Target magnetic fraction <input name="desiredMagneticFraction" placeholder="What must be recovered or removed?"></label>';
+    steps[1].append(slurry);
     labels.filter((label) => !used.has(label)).forEach((label) => steps[2].append(label));
     const progress = document.createElement("ol");
     progress.className = "quote-progress";
-    progress.setAttribute("aria-label", "Inquiry progress");
+    progress.setAttribute("aria-label", "Enquiry progress");
     progress.innerHTML = groups.map((group, index) => `<li${index === 0 ? " aria-current='step'" : ""}><span>${index + 1}</span>${group.title}</li>`).join("");
     const controls = document.createElement("div");
     controls.className = "quote-step-controls";
@@ -563,48 +583,93 @@
     form.insertBefore(controls, form.querySelector("button[type='submit']"));
     const submit = form.querySelector("button[type='submit']");
     const status = form.querySelector("[data-form-status]");
-    const storageKey = "cowinmagnet_africa_quote_draft";
-    const draft = JSON.parse(localStorage.getItem(storageKey) || "null");
-    if (draft && typeof draft === "object") {
-      Object.entries(draft).forEach(([name, value]) => {
-        const field = form.querySelector(`[name='${CSS.escape(name)}']`);
-        if (field && typeof value === "string") field.value = value;
-      });
-      if (status) status.textContent = "Your saved inquiry draft has been restored.";
+    const product = form.elements.productRequired;
+    const prefill = new URLSearchParams(location.search).get("product");
+    try {
+      localStorage.removeItem("cowinmagnet_africa_quote_draft");
+      const draft = JSON.parse(sessionStorage.getItem(draftKey) || "null");
+      if (draft && draft.expiresAt > Date.now() && !prefill) {
+        for (const name of projectDraftFields) {
+          if (form.elements[name] && typeof draft.fields?.[name] === "string") form.elements[name].value = draft.fields[name];
+        }
+        if (status) status.textContent = "Project details from this tab have been restored.";
+      } else sessionStorage.removeItem(draftKey);
+    } catch {}
+    if (prefill && product) product.value = prefill.slice(0, 180);
+    function syncConveyor() {
+      const equipment = product?.value || "";
+      const wet = /wet\b|slurry|coal washing/i.test(equipment);
+      conveyor.open = !wet && /conveyor|overband|cross[- ]?belt|suspended|metal detector|head pulley/i.test(equipment);
+      slurry.hidden = !wet;
+      slurry.querySelectorAll("input").forEach((input) => { input.disabled = !wet; });
+      for (const name of ["trampIronSize", "trampIronWeight"]) {
+        const input = form.elements[name];
+        if (input) {
+          input.disabled = wet;
+          input.closest("label").hidden = wet;
+        }
+      }
     }
+    syncConveyor();
+    product?.addEventListener("change", syncConveyor);
+
     let active = 0;
-    const update = () => {
+    const update = (focus = false) => {
       steps.forEach((step, index) => step.toggleAttribute("hidden", index !== active));
-      progress.querySelectorAll("li").forEach((item, index) => item.toggleAttribute("aria-current", index === active));
+      progress.querySelectorAll("li").forEach((item, index) => {
+        if (index === active) item.setAttribute("aria-current", "step");
+        else item.removeAttribute("aria-current");
+      });
       controls.querySelector("[data-quote-previous]").toggleAttribute("hidden", active === 0);
       controls.querySelector("[data-quote-next]").toggleAttribute("hidden", active === steps.length - 1);
       submit?.toggleAttribute("hidden", active !== steps.length - 1);
-      steps[active].querySelector("input, textarea, select")?.focus({ preventScroll: true });
+      if (focus) steps[active].querySelector("input, textarea, select")?.focus();
     };
     controls.querySelector("[data-quote-next]").addEventListener("click", () => {
       const fields = [...steps[active].querySelectorAll("input, textarea, select")];
       const invalid = fields.find((field) => !field.checkValidity());
       if (invalid) return invalid.reportValidity();
       active += 1;
-      update();
+      update(true);
     });
     controls.querySelector("[data-quote-previous]").addEventListener("click", () => {
       active = Math.max(0, active - 1);
-      update();
+      update(true);
     });
     form.addEventListener("input", () => {
-      const values = Object.fromEntries(new FormData(form).entries());
-      delete values.fileUpload;
-      localStorage.setItem(storageKey, JSON.stringify(values));
+      const fields = Object.fromEntries(projectDraftFields.map((name) => [name, form.elements[name]?.value || ""]));
+      try { sessionStorage.setItem(draftKey, JSON.stringify({ fields, expiresAt: Date.now() + 2 * 60 * 60_000 })); } catch {}
     });
-    form.dataset.quoteDraftKey = storageKey;
+    form.addEventListener("reset", () => { active = 0; update(); });
     form.dataset.quoteStepsReady = "true";
     update();
+  }
+  if (quoteForm) {
+    const phone = quoteForm.elements.whatsapp;
+    if (phone) {
+      phone.required = false;
+      const label = phone.closest("label");
+      if (label?.firstChild?.nodeType === Node.TEXT_NODE) label.firstChild.textContent = "WhatsApp (optional)";
+    }
+    const material = quoteForm.elements.materialType;
+    if (material) material.required = false;
   }
   enhanceQuoteWorkflow(quoteForm);
   const quoteSubmit = quoteForm?.querySelector("button[type='submit'], button:not([type])");
   const quoteFile = quoteForm?.querySelector("[type='file']");
-  quoteFile?.closest("label")?.setAttribute("hidden", "");
+  if (quoteFile) {
+    const hint = document.createElement("small");
+    hint.textContent = "Optional. PDF, JPG, PNG, DOC or DOCX, up to 8 MB.";
+    quoteFile.closest("label")?.append(hint);
+  }
+  const quoteStatus = quoteForm?.querySelector("[data-form-status]");
+  if (quoteStatus) {
+    quoteStatus.setAttribute("aria-live", "polite");
+    const notice = document.createElement("p");
+    notice.className = "quote-privacy full";
+    notice.innerHTML = `We use your details to respond to this enquiry.${quoteFile ? " Project fields can be restored in this tab for up to two hours." : ""} <a href="/en-za/privacy-policy/">Privacy policy</a>`;
+    quoteStatus.before(notice);
+  }
   document.querySelectorAll("[data-product-enquiry-form]").forEach((form) => {
     const params = new URLSearchParams(window.location.search);
     const source = form.querySelector("[name='sourceUrl']");
@@ -616,20 +681,62 @@
       if (field) field.value = params.get(key) || "";
     });
   });
-  if (quoteSubmit && /local|demo/i.test(quoteSubmit.textContent || "")) {
-    quoteSubmit.textContent = window.location.pathname.includes("request-a-quote") ? "Submit Inquiry" : "Send Inquiry";
+  let attemptId;
+  let stagedUpload;
+  quoteForm?.addEventListener("input", (event) => {
+    event.target.removeAttribute("aria-invalid");
+    if (quoteForm.dataset.submitting !== "true") attemptId = null;
+  });
+
+  async function enquiryRequest(path, options) {
+    const response = await fetch(path, { ...options, signal: AbortSignal.timeout(30_000) });
+    const result = await response.json().catch(() => null);
+    if (!response.ok || !result?.success) {
+      const error = new Error(result?.error || "The website could not confirm this request.");
+      error.status = response.status;
+      throw error;
+    }
+    return result.data;
   }
-  quoteForm?.addEventListener("submit", (event) => {
+
+  async function uploadAttachment(file, status) {
+    if (stagedUpload?.file !== file) {
+      const data = await enquiryRequest("/api/enquiry-uploads/", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: file.name, size: file.size })
+      });
+      stagedUpload = { ...data, file, nextPart: 0 };
+    }
+    const { id, token, partBytes } = stagedUpload;
+    const parts = Math.ceil(file.size / partBytes);
+    while (stagedUpload.nextPart < parts) {
+      const index = stagedUpload.nextPart;
+      status.textContent = `Uploading attachment (${index + 1}/${parts})…`;
+      try {
+        await enquiryRequest(`/api/enquiry-uploads/${id}/${index}/`, {
+          method: "POST", headers: { "Content-Type": "application/octet-stream", "X-Enquiry-Upload-Token": token },
+          body: file.slice(index * partBytes, (index + 1) * partBytes)
+        });
+      } catch (error) {
+        if (error.status === 404) stagedUpload = null;
+        throw error;
+      }
+      stagedUpload.nextPart++;
+    }
+    return { id, token };
+  }
+
+  quoteForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const status = quoteForm.querySelector("[data-form-status]");
     const email = quoteForm.querySelector("[name='email']");
     const phone = quoteForm.querySelector("[name='whatsapp']");
     const file = quoteFile;
-    const required = quoteForm.querySelectorAll("[required]");
+    const required = quoteForm.querySelectorAll("[required]:not([disabled])");
     let valid = true;
     required.forEach((field) => {
       const empty = !String(field.value || "").trim();
-      field.toggleAttribute("aria-invalid", empty);
+      if (empty) field.setAttribute("aria-invalid", "true"); else field.removeAttribute("aria-invalid");
       if (empty) valid = false;
     });
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
@@ -645,8 +752,8 @@
       const maxBytes = 8 * 1024 * 1024;
       const selected = file.files[0];
       const okType = allowed.includes(selected.type) || /\.(pdf|jpe?g|png|docx?)$/i.test(selected.name);
-      const okSize = selected.size <= maxBytes;
-      file.toggleAttribute("aria-invalid", !(okType && okSize));
+      const okSize = selected.size > 0 && selected.size <= maxBytes;
+      if (okType && okSize) file.removeAttribute("aria-invalid"); else file.setAttribute("aria-invalid", "true");
       if (!okType || !okSize) {
         status.textContent = "Upload must be PDF, JPG, PNG, DOC or DOCX and no larger than 8 MB.";
         status.dataset.state = "error";
@@ -659,11 +766,6 @@
       return;
     }
     const payload = Object.fromEntries(new FormData(quoteForm).entries());
-    if (file?.files?.length) {
-      payload.fileName = file.files[0].name;
-      payload.fileSize = file.files[0].size;
-      payload.fileType = file.files[0].type;
-    }
     delete payload.fileUpload;
     payload.sourcePage = window.location.href;
     payload.language = document.documentElement.dataset.locale || "en-za";
@@ -672,48 +774,33 @@
     payload.analyticsClientId = storageId("cowinmagnet_africa_client_id", "C", true);
     payload.analyticsSessionId = storageId("cowinmagnet_africa_session_id", "S", false);
     payload.referrer = document.referrer;
-    const duplicateKey = `${payload.email}|${payload.company}|${payload.productRequired}`;
     if (quoteForm.dataset.submitting === "true") return;
+    attemptId ||= crypto.randomUUID();
+    payload.submissionId = attemptId;
     quoteForm.dataset.submitting = "true";
-    status.textContent = "Submitting inquiry...";
-    status.dataset.state = "success";
-    fetch("/api/enquiries", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...payload, duplicateKey }),
-    })
-      .then((response) => response.json().then((data) => ({ response, data })))
-      .then(({ response, data }) => {
-        if (!response.ok || data.success === false) throw new Error(data.error || "Submission failed.");
-        status.textContent = `Inquiry saved. Reference: ${data.data.id}`;
-        status.dataset.state = "success";
-        if (quoteForm.dataset.quoteDraftKey) localStorage.removeItem(quoteForm.dataset.quoteDraftKey);
-        quoteForm.reset();
-      })
-      .catch((error) => {
-        // A browser copy is not a reliable CRM record and may contain personal
-        // contact data. Keep the completed fields on screen and make the failed
-        // server handoff explicit so visitors can retry without losing context.
-        status.textContent = `${error.message} Your inquiry was not sent. Please retry or contact us by WhatsApp.`;
-        status.dataset.state = "error";
-      })
-      .finally(() => {
-        quoteForm.dataset.submitting = "false";
+    status.dataset.state = "pending";
+    if (quoteSubmit) quoteSubmit.disabled = true;
+    quoteForm.setAttribute("aria-busy", "true");
+    try {
+      if (file?.files?.[0]) payload.attachmentUpload = await uploadAttachment(file.files[0], status);
+      status.textContent = "Saving your enquiry…";
+      const saved = await enquiryRequest("/api/enquiries/", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload)
       });
-    /*
-    The fallback below is intentionally disabled by the returned promise path above.
-    It is kept as a readable reminder of the previous local-only behavior.
-    const records = JSON.parse(localStorage.getItem(key) || "[]");
-    if (records.some((item) => item.duplicateKey === duplicateKey)) {
-      status.textContent = "A similar inquiry has already been saved locally.";
+      status.textContent = saved?.id ? `Enquiry received. Reference: ${saved.id}` : "Enquiry received.";
+      status.dataset.state = "success";
+      try { sessionStorage.removeItem(draftKey); } catch {}
+      attemptId = null;
+      stagedUpload = null;
+      quoteForm.reset();
+    } catch (error) {
+      if ([404, 409, 415].includes(error.status)) stagedUpload = null;
+      status.textContent = `${error.message} Your details are still on the page. Please retry or contact us by email.`;
       status.dataset.state = "error";
-      return;
+    } finally {
+      quoteForm.dataset.submitting = "false";
+      quoteForm.removeAttribute("aria-busy");
+      if (quoteSubmit) quoteSubmit.disabled = false;
     }
-    records.push({ duplicateKey, payload, submittedAt: new Date().toISOString() });
-    localStorage.setItem(key, JSON.stringify(records.slice(-100)));
-    status.textContent = "Inquiry saved locally. Production email/API integration can be connected after deployment setup.";
-    status.dataset.state = "success";
-    quoteForm.reset();
-    */
   });
 })();

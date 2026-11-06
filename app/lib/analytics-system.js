@@ -1,8 +1,8 @@
 import crypto from "node:crypto";
 import pg from "pg";
+import { ADMIN_TIMEZONE as TIMEZONE, reportBucket, reportDateBounds } from "./admin-date-range.js";
 
 const { Pool } = pg;
-const TIMEZONE = "Africa/Johannesburg";
 const MAX_EVENT_AGE_DAYS = 395;
 const EVENT_TYPES = new Set(["pageview", "product_view", "quote_start", "quote_submit", "whatsapp_click", "download", "search"]);
 let pool;
@@ -380,25 +380,13 @@ function trackingFlags({ requestHeaders, pagePath, referrer, userAgent, attribut
 }
 
 function rangeClause(input, values) {
-  const range = clean(input.get("range") || "today", 16);
-  const add = (value) => { values.push(value); return `${values.length}`; };
-  const todayStart = `date_trunc('day', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`;
-  if (range === "all") return { clause: "TRUE", range };
-  if (range === "today") return { clause: `e.occurred_at >= ${todayStart}`, range };
-  if (range === "7d") return { clause: `e.occurred_at >= ${todayStart} - INTERVAL '6 days'`, range };
-  if (range === "15d") return { clause: `e.occurred_at >= ${todayStart} - INTERVAL '14 days'`, range };
-  if (range === "week") return { clause: `e.occurred_at >= date_trunc('week', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
-  if (range === "month") return { clause: `e.occurred_at >= date_trunc('month', NOW() AT TIME ZONE '${TIMEZONE}') AT TIME ZONE '${TIMEZONE}'`, range };
-  if (range === "custom") {
-    const from = clean(input.get("from"), 40);
-    const to = clean(input.get("to"), 40);
-    if (/^\d{4}-\d{2}-\d{2}$/.test(from) && /^\d{4}-\d{2}-\d{2}$/.test(to)) {
-      const start = add(`${from}T00:00:00`);
-      const end = add(`${to}T23:59:59.999`);
-      return { clause: `e.occurred_at >= ${start}::timestamp AT TIME ZONE '${TIMEZONE}' AND e.occurred_at <= ${end}::timestamp AT TIME ZONE '${TIMEZONE}'`, range };
-    }
-  }
-  return { clause: `e.occurred_at >= ${todayStart}`, range: "today" };
+  const requested = input.get("range");
+  const range = ["all", "today", "7d", "15d", "week", "month", "custom"].includes(requested) ? requested : "today";
+  const bounds = reportDateBounds(range, input.get("from"), input.get("to"));
+  const bucket = reportBucket(range, bounds);
+  if (!bounds) return { clause: "TRUE", range, bucket };
+  values.push(new Date(bounds.from).toISOString(), new Date(bounds.before).toISOString());
+  return { clause: "e.occurred_at >= $1::timestamptz AND e.occurred_at < $2::timestamptz", range, bucket };
 }
 
 function filterSql(searchParams, values) {
@@ -412,13 +400,9 @@ function filterSql(searchParams, values) {
   where.push("COALESCE(e.metadata->>'legacy', 'false') <> 'true'");
   for (const [param, column] of [["country", "e.country"], ["channel", "e.channel"], ["device", "e.device"]]) {
     const value = clean(searchParams.get(param), 120);
-    if (value && param === "channel") {
-      // Earlier valid records used lowercase / underscore channel labels. Treat
-      // those as the same business channel as current normalized events.
-      where.push(`LOWER(REPLACE(${column}, '_', ' ')) = LOWER(REPLACE(${add(value)}, '_', ' '))`);
-    } else if (value) {
-      where.push(`${column} = ${add(value)}`);
-    }
+    if (value) where.push(param === "channel"
+      ? `LOWER(${channelLabelSql("e")}) = LOWER(${add(value)})`
+      : `LOWER(${column}) = LOWER(${add(value)})`);
   }
   const page = clean(searchParams.get("pagePath"), 700);
   if (page) where.push(`e.page_path ILIKE ${add(`%${page}%`)}`);
@@ -428,8 +412,11 @@ function filterSql(searchParams, values) {
   const leadStatus = clean(searchParams.get("leadStatus"), 40);
   if (leadStatus) where.push(`COALESCE(v.lead_status, 'Anonymous') = ${add(leadStatus)}`);
   const q = clean(searchParams.get("q"), 180);
-  if (q) where.push(`(e.visitor_id ILIKE ${add(`%${q}%`)} OR e.ip_masked ILIKE ${add(`%${q}%`)} OR e.page_path ILIKE ${add(`%${q}%`)})`);
-  return { where: where.join(" AND "), range: range.range };
+  if (q) {
+    const query = add(`%${q}%`);
+    where.push(`(e.visitor_id ILIKE ${query} OR e.ip_masked ILIKE ${query} OR e.page_path ILIKE ${query} OR e.source ILIKE ${query})`);
+  }
+  return { where: where.join(" AND "), range: range.range, bucket: range.bucket };
 }
 
 function channelLabelSql(alias = "e") {
@@ -613,58 +600,75 @@ export async function getAnalyticsReport(url) {
   const values = [];
   const filters = filterSql(searchParams, values);
   const source = `FROM analytics_events e LEFT JOIN analytics_visitors v ON v.visitor_id = e.visitor_id WHERE ${filters.where}`;
-  const page = Math.max(1, Math.min(100000, Number(searchParams.get("page") || 1)));
-  const pageSize = Math.max(20, Math.min(100, Number(searchParams.get("pageSize") || 20)));
+  const page = Math.max(1, Math.min(100000, Number.parseInt(searchParams.get("page"), 10) || 1));
+  const pageSize = Math.max(1, Math.min(100, Number.parseInt(searchParams.get("pageSize"), 10) || 20));
   const offset = (page - 1) * pageSize;
   const includeVisitors = searchParams.get("includeVisitors") !== "0";
   const visitorsOnly = searchParams.get("scope") === "visitors";
   const channelLabel = channelLabelSql("e");
   const sourceLabel = sourceLabelSql("e");
-  const emptyResult = () => Promise.resolve({ rows: [] });
+  const emptyResult = { rows: [] };
+  const bucketFormat = { hour: "YYYY-MM-DD HH24:00", day: "YYYY-MM-DD", week: "YYYY-MM-DD", month: "YYYY-MM" }[filters.bucket];
 
-  const [summaryResult, countriesResult, channelsResult, sourcesResult, pagesResult, devicesResult, timelineResult, visitorCountResult] = await Promise.all([
-    visitorsOnly ? emptyResult() : db.query(`SELECT
+  const visitorValues = [...values, pageSize, offset];
+  const [summaryResult, breakdown, visitorCountResult, visitorsResult] = await Promise.all([
+    visitorsOnly ? emptyResult : db.query(`SELECT
       COUNT(*) FILTER (WHERE e.event_type = 'pageview')::int AS pv,
       COUNT(DISTINCT e.visitor_id)::int AS uv,
       COUNT(DISTINCT e.session_id)::int AS sessions,
       COUNT(*) FILTER (WHERE e.event_type = 'quote_submit')::int AS enquiries,
-      COUNT(*) FILTER (WHERE e.event_type = 'whatsapp_click')::int AS whatsapp_clicks
+      COUNT(DISTINCT e.session_id) FILTER (WHERE e.event_type = 'quote_submit')::int AS converted_sessions,
+      COUNT(*) FILTER (WHERE e.event_type = 'whatsapp_click')::int AS whatsapp_clicks,
+      MAX(e.occurred_at) AS data_as_of
       ${source}`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT COALESCE(e.country, 'Unknown') AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT ${channelLabel} AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT ${sourceLabel} AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT e.page_path AS page, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 20`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT CONCAT(COALESCE(e.device, 'Desktop'), ' / ', COALESCE(e.browser, 'Browser')) AS name, COUNT(*)::int AS count ${source} GROUP BY 1 ORDER BY 2 DESC, 1 ASC LIMIT 12`, values),
-    visitorsOnly ? emptyResult() : db.query(`SELECT to_char(date_trunc('hour', e.occurred_at AT TIME ZONE '${TIMEZONE}'), 'YYYY-MM-DD HH24:00') AS bucket, COUNT(*)::int AS pv, COUNT(DISTINCT e.visitor_id)::int AS uv ${source} AND e.event_type = 'pageview' GROUP BY 1 ORDER BY 1 ASC LIMIT 240`, values),
-    includeVisitors ? db.query(`SELECT COUNT(DISTINCT e.visitor_id)::int AS total ${source}`, values) : Promise.resolve({ rows: [{ total: 0 }] })
-  ]);
-
-  const visitorValues = [...values, pageSize, offset];
-  const visitorsResult = includeVisitors ? await db.query(
+    visitorsOnly ? emptyResult : db.query(`WITH page_views AS (
+      SELECT e.visitor_id, COALESCE(e.country, 'Unknown') AS country, ${channelLabel} AS channel,
+        ${sourceLabel} AS traffic_source, e.page_path AS page,
+        CONCAT(COALESCE(e.device, 'Desktop'), ' / ', COALESCE(e.browser, 'Browser')) AS device_browser,
+        to_char(date_trunc('${filters.bucket}', e.occurred_at AT TIME ZONE '${TIMEZONE}'), '${bucketFormat}') AS bucket
+      ${source} AND e.event_type = 'pageview'
+    ), rollup AS (
+      SELECT CASE WHEN GROUPING(country) = 0 THEN 'country' WHEN GROUPING(channel) = 0 THEN 'channel'
+        WHEN GROUPING(traffic_source) = 0 THEN 'source' WHEN GROUPING(page) = 0 THEN 'page'
+        WHEN GROUPING(device_browser) = 0 THEN 'device' ELSE 'timeline' END AS dimension,
+        COALESCE(country, channel, traffic_source, page, device_browser, bucket) AS label,
+        COUNT(*)::int AS pv, COUNT(DISTINCT visitor_id)::int AS uv
+      FROM page_views GROUP BY GROUPING SETS ((country), (channel), (traffic_source), (page), (device_browser), (bucket))
+    ), ranked AS (
+      SELECT *, ROW_NUMBER() OVER (PARTITION BY dimension ORDER BY pv DESC, label) AS rank FROM rollup
+    )
+    SELECT dimension, label, pv, uv FROM ranked
+    WHERE dimension = 'timeline' OR rank <= CASE WHEN dimension = 'page' THEN 20 ELSE 12 END
+    ORDER BY dimension, CASE WHEN dimension = 'timeline' THEN 0 ELSE rank END, label`, values),
+    includeVisitors ? db.query(`SELECT COUNT(DISTINCT e.visitor_id)::int AS total ${source}`, values) : emptyResult,
+    includeVisitors ? db.query(
     `SELECT
       e.visitor_id AS "visitorId",
       MAX(e.occurred_at) AS "lastSeenAt",
       MIN(e.occurred_at) AS "firstSeenAt",
-      MAX(COALESCE(e.country, 'Unknown')) AS country,
-      MAX(COALESCE(e.ip_masked, 'unknown')) AS ip,
-      MAX(${channelLabel}) AS channel,
-      MAX(${sourceLabel}) AS source,
-      MAX(COALESCE(e.device, 'Desktop')) AS device,
-      MAX(COALESCE(e.browser, 'Browser')) AS browser,
+      (array_agg(COALESCE(e.country, 'Unknown') ORDER BY e.occurred_at DESC))[1] AS country,
+      (array_agg(COALESCE(e.ip_masked, 'unknown') ORDER BY e.occurred_at DESC))[1] AS ip,
+      (array_agg(${channelLabel} ORDER BY e.occurred_at DESC))[1] AS channel,
+      (array_agg(${sourceLabel} ORDER BY e.occurred_at DESC))[1] AS source,
+      (array_agg(COALESCE(e.device, 'Desktop') ORDER BY e.occurred_at DESC))[1] AS device,
+      (array_agg(COALESCE(e.browser, 'Browser') ORDER BY e.occurred_at DESC))[1] AS browser,
       MAX(COALESCE(v.visit_count, 1))::int AS "visitCount",
       COUNT(*) FILTER (WHERE e.event_type = 'pageview')::int AS pv,
       (array_agg(e.page_path ORDER BY e.occurred_at DESC))[1] AS "lastPage",
       MAX(COALESCE(v.lead_status, 'Anonymous')) AS "leadStatus"
     ${source}
     GROUP BY e.visitor_id
-    ORDER BY MAX(e.occurred_at) DESC
+    ORDER BY MAX(e.occurred_at) DESC, e.visitor_id
     LIMIT $${visitorValues.length - 1} OFFSET $${visitorValues.length}`,
     visitorValues
-  ) : { rows: [] };
+  ) : emptyResult
+  ]);
 
   const summary = summaryResult.rows[0] || {};
+  const group = (dimension, format) => breakdown.rows.filter((item) => item.dimension === dimension).map(format);
   const pv = Number(summary.pv || 0);
   const enquiries = Number(summary.enquiries || 0);
+  const sessions = Number(summary.sessions || 0);
   return {
     storageMode: "postgresql",
     timezone: TIMEZONE,
@@ -680,19 +684,19 @@ export async function getAnalyticsReport(url) {
     },
     pv,
     uv: Number(summary.uv || 0),
-    sessions: Number(summary.sessions || 0),
+    sessions,
     enquiries,
     whatsappClicks: Number(summary.whatsapp_clicks || 0),
-    conversionRate: pv ? Number(((enquiries / pv) * 100).toFixed(2)) : 0,
-    countries: countriesResult.rows,
-    sources: sourcesResult.rows.map((item) => ({ source: item.name, pv: Number(item.count || 0), uv: 0 })),
-    channels: channelsResult.rows,
-    pages: pagesResult.rows,
-    deviceBrowsers: devicesResult.rows.map((item) => {
-      const [device, browser] = String(item.name).split(" / ");
-      return { device, browser, views: Number(item.count || 0) };
+    conversionRate: sessions ? Number(((summary.converted_sessions / sessions) * 100).toFixed(2)) : 0,
+    countries: group("country", ({ label, pv }) => ({ name: label, count: pv })),
+    sources: group("source", ({ label, pv, uv }) => ({ source: label, pv, uv })),
+    channels: group("channel", ({ label, pv }) => ({ name: label, count: pv })),
+    pages: group("page", ({ label, pv, uv }) => ({ page: label, pv, uv })),
+    deviceBrowsers: group("device", ({ label, pv }) => {
+      const [device, browser] = label.split(" / ");
+      return { device, browser, views: pv };
     }),
-    timeline: timelineResult.rows,
+    timeline: group("timeline", ({ label, pv, uv }) => ({ bucket: label, pv, uv })),
     visitors: {
       items: visitorsResult.rows,
       page,
@@ -700,7 +704,8 @@ export async function getAnalyticsReport(url) {
       total: Number(visitorCountResult.rows[0]?.total || 0),
       totalPages: Math.max(1, Math.ceil(Number(visitorCountResult.rows[0]?.total || 0) / pageSize))
     },
-    lastSync: new Date().toISOString()
+    timelineBucket: filters.bucket,
+    lastSync: summary.data_as_of || null
   };
 }
 
@@ -749,8 +754,8 @@ export async function getAnalyticsVisitorJourney(visitorId, requestUrl = "") {
   const normalizedId = clean(visitorId, 160);
   if (!normalizedId) throw new Error("Visitor identifier is required.");
   const url = requestUrl ? new URL(requestUrl, "https://cowinmagnet.co.za") : new URL("https://cowinmagnet.co.za/api/admin/analytics");
-  const page = Math.max(1, Math.min(100000, Number(url.searchParams.get("eventPage") || 1)));
-  const pageSize = Math.max(20, Math.min(100, Number(url.searchParams.get("eventPageSize") || 50)));
+  const page = Math.max(1, Math.min(100000, Number.parseInt(url.searchParams.get("eventPage"), 10) || 1));
+  const pageSize = Math.max(20, Math.min(100, Number.parseInt(url.searchParams.get("eventPageSize"), 10) || 50));
   const offset = (page - 1) * pageSize;
   const [visitorResult, totalResult, sessionsResult, eventsResult] = await Promise.all([
     db.query(

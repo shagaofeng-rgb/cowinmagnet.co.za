@@ -7,13 +7,34 @@ function safeArticleContent(value) {
 }
 
 function newsImageUrl(value) {
-  if (String(value || "").startsWith("/assets/images/news/")) return `${siteUrl}${value}`;
+  if (/^\/assets\/images\/[a-z0-9_./-]+$/i.test(value || "")) return `${siteUrl}${value}`;
   if (isExternalNewsImage(value)) return value;
   return `${siteUrl}/assets/images/hero-mining-conveyor-magnet.webp`;
 }
 
+const legacyCover = "/assets/images/source-products/permanent-overband-magnetic-separator-01.jpg";
+const coverTopics = [
+  [/water-infrastructure|trans-mountain/, "application/process-pipeline-magnetic-filtration.webp", "Process pipeline equipment", 1586, 992],
+  [/platinum|battery|bauxite|argentina-mineral/, "south-africa-guidance/mining-beneficiation.webp", "Mineral processing equipment", 900, 600],
+  [/eskom|energy-reliability|hydrogen/, "south-africa-guidance/coal-power.webp", "Coal handling and power generation", 1692, 929],
+  [/iron-ore|sanankoro/, "application/mineral-screening-control-environment.webp", "Mineral screening and material handling", 1586, 992],
+  [/illegal-mining|conveyor-protection/, "application/mining-conveyor-tramp-iron-protection.webp", "A conveyor installation with tramp-iron protection", 1570, 1001]
+];
+
+function newsCover(item) {
+  const topic = item.cover_image_url === legacyCover && coverTopics.find(([pattern]) => pattern.test(item.slug));
+  return topic
+    ? { src: "/assets/images/" + topic[1], alt: `Illustration: ${topic[2]}`, caption: "Illustrative industry image. It does not depict the reported event.", width: topic[3], height: topic[4] }
+    : { src: item.cover_image_url, alt: item.cover_image_alt || item.title, caption: item.cover_image_caption };
+}
+
+function coverImage(item, priority = false) {
+  const cover = newsCover(item);
+  return `<img src="${escapeHtml(cover.src)}" alt="${escapeHtml(cover.alt)}"${cover.width ? ` width="${cover.width}" height="${cover.height}"` : ""} decoding="async" ${priority ? 'fetchpriority="high"' : 'loading="lazy"'}>`;
+}
+
 function pageShell({ title, description, canonical, body, schema = [], feed = true, image = "" }) {
-  const schemaJson = JSON.stringify({ "@context": "https://schema.org", "@graph": schema });
+  const schemaJson = JSON.stringify({ "@context": "https://schema.org", "@graph": schema }).replace(/</g, "\\u003c");
   const ogImage = newsImageUrl(image);
   return `<!doctype html>
 <html lang="en-ZA">
@@ -120,8 +141,8 @@ export async function renderNewsList() {
     </form>
     <p class="editorial-filter-empty" data-editorial-empty="news-list" hidden aria-live="polite">No news articles match those filters. Clear the filters to view all updates.</p>
     <div id="news-list" class="grid editorial-grid" data-page-collection data-page-size="12" data-page-param="newsPage">${articles
-      .map((item) => `<a class="card news-card editorial-card" data-editorial-card data-editorial-category="${escapeHtml(item.category || "News")}" href="${articleUrl(item)}">
-        <img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
+      .map((item, index) => `<a class="card news-card editorial-card" data-editorial-card data-editorial-category="${escapeHtml(item.category || "News")}" href="${articleUrl(item)}">
+        ${coverImage(item, index === 0)}
         <p class="eyebrow">${escapeHtml((articleDate(item) || "").slice(0, 10))} · ${escapeHtml(item.category || "News")}</p>
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.excerpt || item.summary || "")}</p>
@@ -134,7 +155,7 @@ export async function renderNewsList() {
     description: "Source-based industry news and Cowin Magnet analysis for African mining, quarrying, cement, coal and recycling buyers.",
     canonical: "/en-za/news/",
     body,
-    image: articles[0]?.cover_image_url,
+    image: articles[0] ? newsCover(articles[0]).src : "",
     schema: [
       { "@type": "Organization", name: "Cowinmagnet", url: "https://www.cowinmagnet.com" },
       { "@type": "CollectionPage", name: "Cowinmagnet South Africa News", url: `${siteUrl}/en-za/news/` }
@@ -147,7 +168,9 @@ export async function renderNewsArticle(slug) {
   const item = articles.find((article) => article.slug === slug && isPublishedNewsArticle(article));
   if (!item) return null;
   const canonical = articleUrl(item);
-  const sourceDate = item.source_published_at ? new Date(item.source_published_at).toISOString() : "";
+  const sourceTime = Date.parse(item.source_published_at || "");
+  const sourceDate = Number.isFinite(sourceTime) ? new Date(sourceTime).toISOString().slice(0, 10) : "";
+  const cover = newsCover(item);
   const body = `<section class="page-hero news-article-hero editorial-article-hero">
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / <a href="/en-za/news/">News</a> / <span aria-current="page">Article</span></nav>
     <p class="eyebrow">${escapeHtml(item.category || "News")}</p>
@@ -157,8 +180,8 @@ export async function renderNewsArticle(slug) {
   <section class="news-article-shell">
     <article class="article-prose news-article-body">
       <p><span><strong>Published:</strong> ${escapeHtml((articleDate(item) || "").slice(0, 10))}</span><span><strong>Updated:</strong> ${escapeHtml((item.updated_at || "").slice(0, 10))}</span><span><strong>Author:</strong> ${escapeHtml(item.author_name || "Cowin Magnet South Africa")}</span></p>
-      <figure class="news-article-cover"><img src="${escapeHtml(item.cover_image_url)}" alt="${escapeHtml(item.cover_image_alt || item.title)}"></figure>
-      ${item.cover_image_caption ? `<p class="image-caption">${escapeHtml(item.cover_image_caption)}</p>` : ""}
+      <figure class="news-article-cover">${coverImage(item, true)}</figure>
+      ${cover.caption ? `<p class="image-caption">${escapeHtml(cover.caption)}</p>` : ""}
       <section class="ai-summary"><h2>Key Takeaways</h2><ul>${(item.key_takeaways || []).map((takeaway) => `<li>${escapeHtml(takeaway)}</li>`).join("")}</ul></section>
       ${safeArticleContent(item.content)}
       <section class="news-source-panel"><h2>Original Source</h2>
@@ -166,8 +189,7 @@ export async function renderNewsArticle(slug) {
         <li><strong>Original title:</strong> ${escapeHtml(item.source_title || "")}</li>
         <li><strong>Publisher:</strong> ${escapeHtml(item.source_publisher || "")}</li>
         <li><strong>Author:</strong> ${escapeHtml(item.source_author || "Not specified by source")}</li>
-        <li><strong>Original publication time:</strong> ${escapeHtml(sourceDate)}</li>
-        <li><strong>Collected by this site:</strong> ${escapeHtml(item.source_fetched_at || "")}</li>
+        ${sourceDate ? `<li><strong>Original publication date:</strong> ${escapeHtml(sourceDate)}</li>` : ""}
         <li><a href="${escapeHtml(item.source_url || item.sourceUrl || "#")}" rel="nofollow noopener noreferrer" target="_blank">Read the original source</a></li>
       </ul>
       <p><em>This article is based on public source information and independent analysis. Original reporting copyright belongs to the original publisher.</em></p></section>
@@ -178,14 +200,14 @@ export async function renderNewsArticle(slug) {
     description: articleMetaDescription(item, articles),
     canonical,
     body,
-    image: item.cover_image_url,
+    image: cover.src,
     schema: [
       { "@type": "Organization", name: "Cowinmagnet", url: "https://www.cowinmagnet.com" },
       {
         "@type": "NewsArticle",
         headline: item.title,
         description: item.excerpt || item.summary,
-        image: newsImageUrl(item.cover_image_url),
+        image: newsImageUrl(cover.src),
         datePublished: item.published_at || item.date,
         dateModified: item.updated_at || item.published_at || item.date,
         author: { "@type": "Organization", name: item.author_name || "Cowin Magnet South Africa" },

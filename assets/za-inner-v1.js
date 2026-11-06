@@ -56,4 +56,5 @@
   window.addEventListener("popstate", byHash);
   byHash();
   tablist.hidden = false;
+  if (tablist.previousElementSibling?.matches(".za-tab-heading")) tablist.previousElementSibling.hidden = false;
 })();

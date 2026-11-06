@@ -5,6 +5,8 @@ import { renderBlogArticle, renderBlogFeed, renderBlogList } from "../lib/blog-r
 import { renderNewsArticle, renderNewsFeed, renderNewsList } from "../lib/news-renderer.js";
 import { normalizeRegionalAlternates, regionalProductContext, regionalPageContext } from "../lib/regional-seo.js";
 import { withZaInnerLayout } from "../lib/za-inner-layout.js";
+import { catalogueFilters } from "../lib/catalogue-page.js";
+import { applyProductEditorial, readPublishedEditorial } from "../lib/product-editorial.js";
 
 export const runtime = "nodejs";
 
@@ -12,7 +14,7 @@ const root = /*turbopackIgnore: true*/ process.cwd();
 // Static HTML pages are generated as files, so their stylesheet URL needs a
 // deployment version. This prevents a cached legacy stylesheet from rendering
 // the current page structure as unstyled content after a release.
-const siteAssetVersion = "20260919-info-mailbox";
+const siteAssetVersion = "20261106-workbench-1";
 const privateRouteRoots = new Set([
   ".audit-backups",
   ".git",
@@ -102,7 +104,9 @@ export async function GET(_request, context) {
   const params = await context.params;
   const parts = params.path || [];
   const path = `/${parts.join("/")}/`;
-  const renderInner = (html) => withZaInnerLayout(withVersionedStylesheet(html), path);
+  const query = new URL(_request.url).searchParams;
+  const catalogueIsFiltered = path === "/en-za/products/" && Object.keys(catalogueFilters(query)).length > 0;
+  const renderInner = (html) => withZaInnerLayout(withVersionedStylesheet(html), path, query);
   if (isPrivateStaticPath(parts)) {
     return new Response("Not found", { status: 404, headers: { "x-robots-tag": "noindex, nofollow" } });
   }
@@ -174,19 +178,23 @@ export async function GET(_request, context) {
     const isHtml = contentType(file.filePath) === "text/html; charset=utf-8";
     let body = isHtml ? withVersionedStylesheet(file.body.toString("utf8")) : file.body;
     if (isHtml) {
+      if (parts.length === 4 && parts[0] === "en-za" && parts[1] === "products") {
+        const editorial = await readPublishedEditorial();
+        if (Object.hasOwn(editorial, parts[3])) body = applyProductEditorial(body, editorial[parts[3]]);
+      }
       const regional = regionalProductContext(`/${parts.join('/')}/`);
       if (regional) body = body.replace(/(<div class=['"]product-source-body['"]>)/, `$1${regional}`);
       const pageContext = regionalPageContext(`/${parts.join('/')}/`);
       if (pageContext) body = body.replace(/<\/main>/i, `${pageContext}</main>`);
-      body = withZaInnerLayout(body, path);
+      body = withZaInnerLayout(body, path, query);
     }
     return new Response(body, {
       status: parts.join('/') === 'en-za/404' ? 404 : 200,
       headers: {
         "content-type": contentType(file.filePath),
-        "cache-control": "public, max-age=0, s-maxage=300",
+        "cache-control": catalogueIsFiltered || parts[0] === "admin" ? "private, no-store" : "public, max-age=0, s-maxage=300",
         ...(locale ? { "content-language": locale } : {}),
-        ...(isUnverifiedTranslation || isIncompleteContent || parts.join('/') === 'en-za/404' ? { "x-robots-tag": "noindex, follow" } : {})
+        ...(isUnverifiedTranslation || isIncompleteContent || catalogueIsFiltered || parts.join('/') === 'en-za/404' ? { "x-robots-tag": "noindex, follow" } : {})
       }
     });
   }

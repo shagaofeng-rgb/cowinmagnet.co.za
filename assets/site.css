@@ -760,6 +760,14 @@ body { max-width: 100%; overflow-x: hidden; background: var(--paper); color: var
 .quote-step legend { width: 100%; padding: 0; color: var(--green); font-size: 24px; font-weight: 800; line-height: 1.2; }
 .quote-step > p { grid-column: 1 / -1; margin: -4px 0 8px; color: var(--muted); }
 .quote-step .full { grid-column: 1 / -1; }
+.quote-privacy { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.quote-privacy a { text-decoration: underline; }
+.quote-extra { min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.quote-extra summary { font-weight: 700; cursor: pointer; }
+.quote-extra label { margin-top: 10px; }
+.quote-slurry { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(185px, 100%), 1fr)); gap: 14px; }
+.quote-form [hidden] { display: none !important; }
+.quote-form label small { color: var(--muted); font-size: 12px; }
 .quote-step-controls { display: flex; justify-content: space-between; gap: 12px; grid-column: 1 / -1; }
 .quote-step-controls .button { min-width: 110px; }
 

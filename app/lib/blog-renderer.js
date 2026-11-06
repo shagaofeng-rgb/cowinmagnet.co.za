@@ -56,7 +56,7 @@ function pageShell({ title, description, canonical, body, schema = [], image = "
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${escapeHtml(ogImage)}">
   <link rel="stylesheet" href="/assets/site.css">
-  <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": schema })}</script>
+  <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": schema }).replace(/</g, "\\u003c")}</script>
 </head>
 <body>
   <header class="site-header">
@@ -109,7 +109,7 @@ export async function renderBlogList() {
     <nav class="breadcrumbs"><a href="/en-za/">Home</a> / Blog</nav>
     <p class="eyebrow">Blog</p>
     <h1>Cowinmagnet South Africa Blog</h1>
-    <p>SEO guides for African mining, quarrying, cement, coal, recycling and conveyor tramp metal removal buyers.</p>
+    <p>Practical guides to selecting magnetic separators for mining, quarrying, cement, coal handling and recycling.</p>
   </section>
   <section class="section editorial-index-section">
     <div class="editorial-index-intro">
@@ -123,8 +123,8 @@ export async function renderBlogList() {
     </form>
     <p class="editorial-filter-empty" data-editorial-empty="blog-list" hidden aria-live="polite">No guides match those filters. Clear the filters to view all guides.</p>
     <div id="blog-list" class="grid editorial-grid" data-page-collection data-page-size="12" data-page-param="blogPage">${articles
-      .map((item) => `<a class="card news-card editorial-card" data-editorial-card data-editorial-category="${escapeHtml(item.category || "Selection Guide")}" href="${articleUrl(item)}">
-        <img src="${escapeHtml(normalizeLegacyMedia(item.cover_image_url))}" alt="${escapeHtml(item.cover_image_alt || item.title)}">
+      .map((item, index) => `<a class="card news-card editorial-card" data-editorial-card data-editorial-category="${escapeHtml(item.category || "Selection Guide")}" href="${articleUrl(item)}">
+        <img src="${escapeHtml(normalizeLegacyMedia(item.cover_image_url))}" alt="${escapeHtml(item.cover_image_alt || item.title)}" decoding="async" ${index === 0 ? 'fetchpriority="high"' : 'loading="lazy"'}>
         <p class="eyebrow">${escapeHtml((item.published_at || item.date || "").slice(0, 10))} - ${escapeHtml(item.category || "Selection Guide")}</p>
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.excerpt || item.summary || "")}</p>

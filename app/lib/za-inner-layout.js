@@ -1,6 +1,9 @@
-// Presentation only: the original document remains the source for copy, metadata,
+import { renderCataloguePage } from "./catalogue-page.js";
+
+// The original document remains the source for copy, metadata,
 // gallery, enquiry fields, links and article content.
 const asset = "/assets/za-inner-v1";
+const assetVersion = "20261106-workbench-1";
 const sprite = "/assets/za-inner-icons-v1.svg";
 const icons = (name, size = 18) => `<svg class="za-icon" width="${size}" height="${size}" aria-hidden="true" focusable="false"><use href="${sprite}#${name}"></use></svg>`;
 const escape = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -31,6 +34,29 @@ const productTabs = [
   ["documents", "Documents", "docs", []],
   ["faq", "FAQ", "faq", ["faq"]]
 ];
+const compactTabLabels = { specifications: "Specs", installation: "Install & care" };
+const projectInputs = {
+  "Suitable belt width": "Share your belt width (mm)",
+  "Belt width": "Share your belt width (mm)",
+  "Belt speed": "Share your belt speed (m/s)",
+  "Conveyor speed": "Share your conveyor speed (m/s)",
+  "Recommended suspension height": "Share the clearance above the burden (mm)",
+  "Material burden depth": "Share the material depth on the belt (mm)",
+  "Feed particle size": "Share the size range (mm or µm)",
+  "Feed moisture": "Share the feed moisture (%)",
+  "Slurry density": "Share slurry density (kg/m³) or solids by mass (%)",
+  "Slurry density or feed condition": "Describe the feed state and, for slurry, the solids by mass (%)",
+  "Process capacity": "Share the required throughput (t/h or m³/h, as applicable)",
+  "Power supply": "Share the site supply (V, Hz and phases)",
+  "Power supply where applicable": "Share the site supply for powered equipment (V, Hz and phases)",
+  "Opening or pipe connection": "Share the opening or pipe size and connection standard",
+  "Flow or pressure condition": "Share flow (m³/h) and working pressure (bar)",
+  "Temperature condition": "Share the operating temperature range (°C)",
+  "Test piece and sensitivity requirement": "Share the test-piece material and size (mm)",
+  "Applicable mineral": "Share the feed mineralogy and target fraction",
+  "Application duty": "Describe the required process or equipment duty",
+  "Environmental condition": "Describe dust, water exposure and ambient temperature"
+};
 const productSection = (body, id) => findElement(body, "section", new RegExp(`<section\\b[^>]*\\bid=['"]product-${id}['"][^>]*>`, "i"));
 const keepSection = (section) => section?.full.replace(/\sdata-product-panel\b|\srole=['"]tabpanel['"]|\saria-labelledby=['"]product-tab-[^'"]+['"]/gi, "") ?? "";
 
@@ -40,12 +66,12 @@ function specificationTable(html) {
   const rows = [...table.inner.matchAll(/<div role=['"]row['"]><span>([\s\S]*?)<\/span><strong>([\s\S]*?)<\/strong><span>([\s\S]*?)<\/span><\/div>/gi)];
   if (!rows.length) return html;
   const cells = rows.flatMap(([, field, value, context]) => field === "Project configuration items"
-    ? context.replace(/\. To be confirmed for the project\.$/, "").split("; ").map((label) => `<tr><th scope="row">${label}</th><td class="za-pending-spec">Confirm with engineering</td></tr>`)
+    ? context.replace(/\. To be confirmed for the project\.$/, "").split("; ").map((label) => `<tr><th scope="row">${label}</th><td class="za-pending-spec">${projectInputs[label] || "Confirmed for the selected configuration in your quotation"}</td></tr>`)
     : `<tr><th scope="row">${field}</th><td>${value}</td></tr>`);
-  return html.slice(0, table.start) + `<table class="za-spec-table"><thead><tr><th scope="col">Parameter</th><th scope="col">Published value</th></tr></thead><tbody>${cells.join("")}</tbody></table>` + html.slice(table.end);
+  return html.slice(0, table.start) + `<table class="za-spec-table"><caption>Project inputs and configuration checks</caption><thead><tr><th scope="col">Parameter</th><th scope="col">What to provide or confirm</th></tr></thead><tbody>${cells.join("")}</tbody></table>` + html.slice(table.end);
 }
 
-function productLayout(main, path) {
+function productLayout(main, path, publishedCopy) {
   const hero = findElement(main, "section", /<section\b[^>]*class=['"][^'"]*\bproduct-page-hero\b[^'"]*['"][^>]*>/i);
   const detail = findElement(main, "section", /<section\b[^>]*class=['"][^'"]*\bproduct-detail-layout\b[^'"]*['"][^>]*>/i);
   if (!hero || !detail) return null;
@@ -71,13 +97,13 @@ function productLayout(main, path) {
   const quoteLink = rail.inner.match(/href=['"](\/en-za\/request-a-quote\/\?product=[^'"]+)['"]/i)?.[1] || "/en-za/request-a-quote/";
   const h1 = copy.inner.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/i)?.[0] || "";
   const summary = copy.inner.match(/<\/h1>\s*<p>([\s\S]*?)<\/p>/i)?.[1] || "";
-  const sentence = summary.match(/^.*?[.!?](?=\s|$)/)?.[0] || summary;
+  const sentence = publishedCopy ? summary : summary.match(/^.*?[.!?](?=\s|$)/)?.[0] || summary;
   const label = family ? `<a class="za-family" href="${family[1]}">${family[2]} ${icons("next", 15)}</a>` : "";
   const documents = `<section class="za-documents"><h2>Documents and drawings</h2><p>Request documentation for the selected equipment and site conditions.</p><div class="za-link-rows"><a href="/en-za/downloads/">${icons("docs", 22)}<span>Download Centre</span>${icons("next")}</a><a href="/en-za/technical-support/">${icons("install", 22)}<span>Technical support</span>${icons("next")}</a><a href="${quoteLink}">${icons("specs", 22)}<span>Request model-specific documentation</span>${icons("next")}</a></div></section>`;
-  const tabs = `<nav class="za-tabs" role="tablist" aria-label="Product information" hidden>${productTabs.map(([id, name, icon], i) =>
-    `<button id="za-tab-${id}" type="button" role="tab" aria-selected="${i === 0}" aria-controls="za-panel-${id}" tabindex="${i === 0 ? 0 : -1}">${icons(icon, 17)}${escape(name)}</button>`).join("")}</nav>`;
+  const tabs = `<div class="za-tab-heading" hidden>Product information</div><nav class="za-tabs" role="tablist" aria-label="Product information" hidden>${productTabs.map(([id, name, icon], i) =>
+    `<button id="za-tab-${id}" type="button" role="tab" aria-label="${escape(name)}" aria-selected="${i === 0}" aria-controls="za-panel-${id}" tabindex="${i === 0 ? 0 : -1}">${icons(icon, 17)}${compactTabLabels[id] ? `<span class="za-tab-full">${escape(name)}</span><span class="za-tab-compact">${escape(compactTabLabels[id])}</span>` : `<span>${escape(name)}</span>`}</button>`).join("")}</nav>`;
   const panels = productTabs.map(([id, , , ids]) =>
-    `<div class="za-tab-panel" id="za-panel-${id}" role="tabpanel" aria-labelledby="za-tab-${id}">${ids.map((key) => key === "specifications" ? specificationTable(keepSection(sections.get(key))) : keepSection(sections.get(key))).join("")}${id === "documents" ? documents : ""}</div>`).join("");
+    `<div class="za-tab-panel" id="za-panel-${id}" role="tabpanel" aria-labelledby="za-tab-${id}" tabindex="0">${ids.map((key) => key === "specifications" ? specificationTable(keepSection(sections.get(key))) : keepSection(sections.get(key))).join("")}${id === "documents" ? documents : ""}</div>`).join("");
   const selection = sections.get("selection")?.inner.match(/<ul\b[^>]*class=['"]product-source-list['"][^>]*>([\s\S]*?)<\/ul>/i)?.[1] || "";
   const checklist = [...selection.matchAll(/<li\b[^>]*>[\s\S]*?<\/li>/gi)].slice(0, 3).map((m) => m[0]).join("");
   const quoteRail = `<aside class="za-project-rail">${icons("specs", 26)}<h2>Get a project-specific quote</h2><p>Share these details for a first review:</p>${checklist ? `<ul class="product-source-list">${checklist}</ul>` : ""}<a class="button primary" href="${quoteLink}">Send project details ${icons("next")}</a><a class="za-inline-link" href="#product-product-inquiry">Quick product enquiry</a><a class="za-inline-link" href="/en-za/contact/">Contact the team ${icons("next", 15)}</a></aside>`;
@@ -173,13 +199,13 @@ function innerHeader(html) {
   return html.slice(0, header.start) + header.open + body + header.close + html.slice(header.end);
 }
 
-export function withZaInnerLayout(html, path) {
+export function withZaInnerLayout(html, path, params) {
   if (!/^\/en-za\/[^.]+\/$/.test(path)) return html;
   const main = findElement(html, "main", /<main\b[^>]*>/i);
   if (!main) return html;
   const [, , section, slug] = path.split("/");
   let type = section;
-  const product = section === "products" && slug ? productLayout(main.inner, path) : null;
+  const product = section === "products" && slug ? productLayout(main.inner, path, html.includes("data-product-revision=")) : null;
   if (product) type = "product";
   else if (section === "products") type = "catalogue";
   else if (section === "news" || section === "blog") type = slug ? "article" : "editorial";
@@ -187,9 +213,20 @@ export function withZaInnerLayout(html, path) {
   else if (["search", "404"].includes(section)) type = "utility";
   else if (["privacy-policy", "cookie-policy", "terms-and-conditions"].includes(section)) type = "legal";
   else if (["technical-support", "downloads"].includes(section)) type = "resources";
-  const transformed = product ?? regularLayout(main.inner, path, type);
-  return innerHeader(html.slice(0, main.start) + main.open + transformed + main.close + html.slice(main.end))
+  const layout = product ?? regularLayout(main.inner, path, type);
+  const catalogue = path === "/en-za/products/" ? renderCataloguePage(layout, params) : { html: layout };
+  const transformed = catalogue.html
+    .replace(/<form\b[^>]*\bdata-quote-form\b[^>]*>/gi, (tag) => {
+      if (/\bmethod\s*=/i.test(tag)) return tag;
+      return `<noscript><style>[data-quote-form]{display:none!important}</style><p class="quote-privacy">Send your enquiry and any attachment to <a href="mailto:info@cowinmagnet.com">info@cowinmagnet.com</a>.</p></noscript>${tag.slice(0, -1)} method="post" action="/api/enquiries/">`;
+    })
+    .replace(/<iframe\b(?=[^>]*www\.google\.com\/maps\/embed)(?![^>]*\bloading=)/gi, '<iframe loading="lazy"');
+  const output = innerHeader(html.slice(0, main.start) + main.open + transformed + main.close + html.slice(main.end))
     .replace(/<body\b/i, `<body data-za-inner="${escape(type)}"`)
-    .replace(/<\/head>/i, `<link rel="stylesheet" href="${asset}.css"></head>`)
-    .replace(/<\/body>/i, `<script defer src="${asset}.js"></script></body>`);
+    .replace(/<\/head>/i, `<link rel="stylesheet" href="${asset}.css?v=${assetVersion}"></head>`)
+    .replace(/<\/body>/i, `<script defer src="${asset}.js?v=${assetVersion}"></script></body>`);
+  if (!catalogue.canonical) return output;
+  return output.replace(/<link\b[^>]*>/gi, (tag) => /rel=['"]canonical['"]|hreflang=['"](?:en-ZA|x-default)['"]/i.test(tag)
+    ? tag.replace(/\bhref=['"][^'"]*['"]/i, `href="${catalogue.canonical}"`)
+    : tag);
 }

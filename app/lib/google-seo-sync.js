@@ -129,18 +129,27 @@ export async function inspectGoogleUrls(urls, options = {}) {
     while (cursor < uniqueUrls.length) {
       const index = cursor++;
       const url = uniqueUrls[index];
-      try {
-        const response = await fetchImpl(URL_INSPECTION_ENDPOINT, {
-          method: "POST",
-          headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
-          body: JSON.stringify({ inspectionUrl: url, siteUrl, languageCode: "en-US" }),
-          signal: AbortSignal.timeout(Number(options.timeoutMs || 30_000))
-        });
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(data.error?.message || `URL Inspection HTTP ${response.status}`);
-        results[index] = summarizeInspectionResult(url, data);
-      } catch (error) {
-        results[index] = { url, verdict: "ERROR", coverageState: "Inspection error", error: error?.message || String(error) };
+      const maxAttempts = options.retries === 0 ? 1 : 2;
+      for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        let status;
+        try {
+          const response = await fetchImpl(URL_INSPECTION_ENDPOINT, {
+            method: "POST",
+            headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+            body: JSON.stringify({ inspectionUrl: url, siteUrl, languageCode: "en-US" }),
+            signal: AbortSignal.timeout(Number(options.timeoutMs || 12_000))
+          });
+          status = response.status;
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.inspectionResult) throw new Error(data.error?.message || `URL Inspection HTTP ${status}`);
+          results[index] = { ...summarizeInspectionResult(url, data), inspectedAt: new Date().toISOString() };
+          break;
+        } catch (error) {
+          const retryable = status === undefined || status === 408 || status === 429 || status >= 500;
+          results[index] = { url, verdict: "ERROR", coverageState: "Inspection error", status, retryable, inspectedAt: new Date().toISOString(), error: error?.message || String(error) };
+          if (!retryable || attempt === maxAttempts) break;
+          await wait(Number(options.retryDelayMs ?? 400) * attempt);
+        }
       }
     }
   }

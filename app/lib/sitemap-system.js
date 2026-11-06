@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { readPublishedEditorial } from "./product-editorial.js";
 import { copyFile, mkdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { dirname, join, normalize, sep } from "node:path";
 import { isPublishedBlogArticle, isPublishedNewsArticle, readDataJson, withDataLock, writeDataJson } from "./news-system.js";
@@ -238,12 +239,13 @@ async function staticRecord(pathname, lastmod, type, fingerprint = "") {
 
 export async function collectSitemapRecords() {
   const siteUrl = productionSiteUrl();
-  const [products, categories, articles, dates, seeds] = await Promise.all([
+  const [products, categories, articles, dates, seeds, editorial] = await Promise.all([
     readDataJson("data/products/products.json", []),
     readDataJson("data/categories/categories.json", []),
     readDataJson("data/articles/articles.json", []),
     readJsonFile("data/seo/static-page-dates.json", {}),
-    staticPageSeeds()
+    staticPageSeeds(),
+    readPublishedEditorial()
   ]);
   const pages = [];
   for (const seed of seeds) {
@@ -265,7 +267,9 @@ export async function collectSitemapRecords() {
   for (const product of products) {
     if (product.deletedAt || String(product.productStatus || "published").toLowerCase() !== "published") continue;
     const pathname = product.canonicalUrl || `/en-za/products/${product.categorySlug}/${product.slug}/`;
-    productRecords.push(await staticRecord(pathname, modelLastmod(product, "2026-07-08"), "products", sha256(JSON.stringify(product))));
+    const live = Object.hasOwn(editorial, product.slug) ? editorial[product.slug] : null;
+    const date = live ? latestLastmod([{ lastmod: modelLastmod(product, "2026-07-08") }, { lastmod: live.publishedAt }]) : modelLastmod(product, "2026-07-08");
+    productRecords.push(await staticRecord(pathname, date, "products", sha256(JSON.stringify(live ? { ...product, editorial: live.revision } : product))));
   }
 
   const categoryRecords = [await staticRecord("/en-za/products/", dates["/en-za/products/"]?.lastmod || "2026-07-08", "categories")];
@@ -400,7 +404,7 @@ export async function runSitemapAudit(options = {}) {
         lastRunId: run.id,
         lastFingerprint: bundle.fingerprint,
         lastUrlCount: bundle.totalUrls,
-        lastSubmission: submission
+        lastSubmission: submission.attempted ? { ...submission, attemptedAt: finishedAt.toISOString() } : state.lastSubmission
       });
     }
     return { run, bundle };

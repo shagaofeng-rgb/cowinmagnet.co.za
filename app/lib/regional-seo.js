@@ -1,17 +1,30 @@
-// Regional selection guidance; these are required project inputs, not claims of local stock or installations.
+const equipmentAnswers = {
+  "wet-drum-magnetic-separator": ["When to shortlist a wet drum separator", "Shortlist a wet drum when the feed is already a slurry and the duty is to recover or remove a magnetic fraction. For dry feed, review dry separation first. Agree how grade and recovery will be measured on a representative sample before comparing models.", "/en-za/industries/mineral-processing/", "Mineral processing applications"],
+  "permanent-overband-magnetic-separator": ["When to shortlist a permanent overband magnet", "An overband magnet removes ferrous tramp metal from conveyed material. A self-cleaning belt helps where captured steel must be discharged regularly. If the process must detect metal that a magnet cannot attract, review a detector and a suitable stop or rejection procedure.", "/en-za/solutions/crusher-protection/", "Crusher protection layout"],
+  "eccentric-eddy-current-separator": ["When to shortlist eddy-current sorting", "Use an eddy-current separator to review recovery of conductive non-ferrous material from a prepared stream. Plan ferrous separation upstream. Share the size range, feed rate, fraction composition and target purity to establish whether the feed and belt arrangement suit the duty.", "/en-za/industries/recycling/", "Recycling separation stages"],
+  "rcyz-type-pipeline-magnetic-filter": ["What to check before choosing a pipeline magnet", "Confirm the material state, pipe connection, operating pressure and temperature before comparing configurations. Review how operators will isolate, clean and inspect the unit. For liquid service, confirm the material and seal compatibility and the allowable pressure drop.", "/en-za/technical-support/coastal-corrosion-protection/", "Material and corrosion considerations"],
+  "gjt-type-window-metal-detector": ["What a conveyor metal detector does", "A conveyor detector signals when metal passes the detection opening. Agree the alarm, stop or rejection action with the receiving plant. Send the aperture dimensions, material profile, belt speed and target test piece so sensitivity can be evaluated for that installation.", "/en-za/solutions/crusher-protection/", "Crusher protection and detection"]
+};
+
+// These are project inputs; equipment dimensions and performance follow model selection.
 export function regionalProductContext(path) {
   if (!/^\/en-za\/products\/[^/]+\/[^/]+\/$/.test(path)) return '';
-  const wet = /wet|coal-washing|slurry|tailing/.test(path);
-  const filter = /filter|trap|grid|hump|drawer/.test(path);
+  const answer = equipmentAnswers[path.split("/").at(-2)];
+  const filter = /filter|trap|grid|hump|drawer|pipeline/.test(path);
+  const wet = !filter && /wet|coal-washing|slurry|tailing/.test(path);
   const lifting = /lifting|explosion-proof/.test(path);
+  const detection = /detector|eddy-current/.test(path);
   const guidance = wet
     ? 'For a South African coal-washing or mineral-processing enquiry, provide a representative feed sample, particle-size distribution, slurry solids concentration and the required magnetic fraction. Specify process-water availability and whether water will be recirculated. Recovery and grade must be established by testwork for the actual ore; they cannot be inferred from a separator model.'
     : filter
       ? 'For a South African process-line enquiry, specify whether the material is a dry powder, granule or liquid, along with pipe or chute dimensions, operating temperature and cleaning access. For coastal or washdown duty, identify the exposure and cleaning chemicals so the product-contact material, seals and finish can be reviewed. State the contamination acceptance criterion and verification method before equipment selection.'
       : lifting
         ? 'For a South African lifting or hazardous-area enquiry, provide the load geometry, material temperature, duty cycle and the site electrical specification. Confirm the required load-handling safety provisions and any area classification with the responsible site engineer. Product naming alone does not establish suitability or certification for an underground or explosive atmosphere.'
-        : 'For a South African conveyor project, provide belt width and speed, burden depth, suspension clearance and the expected tramp-metal size. Identify the operating site and whether the installation is exposed to dust, rain or coastal salt. State the actual supply voltage, frequency and phases for powered equipment; the control and cooling arrangement must be reviewed against the plant specification.';
-  return `<aside class="regional-selection" aria-label="South African project selection"><h3>Preparing a South African project enquiry</h3><p>${guidance}</p><p>Send the installation country and delivery destination with the enquiry so export and transport requirements can be confirmed for that project. Availability, delivery dates and on-site services are confirmed in the quotation.</p><p><a href="/en-za/technical-support/product-selection-guide/">Selection inputs</a> · <a href="/en-za/technical-support/${wet ? 'maintenance-guide' : filter ? 'coastal-corrosion-protection' : 'electrical-specification-guide'}/">Site conditions and technical review</a> · <a href="/en-za/markets/south-africa/">South Africa project support</a></p></aside>`;
+        : detection
+          ? 'For a South African detection or sorting project, send the feed composition and size range, throughput, belt speed and the required detection or recovery result. Identify how the material will be presented and what action or discharge route is needed when the equipment responds.'
+          : 'For a South African conveyor project, provide belt width and speed, burden depth, suspension clearance and the expected tramp-metal size. Identify the operating site and whether the installation is exposed to dust, rain or coastal salt. State the actual supply voltage, frequency and phases for powered equipment; the control and cooling arrangement must be reviewed against the plant specification.';
+  const buyerAnswer = answer ? `<div class="regional-selection"><h3>${answer[0]}</h3><p>${answer[1]}</p><p><a href="${answer[2]}">${answer[3]}</a></p></div>` : "";
+  return buyerAnswer + `<aside class="regional-selection" aria-label="South African project selection"><h3>Preparing a South African project enquiry</h3><p>${guidance}</p><p>Include the installation country and delivery destination. Availability, lead times and on-site services are confirmed in the quotation.</p><p><a href="/en-za/technical-support/product-selection-guide/">Selection inputs</a> · <a href="/en-za/technical-support/${wet ? 'maintenance-guide' : filter ? 'coastal-corrosion-protection' : 'electrical-specification-guide'}/">Site conditions and technical review</a> · <a href="/en-za/markets/south-africa/">South Africa project support</a></p></aside>`;
 }
 
 export function normalizeRegionalAlternates(html) {
